@@ -27,4 +27,7 @@ class String
 		}
 		return output.strip
 	end
+	def split_words
+		self.gsub(/ +/, ' ').strip.split
+	end
 end

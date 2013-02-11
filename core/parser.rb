@@ -1,177 +1,116 @@
-module Parser
+class Parser
+	@@syntaxes = Hash.new
 	class Conversion
-		def initialize(input, result)
-			@input = input
+		attr_reader :syntax, :result, :action
+		def initialize (syntax, result)
+			@syntax = syntax
 			@result = result
-		end
-		def input
-			@input
-		end
-		def input=(value)
-			@input = value
-		end
-		def result
-			@result
-		end
-		def result=(value)
-			@result = value
-		end
-		def signature
-			@input.gsub(/\[[a-z0-9 ]*\]/i, '[?]')
+			def actions
+				Action.actions_for(@result.split_words[0])
+			end
 		end
 	end
 	class Result
-		def initialize(tokens, action)
+		attr_reader :action, :arguments
+		def initialize (action, arguments)
 			@action = action
-			@tokens = tokens
-		end
-		def action
-			@action
-		end
-		def tokens
-			@tokens
+			@arguments = arguments
 		end
 	end
-	@@commands = Hash.new
-	@@syntaxes = Hash.new
-	def self.fuck_you
-		@@syntaxes.keys
-	end
-	def self.translate(input, result, overwrite = true)
-		generic = input.gsub(/\[[a-z0-9_]*\]/i, '[?]')
-		if (@@syntaxes[generic] != nil and overwrite)
-			puts "Overwriting #{generic}"
-			@@syntaxes[generic].input = input
-			@@syntaxes[generic].result = result
-		else
-			words = input.split
-			cmd = words[0]
-			if @@commands.key?(cmd) == false
-				@@commands[cmd] = Array.new
-			end
-			words = result.split
-			if words.length > 3
-				raise "Result of translation must have three tokens or less ('#{result} received)"
-			end
-			con = Conversion.new(input, result)
-			@@commands[cmd].push(con)
-			@@syntaxes[generic] = con
-			@@commands[cmd].sort! { |a, b|
-				b.input.split.length <=> a.input.split.length
-			}
+	def self.translate(syntax, result)
+		actions = Action.actions_for(result.split_words[0])
+		if actions == nil
+			raise "Could not find an Action that matches '#{result}'"
 		end
-		puts "Syntax: #{input}, #{result}, #{generic}"
-		@@syntaxes[generic]
-	end
-	def self.commands
-		@@commands.keys.sort
-	end
-	def self.syntaxes(cmd)
-		@@commands[cmd] || []
-	end
-	def self.actions(command)
-		result = Array.new
-		inp = command.downcase.split
-		cmd = inp.shift
-		if @@commands.key?(cmd) == false
-			return nil
+		syntax_words = syntax.split_words
+		conversion = Conversion.new syntax, result
+		cmd = syntax_words[0]
+		if @@syntaxes[cmd] == nil
+			@@syntaxes[cmd] = Array.new
 		end
-		@@commands[cmd].each { |con|
-			puts "Parsing for #{con.input}"
-			parts = con.input.split
-			parts.shift
-			puts "\tParts:#{parts.join('|')}"
-			ii = 0
-			variables = Hash.new
-			thisXlation = ""
-			match = true
-			parts.each_index { |i|
-				if parts[i][0, 1] == '['
-					if i == parts.length - 1
-						puts "We're at the last variable."
-						variables[parts[i]] = inp.join(' ')
-						match = true
+		@@syntaxes[cmd].push conversion
+		@@syntaxes[cmd].sort! { |a, b|
+			b.syntax.split_words.length <=> a.syntax.split_words.length
+		}
+	end
+	def self.parse(input)
+		results = Array.new
+		words = input.split_words
+		conversions = @@syntaxes[words[0]]
+		if (conversions == nil)
+			return results
+		end
+		# Tokens are the words or word groups taken from the input.
+		conversions.each { |conv|
+			conv.actions.each { |action|
+				input_words = words.clone
+				tokens = Hash.new
+				syntax_words = conv.syntax.split_words
+				while syntax_words.length > 0
+					if input_words.length == 0
+						# No more input. Break with an imbalance.
 						break
-					else
-						nothing_but_vars = true
-						next_i = i + 1
-						while (next_i < parts.length)
-							if parts[next_i][0, 1] != '['
-								nothing_but_vars = false
-								break
-							end
-							next_i = next_i + 1
-						end
-						if nothing_but_vars
-							variables[parts[i]] = inp.join(' ')
-							match = true
+					end
+					symbol = syntax_words.shift
+					if symbol[0,1] == "["
+						if syntax_words.length == 0
+							# Last syntax word.
+							tokens[symbol] = input_words.join(' ')
+							input_words.clear
+							break
+						elsif input_words.length == 0
+							# Last input word.
 							break
 						else
-							placeholder = Array.new
-							local_match = false
-							while (inp.length > 0)
-								cur_word = inp.shift
-								if cur_word == parts[i + 1]
-									variables[parts[i]] = placeholder.join(' ')
-									inp.unshift cur_word
-									local_match = true
+							non_vars = syntax_words.clone.delete_if { |w|
+								w[0, 1] == '['
+							}
+							if non_vars.length == 0
+								# All remaining words in the syntax are variables. Dump everything now.
+								tokens[symbol] = input_words.join(' ')
+								syntax_words.clear
+								input_words.clear
+							else
+								next_syntax_word = syntax_words.shift
+								token = ''
+								if syntax_words.length == 0
+									break
+								end
+								next_input_word = input_words.shift
+								while next_input_word != next_syntax_word and input_words.length > 0
+									token = token + "#{next_input_word}"
+									next_input_word = input_words.shift
+								end
+								if input_words.length == 0 and syntax_words.length > 0
 									break
 								else
-									placeholder.push cur_word
+									tokens[symbol] = token
 								end
 							end
-							if local_match == false
-								match = false
-								break
-							end
+						end
+					else
+						if input_words[0] == symbol
+							input_words.shift
+						else
+							break
 						end
 					end
-				else
-					if parts[i] == inp[0]
-						inp.shift
-					else
-						match = false
-						break
-					end
 				end
-			}
-			if match == true
-				puts "Matched #{con.input} (#{con.signature})"
-				input_sig = con.input.gsub(/\[[a-z0-9_]*\]/i, '[?]')
-				if (Action[input_sig] != nil)
-					puts "Got a signature"
-					vars = Array.new
-					con.result.split.each { |x|
-						if x[0,1] == "[" and variables[x] != nil
-							vars.push variables[x]
+				if input_words.length == 0 and syntax_words.length == 0
+					result_words = conv.result.split_words
+					result_words.shift
+					arguments = Array.new
+					result_words.each { |r|
+						if r[0, 1] == '[' and tokens[r] != nil
+							arguments.push(tokens[r])
+						#else
+						#	arguments.push(r)
 						end
 					}
-					if vars.length == 0 and inp != nil and inp.length > 0
-						vars.push inp.join(' ')
-					end
-					puts "Vars to tokenize: #{vars.join('|')}, #{vars.length}"
-					#puts "#{vars.class}"
-					#result.push Action[con.signature]
-					result.push Result.new(vars, Action[input_sig])
-				else
-					puts "No signature for #{input_sig}"
+					results.push(Result.new(action, arguments))
 				end
-				#result.push con
-				#final = Array.new
-				#con.result.split.each { |x|
-				#	if x[0,1] == "["
-				#		if (variables[x] != '')
-				#			final.push(variables[x])
-				#		else
-				#			final.push(nil)
-				#		end
-				#	else
-				#		final.push(x)
-				#	end
-				#}
-				#return final
-			end
+			}
 		}
-		return result
+		return results
 	end
 end

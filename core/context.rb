@@ -12,7 +12,6 @@ class Context
 		@arguments = arguments
 	end
 	def match(subject, keywords)
-		puts "Checking keywords: #{keywords}"
 		results = Entity.empty
 		if keywords == nil
 			return Response.new(results, '')
@@ -20,16 +19,15 @@ class Context
 		@arguments.each { |arg|
 			if arg == String
 				return Response.new([keywords], '')
+			elsif arg.class == Class or arg.class == Module
+				results = results.that_are(arg)
 			elsif arg.kind_of? Symbol
-				puts "I should try #{arg}"
 				if subject.respond_to? arg
-					puts "It worked!"
 					results.concat(subject.method(arg).call)
 				else
 					raise "Bad symbol"
 				end
 			elsif arg.kind_of? Array
-				puts "Symbol array?"
 				current = subject
 				arg.each { |sub_arg|
 					if current.respond_to? sub_arg
@@ -44,17 +42,21 @@ class Context
 			end
 		}
 		passed = keywords.split
+		accepted = 0
 		keywords.split.each { |word|
-			puts "Trying #{word}"
-			if word.length > 2 and word != 'the'
+			if word.length > 1 and word != 'the'
 				currentMatches = results.matching(word)
 				if currentMatches.length == 0
-					puts "Found a word that doesn't fit: #{word}"
-					#passed.unshift word
+					if accepted == 0
+						results = Entity.empty
+					end
 					break
 				else
+					accepted = accepted + 1
 					results = currentMatches
 				end
+			else
+				puts "Skipping #{word}: not accepted."
 			end
 			passed.shift
 		}
@@ -64,5 +66,5 @@ class Context
 	CHILDREN = Context.new("my_thing", [:children])
 	PARENT = Context.new("thing_in_room", [[:parent, :children]])
 	ENVIRONMENT = Context.new("thing", [:children, [:parent, :children]])
-	ANYWHERE = Context.new("thing_anywhere", [Entity])
+	ANYWHERE = Context.new("thing_anywhere", [Object])
 end

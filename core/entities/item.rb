@@ -3,7 +3,11 @@ class Item < Entity
 end
 
 Action.new("inventory") { |actor|
-	actor.children.each { |c|
-		actor.tell c.name
-	}
+	if actor.children.length == 0
+		actor.tell "You aren't carrying anything."
+	else
+		actor.children.each { |c|
+			actor.tell c.name
+		}
+	end
 }

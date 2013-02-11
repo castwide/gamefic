@@ -1,9 +1,9 @@
+require "core/grammar.rb"
 require "core/keywords.rb"
 require "core/entity.rb"
 require "core/context.rb"
 require "core/action.rb"
 require "core/parser.rb"
-require "core/grammar.rb"
 
 Dir["core/features/*.rb"].each { |file|
 	require file
@@ -27,11 +27,6 @@ class Game
 	end
 	def turn(input)
 		action = @player.perform(input)
-		#Entity.children.each { |e|
-		#	if e.turn.respond_to?('call')
-		#		e.turn.call
-		#	end
-		#}
 	end
 	def run(player)
 		@player = player
