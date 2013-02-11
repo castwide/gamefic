@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require "core/game.rb"
+
+if ARGV[0] == nil
+	puts "Game file required."
+	exit
+end
+
+game = Game.new
+game.load(ARGV[0])

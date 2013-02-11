@@ -1,0 +1,3 @@
+class Room < Entity
+
+end
