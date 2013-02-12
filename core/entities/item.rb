@@ -1,4 +1,5 @@
 class Item < Entity
+	include Itemized
 	include Portable
 end
 
@@ -11,3 +12,6 @@ Action.new("inventory") { |actor|
 		}
 	end
 }
+
+Parser.translate("i", "inventory")
+Parser.translate("inv", "inventory")

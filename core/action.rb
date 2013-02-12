@@ -24,29 +24,30 @@ class Action
 			used_names.push new_name
 			syntax = syntax + " #{new_name}"
 		}
-		#@key = generate_key
-		#@@hash[@key] = self
 		if @@hash[command] == nil
 			@@hash[command] = Array.new
 		end
 		@@hash[command].push self
-		@@hash[command].sort { |a,b|
-			if b.specificity != a.specificity
-				b.specificity <=> a.specificity
-			else
+		@@hash[command].sort! { |a,b|
+			if b.specificity == a.specificity
 				b.creation_order <=> a.creation_order
+			else
+				b.specificity <=> a.specificity
 			end
 		}
 		@@creation_order = @@creation_order + 1
 		conversion = Parser.translate user_friendly + syntax, command + syntax
 	end
-	def specificity
-		count_context_arguments(contexts)
+	def command
+		@command
 	end
-	#def self.find(syntax)
-	#	key = Action.generate_key(syntax)
-	#	@@hash[key]
-	#end
+	def specificity
+		spec = @contexts.length
+		@contexts.each { |c|
+			spec = spec + c.specificity
+		}
+		return spec
+	end
 	def self.actions_for(command)
 		@@hash[command]
 	end
@@ -59,37 +60,20 @@ class Action
 	def proc
 		@proc
 	end
-	#######################################################################
-	private
-	#######################################################################
-	def self.explode(entity)
-		arr = Array.new
-		arr.push entity
-		cls = entity.class
-		while cls != Object
-			arr.push cls
-			cls = cls.superclass
-		end
-		arr.push String
-		arr.push nil
-	end
-	#def self.generate_key(syntax)
-	#	words = syntax.split_words
-	#	return "#{words[0]}:#{(words.length - 1)}"	
-	#end
-	def count_context_arguments(context)
-		if (context.kind_of?(Array))
-			arg = context.length
-			context.each { |c|
-				arg = arg + count_context_arguments(c)
-			}
-			arg
-		else
-			1
-		end
-	end
 	protected
-	def creation_order
-		@creation_order
-	end
+		def creation_order
+			@creation_order
+		end
+	private
+		def self.explode(entity)
+			arr = Array.new
+			arr.push entity
+			cls = entity.class
+			while cls != Object
+				arr.push cls
+				cls = cls.superclass
+			end
+			arr.push String
+			arr.push nil
+		end
 end

@@ -4,6 +4,8 @@ require "core/entity.rb"
 require "core/context.rb"
 require "core/action.rb"
 require "core/parser.rb"
+require "core/delegate.rb"
+require "core/commands.rb"
 
 Dir["core/features/*.rb"].each { |file|
 	require file

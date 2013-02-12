@@ -1,10 +1,13 @@
 class Parser
 	@@syntaxes = Hash.new
 	class Conversion
-		attr_reader :syntax, :result, :action
+		@@creation_order = 0
+		attr_reader :syntax, :result, :action, :creation_order
 		def initialize (syntax, result)
 			@syntax = syntax
 			@result = result
+			@creation_order = @@creation_order
+			@@creation_order = @@creation_order + 1
 			def actions
 				Action.actions_for(@result.split_words[0])
 			end
@@ -16,6 +19,9 @@ class Parser
 			@action = action
 			@arguments = arguments
 		end
+	end
+	def self.commands
+		@@syntaxes.keys.sort
 	end
 	def self.translate(syntax, result)
 		actions = Action.actions_for(result.split_words[0])
@@ -30,7 +36,11 @@ class Parser
 		end
 		@@syntaxes[cmd].push conversion
 		@@syntaxes[cmd].sort! { |a, b|
-			b.syntax.split_words.length <=> a.syntax.split_words.length
+			if b.syntax.split_words.length != a.syntax.split_words.length
+				b.syntax.split_words.length <=> a.syntax.split_words.length
+			else
+				b.creation_order <=> a.creation_order
+			end
 		}
 	end
 	def self.parse(input)
@@ -40,10 +50,10 @@ class Parser
 		if (conversions == nil)
 			return results
 		end
-		# Tokens are the words or word groups taken from the input.
 		conversions.each { |conv|
 			conv.actions.each { |action|
 				input_words = words.clone
+				# Tokens are the words or word groups taken from the input.
 				tokens = Hash.new
 				syntax_words = conv.syntax.split_words
 				while syntax_words.length > 0
@@ -101,10 +111,13 @@ class Parser
 					result_words.shift
 					arguments = Array.new
 					result_words.each { |r|
-						if r[0, 1] == '[' and tokens[r] != nil
-							arguments.push(tokens[r])
-						#else
-						#	arguments.push(r)
+						if r[0, 1] == '['
+							if tokens[r] != nil
+								arguments.push(tokens[r])
+							end
+						else
+							# The result has a static word. Treat it as an argument.
+							arguments.push(r)
 						end
 					}
 					results.push(Result.new(action, arguments))

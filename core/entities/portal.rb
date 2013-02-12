@@ -42,6 +42,7 @@ end
 Action.new("go", Context::PORTAL) { |actor, portal|
 	actor.parent = portal.destination
 	actor.tell "You go #{portal.name}."
+	actor.perform "look around"
 }
 
 Action.new("go", Context::STRING) { |actor, unknown|
@@ -55,10 +56,14 @@ Action.new("exit") { |actor|
 	elsif portals.length == 1
 		actor.parent = portals[0].destination
 		actor.tell "You go #{portals[0].name}."
+		actor.tell "\n#{actor.parent.longname.upcase}"
+		actor.perform "look around"
 	else
 		actor.tell "You don't see any exit."
 	end
 }
+
+Parser.translate("out", "exit")
 
 Parser.translate("north", "go north")
 Parser.translate("south", "go south")

@@ -14,6 +14,7 @@ Action.new("take", Context::ENVIRONMENT) { |actor, object|
 		end
 	end
 }
+Parser.translate("get [object]", "take [object]")
 
 Action.new("drop", Context::CHILDREN) { |actor, object|
 	if object.parent != actor

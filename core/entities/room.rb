@@ -23,7 +23,7 @@ Action.new("look_around") { |actor|
 	if chars.length > 0
 		actor.tell "Others here: #{chars.join(", ")}"
 	end
-	items = actor.parent.children - [chars] - [actor] - actor.parent.children.that_are(Portal)
+	items = actor.parent.children.that_are(Itemized) - [chars] - [actor] - actor.parent.children.that_are(Portal)
 	if items.length > 0
 		actor.tell "Visible items: #{items.join(", ")}"
 	end

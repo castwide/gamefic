@@ -2,7 +2,15 @@ class Entity
 	@@hash = Hash.new
 	class EntityArray < Array
 		def that_are(cls)
-			self.clone.delete_if {|entity| entity.kind_of?(cls) == false}
+			if cls.kind_of?(Entity)
+				if self.include?(cls)
+					return EntityArray.new.push(cls)
+				else
+					return EntityArray.new
+				end
+			else
+				self.clone.delete_if {|entity| entity.kind_of?(cls) == false}
+			end
 		end
 		def matching(description)
 			result = self.class.new
@@ -37,8 +45,12 @@ class Entity
 end
 
 class Entity
-	attr_reader :name, :description, :parent
+	attr_reader :name, :longname, :description, :parent
 	def initialize
+		@name = ''
+		@longname = ''
+		@description = ''
+		@synonyms = ''
 		@children = EntityArray.new
 		@parent = nil
 		@identifier = self.object_id
@@ -51,14 +63,20 @@ class Entity
 		@name = value
 		@@hash.delete @identifier
 		if @@hash.has_key?(@name.downcase)
-			@identifier = self.object_id
+			num = 2
+			new_name = "#{name.downcase} #{num}"
+			while @@hash.has_key?(new_name)
+				num = num + 1
+				new_name = "#{name.downcase} #{num}"
+			end
+			@identifier = new_name
 		else
 			@identifier = @name.downcase
 		end
 		@@hash[@identifier] = self
 	end
 	def longname
-		@longname ? @longname : @name
+		(@longname.to_s != '' ? @longname : name)
 	end
 	def longname=(value)
 		@longname = value
@@ -66,25 +84,41 @@ class Entity
 	def description=(value)
 		@description = value
 	end
+	def synonyms
+		@synonyms
+	end
 	def synonyms=(words)
 		@synonyms = words
+	end
+	def identifier
+		@identifier
+	end
+	def destroy
+		children.each { |c|
+			c.parent = nil
+		}
+		if @parent != nil
+			@parent.delete_child(self)
+			@parent = nil
+		end
+		@@hash.delete identifier
 	end
 	def children
 		@children.clone
 	end
 	def parent=(entity)
-		if @parent != nil
-			@parent.child_array.delete(self)
-		end
 		if entity == self
 			raise "Entity cannot be its own parent"
+		end
+		if @parent != nil
+			@parent.delete_child(self)
 		end
 		@parent = entity
 		if @parent != nil
 			if (@parent.kind_of?(Entity) == false)
 				raise "Entity's parent must be another Entity (#{@parent.class} given)"
 			end
-			@parent.child_array.push(self)
+			@parent.push_child(self)
 		end
 	end
 	def tell(message)
@@ -94,9 +128,15 @@ class Entity
 		@name
 	end
 	protected
-	def child_array
-		@children
+	def delete_child(c)
+		@children.delete c
 	end
+	def push_child(c)
+		@children.push c
+	end
+	#def child_array
+	#	@children
+	#end
 	def self.create(arguments)
 		entity = self.new
 		arguments.each { |key, value|
