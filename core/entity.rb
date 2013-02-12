@@ -14,12 +14,15 @@ class Entity
 		end
 		def matching(description)
 			result = self.class.new
-			if Entity[description] != nil and self.include?(Entity[description])
+			if self.include?(Entity[description])
 				result.push Entity[description]
 				return result
 			end
 			mostMatches = 0
 			words = Keywords.from description
+			if words.length == 0
+				return self.clone
+			end
 			self.each {|entity|
 				matches = words.found_in entity.keywords
 				if matches > 0 and matches - mostMatches >= 0

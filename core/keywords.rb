@@ -2,7 +2,12 @@
 
 class Keywords < Array
 	def Keywords.from(statement)
-		result = Keywords.new.concat statement.to_s.strip.downcase.split
+		result = Keywords.new
+		if statement.kind_of?(Array)
+			result.concat statement
+		else
+			result = Keywords.new.concat statement.to_s.strip.downcase.split
+		end
 		result.delete_if { |w|
 			w.length < 2 or w == 'an' or w == 'the'
 		}

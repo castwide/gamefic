@@ -1,12 +1,12 @@
 # Contexts tell actions where they should look for arguments.
 
 class Context
-	class Response
-		attr_reader :objects, :remainder
-		def initialize(objects, remainder)
+	class Matches
+		attr_reader :objects, :matching_text, :remainder
+		def initialize(objects, matching_text, remainder)
 			@objects = objects
+			@matching_text = matching_text
 			@remainder = remainder
-			@specificity = nil
 		end
 	end
 	attr_reader :description, :arguments
@@ -21,7 +21,7 @@ class Context
 		end
 		@arguments.each { |arg|
 			if arg == String
-				return Response.new([keywords], '')
+				return Matches.new([keywords], keywords, '')
 			elsif arg == Object
 				results = Entity.array
 			elsif arg.class == Class or arg.class == Module
@@ -50,29 +50,31 @@ class Context
 				raise "I don't know what #{arg} is."
 			end
 		}
-		passed = keywords.split
-		accepted = 0
-		keywords.split.each { |word|
-			if word.length > 1 and word != 'the'
-				currentMatches = results.matching(word)
-				if currentMatches.length == 0
-					if accepted == 0
-						results = Entity.empty
+		keywords = keywords.split_words
+		used = Array.new
+		if results.length > 0
+			while keywords.length > 0
+				used.push keywords.shift
+				new_results = results.matching(used)
+				if new_results.length == 0
+					keywords.unshift used.pop
+					if used.length == 0
+						results = new_results
 					end
 					break
 				else
-					accepted = accepted + 1
-					results = currentMatches
+					results = new_results
+					if results.length == 1
+						break
+					end
 				end
 			end
-			passed.shift
-		}
-		Response.new(results, passed.join(' '))
+		end
+		Matches.new(results, used.join(' '), keywords.join(' '))
 	end
 	def reduce(args)
 		extended = Context.new(@description, @arguments.clone)
 		extended.arguments.push(args)
-		extended.specificity = nil
 		return extended
 	end
 	def specificity
@@ -98,8 +100,4 @@ class Context
 	PARENT = Context.new("thing_in_room", [[:parent, :children]])
 	ENVIRONMENT = Context.new("thing", [[:self, :children], [:parent, :children]])
 	ANYWHERE = Context.new("thing_anywhere", [Object])
-	protected
-	def specificity=(value)
-		@specificity = value
-	end
 end
