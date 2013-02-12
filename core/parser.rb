@@ -42,12 +42,27 @@ class Parser
 			end
 		}
 	end
+	def self.closest_matching_command(cmd)
+		closest = []
+		@@syntaxes.each{ |key, value|
+			if key.length > cmd.length and key[0, cmd.length] == cmd
+				closest.push key
+			end
+		}
+		closest.length == 1 ? closest[0] : nil
+	end
+	#  Return an array of Statements that match the input's syntax.
 	def self.parse(input)
 		results = Array.new
 		words = input.split_words
 		conversions = @@syntaxes[words[0]]
 		if (conversions == nil)
-			return results
+			closest = self.closest_matching_command(words[0])
+			if closest == nil
+				return results
+			end
+			words[0] = closest
+			conversions = @@syntaxes[words[0]]
 		end
 		conversions.each { |conv|
 			input_words = words.clone
