@@ -1,9 +1,9 @@
-class Character < Entity
-	def perform(command)
-		Delegate.dispatch(self, command)
-	end
-end
+module Gamefic
 
-class Context
-	NEIGHBOR = Context.new("person", [[:parent, :children], Character])
+	class Character < Entity
+		def perform(command)
+			Delegate.dispatch(self, command)
+		end
+	end
+
 end

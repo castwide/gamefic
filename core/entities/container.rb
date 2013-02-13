@@ -1,4 +1,8 @@
-class Container < Entity
-	include Fillable
-	include Itemized
+module Gamefic
+
+	class Container < Entity
+		include Fillable
+		include Itemized
+	end
+
 end

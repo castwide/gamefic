@@ -1,3 +1,7 @@
-class Scenery < Entity
+module Gamefic
+
+	class Scenery < Entity
+
+	end
 
 end

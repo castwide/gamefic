@@ -1,3 +1,7 @@
-module Mappable
-	attr :x, :y
+module Gamefic
+
+	module Mappable
+		attr :x, :y
+	end
+
 end
