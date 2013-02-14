@@ -1,50 +1,10 @@
 module Gamefic
 
-	class Parser
-		@@syntaxes = Array.new
-		class Conversion
-			@@creation_order = 0
-			attr_reader :syntax, :result, :creation_order
-			def initialize (syntax, result)
-				@syntax = syntax
-				@result = result
-				@creation_order = @@creation_order
-				@@creation_order = @@creation_order + 1
-			end
-			def command
-				@result.split_words[0]
-			end
-		end
-		class Statement
-			attr_reader :syntax, :arguments
-			def initialize (syntax, arguments)
-				@syntax = syntax
-				@arguments = arguments
-			end
-			def command
-				@syntax.split_words[0]
-			end
-		end
-		def self.commands
-			@@syntaxes.keys.sort
-		end
-		def self.translate(syntax, result)
-			syntax_words = syntax.split_words
-			conversion = Conversion.new syntax, result
-			@@syntaxes.push conversion
-			@@syntaxes.sort! { |a, b|
-				if b.syntax.split_words.length != a.syntax.split_words.length
-					b.syntax.split_words.length <=> a.syntax.split_words.length
-				else
-					b.creation_order <=> a.creation_order
-				end
-			}
-		end
-		#  Return an array of Statements that match the input's syntax.
-		def self.parse(input)
+	class InstructionArray < Array
+		def parse(input)
 			results = Array.new
 			words = input.split_words
-			@@syntaxes.each { |conv|
+			self.each { |conv|
 				input_words = words.clone
 				# Tokens are the words or word groups taken from the input.
 				tokens = Hash.new
@@ -100,8 +60,7 @@ module Gamefic
 					end
 				end
 				if input_words.length == 0 and syntax_words.length == 0
-					result_words = conv.result.split_words
-					result_words.shift
+					result_words = conv.statement.split_words
 					arguments = Array.new
 					result_words.each { |r|
 						if r[0, 1] == '['
@@ -113,10 +72,36 @@ module Gamefic
 							arguments.push(r)
 						end
 					}
-					results.push(Statement.new(conv.result, arguments))
+					results.push(Parser::Statement.new(conv.statement, conv.command, arguments))
 				end
 			}
 			return results
+		end
+	end
+	
+	class Parser
+		class Instruction
+			attr_reader :syntax, :command, :statement
+			attr_accessor :creation_order
+			def initialize (syntax, command, statement)
+				@syntax = syntax
+				@command = command
+				@statement = statement
+			end
+		end
+	end
+	
+	class Parser
+		class Statement
+			attr_reader :syntax, :command, :arguments
+			def initialize (syntax, command, arguments)
+				@syntax = syntax
+				@command = command
+				@arguments = arguments
+			end
+		end
+		def self.instruct(syntax, command, statement)
+			Instruction.new(syntax, command, statement)
 		end
 	end
 

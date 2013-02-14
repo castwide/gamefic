@@ -14,8 +14,7 @@ end
 
 module Gamefic
 	class Server
-		def initialize(game)
-			@game = game
+		def initialize
 			@serverSocket = TCPServer.new('', 4141)
 			@descriptors = Array.new
 			@descriptors.push(@serverSocket)
@@ -33,7 +32,7 @@ module Gamefic
 							@descriptors.push(n)
 							@users[n] = OnlinePlayer.create(
 								:name => "player #{n}",
-								:parent => Entity.array.that_are(Room)[0],
+								:parent => Theater.instance.entities.that_are(Room)[0],
 								:socket => n
 							)
 						else
@@ -67,8 +66,8 @@ module Gamefic
 	end
 end
 
-game = Gamefic::Game.new
-game.load("games/test.rb")
-
-x = Gamefic::Server.new(game)
-x.run
+module Gamefic
+	Theater.instance.scaffold "theaters/test.rb"
+	x = Gamefic::Server.new
+	x.run
+end

@@ -3,17 +3,16 @@
 module Gamefic
 
 	class Action
-		@@hash = Hash.new
-		@@creation_order = 0
-		def initialize(command, *contexts, &proc)
+		attr_accessor :creation_order
+		def initialize(command, contexts, proc)
 			if (contexts.length + 1 != proc.arity) and (contexts.length == 0 and proc.arity != -1)
 				raise "Number of contexts is not compatible with proc arguments."
 			end
 			@command = command
 			@contexts = contexts
 			@proc = proc
-			@creation_order = @@creation_order
-			user_friendly = command.gsub(/_/, ' ')
+			#@creation_order = @@creation_order
+			user_friendly = command.to_s.gsub(/_/, ' ')
 			syntax = ''
 			used_names = Array.new
 			contexts.each { |c|
@@ -26,19 +25,6 @@ module Gamefic
 				used_names.push new_name
 				syntax = syntax + " #{new_name}"
 			}
-			if @@hash[command] == nil
-				@@hash[command] = Array.new
-			end
-			@@hash[command].push self
-			@@hash[command].sort! { |a,b|
-				if b.specificity == a.specificity
-					b.creation_order <=> a.creation_order
-				else
-					b.specificity <=> a.specificity
-				end
-			}
-			@@creation_order = @@creation_order + 1
-			conversion = Parser.translate user_friendly + syntax, command + syntax
 		end
 		def command
 			@command
@@ -50,9 +36,6 @@ module Gamefic
 			}
 			return spec
 		end
-		def self.actions_for(command)
-			@@hash[command]
-		end
 		def key
 			@key
 		end
@@ -62,10 +45,10 @@ module Gamefic
 		def proc
 			@proc
 		end
-		protected
-			def creation_order
-				@creation_order
-			end
+		def create(command, *contexts, &block)
+			puts "Here's contexts: #{contexts.length}"
+			Action.new(command, contexts, block)
+		end
 		private
 			def self.explode(entity)
 				arr = Array.new

@@ -2,7 +2,7 @@ module Gamefic
 
 	class Character < Entity
 		def perform(command)
-			Delegate.dispatch(self, command)
+			Director.dispatch(self, command)
 		end
 	end
 

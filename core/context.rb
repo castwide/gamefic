@@ -17,7 +17,7 @@ module Gamefic
 			@arguments = arguments
 		end
 		def match(subject, keywords)
-			results = Entity.empty
+			results = EntityArray.new
 			if keywords == nil
 				return Response.new(results, '')
 			end
@@ -25,7 +25,7 @@ module Gamefic
 				if arg == String
 					return Matches.new([keywords], keywords, '')
 				elsif arg == Object
-					results = Entity.array
+					results = subject.story.entities
 				elsif arg.class == Class or arg.class == Module
 					results = results.that_are(arg)
 				elsif arg.kind_of? Symbol
@@ -102,17 +102,6 @@ module Gamefic
 			end
 			@specificity
 		end
-		STRING = Context.new("text", [String])
-		INVENTORY = Context.new("my_thing", [[:self, :children]])
-		PROXIMATE = Context.new("thing_in_room", [[:parent, :children]])
-		NEIGHBOR = Context::PROXIMATE
-		NEARBY = Context::PROXIMATE
-		PARENT = Context.new("place", [:parent])
-		PLACE = Context::PARENT
-		ENVIRONMENT = Context.new("thing", [[:self, :children], [:parent, :children]])
-		NEARBY_OR_INVENTORY = Context::ENVIRONMENT
-		ANYWHERE = Context.new("thing_anywhere", [Object])
-		ALL = Context::ANYWHERE
 	end
 
 end
