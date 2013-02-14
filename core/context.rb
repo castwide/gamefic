@@ -30,7 +30,7 @@ module Gamefic
 					results = results.that_are(arg)
 				elsif arg.kind_of? Symbol
 					if (arg == :parent)
-						results = Entity.empty
+						results = EntityArray.new
 						results.push subject.parent
 					else
 						if subject.respond_to? arg
@@ -60,21 +60,29 @@ module Gamefic
 			keywords = keywords.split_words
 			used = Array.new
 			if results.length > 0
+				previous_match = false
 				while keywords.length > 0
 					used.push keywords.shift
 					new_results = results.matching(used)
 					if new_results.length == 0
-						keywords.unshift used.pop
-						if used.length == 0
-							results = new_results
+						if previous_match == true
+							keywords.unshift used.pop
+							if used.length == 0
+								results = new_results
+							end
+							break
 						end
-						break
 					else
+						previous_match = true
 						results = new_results
 						if results.length == 1
 							break
 						end
 					end
+				end
+				if previous_match == false
+					# Scrolled through every word and not a single thing matched
+					results = EntityArray.new
 				end
 			end
 			Matches.new(results, used.join(' '), keywords.join(' '))

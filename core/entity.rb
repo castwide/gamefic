@@ -50,10 +50,10 @@ module Gamefic
 			@identifier = self.object_id
 		end
 		def story
-			@story
+			@story != nil ? @story : Theater.instance
 		end
 		def keywords
-			Keywords.from "#{@name} #{@longname} #{@synonyms}"
+			Keywords.from "#{name} #{longname} #{synonyms}"
 		end
 		def name=(value)
 			@name = value

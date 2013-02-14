@@ -133,6 +133,9 @@ module Gamefic
 			end
 			raise "Unrecognized method or entity \"#{symbol}\""
 		end
+		def passthru
+			Director::Delegate.passthru
+		end
 	end
 	module Narrative
 		include Direction
