@@ -1,16 +1,16 @@
 require "core/entities/room.rb"
 require "core/entities/portal.rb"
 
-action :go, NEARBY.reduce(Portal) do |actor, portal|
+action :go, query(:parent, Portal) do |actor, portal|
 	actor.parent = portal.destination
 	actor.tell "You go #{portal.name}."
 	actor.tell actor.parent.longname.upcase
 	actor.perform "itemize room"
 end
 
-action :go, STRING do |actor, string|
-	actor.tell "You don't see any exit \"#{string}\" from here."
-end
+#action :go, String do |actor, string|
+#	actor.tell "You don't see any exit \"#{string}\" from here."
+#end
 
 action :go do |actor|
 	actor.tell "Where do you want to go?"

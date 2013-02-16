@@ -17,7 +17,7 @@ module Gamefic
 			@arguments = arguments
 		end
 		def match(subject, keywords)
-			results = EntityArray.new
+			results = Searchable::SearchArray.new
 			if keywords == nil
 				return Response.new(results, '')
 			end
@@ -25,12 +25,12 @@ module Gamefic
 				if arg == String
 					return Matches.new([keywords], keywords, '')
 				elsif arg == Object
-					results = subject.story.entities
+					results = subject.root.children
 				elsif arg.class == Class or arg.class == Module
 					results = results.that_are(arg)
 				elsif arg.kind_of? Symbol
 					if (arg == :parent)
-						results = EntityArray.new
+						results = Searchable::SearchArray.new
 						results.push subject.parent
 					else
 						if subject.respond_to? arg
@@ -82,7 +82,7 @@ module Gamefic
 				end
 				if previous_match == false
 					# Scrolled through every word and not a single thing matched
-					results = EntityArray.new
+					results = Searchable::SearchArray.new
 				end
 			end
 			Matches.new(results, used.join(' '), keywords.join(' '))

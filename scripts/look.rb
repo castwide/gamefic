@@ -22,10 +22,10 @@ action :itemize_room do |actor|
 	end
 end
 
-action :look, ENVIRONMENT do |actor, thing|
+action :look, query(:parent) do |actor, thing|
 	actor.tell thing.description
 end
 
-action :look, STRING do |actor, string|
+action :look, String do |actor, string|
 	actor.tell "You don't see any \"#{string}\" here."
 end

@@ -9,9 +9,10 @@ end
 
 module Gamefic
 	story = Story.new
-	story.script(ARGV[0])
+	story.load(ARGV[0])
 	player = Player.new
 	player.name = "joejoe"
-	performance = Performance.new(story)
-	performance.introduce player
+	story.introduce player
+	game = Game.new
+	game.run(player)
 end

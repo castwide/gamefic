@@ -17,10 +17,10 @@ module Gamefic
 			used_names = Array.new
 			contexts.each { |c|
 				num = 1
-				new_name = "[#{c.description}]"
+				new_name = "[#{c.class}]"
 				while used_names.include? new_name
 					num = num + 1
-					new_name = "[#{c.description}#{num}]"
+					new_name = "[#{c.class}#{num}]"
 				end
 				used_names.push new_name
 				syntax = syntax + " #{new_name}"

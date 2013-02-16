@@ -1,11 +1,9 @@
 require "core/grammar.rb"
 require "core/keywords.rb"
 require "core/entity.rb"
-require "core/context.rb"
+#require "core/context.rb"
 require "core/action.rb"
 require "core/parser.rb"
-#require "core/delegate.rb"
-#require "core/commands.rb"
 require "core/director.rb"
 require "core/story.rb"
 
@@ -15,6 +13,12 @@ Dir["core/features/*.rb"].each { |file|
 Dir["core/entities/*.rb"].each { |file|
 	require file
 }
+
+class Array
+	def that_are(cls)
+		delete_if { |i| i.kind_of?(cls) == false }
+	end
+end
 
 module Gamefic
 

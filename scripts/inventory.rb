@@ -6,12 +6,12 @@ action :inventory do |actor|
 	end
 end
 
-action :take, NEARBY.reduce(Portable) do |actor, thing|
+action :take, query(:parent, Portable) do |actor, thing|
 	thing.parent = actor
 	actor.tell "You take #{thing.longname}."
 end
 
-action :drop, INVENTORY do |actor, thing|
+action :drop, query(:self) do |actor, thing|
 	thing.parent = actor.parent
 	actor.tell "You drop #{thing.longname}."
 end

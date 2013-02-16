@@ -3,18 +3,16 @@
 module Gamefic
 
 	class Keywords < Array
-		def Keywords.from(statement)
-			result = Keywords.new
-			if statement.kind_of?(Array)
-				result.concat statement
+		def initialize(statement = '')
+			if statement.kind_of?(Keywords)
+				self.concat statement
 			else
-				result = Keywords.new.concat statement.to_s.strip.downcase.split
+				self.concat statement.to_s.strip.downcase.split
 			end
-			result.delete_if { |w|
+			self.delete_if { |w|
 				w.length < 2 or w == 'an' or w == 'the'
 			}
-			result.uniq!
-			return result
+			self.uniq!
 		end
 		def found_in(other)
 			matches = 0.0
