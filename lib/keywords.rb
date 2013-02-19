@@ -7,7 +7,7 @@ module Gamefic
 			if statement.kind_of?(Keywords)
 				self.concat statement
 			else
-				self.concat statement.to_s.strip.downcase.split
+				self.concat statement.to_s.strip.downcase.split(' ')
 			end
 			self.delete_if { |w|
 				w.length < 2 or w == 'an' or w == 'the'

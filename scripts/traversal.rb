@@ -2,7 +2,7 @@ action :go, query(:siblings, Portal) do |actor, portal|
 	actor.parent = portal.destination
 	actor.tell "You go #{portal.name}."
 	actor.tell actor.parent.longname.upcase
-	actor.perform "itemize room"
+	actor.inject "itemize room"
 end
 
 action :go, String do |actor, string|

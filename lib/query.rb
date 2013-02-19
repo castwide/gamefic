@@ -57,8 +57,6 @@ module Gamefic
 				previous_match = false
 				while keywords.length > 0
 					used.push keywords.shift
-					#puts "Current test: #{used.join(' ')}"
-					#new_results = results.matching(used)
 					new_results = Array.new
 					mostMatches = 0.0
 					results.each { |r|
@@ -103,15 +101,15 @@ module Gamefic
 			if @specificity == nil
 				@specificity = 0
 				case @context
-					when :self
-						@specificity += 50
-					when :parent
-						@specificity += 40
 					when :children
-						@specificity += 30
+						@specificity += 50
 					when :family
-						@specificity += 20
+						@specificity += 40
 					when :siblings
+						@specificity += 30
+					when :parent
+						@specificity += 20
+					when :self
 						@specificity += 10
 					when :string
 						return 1

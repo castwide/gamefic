@@ -20,6 +20,7 @@ module Gamefic
 		end
 		def run
 			@last_tick = Time.new
+			@last_dec = 0
 			while true
 				resp = select(@descriptors, nil, nil, 0.001)
 				if (resp != nil)
@@ -46,13 +47,17 @@ module Gamefic
 					end
 				end
 				sleep( 0.001 )
-				diff = Time.new - @last_tick
+				diff = Time.new.to_f - @last_tick.to_f
+				if (diff * 10) % 10 >= @last_dec
+					@last_dec = @last_dec + 1
+					@users.each { |socket, user|
+						user.player.flush
+					}				
+				end
 				if diff >= 1.0
 					@story.update
-					@users.each { |socket, user|
-						user.player.perform user.queue.shift
-					}
 					@last_tick = Time.new
+					@last_dec = 0
 				end
 			end
 		end

@@ -55,11 +55,11 @@ module Gamefic
 		def prop(key, klass, args = {})
 			obj = klass.new(self)
 			obj.parent = self
-			obj.name = key.to_s.gsub(/_/, ' ')
-			args.each { |key, value|
-				obj.send("#{key}=", value)
-			}
 			@hashed_entities[key] = obj
+			obj.name = key.to_s.gsub(/_/, ' ')
+			args.each { |prop, value|
+				obj.send("#{prop}=", value)
+			}
 		end
 		def introduction (&proc)
 			@introduction = proc

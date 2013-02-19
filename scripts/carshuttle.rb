@@ -30,7 +30,7 @@ action :exit, query(:parent, Car) do |actor, car|
 	actor.parent = car.parent
 	actor.tell "You get out of #{car.longname}."
 	actor.tell actor.parent.longname.upcase
-	actor.perform "itemize room"
+	actor.inject "itemize room"
 end
 
 instruct("drive", :drive, "car")

@@ -1,7 +1,11 @@
 action :look do |actor|
 	actor.tell actor.parent.longname.upcase
 	actor.tell actor.parent.description
-	actor.perform "itemize room"
+	actor.inject "itemize room"
+end
+
+action :look_around do |actor|
+	actor.inject "look"
 end
 
 action :itemize_room do |actor|
@@ -27,7 +31,7 @@ action :look, query(:family) do |actor, thing|
 end
 
 action :look, query(:parent) do |actor, thing|
-	actor.perform "look"
+	actor.inject "look"
 end
 
 action :look, String do |actor, string|
