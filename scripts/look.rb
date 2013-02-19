@@ -22,8 +22,12 @@ action :itemize_room do |actor|
 	end
 end
 
-action :look, query(:parent) do |actor, thing|
+action :look, query(:family) do |actor, thing|
 	actor.tell thing.description
+end
+
+action :look, query(:parent) do |actor, thing|
+	actor.perform "look"
 end
 
 action :look, String do |actor, string|

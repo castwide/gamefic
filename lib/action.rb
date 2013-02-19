@@ -6,7 +6,7 @@ module Gamefic
 		attr_accessor :creation_order
 		def initialize(command, contexts, proc)
 			if (contexts.length + 1 != proc.arity) and (contexts.length == 0 and proc.arity != -1)
-				raise "Number of contexts is not compatible with proc arguments."
+				raise "Number of contexts is not compatible with proc arguments"
 			end
 			@command = command
 			@contexts = contexts
@@ -30,9 +30,15 @@ module Gamefic
 			@command
 		end
 		def specificity
-			spec = @contexts.length
+			spec = 0
+			magnitude = 1
 			@contexts.each { |c|
-				spec = spec + c.specificity
+				if c.kind_of?(Query)
+					spec += (c.specificity * magnitude)
+				else
+					spec += magnitude
+				end
+				magnitude = magnitude * 10
 			}
 			return spec
 		end

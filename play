@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
 
-require "core/game.rb"
+require "lib/game"
 
-if ARGV[0] == nil
-	puts "Game file required."
-	exit
+story = Gamefic::Story.new
+story.load ARGV[0]
+
+if ARGV[1] == 'tick'
+	require "lib/games/singletick"
+	game = Gamefic::SingleTick.new story
+	game.enroll Gamefic::SingleTick::User.new
+else
+	require "lib/games/singleturn"
+	game = Gamefic::SingleTurn.new story
+	game.enroll Gamefic::SingleTurn::User.new
 end
 
-module Gamefic
-	story = Story.new
-	story.load(ARGV[0])
-	player = Player.new
-	player.name = "joejoe"
-	story.introduce player
-	game = Game.new
-	game.run(player)
-end
+game.run

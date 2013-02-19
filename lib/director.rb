@@ -3,10 +3,10 @@ module Gamefic
 	class Director
 		def self.dispatch(actor, command)
 			command.strip!
-			statements = actor.root.instructions.parse(command)
+			statements = actor.story.instructions.parse(command)
 			options = Array.new
 			statements.each { |statement|
-				actions = actor.root.commands[statement.command]
+				actions = actor.story.commands[statement.command]
 				if actions != nil
 					actions.each { |action|
 						orders = bind_contexts_in_result(actor, statement, action)
@@ -47,10 +47,10 @@ module Gamefic
 				end
 				if context == String
 					prepared.push [arg]
-				elsif context == :parent
-					result = Query.match(arg, [actor.parent])
-				elsif context == :self
-					result = Query.match(arg, [actor])
+				#elsif context == :parent
+				#	result = Query.match(arg, [actor.parent])
+				#elsif context == :self
+				#	result = Query.match(arg, [actor])
 				elsif context.kind_of?(Query)
 					result = context.execute(actor, arg)
 					if result.objects.length == 0
@@ -58,6 +58,9 @@ module Gamefic
 						next
 					else
 						prepared.push result.objects
+						if result.remainder
+							arguments.push result.remainder
+						end
 					end
 				else
 					# TODO: Better message
@@ -98,7 +101,6 @@ module Gamefic
 				end
 				@@delegation_stack.pop
 			end
-			private
 			def self.passthru
 				if @@delegation_stack.last != nil
 					if @@delegation_stack.last.length > 0

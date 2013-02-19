@@ -2,17 +2,23 @@ module Gamefic
 
 	module Node
 		def children
-			@children ||= Array.new
+			if @children == nil
+				@children = Array.new
+			end
+			@children.clone
 		end
 		protected
 		def add_child(node)
-			children.push(node)
+			children
+			@children.push(node)
 		end
 		def rem_child(node)
-			children.delete(node)
+			children
+			@children.delete(node)
 		end
 		def concat_children(children)
-			children.concat(children)
+			children
+			@children.concat(children)
 		end
 	end
 	
@@ -28,8 +34,10 @@ module Gamefic
 
 	module Branch
 		include Node
+		#attr :root
 		def root
-			parent != nil ? parent.root : nil
+			#@root ? @root : (parent != nil ? parent.root : nil)
+			@parent.root
 		end
 		def parent
 			@parent

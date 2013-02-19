@@ -2,10 +2,10 @@ module Gamefic
 
 	class Portal < Entity
 		attr_writer :destination
-		def initialize
-			super
-			@destination = nil
-		end
+		#def initialize
+		#	super
+		#	@destination = nil
+		#end
 		def self.reverse(direction)
 			case direction.downcase
 				when "north"
@@ -29,7 +29,7 @@ module Gamefic
 				when "down"
 					"up"
 				else
-					"opposite of #{direction}"
+					nil
 			end
 		end
 		def destination

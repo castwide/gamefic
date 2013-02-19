@@ -6,12 +6,27 @@ action :inventory do |actor|
 	end
 end
 
-action :take, query(:parent, Portable) do |actor, thing|
+action :take, query(:siblings, Portable) do |actor, thing|
 	thing.parent = actor
 	actor.tell "You take #{thing.longname}."
 end
 
-action :drop, query(:self) do |actor, thing|
+action :take, query(:siblings) do |actor, thing|
+	actor.tell "You can't carry #{thing.longname}."
+end
+
+action :take, String do |actor, thing|
+	actor.tell "You don't see anything called \"#{thing}\" here."
+end
+
+action :drop, query(:children) do |actor, thing|
 	thing.parent = actor.parent
 	actor.tell "You drop #{thing.longname}."
 end
+
+instruct "get [thing]", :take, "[thing]"
+instruct "pick [thing] up", :take, "[thing]"
+instruct "pick up [thing]", :take, "[thing]"
+
+instruct "put down [thing]", :drop, "[thing]"
+instruct "put [thing] down", :drop, "[thing]"

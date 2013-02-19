@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require "lib/game.rb"
+require "lib/games/multitick"
+
+#story = Gamefic::Story.new
+#story.load ARGV[0]
+#game = Gamefic::MultiTick.new story
+#game.run
+
+series = Gamefic::Series.instance
+series.load ARGV[0]
+game = Gamefic::MultiTick.new series
+game.run
