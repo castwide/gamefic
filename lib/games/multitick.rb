@@ -12,7 +12,8 @@ module Gamefic
 		end
 		def enroll(user)
 			@users[user.socket] = user
-			player = Player.new @story
+			player = Player.new
+			player.parent = @story
 			player.name = "player"
 			player.connect user
 			@story.introduce player

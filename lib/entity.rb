@@ -1,39 +1,21 @@
 require "lib/node"
+require "lib/describable"
 
 module Gamefic
 	
 	class Entity
 		include Branch
-		attr_reader :longname, :parent
-		attr_accessor :name, :synonyms
-		def initialize(root, args = {})
-			@root = root
+		include Describable
+		def initialize(args = {})
+			self.state = State
 			args.each { |key, value|
-				if respond_to?("#{key}=")
-					send "#{key}=", value
-				end
+				send "#{key}=", value
 			}
 			@update_procs = Array.new
-			self.state = State
 			post_initialize
 		end
 		def post_initialize
 			# raise NotImplementedError, "#{self.class} must implement this method"
-		end
-		def keywords
-			Keywords.new "#{name} #{longname} #{synonyms}"
-		end
-		def longname
-			@longname.to_s != '' ? @longname : name
-		end
-		def longname=(value)
-			@longname = value
-		end
-		def description
-			@description.to_s != '' ? @description : "Nothing special."
-		end
-		def description=(value)
-			@description = value
 		end
 		def tell(message)
 			#TODO: Should this even be here? In all likelihood, only Characters receive tells, right?

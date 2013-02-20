@@ -7,6 +7,12 @@ module Gamefic
 			end
 			@children.clone
 		end
+		def flatten
+			array = Array.new
+			array.each { |child|
+				array = array + recurse_flatten(child)
+			}
+		end
 		protected
 		def add_child(node)
 			children
@@ -19,6 +25,15 @@ module Gamefic
 		def concat_children(children)
 			children
 			@children.concat(children)
+		end
+		private
+		def recurse_flatten(node)
+			array = Array.new
+			array.push(node)
+			node.children.each { |child|
+				array = array + recurse_flatten(node)
+			}
+			return array
 		end
 	end
 	
@@ -34,9 +49,7 @@ module Gamefic
 
 	module Branch
 		include Node
-		#attr :root
 		def root
-			#@root ? @root : (parent != nil ? parent.root : nil)
 			@parent.root
 		end
 		def parent

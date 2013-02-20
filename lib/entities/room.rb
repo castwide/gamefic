@@ -7,13 +7,13 @@ module Gamefic
 		
 		end
 		def connect(destination, direction, type = Portal, two_way = true)
-			portal = type.new(root, {
+			portal = type.new({
 				:name => direction,
 				:parent => self,
 				:destination => destination
 			})
 			if two_way == true
-				portal = type.new(root, {
+				portal = type.new({
 					:name => Portal.reverse(direction),
 					:parent => destination,
 					:destination => self
