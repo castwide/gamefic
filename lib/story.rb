@@ -1,22 +1,19 @@
 require "singleton"
 require "lib/node.rb"
-require "lib/script.rb"
 require "lib/query.rb"
 require "lib/director"
 
 module Gamefic
 
 	class Story < Root
-		include Scriptable
 		attr_reader :scenes, :instructions, :commands, :conclusions
 		def initialize
 			super
-			@@current = self
 			@scenes = Hash.new
 			@commands = Hash.new
 			@instructions = InstructionArray.new
 			@conclusions = Hash.new
-			@hashed_entities = Hash.new
+			#@hashed_entities = Hash.new
 			@update_procs = Array.new
 		end
 		def on_update(&block)
@@ -52,15 +49,6 @@ module Gamefic
 				b.syntax.split.length <=> a.syntax.split.length
 			}
 		end
-		def prop(key, klass, args = {})
-			obj = klass.new(self)
-			obj.parent = self
-			@hashed_entities[key] = obj
-			obj.name = key.to_s.gsub(/_/, ' ')
-			args.each { |prop, value|
-				obj.send("#{prop}=", value)
-			}
-		end
 		def introduction (&proc)
 			@introduction = proc
 		end
@@ -69,9 +57,6 @@ module Gamefic
 		end
 		def scene(key, &proc)
 			@scenes[key] = proc
-		end
-		def script_commands
-			@script_commands
 		end
 		def introduce(player)
 			player.story = self
@@ -101,11 +86,10 @@ module Gamefic
 				recursive_update e
 			}
 		end
-		def method_missing(symbol, *arguments)
-			if @hashed_entities.has_key?(symbol)
-				@hashed_entities[symbol]
-			else
-				raise "Undeclared entity '#{symbol}'"
+		def load filename
+			story = self
+			File.open(filename) do |file|
+				eval(file.read, nil, filename, 1)
 			end
 		end
 		private
@@ -131,9 +115,6 @@ module Gamefic
 		end
 		def episodes
 			@episodes
-		end
-		def root_with_episodes(entity)
-		
 		end
 		class RootWithEpisodes < Story
 			def initialize(entity)
