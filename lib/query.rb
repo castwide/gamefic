@@ -4,7 +4,7 @@ module Gamefic
 
 	class Query
 		def initialize(context, arguments)
-			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :root and Query != :string
+			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :root and context != :string
 				raise "Query context must be :family, :children, :siblings, :parent, :self, :root, or :string"
 			end
 			if context == :string and arguments.length > 0
@@ -20,7 +20,7 @@ module Gamefic
 				when :parent
 					array = [subject.parent]
 				when :root
-					array = subject.root.children
+					array = subject.root.flatten
 				when :children
 					array = subject.children
 				when :siblings
@@ -93,8 +93,6 @@ module Gamefic
 					results = Array.new
 				end
 			end
-			#puts "Final results: #{results.length}"
-			#puts "Remainder: #{keywords.join(' ')}"
 			return Matches.new(results, used.join(' '), keywords.join(' '))
 		end
 		def specificity
@@ -102,17 +100,20 @@ module Gamefic
 				@specificity = 0
 				case @context
 					when :children
-						@specificity += 50
+						@specificity += 60
 					when :family
-						@specificity += 40
+						@specificity += 50
 					when :siblings
+						@specificity += 40
+					when :extended_family
 						@specificity += 30
 					when :parent
 						@specificity += 20
 					when :self
 						@specificity += 10
 					when :string
-						return 1
+						@specificity = 1
+						return @specificity
 				end
 				magnitude = 1
 				@arguments.each { |item|
@@ -144,4 +145,8 @@ module Gamefic
 		end
 	end
 
+	class Subquery < Query
+	
+	end
+	
 end
