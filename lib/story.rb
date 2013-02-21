@@ -6,15 +6,15 @@ require "lib/director"
 module Gamefic
 
 	class Story < Root
-		attr_reader :scenes, :instructions, :commands, :conclusions
+		attr_reader :scenes, :instructions, :commands, :conclusions, :declared_scripts
 		def initialize
 			super
 			@scenes = Hash.new
 			@commands = Hash.new
 			@instructions = InstructionArray.new
 			@conclusions = Hash.new
-			#@hashed_entities = Hash.new
 			@update_procs = Array.new
+			@declared_scripts = Array.new
 		end
 		def on_update(&block)
 			@update_procs.push block
@@ -89,10 +89,25 @@ module Gamefic
 				recursive_update e
 			}
 		end
+		# Load a script into the story. Return true on success.
 		def load filename
 			story = self
 			File.open(filename) do |file|
 				eval(file.read, nil, filename, 1)
+			end
+			true
+		end
+		# Load a script once per story. Return true on success or false if the script has already been loaded.
+		def declare filename
+			if @declared_scripts.include?(filename) == false
+				story = self
+				File.open(filename) do |file|
+					eval(file.read, nil, filename, 1)
+				end
+				@declared_scripts.push filename
+				true
+			else
+				false
 			end
 		end
 		private
@@ -133,6 +148,7 @@ module Gamefic
 		end
 	end
 
+	# Episodes inherit content from the Series.
 	class Episode < Story
 		def initialize
 			super
@@ -141,6 +157,7 @@ module Gamefic
 			@concluded = Array.new
 			@commands = Series.instance.commands.clone
 			@instructions = Series.instance.instructions.clone
+			@declared_scripts = Series.instance.declared_scripts.clone
 		end
 		def featuring
 			@featuring.clone
@@ -149,34 +166,30 @@ module Gamefic
 			@featuring.include? entity
 		end
 		def introduce(player)
+			# When players join the story, make them Featurable so they can still access entities from the Series.
 			player.extend Featurable
 			@featuring.push player
 			super
 		end
 		def conclude(key, player)
 			super
-			#@featuring.delete player
 			@concluded.push player
-			#if @featuring.length == 0
-			#	Series.instance.episodes.delete self
-			#end
 		end
 		def update
 			super
 			@concluded.each { |player|
 				if player.parent.root == Series.instance
-					puts "Removing concluded player"
 					@featuring.delete player
 				end
 			}
 			if @concluded.length > 0 and @featuring.length == 0
-				puts "Deleting episode"
 				Series.instance.episodes.delete self
 			end
 		end
 	end
 	
 	module Featurable
+		# Access entities in the Series and all episodes featuring this entity.
 		def root
 			Series::RootWithEpisodes.new self
 		end
