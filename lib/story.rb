@@ -75,6 +75,9 @@ module Gamefic
 		def query(context, *arguments)
 			Query.new(context, arguments)
 		end
+		def subquery(context, *arguments)
+			Subquery.new(context, arguments)
+		end
 		def passthru
 			Director::Delegate.passthru
 		end
