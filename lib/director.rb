@@ -15,20 +15,27 @@ module Gamefic
 							args.push actor
 							order.arguments.each { |a|
 								if a.length > 1
-									actor.tell "I don't know which you mean: #{a.join(', ')}"
+									longnames = Array.new
+									a.each { |b|
+										longnames.push b.longname
+									}
+									actor.tell "I don't know which you mean: #{longnames.join(', ')}"
 									return
 								end
 								args.push a[0]
 							}
-							options.push [order.action.proc, args]
+							options.push [order.action.proc, args, order.action.specificity]
 						}
 					}
 				end
 			}
+			options.sort! { |a,b|
+				b[2] <=> a[2]
+			}
 			options.push([
 				Proc.new { |actor|
 					actor.tell "I don't know what you mean by '#{command}.'"
-				}, [actor]
+				}, [actor], -1
 			])
 			del = Delegate.new(options)
 			del.execute
@@ -52,7 +59,16 @@ module Gamefic
 				#elsif context == :self
 				#	result = Query.match(arg, [actor])
 				elsif context.kind_of?(Query)
-					result = context.execute(actor, arg)
+					if context.kind_of?(Subquery)
+						last = prepared[prepared.length - 1]
+						if last == nil or last.length > 1
+							valid = false
+							next
+						end
+						result = context.execute(last[0], arg)
+					else
+						result = context.execute(actor, arg)
+					end
 					if result.objects.length == 0
 						valid = false
 						next
