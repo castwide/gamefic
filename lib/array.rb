@@ -9,7 +9,9 @@ class Array
 		return self[rand(self.length)]
 	end
 	def shuffle
-		self.clone.shuffle
+		self.sort { |a, b|
+			rand(3) <=> rand(3)
+		}
 	end
 	def shuffle!
 		self.sort! { |a, b|
