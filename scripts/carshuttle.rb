@@ -1,14 +1,22 @@
 require "libx/carshuttle.rb"
 
+action :drive, query(:string) do |actor, string|
+	if actor.parent.kind_of?(Car)
+		actor.tell "I don't know any destination called \"#{string}.\""
+	else
+		actor.tell "You're not in a car."
+	end
+end
+
 action :drive, query(:parent, Car), String do |actor, string|
 	actor.tell "Where do you want to go?"
-	passthru
+	actor.inject "drive"
 end
 
 action :drive, query(:parent, Car) do |actor, car|
 	actor.tell "Available destinations:"
-	actor.root.children.that_are(Waypoint).each { |waypoint|
-		actor.tell "#{waypoint.location}"
+	actor.root.flatten.that_are(Waypoint).each { |waypoint|
+		actor.tell "#{waypoint.location.cap_first}"
 	}
 end
 
