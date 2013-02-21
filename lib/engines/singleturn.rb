@@ -1,5 +1,7 @@
+require "lib/engine"
+
 module Gamefic
-	class SingleTurn < Game
+	class SingleTurn < Engine
 		attr_reader :story
 		def initialize(story)
 			@story = story

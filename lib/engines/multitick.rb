@@ -1,7 +1,8 @@
+require "lib/engine"
 require "socket"
 
 module Gamefic
-	class MultiTick < Game
+	class MultiTick < Engine
 		attr_reader :story
 		def initialize(story)
 			@story = story
@@ -83,7 +84,7 @@ module Gamefic
 			def recv
 				#@queue.shift
 			end
-			class Play < Game::User::State
+			class Play < Engine::User::State
 				def post_initialize
 					# nothing to do
 				end

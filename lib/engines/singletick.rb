@@ -1,43 +1,24 @@
-require "lib/grammar.rb"
-require "lib/keywords.rb"
-require "lib/entity.rb"
-require "lib/action.rb"
-require "lib/parser.rb"
-require "lib/director.rb"
-require "lib/story.rb"
-
-Dir["lib/features/*.rb"].each { |file|
-	require file
-}
-Dir["lib/entities/*.rb"].each { |file|
-	require file
-}
-
-class Array
-	def that_are(cls)
-		return self.clone.delete_if { |i| i.kind_of?(cls) == false }
-	end
-end
+require "lib/engine"
 
 module Gamefic
-	class Game
+	class SingleTick < Engine
 		attr_reader :story
 		def initialize(story)
 			@story = story
 		end
 		def enroll(user)
 			@user = user
-			@player = Player.new @story
+			@player = Player.new
+			@player.parent = @story
 			@player.name = "player"
 			@player.connect user
 			@story.introduce @player
 		end
 		def run
 			while true
-				#line = STDIN.gets.strip
-				#@player.perform line
-				@player.update
 				@story.update
+				@player.perform @user.recv
+				sleep 1
 			end
 		end
 		class User
@@ -55,7 +36,10 @@ module Gamefic
 				send "#{message}\n"
 			end
 			def recv
-				return STDIN.gets.strip
+				resp = select([STDIN], nil, nil, 0.01)
+				if resp != nil
+					return STDIN.gets.strip
+				end
 			end
 			class State
 				attr_reader :user
@@ -72,7 +56,7 @@ module Gamefic
 			end
 			class Play < State
 				def post_initialize
-					user.send ">"
+					puts "post_initialize"
 				end
 				def update
 					puts "Nothing to do here, really?"

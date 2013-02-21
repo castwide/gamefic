@@ -1,22 +1,39 @@
+require "lib/array.rb"
+require "lib/string.rb"
+require "lib/keywords.rb"
+require "lib/entity.rb"
+require "lib/zone.rb"
+require "lib/action.rb"
+require "lib/parser.rb"
+require "lib/director.rb"
+require "lib/story.rb"
+
+Dir["lib/features/*.rb"].each { |file|
+	require file
+}
+Dir["lib/entities/*.rb"].each { |file|
+	require file
+}
+
 module Gamefic
-	class SingleTick < Game
+	class Engine
 		attr_reader :story
 		def initialize(story)
 			@story = story
 		end
 		def enroll(user)
 			@user = user
-			@player = Player.new
-			@player.parent = @story
+			@player = Player.new @story
 			@player.name = "player"
 			@player.connect user
 			@story.introduce @player
 		end
 		def run
 			while true
+				#line = STDIN.gets.strip
+				#@player.perform line
+				@player.update
 				@story.update
-				@player.perform @user.recv
-				sleep 1
 			end
 		end
 		class User
@@ -34,10 +51,7 @@ module Gamefic
 				send "#{message}\n"
 			end
 			def recv
-				resp = select([STDIN], nil, nil, 0.01)
-				if resp != nil
-					return STDIN.gets.strip
-				end
+				return STDIN.gets.strip
 			end
 			class State
 				attr_reader :user
@@ -54,7 +68,7 @@ module Gamefic
 			end
 			class Play < State
 				def post_initialize
-					puts "post_initialize"
+					user.send ">"
 				end
 				def update
 					puts "Nothing to do here, really?"
