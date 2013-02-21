@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require "lib/game.rb"
-require "lib/games/multitick"
+require "lib/engines/multitick"
 
 #story = Gamefic::Story.new
 #story.load ARGV[0]

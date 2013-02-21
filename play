@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 
-require "lib/game"
+require "lib/engine"
 
 story = Gamefic::Story.new
 story.load ARGV[0]
 
 if ARGV[1] == 'tick'
-	require "lib/games/singletick"
+	require "lib/engines/singletick"
 	game = Gamefic::SingleTick.new story
 	game.enroll Gamefic::SingleTick::User.new
 else
-	require "lib/games/singleturn"
+	require "lib/engines/singleturn"
 	game = Gamefic::SingleTurn.new story
 	game.enroll Gamefic::SingleTurn::User.new
 end
