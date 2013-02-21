@@ -9,9 +9,10 @@ module Gamefic
 		end
 		def flatten
 			array = Array.new
-			array.each { |child|
+			@children.each { |child|
 				array = array + recurse_flatten(child)
 			}
+			return array
 		end
 		protected
 		def add_child(node)
@@ -31,7 +32,7 @@ module Gamefic
 			array = Array.new
 			array.push(node)
 			node.children.each { |child|
-				array = array + recurse_flatten(node)
+				array = array + recurse_flatten(child)
 			}
 			return array
 		end
