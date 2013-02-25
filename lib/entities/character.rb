@@ -2,7 +2,6 @@ module Gamefic
 
 	class Character < Entity
 		attr_reader :state, :queue, :user
-		attr_accessor :story
 		def post_initialize
 			self.state = Ready
 			@queue = Array.new

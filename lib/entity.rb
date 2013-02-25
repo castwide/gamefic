@@ -7,12 +7,15 @@ module Gamefic
 	class Entity
 		include Branch
 		include Describable
+		attr_accessor :story
+		attr_reader :session
 		def initialize(args = {})
 			self.state = State
 			args.each { |key, value|
 				send "#{key}=", value
 			}
 			@update_procs = Array.new
+			@session = Hash.new
 			post_initialize
 		end
 		def uid
@@ -29,7 +32,7 @@ module Gamefic
 			#TODO: On second thought, it might be interesting to see logs from an npc point of view.
 		end
 		def to_s
-			@name
+			name
 		end
 		def state
 			@state.class
@@ -45,6 +48,16 @@ module Gamefic
 		end
 		def on_update(&block)
 			@update_procs.push block
+		end
+		def parent=(node)
+			super
+			if @story == nil
+				@story = parent.story
+			end
+		end
+		def destroy
+			# TODO: We'll have to do more than nullify the parent.
+			parent = nil
 		end
 		class State
 			attr_reader :character
