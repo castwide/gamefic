@@ -21,9 +21,9 @@ module Gamefic
 			end
 			self
 		end
-		def tell(message)
+		def tell(message, refresh = false)
 			children.each { |c|
-				c.tell message
+				c.tell message, refresh
 			}
 		end
 	end

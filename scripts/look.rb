@@ -1,14 +1,16 @@
 action :look do |actor|
-	actor.tell actor.parent.longname.upcase
-	actor.tell actor.parent.description
-	actor.inject "itemize room"
+	actor.inject "itemize room full"
 end
 
 action :look_around do |actor|
 	actor.inject "look"
 end
 
-action :itemize_room do |actor|
+action :itemize_room, query(:string) do |actor, option|
+	actor.tell "@ #{actor.parent.longname.cap_first}"
+	if option == "full"
+		actor.tell actor.parent.description
+	end
 	chars = actor.parent.children.that_are(Character) - [actor]
 	if chars.length > 0
 		actor.tell "Others here: #{chars.join(", ")}"
@@ -25,6 +27,7 @@ action :itemize_room do |actor|
 		actor.tell "Obvious exits: none"	
 	end
 end
+instruct "itemize room", :itemize_room, "short"
 
 action :look, query(:family) do |actor, thing|
 	actor.tell thing.description
@@ -37,3 +40,5 @@ end
 action :look, String do |actor, string|
 	actor.tell "You don't see any \"#{string}\" here."
 end
+
+instruct "look at [thing]", :look, "[thing]"

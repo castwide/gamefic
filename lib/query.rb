@@ -50,6 +50,11 @@ module Gamefic
 			@context
 		end
 		def self.match(description, array)
+			array.each {|e|
+				if e.uid == description
+					return Matches.new([e], description, '')
+				end
+			}
 			keywords = description.split_words
 			results = array
 			used = Array.new
@@ -100,12 +105,10 @@ module Gamefic
 				@specificity = 0
 				case @context
 					when :children
-						@specificity += 60
-					when :family
 						@specificity += 50
 					when :siblings
 						@specificity += 40
-					when :extended_family
+					when :family
 						@specificity += 30
 					when :parent
 						@specificity += 20

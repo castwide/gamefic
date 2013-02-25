@@ -8,7 +8,8 @@ end
 
 action :take, query(:siblings, Portable) do |actor, thing|
 	thing.parent = actor
-	actor.tell "You take #{thing.longname}."
+	actor.tell "You take #{thing.longname}.", true
+	tell (actor.parent.children - [actor]), "#{actor.longname} takes #{thing.longname}.", true
 end
 
 action :take, query(:siblings) do |actor, thing|
@@ -21,7 +22,8 @@ end
 
 action :drop, query(:children) do |actor, thing|
 	thing.parent = actor.parent
-	actor.tell "You drop #{thing.longname}."
+	actor.tell "You drop #{thing.longname}.", true
+	tell (actor.parent.children - [actor]), "#{actor.longname} drops #{thing.longname}.", true
 end
 
 instruct "get [thing]", :take, "[thing]"

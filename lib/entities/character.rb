@@ -25,21 +25,24 @@ module Gamefic
 		def inject(command)
 			Director.dispatch(self, command)
 		end
-		def tell(message)
+		def tell(message, refresh = false)
 			if user != nil and message.to_s != ''
 				user.puts message
-			end
-		end
-		def flush
-			@state.flush
-		end
-		class Ready < State
-			def flush
-				command = @entity.user.queue.shift
-				if command != nil
-					Director.dispatch(@entity, command)
+				if (refresh == true)
+					user.refresh
 				end
 			end
+		end
+		#def flush
+		#	@state.flush
+		#end
+		class Ready < State
+			#def flush
+			#	command = @entity.user.queue.shift
+			#	if command != nil
+			#		Director.dispatch(@entity, command)
+			#	end
+			#end
 			def update
 				command = @entity.queue.shift
 				if command != nil

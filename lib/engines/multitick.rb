@@ -15,7 +15,7 @@ module Gamefic
 			@users[user.socket] = user
 			player = Player.new
 			player.parent = @story
-			player.name = "player"
+			player.name = "player #{Time.new.usec}"
 			player.connect user
 			@story.introduce player
 			user.player = player
@@ -36,14 +36,23 @@ module Gamefic
 						else
 							req = s.recv(255)
 							if (req == '')
-								puts ("Disconnecting user")
-								s.close
-								@descriptors.delete(s)
-								@users.delete(s)
+								begin
+									s.send "ERROR: Empty message.\n", 0
+								rescue
+									puts ("Disconnecting user")
+									s.close
+									@descriptors.delete(s)
+									@users.delete(s)
+								end
 							else
-								puts "Command received: #{req}"
-								@users[n].queue.push req
-								#@users[n].player.perform req
+								if req.strip == '^ping'
+									s.send "^pong\n", 0
+								elsif req.strip == '^refresh'
+									@users[s].check_for_refresh = true
+								else
+									lines = req.strip.split("\n")
+									@users[s].queue.concat lines
+								end
 							end
 						end
 					end
@@ -53,8 +62,16 @@ module Gamefic
 				if (diff * 10) % 10 >= @last_dec
 					@last_dec = @last_dec + 1
 					@users.each { |socket, user|
-						user.player.flush
-					}				
+						if user.player.state.class == Gamefic::Character::Ready
+							while user.queue.length > 0
+								command = user.queue.shift
+								Director.dispatch(user.player, command)
+								if user.player.state != Character::Ready
+									break
+								end
+							end
+						end
+					}
 				end
 				if diff >= 1.0
 					@story.update
@@ -64,18 +81,19 @@ module Gamefic
 			end
 		end
 		class User
-			attr_accessor :state, :name, :socket, :queue, :player
+			attr_accessor :state, :name, :socket, :queue, :player, :check_for_refresh
 			def initialize(socket, state_class = Play)
 				@socket = socket
 				self.state = state_class
 				@queue = Array.new
+				@check_for_updates = true
 			end
 			def state=(state_class)
 				@state = state_class.new(self)
 			end
 			def send(message)
 				if @socket.closed? == false
-					@socket.send "#{message}\0", 0
+					@socket.send "#{message}", 0
 				end
 			end
 			def puts(message)
@@ -83,6 +101,11 @@ module Gamefic
 			end
 			def recv
 				#@queue.shift
+			end
+			def refresh
+				if @check_for_refresh
+					puts "^refresh"
+				end
 			end
 			class Play < Engine::User::State
 				def post_initialize

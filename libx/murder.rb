@@ -1,4 +1,5 @@
-require "libx/randomcharacters"
+#require "libx/randomcharacters"
+require "libx/personified.rb"
 
 # PARTS OF A MURDER CASE
 #  Victim
@@ -35,21 +36,29 @@ module Gamefic
 	class Murder < Episode
 		attr_reader :randchar, :victim, :killer, :suspects
 		def initialize
+			# Initialize @suspects first so the children method won't fail
+			@suspects = Array.new
 			super
 			declare "scripts/inventory.rb"
-			@randchar = RandomCharacters.new
+			declare "scripts/container.rb"
+
 			# Here are the things we need for a mystery
 			@victim = Victim.new self
 			@victim.zone.parent = self
 			@killer = Suspect.new self
-			@suspects = Array.new
 			@suspects.push @killer
-			# TODO: Create more suspects (maybe between 2 and 5 in addition to killer)
 			@suspects.push Suspect.new(self)
+			@suspects.push Suspect.new(self)
+			@suspects.push Suspect.new(self)
+			@suspects.shuffle!
+			@clues = Array.new
 			add_instant_leads
 			# TODO: Other types of leads.
-			# TODO: Clues.
 			# ...
+			add_strong_clues
+			# TODO: Other types of clues.
+			# ...
+			add_alibis
 			# Add the victim's zone to the story
 			@victim.zone.parent = self
 			action :look, query(:family, InstantLead) do |actor, lead|
@@ -59,96 +68,319 @@ module Gamefic
 			end
 			# Actions and Instructions
 			action :solve do |actor|
-				actor.tell "The killer is #{@killer.name}."
+				actor.tell "The killer is #{@killer.proper_name}."
+				actor.tell "The first suspect is #{@suspects[0].proper_name}."
 			end
-			action :search, query(:family, Container) do |actor, container|
-				if container.children.length == 0
-					actor.tell "You don't find anything."
+			action "^review".to_sym, query(:root, Suspect) do |actor, suspect|
+				actor.tell "+--"
+				actor.inject "review #{suspect.uid}"
+				actor.tell "---"
+			end
+			action :review, query(:root, Suspect) do |actor, suspect|
+				if suspect.known?
+					actor.tell "#{suspect.name}"
+					#clues = @clues.clone
+					#clues.delete_if { |c| c.suspect != suspect }
+					clues = actor.children.that_are(Clue)
+					clues = clues + @clues.clone.delete_if { |c| c.analyzed? == false }
+					clues.uniq!
+					if clues.length == 0
+						actor.tell "You don't have any clues for this suspect yet."
+					else
+						actor.tell "Clues:"
+						clues.each { |c|
+							actor.tell "#{c.longname}: #{c.analyzed? ? (suspect == killer ? 'CONFIRMED' : 'negative') : 'analysis pending'}"
+						}
+					end
+					if suspect.alibi_status == Suspect::ALIBI_UNKNOWN
+						actor.tell "Alibi: unknown"
+					else
+						actor.tell "Alibi: #{suspect.alibi.longname} (#{suspect.alibi_status})"
+					end
 				else
-					actor.tell "You find: #{container.children.join(', ')}"
+					passthru
 				end
 			end
-			action :take_from, query(:family, Container), subquery(:children, Portable) do |actor, container, item|
-				actor.tell "You take #{item.longname} from #{container.longname}."
-				item.parent = actor
+			action "^review_case".to_sym do |actor|
+				actor.tell "+--"
+				actor.inject "review case"
+				@suspects.each { |s|
+					if s.known?
+						actor.tell "`^review #{s.uid}` (review #{s.longname})"
+					end
+				}
+				actor.tell "---"
 			end
-			instruct "take [item] from [container]", :take_from, "[container] [item]"
-			instruct "get [item] from [container]", :take_from, "[container] [item]"
+			action :review, query(:string) do |actor, string|
+				# TODO: This is a terrible wart. 
+				if string == "case"
+					passthru
+				else
+					actor.tell "You don't know a suspect named #{string}."
+				end
+			end
+			action :review_case do |actor|
+				actor.tell "Victim: #{@victim.proper_name}"
+				actor.tell "Cause of death: gunshot"
+				known = Array.new
+				@suspects.each { |suspect|
+					if suspect.known?
+						known.push "#{suspect.proper_name} #{suspect.located? ? '(located)' : '(address unkown)'}"
+					end
+				}
+				actor.tell "Known suspects: #{known.length > 0 ? known.join(', ') : 'none'}"
+			end
+			instruct "review case", :review_case, ""
+			action :accuse, query(:siblings, Character) do |actor, suspect|
+				clues = actor.children.that_are(Clue)
+				clues = clues + @clues.clone.delete_if { |c| c.analyzed? == false }
+				clues.uniq!
+				clues.delete_if{ |c| c.suspect != suspect }
+				# TODO: Might require 3 pieces of evidence.
+				evidence = clues.length
+				if suspect.alibi_status == Suspect::ALIBI_FAKE
+					evidence += 1
+				end
+				if evidence < 2
+					actor.tell "You don't have enough evidence to accuse #{suspect}."
+				else
+					if suspect == @killer
+						conclude :solved, actor
+					else
+						conclude :unsolved, actor
+					end
+				end
+			end
+			action :ask_alibi, query(:siblings, Suspect) do |actor, suspect|
+				actor.tell "#{suspect.longname.cap_first} claims to have been with #{suspect.alibi.proper_name} at the time of the murder."
+				suspect.alibi_requested
+				suspect.alibi.know
+			end
+			action :ask_alibi, query(:siblings, Character) do |actor, suspect|
+				actor.tell "#{suspect.longname.cap_first} is not a suspect in anything."
+			end
+			action :ask, query(:siblings, Suspect), query(:root, Suspect) do |actor, suspect, subject|
+				if suspect != subject
+					actor.tell "#{suspect.name} happily tells you where to find #{subject.proper_name}."
+					subject.locate
+				end
+			end
+			action :ask, query(:siblings, Suspect), query(:root, @victim) do |actor, suspect, victim|
+				# TODO: We can do better.
+				lead = @suspects.random
+				actor.tell "#{suspect.proper_name} gives you a lead: #{lead.proper_name}."
+				lead.know
+				lead.locate
+			end
+			instruct "ask [person] about alibi", :ask_alibi, "[person]"
+			instruct "ask [person] for alibi", :ask_alibi, "[person]"
+			instruct "ask [suspect] about [other]", :ask, "[suspect] [other]"
+			action :resign do |actor|
+				conclude :resigned, actor
+			end
+			action "^look".to_sym, query(:siblings, Suspect) do |actor, suspect|
+				actor.tell "+--"
+				actor.tell "# #{suspect.proper_name}"
+				actor.tell "#{suspect.description}"
+				actor.tell "`review #{suspect.uid}` (Review notes about suspect)"
+				if suspect.alibi_status == Suspect::ALIBI_UNKNOWN
+					actor.tell "`ask #{suspect.uid} for alibi` (Ask for suspect's alibi)"
+				end
+				actor.tell "`ask #{suspect.uid} about #{@victim.uid}` (Ask about the victim)"
+				@suspects.that_are_not(suspect).each { |other|
+					if other.known?
+						actor.tell "`ask #{suspect.uid} about #{other.uid}` (Ask about #{other.longname})"
+					end
+				}
+				actor.tell "`accuse #{suspect.uid}` (Accuse the suspect)"
+				actor.tell "---"
+			end
+			action "^resign".to_sym do |actor|
+				actor.tell "+--"
+				actor.inject "resign"
+				actor.tell "---"
+			end
 			introduction do |actor|
-				actor.tell "You are now investigating the murder of #{victim.name}."
+				actor.tell "You've been assigned to investigate the murder of #{victim.proper_name}. Get started by visiting the crime scene."
 			end
+			conclusion :solved do |actor|
+				actor.tell "You solved the case!"
+			end
+			conclusion :unsolved do |actor|
+				actor.tell "You accused the wrong suspect."
+			end
+			conclusion :resigned do |actor|
+				actor.tell "You resigned from the case."
+			end
+		end
+		def children
+			(super + @suspects)
 		end
 		private
 		def add_instant_leads
 			lead_sources = @suspects.shuffle
 			lead_subjects = @suspects.shuffle
 			# TODO: Victim should always have an InstantLead, but they should be optional in suspect's zones (i.e., % chance)
+			options = [
+				{ :name => 'business card', :longname => 'a business card', :description => 'A business card listing an office address for ' },
+				{ :name => 'scrap of paper', :longname => 'a scrap of paper', :description => 'The scrap lists an address for ' },
+				{ :name => 'envelope', :longname => 'an envelope', :description => 'The return address belongs to ' },
+				{ :name => 'contract', :longname => 'a contract', :description => 'A contract signed by '},
+				{ :name => 'postcard', :longname => 'a postcard', :synonyms => 'card', :description => 'A postcard from '}
+			]
+			options.shuffle!
 			([@victim] + lead_sources).each { |source|
+				option = options.shift
 				subject = lead_subjects.clone.delete_if{ |s| s == source }.shift
 				containers = source.zone.flatten.that_are(Container)
 				if subject != nil and containers.length > 0
 					# TODO: Randomize the type of instant lead (business card, letter, paycheck, etc.)
-					lead = InstantLead.new :name => "business card", :longname => "#{subject.name}'s business card", :description => "A business card listing an office address for #{subject.name}.", :parent => containers.random, :suspect => subject
+					lead = InstantLead.new :name => option[:name], :longname => option[:longname], :description => "#{option[:description]}#{subject.proper_name}.", :synonyms => option[:synonyms], :parent => containers.random, :suspect => subject
 				end
 				lead_subjects.delete subject
 			}
 		end
-		class CaseSubject
-			attr_reader :name, :character, :zone, :story
+		def add_strong_clues
+			# TODO: Change the weapon based on the cause of death
+			# TODO: Also, the murder weapon is not available in all stories
+			handgun_names = ['semi-automatic pistol', 'revolver', 'magnum', 'hunting rifle', 'shotgun'];
+			handgun_names.shuffle!
+			containers = @killer.zone.flatten.that_are(Container)
+			h = handgun_names.pop
+			weapon = Weapon.new :name => "#{h}", :longname => "a #{h}", :description => "A gun belonging to #{@killer.proper_name}.", :synonyms => "gun", :parent => containers.random, :story => self, :suspect => @killer
+			@clues.push weapon
+			suspect = @suspects.that_are_not(@killer).random
+			containers = suspect.zone.flatten.that_are(Container)
+			h = handgun_names.pop
+			weapon = Weapon.new :name => "#{h}", :longname => "a #{h}", :description => "A gun belonging to #{suspect.proper_name}.", :synonyms => "gun", :parent => containers.random, :story => self, :suspect => suspect
+			@clues.push weapon
 		end
-		class Victim < CaseSubject
+		def add_alibis
+			suspects = @suspects.that_are_not(@killer)
+			suspects.shuffle!
+			fake = suspects.shift
+			@killer.alibi = suspects.random
+			fake.alibi = suspects.random
+			suspects[0].alibi = suspects[1]
+			suspects[1].alibi = suspects[0]
+		end
+		class Victim < Container
+			attr_reader :zone
+			include Personified
 			def initialize story
 				@story = story
-				@name = story.randchar.generate
-				@character = Container.new :name => "body", :longname => "#{name.full}'s body", :synonyms => "dead corpse victim"
+				super()
+			end
+			def post_initialize
+				super
+				personify
+				@name = "dead body"
+				@longname = "#{proper_name.full}'s body"
+				@synonyms = "dead victim corpse"
 				# TODO: Randomize zone. Add more rooms.
 				@zone = Zone.new
 				@cause = nil # TODO: Cause of death. Implement later.
 				waypoint = Waypoint.new :parent => zone,
 					:name => 'driveway',
-					:location => "#{name}'s house"
+					:location => "#{proper_name}'s house"
 				living_room = Room.new :parent => zone,
 					:name => "living room"
 				living_room.connect waypoint, "west"
 				# TODO: Randomize containers
-				Container.new :name => "wastebasket", :parent => living_room
-				@character.parent = living_room
+				Container.new :name => "wastebasket", :synonyms => "trash can basket", :parent => living_room, :image => 'wastebasket.png'
+				self.parent = living_room
+			end
+			def default_image
+				"body-outline.png"
 			end
 		end
-		class Suspect < CaseSubject
+		class Suspect < Character
+			ALIBI_UNKNOWN = 'unknown'
+			ALIBI_UNCONFIRMED = 'unconfirmed'
+			ALIBI_REAL = 'real'
+			ALIBI_FAKE = 'fake'
+			attr_reader :zone
+			attr_accessor :alibi
+			include Personified
 			def initialize story
 				@story = story
-				@name = story.randchar.generate
-				@character = Fixture.new :name => name.first, :longname => name.full, :synonyms => "suspect"
+				@parent = story
+				@alibi_requested = false
+				super()
+			end
+			def post_initialize
+				super
+				personify
+				@name = proper_name.first
+				@longname = proper_name.full
+				# TODO: Randomize the zone
 				@zone = Zone.new
 				waypoint = Waypoint.new :parent => zone,
 					:name => 'driveway',
-					:location => "#{name}'s house"
+					:location => "#{proper_name}'s house"
 				living_room = Room.new :parent => zone,
 					:name => "living room"
 				living_room.connect waypoint, "west"
-				@character.parent = living_room
+				self.parent = living_room
 				# TODO: Randomize containers
-				Container.new :name => "wastebasket", :parent => living_room
+				Container.new :name => "wastebasket", :synonyms => "trash can basket", :parent => living_room, :image => 'wastebasket.png'
 				@known = false
-				@located = false
+				@alibi_requested = false
+			end
+			def description
+				"#{proper_name} is #{physical_description}"
 			end
 			def known?
 				@known
 			end
 			def located?
-				@located
+				(@zone.parent == story)
 			end
 			def know
 				@known = true
 			end
 			def locate
 				@zone.parent = story
-				@located = true
+			end
+			def alibi_requested?
+				@alibi_requested
+			end
+			def alibi_requested
+				@alibi_requested = true
+			end
+			def alibi_status
+				if alibi_requested? != true
+					return ALIBI_UNKNOWN
+				end
+				if @alibi.alibi_requested? == false
+					return ALIBI_UNCONFIRMED
+				end
+				if @alibi.alibi == self
+					return ALIBI_REAL
+				end
+				return ALIBI_FAKE
+			end
+			def default_map_command
+				"^look #{self.longname}"
 			end
 		end
 		class InstantLead < Item
 			attr_accessor :suspect
+		end
+		class Clue < Item
+			attr_accessor :story, :suspect
+			def analyzed?
+				if @analyzed == nil
+					@analyzed = false
+				end
+				@analyzed
+			end
+			def analyze
+				@analyzed = true
+			end
+		end
+		class Weapon < Clue
+		
 		end
 		class RandomContainers
 			def initialize

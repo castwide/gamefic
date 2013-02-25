@@ -53,6 +53,9 @@ module Gamefic
 			def recv
 				return STDIN.gets.strip
 			end
+			def refresh
+				# Tell the user that there is new data ready to be requested (i.e., something on the map has changed)
+			end
 			class State
 				attr_reader :user
 				def initialize(user)

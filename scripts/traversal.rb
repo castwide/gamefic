@@ -1,8 +1,9 @@
 action :go, query(:siblings, Portal) do |actor, portal|
+	tell actor.parent.children - [actor], "#{actor.longname.cap_first} goes #{portal.name}.", true
 	actor.parent = portal.destination
 	actor.tell "You go #{portal.name}."
-	actor.tell actor.parent.longname.upcase
 	actor.inject "itemize room"
+	tell actor.parent.children - [actor], "#{actor.longname.cap_first} arrives from the #{Portal.reverse(portal.name)}.", true
 end
 
 action :go, String do |actor, string|

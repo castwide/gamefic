@@ -1,9 +1,19 @@
 class Array
 	def that_are(cls)
-		return self.clone.delete_if { |i| i.kind_of?(cls) == false }
+		if (cls.kind_of?(Class) or cls.kind_of?(Module))
+			return self.clone.delete_if { |i| i.kind_of?(cls) == false }
+		else
+			if self.include?(cls)
+				return [cls]
+			end
+		end
 	end
 	def that_are_not(cls)
-		return self.clone.delete_if { |i| i.kind_of?(cls) == true }
+		if (cls.kind_of?(Class) or cls.kind_of?(Module))
+			return self.clone.delete_if { |i| i.kind_of?(cls) == true }
+		else
+			return self.clone - [cls]
+		end
 	end
 	def random
 		return self[rand(self.length)]
@@ -18,9 +28,12 @@ class Array
 			rand(3) <=> rand(3)
 		}
 	end
+	def join_and(sep = ', ', andSep = ' and ', serial = true)
+		if self.length < 3
+			self.join(andSep)
+		else
+			start = self - [self.last]
+			start.join(sep) + "#{serial ? sep.strip : ''}#{andSep}#{self.last}"
+		end
+	end
 end
-
-x = ['a','b','c','d','e']
-puts "#{x}"
-x.shuffle!
-puts "#{x}"

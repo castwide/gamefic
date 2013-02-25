@@ -1,3 +1,4 @@
+require "digest/md5"
 require "lib/node"
 require "lib/describable"
 
@@ -14,10 +15,16 @@ module Gamefic
 			@update_procs = Array.new
 			post_initialize
 		end
+		def uid
+			if @uid == nil
+				@uid = Digest::MD5.hexdigest(self.object_id.to_s)[0,8]
+			end
+			@uid
+		end
 		def post_initialize
 			# raise NotImplementedError, "#{self.class} must implement this method"
 		end
-		def tell(message)
+		def tell(message, refresh = false)
 			#TODO: Should this even be here? In all likelihood, only Characters receive tells, right?
 			#TODO: On second thought, it might be interesting to see logs from an npc point of view.
 		end
@@ -43,6 +50,10 @@ module Gamefic
 			attr_reader :character
 			def initialize(entity)
 				@entity = entity
+				post_initialize
+			end
+			def post_initialize
+			
 			end
 			def update
 				# Nothing to do

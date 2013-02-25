@@ -7,6 +7,13 @@ module Gamefic
 
 	class Story < Root
 		attr_reader :scenes, :instructions, :commands, :conclusions, :declared_scripts
+		def commandwords
+			words = Array.new
+			@instructions.each { |i|
+				words.push(i.syntax.split_words[0])
+			}
+			words.uniq
+		end
 		def initialize
 			super
 			@scenes = Hash.new
@@ -26,7 +33,11 @@ module Gamefic
 			end
 			@commands[command].push action
 			@commands[command].sort! { |a, b|
-				b.specificity <=> a.specificity
+				if a.specificity == b.specificity
+					b.creation_order <=> a.creation_order
+				else
+					b.specificity <=> a.specificity
+				end
 			}
 			user_friendly = command.to_s.gsub(/_/, ' ')
 			syntax = ''
@@ -46,7 +57,13 @@ module Gamefic
 		def instruct(syntax, command, statement)
 			@instructions.push Parser::Instruction.new(syntax, command, statement)
 			@instructions.sort! { |a, b|
-				b.syntax.split.length <=> a.syntax.split.length
+				al = a.syntax.split.length
+				bl = b.syntax.split.length
+				if al == bl
+					b.creation_order <=> a.creation_order
+				else
+					bl <=> al
+				end
 			}
 		end
 		def introduction (&proc)
@@ -87,6 +104,11 @@ module Gamefic
 			}
 			@children.flatten.each { |e|
 				recursive_update e
+			}
+		end
+		def tell entities, message, refresh = false
+			entities.each { |entity|
+				entity.tell message, refresh
 			}
 		end
 		# Load a script into the story. Return true on success.
@@ -134,17 +156,29 @@ module Gamefic
 		def episodes
 			@episodes
 		end
-		class RootWithEpisodes < Story
-			def initialize(entity)
-				@children = Series.instance.children
-				@commands = Series.instance.commands
-				@instructions = Series.instance.instructions
-				Series.instance.episodes.each { |episode|
-					if episode.features?(entity)
-						@children.concat episode.children
-					end
-				}
-			end
+		def episodes_featuring(entity)
+			featured = Array.new
+			@episodes.each { |episode|
+				if episode.features?(entity)
+					featured.push episode
+				end
+			}
+			return featured
+		end
+	end
+
+	class RootWithEpisodes < Story
+		def initialize(entity)
+			@children = Series.instance.children
+			@commands = Series.instance.commands
+			@instructions = Series.instance.instructions
+			Series.instance.episodes.each { |episode|
+				if episode.features?(entity)
+					@children.concat episode.children
+					@commands = episode.commands
+					@instructions = episode.instructions
+				end
+			}
 		end
 	end
 
@@ -155,7 +189,9 @@ module Gamefic
 			Series.instance.episodes.push self
 			@featuring = Array.new
 			@concluded = Array.new
-			@commands = Series.instance.commands.clone
+			Series.instance.commands.each { |key, array|
+				@commands[key] = array.clone
+			}
 			@instructions = Series.instance.instructions.clone
 			@declared_scripts = Series.instance.declared_scripts.clone
 		end
@@ -166,10 +202,15 @@ module Gamefic
 			@featuring.include? entity
 		end
 		def introduce(player)
-			# When players join the story, make them Featurable so they can still access entities from the Series.
-			player.extend Featurable
-			@featuring.push player
-			super
+			if Series.instance.episodes_featuring(player).length > 0
+				player.tell "You're already involved in another story."
+			else
+				# When players join an episode, make them Featurable so they can still access entities from the Series.
+				player.extend Featurable
+				#player.story = self
+				@featuring.push player
+				super
+			end
 		end
 		def conclude(key, player)
 			super
@@ -191,7 +232,10 @@ module Gamefic
 	module Featurable
 		# Access entities in the Series and all episodes featuring this entity.
 		def root
-			Series::RootWithEpisodes.new self
+			RootWithEpisodes.new self
+		end
+		def story
+			RootWithEpisodes.new self
 		end
 	end
 

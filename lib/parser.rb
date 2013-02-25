@@ -41,13 +41,13 @@ module Gamefic
 								end
 								next_input_word = input_words.shift
 								while next_input_word != next_syntax_word and input_words.length > 0
-									token = token + "#{next_input_word}"
+									token = token + " #{next_input_word}"
 									next_input_word = input_words.shift
 								end
 								if input_words.length == 0 and syntax_words.length > 0
 									break
 								else
-									tokens[symbol] = token
+									tokens[symbol] = token.strip
 								end
 							end
 						end
@@ -81,12 +81,17 @@ module Gamefic
 	
 	class Parser
 		class Instruction
-			attr_reader :syntax, :command, :statement
-			attr_accessor :creation_order
+			@@creation_order = 0
+			attr_reader :syntax, :command, :statement, :creation_order
 			def initialize (syntax, command, statement)
+				if (command.kind_of?(Symbol) == false)
+					raise "Instruction command must be a Symbol"
+				end
 				@syntax = syntax
 				@command = command
 				@statement = statement
+				@creation_order = @@creation_order
+				@@creation_order = @@creation_order + 1
 			end
 		end
 	end

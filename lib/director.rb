@@ -24,13 +24,10 @@ module Gamefic
 								end
 								args.push a[0]
 							}
-							options.push [order.action.proc, args, order.action.specificity]
+							options.push [order.action.proc, args]
 						}
 					}
 				end
-			}
-			options.sort! { |a,b|
-				b[2] <=> a[2]
 			}
 			options.push([
 				Proc.new { |actor|
@@ -93,6 +90,9 @@ module Gamefic
 				#prepared.push bind.objects
 			}
 			if valid == true
+				prepared.each { |p|
+					p.uniq!
+				}
 				objects.push Order.new(action, prepared)
 			end
 			return objects

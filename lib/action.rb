@@ -3,15 +3,18 @@
 module Gamefic
 
 	class Action
+		@@creation_order = 0
 		attr_accessor :creation_order
 		def initialize(command, contexts, proc)
+			if (command.kind_of?(Symbol) == false)
+				raise "Action commands must be symbols"
+			end
 			if (contexts.length + 1 != proc.arity) and (contexts.length == 0 and proc.arity != -1)
 				raise "Number of contexts is not compatible with proc arguments"
 			end
 			@command = command
 			@contexts = contexts
 			@proc = proc
-			#@creation_order = @@creation_order
 			user_friendly = command.to_s.gsub(/_/, ' ')
 			syntax = ''
 			used_names = Array.new
@@ -25,6 +28,8 @@ module Gamefic
 				used_names.push new_name
 				syntax = syntax + " #{new_name}"
 			}
+			@creation_order = @@creation_order
+			@@creation_order = @@creation_order + 1
 		end
 		def command
 			@command
@@ -52,7 +57,6 @@ module Gamefic
 			@proc
 		end
 		def create(command, *contexts, &block)
-			puts "Here's contexts: #{contexts.length}"
 			Action.new(command, contexts, block)
 		end
 		private
