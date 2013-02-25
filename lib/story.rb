@@ -7,6 +7,7 @@ module Gamefic
 
 	class Story < Root
 		attr_reader :scenes, :instructions, :commands, :conclusions, :declared_scripts
+		attr_accessor :story
 		def commandwords
 			words = Array.new
 			@instructions.each { |i|

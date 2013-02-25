@@ -18,6 +18,9 @@ module Gamefic
 		def update
 			# TODO: This is just a stub to keep story updates from failing.
 		end
+		def story
+			parent
+		end
 	end
 
 end
