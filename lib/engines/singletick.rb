@@ -9,6 +9,7 @@ module Gamefic
 		def enroll(user)
 			@user = user
 			@player = Player.new
+			@player.story = story
 			@player.parent = @story
 			@player.name = "player"
 			@player.connect user
@@ -41,6 +42,9 @@ module Gamefic
 					return STDIN.gets.strip
 				end
 			end
+			def refresh
+				# TODO: Anything to do?
+			end
 			class State
 				attr_reader :user
 				def initialize(user)
@@ -56,10 +60,10 @@ module Gamefic
 			end
 			class Play < State
 				def post_initialize
-					puts "post_initialize"
+					#puts "post_initialize"
 				end
 				def update
-					puts "Nothing to do here, really?"
+					#puts "Nothing to do here, really?"
 				end
 			end
 		end
