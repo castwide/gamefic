@@ -4,6 +4,7 @@ declare "scripts/container.rb"
 declare "scripts/carshuttle.rb"
 declare "scripts/graphical.rb"
 declare "scripts/speech.rb"
+declare "scripts/conversation.rb"
 
 module ::Gamefic
 	class Car

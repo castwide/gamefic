@@ -11,6 +11,6 @@ instruct "talk to [person] about [subject]", :talk, "[person] [subject]"
 instruct "talk with [person] about [subject]", :talk, "[person] [subject]"
 instruct "chat with [person] about [subject]", :talk, "[person] [subject]"
 
-action :show_to, query(:siblings, Character, query(:family) do |actor, person, thing|
+action :show_to, query(:siblings, Character), query(:family) do |actor, person, thing|
 	actor.tell "#{person} has nothing to say about #{thing.longname}."
 end
