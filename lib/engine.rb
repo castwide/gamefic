@@ -16,46 +16,48 @@ Dir["lib/entities/*.rb"].each { |file|
 }
 
 module Gamefic
+	
 	class Engine
 		attr_reader :story
-		def initialize(story)
+		def initialize story
 			@story = story
 		end
-		def run
-			@player = Player.new
-			@player.name = "Player"
-			@story.introduce @player
-			@user = User.new
-			@user.player = @player
-			while true
-				@story.update
-				@user.update
-			end
+		def user_class
+			raise NotImplementedError, "Engine must be extended or inherited to implement the user_class method"
 		end
-		class User
-			attr_accessor :player
-			def initialize
-				self.state = Play
-			end
-			def state=(state_class)
-				@state = state_class.new(self)
-			end
-			def send(message)
-				print message
-			end
-			def recv
-				return STDIN.gets.strip
-			end
-			def update
-				@state.update
-			end
-			def player=(player)
-				@player = player
-				@player.connect self
-			end
-			def refresh
-				# Tell the user that there is new data ready to be requested (i.e., something on the map has changed)
-			end
+		def run
+			raise NotImplementedError, "Engine must be extended or inherited to implement the run method"
+		end
+	end
+	
+	class User
+		attr_reader :state
+		attr_accessor :character
+		def initialize
+			@state = initial_state_class.new self
+		end
+		def initial_state_class
+			raise NotImplementedError
+		end
+		def send(message)
+			raise NotImplementedError, "#{self.class} must implement send"
+		end
+		def recv
+			raise NotImplementedError, "#{self.class} must implement recv"
+		end
+		def update
+			#raise NotImplementedError, "#{self.class} must implement update"
+			state.update
+		end
+		def refresh
+			raise NotImplementedError, "#{self.class} must implement refresh"
+		end
+		def character=(entity)
+			@character = entity
+			@character.connect self
+		end
+		def state=(state_class)
+			@state = state_class.new self
 		end
 		class State
 			attr_reader :user
@@ -64,21 +66,12 @@ module Gamefic
 				post_initialize
 			end
 			def post_initialize
-				raise NotImplementedError
+				raise NotImplementedError, "#{self.class} must implement post_initialize"
 			end
 			def update
-				raise NotImplementedError
+				raise NotImplementedError, "#{self.class} must implement update"
 			end
 		end
-		#class Play < State
-		#	def post_initialize
-		#		user.puts "Welcome to Gamefic. Go to <http://gamefic.com> for news and updates.\n" 
-		#	end
-		#	def update
-		#		user.send ">"
-		#		input = user.recv
-		#		user.player.perform input
-		#	end
-		#end
 	end
+
 end

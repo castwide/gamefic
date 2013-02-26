@@ -1,40 +1,28 @@
 require "lib/engine"
 
 module Gamefic
-	class SingleTick < Engine
-		attr_reader :story
-		def initialize(story)
-			@story = story
-		end
-		def enroll(user)
-			@user = user
-			@player = Player.new
-			@player.story = story
-			@player.parent = @story
-			@player.name = "player"
-			@player.connect user
-			@story.introduce @player
+
+	module SingleTick
+		def user_class
+			SingleUser
 		end
 		def run
+			user = user_class.new
+			user.character = Player.new :name => 'you'
+			story.introduce user.character
+			last_tick = Time.new
 			while true
-				@story.update
-				@player.perform @user.recv
-				sleep 1
+				user.update
+				diff = Time.new.to_f - last_tick.to_f
+				if diff >= 1.0
+					story.update
+					last_tick = Time.new
+				end
 			end
 		end
-		class User
-			attr_accessor :state, :name
-			def initialize(state_class = Play)
-				self.state = state_class
-			end
-			def state=(state_class)
-				@state = state_class.new(self)
-			end
-			def send(message)
-				print message
-			end
-			def puts(message)
-				send "#{message}\n"
+		class SingleUser < User
+			def initial_state_class
+				SingleTick::Play
 			end
 			def recv
 				resp = select([STDIN], nil, nil, 0.01)
@@ -42,30 +30,24 @@ module Gamefic
 					return STDIN.gets.strip
 				end
 			end
+			def send(message)
+				puts message
+			end
 			def refresh
-				# TODO: Anything to do?
+				# Nothing to do?
 			end
-			class State
-				attr_reader :user
-				def initialize(user)
-					@user = user
-					post_initialize
-				end
-				def post_initialize
-					raise NotImplementedError
-				end
-				def update(message)
-					raise NotImplementedError
-				end
+		end
+		class Play < User::State
+			def post_initialize
+				user.send "Welcome to Gamefic!\n"
 			end
-			class Play < State
-				def post_initialize
-					#puts "post_initialize"
-				end
-				def update
-					#puts "Nothing to do here, really?"
+			def update
+				line = user.recv
+				if line != nil
+					user.character.perform line
 				end
 			end
 		end
 	end
+
 end

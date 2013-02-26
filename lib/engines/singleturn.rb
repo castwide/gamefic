@@ -1,64 +1,47 @@
 require "lib/engine"
 
 module Gamefic
-	class SingleTurn < Engine
-		attr_reader :story
-		def initialize(story)
-			@story = story
-		end
-		def enroll(user)
-			@user = user
-			@player = Player.new
-			@player.parent = @story
-			@player.name = "player"
-			@player.connect user
-			@story.introduce @player
+	
+	module SingleTurn
+		def user_class
+			SingleUser
 		end
 		def run
+			user = user_class.new
+			user.character = Player.new :name => 'you'
+			story.introduce user.character
+			last_tick = Time.new
 			while true
-				@user.send "[#{@player.parent.name.cap_first}]>"
-				@player.perform @user.recv
-				@story.update
+				print "[#{user.character.parent.name.cap_first}]>"
+				user.update
+				story.update
 			end
 		end
-		class User
-			attr_accessor :state, :name
-			def initialize(state_class = Play)
-				self.state = state_class
-			end
-			def state=(state_class)
-				@state = state_class.new(self)
-			end
-			def send(message)
-				print message
-			end
-			def puts(message)
-				send "#{message}\n"
+		class SingleUser < User
+			def initial_state_class
+				SingleTurn::Play
 			end
 			def recv
 				return STDIN.gets.strip
 			end
-			class State
-				attr_reader :user
-				def initialize(user)
-					@user = user
-					post_initialize
-				end
-				def post_initialize
-					raise NotImplementedError
-				end
-				def update(message)
-					raise NotImplementedError
-				end
+			def send(message)
+				puts message
 			end
-			class Play < State
-				def post_initialize
-					#puts "post_initialize"
-				end
-				def update
-					puts "Nothing to do here, really?"
+			def refresh
+				# Nothing to do?
+			end
+		end
+		class Play < User::State
+			def post_initialize
+				user.send "Welcome to Gamefic!\n"
+			end
+			def update
+				line = user.recv
+				if line != nil
+					user.character.perform line
 				end
 			end
 		end
 	end
+
 end

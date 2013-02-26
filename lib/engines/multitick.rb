@@ -2,24 +2,24 @@ require "lib/engine"
 require "socket"
 
 module Gamefic
-	class MultiTick < Engine
-		attr_reader :story
-		def initialize(story)
-			@story = story
-			@server_socket = TCPServer.new('', 4141)
-			@users = Array.new
+	
+	module MultiTick
+		def user_class
+			MultiUser
 		end
 		def run
+			server_socket = TCPServer.new('', 4141)
+			users = Array.new
 			last_tick = Time.new
 			last_dec = 0
 			while true
-				resp = select([@server_socket], nil, nil, 0.001)
+				resp = select([server_socket], nil, nil, 0.001)
 				if (resp != nil)
 					for s in resp[0]
 						# New connection
-						n = @server_socket.accept
-						puts ("Connection accepted from #{n.peeraddr[3]}")
-						@users.push User.new(n, @story)
+						new_socket = server_socket.accept
+						puts ("Connection accepted from #{new_socket.peeraddr[3]}")
+						users.push user_class.new(new_socket, @story)
 						# Experimenting with protocol modes... see http://stackoverflow.com/questions/4532344/send-data-over-telnet-without-pressing-enter
 						#n.send "#{255.chr}#{253.chr}#{34.chr}", 0
 						#n.send "#{255.chr}#{250.chr}#{34.chr}#{1.chr}#{0.chr}#{255.chr}#{240.chr}", 0
@@ -28,9 +28,9 @@ module Gamefic
 				end
 				diff = Time.new.to_f - last_tick.to_f
 				if (diff * 10) >= last_dec
-					@users.delete_if { |user| user.socket.closed? }
+					users.delete_if { |user| user.socket.closed? }
 					last_dec = last_dec + 1
-					@users.each { |user|
+					users.each { |user|
 						user.update
 					}
 				end
@@ -42,27 +42,30 @@ module Gamefic
 				sleep( 0.001 )
 			end
 		end
-		class User < Engine::User
+		class MultiUser < User
 			attr_reader :socket, :story
 			attr_accessor :check_for_refresh
-			def initialize(socket, story, state_class = Welcome)
+			def initialize(socket, story)
 				@socket = socket
 				@story = story
-				self.state = state_class
 				@queue = Array.new
 				@ip_address = @socket.peeraddr[3]
-				#@check_for_updates = true
 				@input_cache = ''
+				@state = initial_state_class.new(self)
+			end
+			def initial_state_class
+				Welcome
 			end
 			def send(message)
 				begin
 					# The commented line forces \r\n for the dynamo version of telnet
 					#@socket.send "#{message.gsub(/([^\r])\n/, "\\1\r\n")}", 0
 					@socket.send "#{message}", 0
-				rescue
-					print "Disconnecting user at #{@ip_address}\n"
-					if @player != nil
-						@player.disconnect
+				rescue Exception => e
+					puts e.message
+					puts "Disconnecting user at #{@ip_address}"
+					if character != nil
+						character.disconnect
 					end
 					@socket.close
 				end
@@ -71,6 +74,7 @@ module Gamefic
 				@queue.shift
 			end
 			def refresh
+				puts "Refresh?"
 				if @check_for_refresh
 					send "^refresh\n"
 				end
@@ -115,31 +119,32 @@ module Gamefic
 				@state.update
 			end
 		end
-		class Welcome < Engine::State
+		class Welcome < User::State
 			def post_initialize
-				@user.send "Enter your name:"
+				@user.send "Enter your name: "
 			end
 			def update
 				line = @user.recv
 				if line != nil
 					@user.send "Welcome, #{line}.\n"
-					player = Player.new :name => line
-					@user.player = player
-					@user.story.introduce player
 					@user.state = Play
+					character = Player.new :name => line
+					@user.character = character
+					@user.story.introduce character
 				end
 			end
 		end
-		class Play < Engine::State
+		class Play < User::State
 			def post_initialize
 				# nothing to do
 			end
 			def update
 				line = @user.recv
 				if line != nil
-					@user.player.perform line
+					@user.character.perform line
 				end
 			end
 		end
 	end
+	
 end
