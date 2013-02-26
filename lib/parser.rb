@@ -64,17 +64,22 @@ module Gamefic
 					arguments = Array.new
 					result_words.each { |r|
 						if r[0, 1] == '['
-							if tokens[r] != nil
+							if tokens[r] != nil and tokens[r] != ''
 								arguments.push(tokens[r])
 							end
 						else
 							# The result has a static word. Treat it as an argument.
-							arguments.push(r)
+							if r != nil and r != ''
+								arguments.push(r)
+							end
 						end
 					}
-					results.push(Parser::Statement.new(conv.statement, conv.command, arguments))
+					if conv.statement.split_words.length == arguments.length
+						results.push(Parser::Statement.new(conv.statement.strip, conv.command, arguments))
+					end
 				end
 			}
+			results.uniq!
 			return results
 		end
 	end
