@@ -39,7 +39,7 @@ module Gamefic
 				end
 			end
 			def update
-				command = @entity.user.queue.shift
+				command = @entity.queue.shift
 				if command != nil
 					i = command.to_i - 1
 					if i >= 0
