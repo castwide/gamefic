@@ -14,6 +14,7 @@ module Gamefic
 			@user = user
 		end
 		def disconnect
+			# TODO: We might need some cleanup here. Like, move the character out of the game, or set a timeout to allow dropped users to reconnect... figure it out.
 			@user = nil
 		end
 		def perform(command)
@@ -26,7 +27,7 @@ module Gamefic
 		end
 		def tell(message, refresh = false)
 			if user != nil and message.to_s != ''
-				user.puts message
+				user.send "#{message}\n"
 				if (refresh == true)
 					user.refresh
 				end
