@@ -21,25 +21,21 @@ module Gamefic
 		def initialize(story)
 			@story = story
 		end
-		def enroll(user)
-			@user = user
-			@player = Player.new @story
-			@player.name = "player"
-			@player.connect user
-			@story.introduce @player
-		end
 		def run
+			@player = Player.new
+			@player.name = "Player"
+			@story.introduce @player
+			@user = User.new
+			@user.player = @player
 			while true
-				#line = STDIN.gets.strip
-				#@player.perform line
-				@player.update
 				@story.update
+				@user.update
 			end
 		end
 		class User
-			attr_accessor :state, :name
-			def initialize(state_class = Play)
-				self.state = state_class
+			attr_accessor :player
+			def initialize
+				self.state = Play
 			end
 			def state=(state_class)
 				@state = state_class.new(self)
@@ -47,35 +43,41 @@ module Gamefic
 			def send(message)
 				print message
 			end
-			def puts(message)
-				send "#{message}\n"
-			end
 			def recv
 				return STDIN.gets.strip
+			end
+			def update
+				@state.update
+			end
+			def player=(player)
+				@player = player
+				@player.connect self
 			end
 			def refresh
 				# Tell the user that there is new data ready to be requested (i.e., something on the map has changed)
 			end
-			class State
-				attr_reader :user
-				def initialize(user)
-					@user = user
-					post_initialize
-				end
-				def post_initialize
-					raise NotImplementedError
-				end
-				def update(message)
-					raise NotImplementedError
-				end
+		end
+		class State
+			attr_reader :user
+			def initialize(user)
+				@user = user
+				post_initialize
 			end
-			class Play < State
-				def post_initialize
-					user.send ">"
-				end
-				def update
-					puts "Nothing to do here, really?"
-				end
+			def post_initialize
+				raise NotImplementedError
+			end
+			def update(message)
+				raise NotImplementedError
+			end
+		end
+		class Play < State
+			def post_initialize
+				user.puts "Welcome to Gamefic. Go to <http://gamefic.com> for news and updates.\n" 
+			end
+			def update
+				user.send ">"
+				input = user.recv
+				user.player.perform input
 			end
 		end
 	end

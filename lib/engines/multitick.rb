@@ -6,113 +6,138 @@ module Gamefic
 		attr_reader :story
 		def initialize(story)
 			@story = story
-			@serverSocket = TCPServer.new('', 4141)
-			@descriptors = Array.new
-			@descriptors.push(@serverSocket)
-			@users = Hash.new
-		end
-		def enroll(user)
-			@users[user.socket] = user
-			player = Player.new
-			player.parent = @story
-			player.name = "player #{Time.new.usec}"
-			player.connect user
-			@story.introduce player
-			user.player = player
+			@server_socket = TCPServer.new('', 4141)
+			@users = Array.new
 		end
 		def run
-			@last_tick = Time.new
-			@last_dec = 0
+			last_tick = Time.new
+			last_dec = 0
 			while true
-				resp = select(@descriptors, nil, nil, 0.001)
+				resp = select([@server_socket], nil, nil, 0.001)
 				if (resp != nil)
 					for s in resp[0]
-						if (s == @serverSocket)
-							# New connection
-							n = @serverSocket.accept
-							puts ("Connection accepted from #{n.peeraddr[3]}")
-							@descriptors.push(n)
-							enroll User.new(n)
+						# New connection
+						n = @server_socket.accept
+						puts ("Connection accepted from #{n.peeraddr[3]}")
+						@users.push User.new(n, @story)
+						# Experimenting with protocol modes... see http://stackoverflow.com/questions/4532344/send-data-over-telnet-without-pressing-enter
+						#n.send "#{255.chr}#{253.chr}#{34.chr}", 0
+						#n.send "#{255.chr}#{250.chr}#{34.chr}#{1.chr}#{0.chr}#{255.chr}#{240.chr}", 0
+						#n.send "#{255.chr}#{251.chr}#{1.chr}", 0
+					end
+				end
+				diff = Time.new.to_f - last_tick.to_f
+				if (diff * 10) >= last_dec
+					@users.delete_if { |user| user.socket.closed? }
+					last_dec = last_dec + 1
+					@users.each { |user|
+						user.update
+					}
+				end
+				if diff >= 1.0
+					@story.update
+					last_tick = Time.new
+					last_dec = 0
+				end
+				sleep( 0.001 )
+			end
+		end
+		class User < Engine::User
+			attr_reader :socket, :story
+			attr_accessor :check_for_refresh
+			def initialize(socket, story, state_class = Login)
+				@socket = socket
+				@story = story
+				self.state = state_class
+				@queue = Array.new
+				@ip_address = @socket.peeraddr[3]
+				#@check_for_updates = true
+				@input_cache = ''
+			end
+			def send(message)
+				begin
+					# The commented line forces \r\n for the dynamo version of telnet
+					#@socket.send "#{message.gsub(/([^\r])\n/, "\\1\r\n")}", 0
+					@socket.send "#{message}", 0
+				rescue
+					print "Disconnecting user at #{@ip_address}\n"
+					if @player != nil
+						@player.disconnect
+					end
+					@socket.close
+				end
+			end
+			def recv
+				@queue.shift
+			end
+			def refresh
+				if @check_for_refresh
+					send "^refresh\n"
+				end
+			end
+			def update
+				resp = select([@socket], nil, nil, 0.001)
+				if (resp != nil)
+					for s in resp[0]
+						data = s.recv(255)
+						if data[0] == 255
+							puts "Filtering negotiation."
 						else
-							req = s.recv(255)
-							if (req == '')
-								begin
-									s.send "ERROR: Empty message.\n", 0
-								rescue
-									puts ("Disconnecting user")
-									s.close
-									@descriptors.delete(s)
-									@users.delete(s)
-								end
+							if (data == '')
+								send "ERROR: Empty message.\n"
 							else
-								if req.strip == '^ping'
-									s.send "^pong\n", 0
-								elsif req.strip == '^refresh'
-									@users[s].check_for_refresh = true
-								else
-									lines = req.strip.split("\n")
-									@users[s].queue.concat lines
+								#data.gsub!(/\r/, "\n")
+								#send data
+								#data.gsub!(/\r\n/, "\n")
+								@input_cache = @input_cache + data
+								#if data.include?("\r")
+								#	@input_cache = @input_cache + "\n"
+								#	send "\n"
+								#end
+								i = @input_cache.index("\n")
+								@input_cache.gsub!(/\r/, "")
+								while i != nil
+									line = @input_cache.slice!(0..i)
+									line.strip!
+									if line.strip == '^ping'
+										send "^pong\n"
+									elsif line.strip == '^refresh'
+										@check_for_refresh = true
+									else
+										@queue.push line
+									end
+									i = @input_cache.index("\n")
 								end
 							end
 						end
 					end
 				end
-				sleep( 0.001 )
-				diff = Time.new.to_f - @last_tick.to_f
-				if (diff * 10) % 10 >= @last_dec
-					@last_dec = @last_dec + 1
-					@users.each { |socket, user|
-						if user.player.state.class == Gamefic::Character::Ready
-							while user.queue.length > 0
-								command = user.queue.shift
-								Director.dispatch(user.player, command)
-								if user.player.state != Character::Ready
-									break
-								end
-							end
-						end
-					}
-				end
-				if diff >= 1.0
-					@story.update
-					@last_tick = Time.new
-					@last_dec = 0
+				@state.update
+			end
+		end
+		class Login < Engine::State
+			def post_initialize
+				@user.send "Login:"
+			end
+			def update
+				line = @user.recv
+				if line != nil
+					@user.send "Got it.\n"
+					player = Player.new :name => line
+					@user.player = player
+					@user.story.introduce player
+					@user.state = Play
 				end
 			end
 		end
-		class User
-			attr_accessor :state, :name, :socket, :queue, :player, :check_for_refresh
-			def initialize(socket, state_class = Play)
-				@socket = socket
-				self.state = state_class
-				@queue = Array.new
-				@check_for_updates = true
+		class Play < Engine::State
+			def post_initialize
+				# nothing to do
 			end
-			def state=(state_class)
-				@state = state_class.new(self)
-			end
-			def send(message)
-				if @socket.closed? == false
-					@socket.send "#{message}", 0
-				end
-			end
-			def puts(message)
-				send "#{message}\n"
-			end
-			def recv
-				#@queue.shift
-			end
-			def refresh
-				if @check_for_refresh
-					puts "^refresh"
-				end
-			end
-			class Play < Engine::User::State
-				def post_initialize
-					# nothing to do
-				end
-				def update
-					# nothing to do
+			def update
+				line = @user.recv
+				if line != nil
+					@user.player.perform line
 				end
 			end
 		end
