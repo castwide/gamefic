@@ -1,0 +1,62 @@
+load "scripts/look.rb"
+load "scripts/traversal.rb"
+load "scripts/carshuttle.rb"
+load "scripts/inventory.rb"
+
+prop :parking_garage, Waypoint
+parking_garage.longname = "the parking garage"
+parking_garage.location = "City Police Station"
+parking_garage.description = 'You are in the parking garage beneath the police station. A doorway to the east leads to the stairwell.'
+
+prop :car, Car
+car.parent = parking_garage
+
+prop :stairwell, Room
+stairwell.connect parking_garage, "west"
+stairwell.description = 'The dingy stairwell connecting the underground parking garage to the police station upstairs.'
+
+prop :lobby, Room
+lobby.connect stairwell, "down"
+
+prop :front_desk, Room
+front_desk.connect lobby, "south"
+
+prop :squad_room, Room
+squad_room.connect lobby, "west"
+squad_room.description = 'The squad room is never quiet. Detectives man the phones, talk to witnesses, and discuss open cases with prosecutors.'
+
+prop :assignment_room, Room
+assignment_room.connect squad_room, "south"
+assignment_room.longname = "the assignment room"
+assignment_room.description = "The bulletin board on the north wall of the squad room displays open cases waiting for a detective's attention. Look at the board to see the list."
+
+prop :case_board, Scenery
+case_board.extend Itemized
+case_board.parent = assignment_room
+case_board.longname = "the squad's open case list"
+case_board.synonyms = "bulletin board caseboard"
+
+prop :captains_office, Room
+captains_office.name = "Captain's office"
+captains_office.longname = "the Captain's office"
+captains_office.description = 'The only private office in the squad room belongs to the Captain. Stacks of paper threaten to crack his desktop.'
+captains_office.connect squad_room, "west"
+
+prop :break_room, Room
+break_room.connect squad_room, "north"
+break_room.description = 'Snacks machines, a microwave, a water cooler, and the worst coffee in the city.'
+
+prop :paperwork, Scenery
+paperwork.parent = captains_office
+paperwork.description = 'Correspondence, legal forms, bureaucratic red tape... all the stuff your Captain deals with so the detectives can stay busy solving crimes.'
+paperwork.synonyms = 'documents folders papers stacks'
+
+action :look, query(:siblings, case_board) do |actor, board|
+	episode = Episode.new
+	episode.load "games/mystery/episode.rb"
+	episode.introduce actor
+end
+
+introduction do |player|
+	player.parent = parking_garage
+end
