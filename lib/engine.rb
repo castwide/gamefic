@@ -66,19 +66,19 @@ module Gamefic
 			def post_initialize
 				raise NotImplementedError
 			end
-			def update(message)
+			def update
 				raise NotImplementedError
 			end
 		end
-		class Play < State
-			def post_initialize
-				user.puts "Welcome to Gamefic. Go to <http://gamefic.com> for news and updates.\n" 
-			end
-			def update
-				user.send ">"
-				input = user.recv
-				user.player.perform input
-			end
-		end
+		#class Play < State
+		#	def post_initialize
+		#		user.puts "Welcome to Gamefic. Go to <http://gamefic.com> for news and updates.\n" 
+		#	end
+		#	def update
+		#		user.send ">"
+		#		input = user.recv
+		#		user.player.perform input
+		#	end
+		#end
 	end
 end

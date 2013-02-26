@@ -45,7 +45,7 @@ module Gamefic
 		class User < Engine::User
 			attr_reader :socket, :story
 			attr_accessor :check_for_refresh
-			def initialize(socket, story, state_class = Login)
+			def initialize(socket, story, state_class = Welcome)
 				@socket = socket
 				@story = story
 				self.state = state_class
@@ -115,14 +115,14 @@ module Gamefic
 				@state.update
 			end
 		end
-		class Login < Engine::State
+		class Welcome < Engine::State
 			def post_initialize
-				@user.send "Login:"
+				@user.send "Enter your name:"
 			end
 			def update
 				line = @user.recv
 				if line != nil
-					@user.send "Got it.\n"
+					@user.send "Welcome, #{line}.\n"
 					player = Player.new :name => line
 					@user.player = player
 					@user.story.introduce player
