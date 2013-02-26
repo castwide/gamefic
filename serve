@@ -2,12 +2,7 @@
 
 require "lib/engines/multitick"
 
-#story = Gamefic::Story.new
-#story.load ARGV[0]
-#game = Gamefic::MultiTick.new story
-#game.run
-
 series = Gamefic::Series.instance
 series.load ARGV[0]
-game = Gamefic::MultiTick.new series
-game.run
+engine = Gamefic::MultiTick.new series
+engine.run
