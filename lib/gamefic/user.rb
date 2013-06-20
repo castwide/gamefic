@@ -1,8 +1,9 @@
 module Gamefic
 	
 	class User
-		attr_reader :state, :character
-		def initialize
+		attr_reader :state, :character, :story
+		def initialize(story)
+			@story = story
 			@stream = UserStream.new
 			@state = UserState.new self
 		end
@@ -18,6 +19,9 @@ module Gamefic
 		end
 		def refresh
 			# Nothing to do
+		end
+		def story
+			@story
 		end
 	end
 	
@@ -44,7 +48,7 @@ module Gamefic
 			post_initialize
 		end
 		def post_initialize
-			@user.character = Character.new :name => 'Player'
+			@user.character = Character.new user.story, :name => 'Player'
 		end
 		def update
 			line = @user.stream.recv

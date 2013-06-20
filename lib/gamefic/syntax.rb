@@ -2,15 +2,16 @@ module Gamefic
 
 	class Syntax
 		attr_reader :template, :command, :arguments, :creation_order
-		def initialize(*arguments)
+		def initialize(story, *arguments)
 			if arguments.length < 2
 				raise "Syntax.new requires at least two arguments (template and command)"
 			end
 			@template = arguments.shift
 			@command = arguments.shift
 			@arguments = arguments
-			@creation_order = Subplot.current.syntaxes.length + 1
-			Subplot.current.add_syntax self
+			@creation_order = story.syntaxes.length + 1
+			story.add_syntax self
+			@story = story
 		end
 		def self.match(input, syntaxes)
 			# Given the input, return all the syntaxes that potentially match it.

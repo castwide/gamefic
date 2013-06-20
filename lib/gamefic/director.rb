@@ -3,10 +3,10 @@ module Gamefic
 	class Director
 		def self.dispatch(actor, command)
 			command.strip!
-			handlers = Syntax.match(command, actor.story.syntaxes)
+			handlers = Syntax.match(command, actor.plot.syntaxes)
 			options = Array.new
 			handlers.each { |handler|
-				actions = actor.story.commands[handler.command]
+				actions = actor.plot.commands[handler.command]
 				if actions != nil
 					actions.each { |action|
 						orders = bind_contexts_in_result(actor, handler, action)

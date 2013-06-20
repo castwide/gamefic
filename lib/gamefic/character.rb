@@ -41,6 +41,10 @@ module Gamefic
 	class CharacterState
 		def initialize(user)
 			@user = user
+			post_initialize
+		end
+		def post_initialize
+			# TODO: Required by subclasses?
 		end
 		def busy?
 			false

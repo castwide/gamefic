@@ -2,15 +2,15 @@ require "gamefic/entity_ext"
 
 module Gamefic
 
-	Action.new :look do |actor|
+	Action.new Story.instance, :look do |actor|
 		actor.perform "itemize room full"
 	end
 
-	Action.new :look_around do |actor|
+	Action.new Story.instance, :look_around do |actor|
 		actor.perform "look"
 	end
 
-	Action.new :itemize_room, Query.new(:string) do |actor, option|
+	Action.new Story.instance, :itemize_room, Query.new(:string) do |actor, option|
 		actor.tell "#{actor.parent.longname.cap_first}"
 		if option == "full"
 			actor.tell actor.parent.description
@@ -31,21 +31,24 @@ module Gamefic
 			actor.tell "Obvious exits: none"	
 		end
 	end
-	Syntax.new "itemize room", :itemize_room, "short"
-	Syntax.new "itemize room :option", :itemize_room, :option
+	Syntax.new Story.instance, "itemize room", :itemize_room, "short"
+	Syntax.new Story.instance, "itemize room :option", :itemize_room, :option
 
-	Action.new :look, Query.new(:family) do |actor, thing|
+	Action.new Story.instance, :look, Query.new(:family) do |actor, thing|
 		actor.tell thing.description
 	end
 
-	Action.new :look, Query.new(:parent) do |actor, thing|
+	Action.new Story.instance, :look, Query.new(:parent) do |actor, thing|
 		actor.perform "look"
 	end
 
-	Action.new :look, String do |actor, string|
+	Action.new Story.instance, :look, String do |actor, string|
 		actor.tell "You don't see any \"#{string}\" here."
 	end
 
-	Syntax.new "look at :thing", :look, :thing
+	Syntax.new Story.instance, "look at :thing", :look, :thing
+	Syntax.new Story.instance, "examine :thing", :look, :thing
+	Syntax.new Story.instance, "exam :thing", :look, :thing
+	Syntax.new Story.instance, "x :thing", :look, :thing
 
 end

@@ -6,6 +6,7 @@ class Array
 			if self.include?(cls)
 				return [cls]
 			end
+			return Array.new
 		end
 	end
 	def that_are_not(cls)

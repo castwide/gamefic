@@ -19,11 +19,67 @@ module Gamefic
 			@declared_scripts = Array.new
 			@entities = Array.new
 		end
-		def add_entity(entity)
-			if @entities.include?(entity) == false
-				@entities.push entity
+		def action(command, *queries, &proc)
+			act = Action.new(self, command, *queries, &proc)
+			if (@commands[act.command] == nil)
+				@commands[act.command] = Array.new
 			end
+			@commands[act.command].push act
+			@commands[act.command].sort! { |a, b|
+				if a.specificity == b.specificity
+					b.creation_order <=> a.creation_order
+				else
+					b.specificity <=> a.specificity
+				end
+			}
+			user_friendly = act.command.to_s.sub(/_/, ' ')
+			args = Array.new
+			used_names = Array.new
+			act.queries.each { |c|
+				num = 1
+				new_name = "var"
+				while used_names.include? new_name
+					num = num + 1
+					new_name = "var#{num}"
+				end
+				used_names.push new_name
+				user_friendly += " :#{new_name}"
+				args.push new_name.to_sym
+			}
+			syn = Syntax.new self, *[user_friendly, act.command] + args
+			@syntaxes.push syn
+			act
 		end
+		def respond(command, *queries, &proc)
+			self.action(command, *queries, &proc)
+		end
+		def entity(cls, args)
+			if cls < Entity == false
+				raise "Invalid entity class"
+			end
+			ent = cls.new(self, args)
+			@entities.push ent
+			ent
+		end
+		def make(cls, args)
+			self.entity(cls, args)
+		end
+		def syntax(*args)
+			syn = Syntax.new(self, *args)
+			@syntaxes.push syn
+			syn
+		end
+		def accept(*args)
+			syntax(*args)
+		end
+		def synonymize(*args)
+			syntax(*args)
+		end
+		#def add_entity(entity)
+		#	if @entities.include?(entity) == false
+		#		@entities.push entity
+		#	end
+		#end
 		def rem_entity(entity)
 			@entities.delete(entity)
 		end
@@ -53,7 +109,7 @@ module Gamefic
 				user_friendly += " :#{new_name}"
 				args.push new_name.to_sym
 			}
-			Syntax.new *[user_friendly, action.command] + args
+			Syntax.new self, *[user_friendly, action.command] + args
 		end
 		def add_syntax syntax
 			if @commands[syntax.command] == nil

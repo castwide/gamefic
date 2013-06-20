@@ -5,7 +5,7 @@ module Gamefic
 			@plot = plot || Story.instance
 		end
 		def run
-			user = User.new
+			user = User.new @plot
 			@plot.introduce user.character
 			while true
 				user.stream.select

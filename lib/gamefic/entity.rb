@@ -8,12 +8,16 @@ module Gamefic
 	class Entity
 		include Branch
 		include Describable
-		attr_reader :session, :story
-		def initialize(args = {})
+		attr_reader :session, :plot
+		def initialize(plot, args = {})
+			if (plot.kind_of?(Plot) == false)
+				raise "First argument must be a Plot"
+			end
 			pre_initialize
 			#self.state = State
-			@story = Subplot.current
-			@story.add_entity self
+			#@story = Subplot.current
+			@plot = plot
+			#@story.add_entity self
 			args.each { |key, value|
 				send "#{key}=", value
 			}
@@ -21,6 +25,13 @@ module Gamefic
 			@session = Hash.new
 			post_initialize
 		end
+		#def self.present(args = {})
+		#	story = Plot.Loading
+		#	if story == nil
+		#		raise "No plot loading"
+		#	end
+		#	return self.new(story, args)
+		#end
 		def uid
 			if @uid == nil
 				@uid = Digest::MD5.hexdigest(self.object_id.to_s)[0,8]
@@ -40,17 +51,10 @@ module Gamefic
 		def to_s
 			name
 		end
-		#def state
-		#	@state.class
-		#end
-		#def state=(state_class)
-		#	@state = state_class.new(self)
-		#end
 		def update
 			@update_procs.each { |p|
 				p.call self
 			}
-		#	@state.update
 		end
 		def on_update(&block)
 			@update_procs.push block
@@ -63,21 +67,8 @@ module Gamefic
 		end
 		def destroy
 			self.parent = nil
-			@story.rem_entity self
+			@plot.rem_entity self
 		end
-		#class State
-		#	attr_reader :character
-		#	def initialize(entity)
-		#		@entity = entity
-		#		post_initialize
-		#	end
-		#	def post_initialize
-		#	
-		#	end
-		#	def update
-		#		# Nothing to do
-		#	end
-		#end
 	end
 
 end

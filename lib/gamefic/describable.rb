@@ -7,6 +7,9 @@ module Gamefic
 		def keywords
 			Keywords.new "#{name} #{longname} #{synonyms}"
 		end
+		def keywords=(value)
+			@keywords = value
+		end
 		def longname
 			@longname.to_s != '' ? @longname : name
 		end

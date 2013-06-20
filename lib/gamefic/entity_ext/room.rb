@@ -7,13 +7,13 @@ module Gamefic
 		
 		end
 		def connect(destination, direction, type = Portal, two_way = true)
-			portal = type.new :name => direction, :parent => self, :destination => destination
+			portal = type.new self.plot, :name => direction, :parent => self, :destination => destination
 			if two_way == true
 				reverse = Portal.reverse(direction)
 				if reverse == nil
 					raise "\"#{direction.cap_first}\" does not have an opposite direction"
 				end
-				portal = type.new({
+				portal = type.new(self.plot, {
 					:name => reverse,
 					:parent => destination,
 					:destination => self

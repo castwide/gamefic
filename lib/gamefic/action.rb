@@ -2,7 +2,7 @@ module Gamefic
 
 	class Action
 		attr_reader :command, :creation_order
-		def initialize(command, *queries, &proc)
+		def initialize(story, command, *queries, &proc)
 			if (command.kind_of?(Symbol) == false)
 				raise "Action commands must be symbols"
 			end
@@ -13,10 +13,11 @@ module Gamefic
 			@queries = queries
 			@proc = proc
 			@creation_order = 1
-			Subplot.current.commands.each { |key, array|
+			story.commands.each { |key, array|
 				@creation_order += array.length
 			}
-			Subplot.current.add_action self
+			#Subplot.current.add_action self
+			story.add_action self
 		end
 		def specificity
 			spec = 0

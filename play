@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 
-require "lib/engines/singleturn"
+$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)) + "/lib")
+require "gamefic"
+require "gamefic/entity_ext"
+require "gamefic/action_ext"
+include Gamefic
 
-story = Gamefic::Story.new
-story.load ARGV[0]
-engine = Gamefic::Engine.new story
-engine.extend Gamefic::SingleTurn
+Story.instance.require_script "./#{ARGV[0]}"
+engine = Engine.new
 engine.run
