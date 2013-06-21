@@ -6,6 +6,6 @@ require "gamefic/entity_ext"
 require "gamefic/action_ext"
 include Gamefic
 
-Story.instance.require_script "./#{ARGV[0]}"
+Story.instance.require_script "#{ARGV[0]}"
 engine = Engine.new
 engine.run
