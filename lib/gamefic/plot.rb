@@ -61,7 +61,7 @@ module Gamefic
 			@entities.push ent
 			ent
 		end
-		def make(cls, args)
+		def make(cls, args = {})
 			self.entity(cls, args)
 		end
 		def syntax(*args)
@@ -69,10 +69,7 @@ module Gamefic
 			@syntaxes.push syn
 			syn
 		end
-		def accept(*args)
-			syntax(*args)
-		end
-		def synonymize(*args)
+		def xlate(*args)
 			syntax(*args)
 		end
 		#def add_entity(entity)
