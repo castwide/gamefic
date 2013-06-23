@@ -1,4 +1,3 @@
-require "singleton"
 require_relative "./plot"
 
 module Gamefic
