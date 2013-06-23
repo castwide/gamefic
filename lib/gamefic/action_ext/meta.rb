@@ -1,7 +1,3 @@
-module Gamefic
-
-	Action.new Story.instance, :quit do |actor|
-		exit
-	end
-
+Action.new story, :quit do |actor|
+	exit
 end

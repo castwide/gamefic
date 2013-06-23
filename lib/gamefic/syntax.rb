@@ -10,7 +10,7 @@ module Gamefic
 			@command = arguments.shift
 			@arguments = arguments
 			@creation_order = story.syntaxes.length + 1
-			story.add_syntax self
+			story.send :add_syntax, self
 			@story = story
 		end
 		def self.match(input, syntaxes)

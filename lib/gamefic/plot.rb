@@ -19,45 +19,25 @@ module Gamefic
 			@declared_scripts = Array.new
 			@entities = Array.new
 		end
+		def require_defaults
+			Dir[File.dirname(__FILE__) + '/entity_ext/*.rb'].each do |file|
+				require file
+			end
+			Dir[File.dirname(__FILE__) + '/action_ext/*.rb'].each do |file|
+				require_script file
+			end
+		end
 		def action(command, *queries, &proc)
 			act = Action.new(self, command, *queries, &proc)
-			if (@commands[act.command] == nil)
-				@commands[act.command] = Array.new
-			end
-			@commands[act.command].push act
-			@commands[act.command].sort! { |a, b|
-				if a.specificity == b.specificity
-					b.creation_order <=> a.creation_order
-				else
-					b.specificity <=> a.specificity
-				end
-			}
-			user_friendly = act.command.to_s.sub(/_/, ' ')
-			args = Array.new
-			used_names = Array.new
-			act.queries.each { |c|
-				num = 1
-				new_name = "var"
-				while used_names.include? new_name
-					num = num + 1
-					new_name = "var#{num}"
-				end
-				used_names.push new_name
-				user_friendly += " :#{new_name}"
-				args.push new_name.to_sym
-			}
-			syn = Syntax.new self, *[user_friendly, act.command] + args
-			@syntaxes.push syn
-			act
 		end
 		def respond(command, *queries, &proc)
 			self.action(command, *queries, &proc)
 		end
 		def entity(cls, args)
-			if cls < Entity == false
+			ent = cls.new(self, args)
+			if ent.kind_of?(Entity) == false
 				raise "Invalid entity class"
 			end
-			ent = cls.new(self, args)
 			@entities.push ent
 			ent
 		end
@@ -79,49 +59,6 @@ module Gamefic
 		#end
 		def rem_entity(entity)
 			@entities.delete(entity)
-		end
-		def add_action(action)
-			if (@commands[action.command] == nil)
-				@commands[action.command] = Array.new
-			end
-			@commands[action.command].push action
-			@commands[action.command].sort! { |a, b|
-				if a.specificity == b.specificity
-					b.creation_order <=> a.creation_order
-				else
-					b.specificity <=> a.specificity
-				end
-			}
-			user_friendly = action.command.to_s
-			args = Array.new
-			used_names = Array.new
-			action.queries.each { |c|
-				num = 1
-				new_name = "var"
-				while used_names.include? new_name
-					num = num + 1
-					new_name = "var#{num}"
-				end
-				used_names.push new_name
-				user_friendly += " :#{new_name}"
-				args.push new_name.to_sym
-			}
-			Syntax.new self, *[user_friendly, action.command] + args
-		end
-		def add_syntax syntax
-			if @commands[syntax.command] == nil
-				raise "Action \"#{syntax.command}\" does not exist"
-			end
-			@syntaxes.push syntax
-			@syntaxes.sort! { |a, b|
-				al = a.template.split_words.length
-				bl = b.template.split_words.length
-				if al == bl
-					b.creation_order <=> a.creation_order
-				else
-					bl <=> al
-				end
-			}			
 		end
 		def entities
 			@entities.clone
@@ -146,8 +83,8 @@ module Gamefic
 				@introduction.call(player)
 			end
 		end
-		def conclude(key, player)
-			if @conclusions[key]
+		def conclude(player, key = nil)
+			if key != nil and @conclusions[key]
 				@conclusions[key].call(player)
 			end
 		end
@@ -187,6 +124,49 @@ module Gamefic
 				recursive_update e
 			}
 		end	
+		def add_syntax syntax
+			if @commands[syntax.command] == nil
+				raise "Action \"#{syntax.command}\" does not exist"
+			end
+			@syntaxes.push syntax
+			@syntaxes.sort! { |a, b|
+				al = a.template.split_words.length
+				bl = b.template.split_words.length
+				if al == bl
+					b.creation_order <=> a.creation_order
+				else
+					bl <=> al
+				end
+			}			
+		end
+		def add_action(action)
+			if (@commands[action.command] == nil)
+				@commands[action.command] = Array.new
+			end
+			@commands[action.command].push action
+			@commands[action.command].sort! { |a, b|
+				if a.specificity == b.specificity
+					b.creation_order <=> a.creation_order
+				else
+					b.specificity <=> a.specificity
+				end
+			}
+			user_friendly = action.command.to_s.sub(/_/, ' ')
+			args = Array.new
+			used_names = Array.new
+			action.queries.each { |c|
+				num = 1
+				new_name = "var"
+				while used_names.include? new_name
+					num = num + 1
+					new_name = "var#{num}"
+				end
+				used_names.push new_name
+				user_friendly += " :#{new_name}"
+				args.push new_name.to_sym
+			}
+			Syntax.new self, *[user_friendly, action.command] + args
+		end
 	end
 
 end

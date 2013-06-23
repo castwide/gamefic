@@ -1,10 +1,10 @@
 require "singleton"
-require "gamefic/plot"
+require_relative "./plot"
 
 module Gamefic
 
 	class Story < Plot
-		include Singleton
+		#include Singleton
 		def initialize
 			super
 			@subplots = Array.new
@@ -22,36 +22,36 @@ module Gamefic
 			return featured
 		end
 	end
-	$story = Story.instance  # Just an alias
+	#$story = Story.instance  # Just an alias
 	
 	class StoryWithSubplots < Plot
-		def initialize(entity)
-			@entities = Story.instance.entities
-			@commands = Story.instance.commands
-			@syntaxes = Story.instance.syntaxes
-			Story.instance.subplots.each { |sub|
-				if sub.features?(entity)
-					@entities.concat sub.entities
-					@commands = sub.commands
-					@syntaxes = sub.syntaxes
-				end
+		def initialize(story, entity)
+			@entities = story.entities
+			@commands = story.commands
+			@syntaxes = story.syntaxes
+			story.subplots_featuring(entity).each { |sub|
+				@entities.concat(sub.entities)
+				# TODO: Commands and syntaxes may need to be resorted here
+				@commands = sub.commands
+				@syntaxes = sub.syntaxes
 			}
 		end
 	end
 
 	class Subplot < Plot
 		@@current_stack = Array.new
-		def initialize(args = {})
+		def initialize(story, args = {})
 			@@current_stack.push self
+			@story = story
 			super()
-			Story.instance.subplots.push self
+			story.subplots.push self
 			@featuring = Array.new
 			@concluded = Array.new
-			Story.instance.commands.each { |key, array|
+			@story.commands.each { |key, array|
 				@commands[key] = array.clone
 			}
-			@syntaxes = Story.instance.syntaxes.clone
-			@declared_scripts = Story.instance.declared_scripts.clone
+			@syntaxes = story.syntaxes.clone
+			@declared_scripts = story.declared_scripts.clone
 			args.each { |key, value|
 				self.send("#{key}=", value)
 			}
@@ -68,7 +68,7 @@ module Gamefic
 			@featuring.include? entity
 		end
 		def introduce(player)
-			if Story.instance.subplots_featuring(player).length > 0
+			if story.subplots_featuring(player).length > 0
 				player.tell "You're already involved in another subplot."
 			else
 				if player.kind_of?(Featurable) == false
@@ -78,19 +78,16 @@ module Gamefic
 				super
 			end
 		end
-		def conclude(key, player)
+		def conclude(player, key = nil)
 			super
 			@concluded.push player
-		end
-		def update
-			super
 			@concluded.each { |player|
-				if player.parent.root == Series.instance
+				if player.parent == nil or player.parent.plot != self
 					@featuring.delete player
 				end
 			}
 			if @concluded.length > 0 and @featuring.length == 0
-				Series.instance.subplots.delete self
+				story.subplots.delete self
 			end
 		end
 		def load_script(filename)
@@ -105,8 +102,12 @@ module Gamefic
 	
 	module Featurable
 		# Access content in the Story and all Subplots featuring this entity.
-		def story
-			StoryWithSubplots.new self
+		def plot
+			story = super
+			if story.subplots_featuring(self).length == 0
+				return story
+			end
+			StoryWithSubplots.new story, self
 		end
 	end
 

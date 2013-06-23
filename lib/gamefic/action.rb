@@ -16,8 +16,7 @@ module Gamefic
 			story.commands.each { |key, array|
 				@creation_order += array.length
 			}
-			#Subplot.current.add_action self
-			story.add_action self
+			story.send :add_action, self
 		end
 		def specificity
 			spec = 0
