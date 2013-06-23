@@ -1,8 +1,8 @@
 module Gamefic
 
 	class Engine
-		def initialize(plot = nil)
-			@plot = plot || Story.instance
+		def initialize(plot)
+			@plot = plot
 		end
 		def run
 			user = User.new @plot

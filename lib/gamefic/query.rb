@@ -4,8 +4,8 @@ module Gamefic
 
 	class Query
 		def initialize(context, *arguments)
-			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :story and context != :string
-				raise "Query context must be :family, :children, :siblings, :parent, :self, :story, or :string"
+			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :plot and context != :string
+				raise "Query context must be :family, :children, :siblings, :parent, :self, :plot, or :string"
 			end
 			if context == :string and arguments.length > 0
 				raise "Query with :string context cannot take additional arguments."
@@ -19,8 +19,8 @@ module Gamefic
 					array = [subject]
 				when :parent
 					array = [subject.parent]
-				when :story
-					array = subject.story.entities
+				when :plot
+					array = subject.plot.entities
 				when :children
 					array = subject.children
 				when :siblings

@@ -18,15 +18,23 @@ module Gamefic
 			@update_procs = Array.new
 			@declared_scripts = Array.new
 			@entities = Array.new
+			post_initialize
 		end
-		def require_defaults
-			Dir[File.dirname(__FILE__) + '/entity_ext/*.rb'].each do |file|
-				require file
-			end
-			Dir[File.dirname(__FILE__) + '/action_ext/*.rb'].each do |file|
-				require_script file
+		def post_initialize
+			if Gamefic.with_base?
+				Dir[File.dirname(__FILE__) + '/action_ext/*.rb'].each do |file|
+					require_script file
+				end
 			end
 		end
+		#def require_defaults
+			#Dir[File.dirname(__FILE__) + '/entity_ext/*.rb'].each do |file|
+			#	require file
+			#end
+			#Dir[File.dirname(__FILE__) + '/action_ext/*.rb'].each do |file|
+			#	require_script file
+			#end
+		#end
 		def action(command, *queries, &proc)
 			act = Action.new(self, command, *queries, &proc)
 		end
@@ -38,7 +46,7 @@ module Gamefic
 			if ent.kind_of?(Entity) == false
 				raise "Invalid entity class"
 			end
-			@entities.push ent
+			#@entities.push ent
 			ent
 		end
 		def make(cls, args = {})
@@ -166,6 +174,9 @@ module Gamefic
 				args.push new_name.to_sym
 			}
 			Syntax.new self, *[user_friendly, action.command] + args
+		end
+		def add_entity(entity)
+			@entities.push entity
 		end
 	end
 

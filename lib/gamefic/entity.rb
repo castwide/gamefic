@@ -17,6 +17,7 @@ module Gamefic
 			#self.state = State
 			#@story = Subplot.current
 			@plot = plot
+			@plot.send :add_entity, self
 			#@story.add_entity self
 			args.each { |key, value|
 				send "#{key}=", value

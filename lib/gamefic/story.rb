@@ -3,9 +3,7 @@ require_relative "./plot"
 module Gamefic
 
 	class Story < Plot
-		#include Singleton
-		def initialize
-			super
+		def post_initialize
 			@subplots = Array.new
 		end
 		def subplots
@@ -21,16 +19,16 @@ module Gamefic
 			return featured
 		end
 	end
-	#$story = Story.instance  # Just an alias
 	
 	class StoryWithSubplots < Plot
 		def initialize(story, entity)
-			@entities = story.entities
-			@commands = story.commands
-			@syntaxes = story.syntaxes
+			@story = story
+			@entities = @story.entities
+			@commands = @story.commands
+			@syntaxes = @story.syntaxes
 			story.subplots_featuring(entity).each { |sub|
 				@entities.concat(sub.entities)
-				# TODO: Commands and syntaxes may need to be resorted here
+				# TODO: Commands and syntaxes should be concatenated and sorted
 				@commands = sub.commands
 				@syntaxes = sub.syntaxes
 			}
@@ -38,14 +36,14 @@ module Gamefic
 	end
 
 	class Subplot < Plot
-		@@current_stack = Array.new
 		def initialize(story, args = {})
-			@@current_stack.push self
 			@story = story
 			super()
 			story.subplots.push self
 			@featuring = Array.new
 			@concluded = Array.new
+			# TODO: Maybe don't clone commands and stuff here.
+			# Do it in StoryWithSubplots instead.
 			@story.commands.each { |key, array|
 				@commands[key] = array.clone
 			}
@@ -55,7 +53,6 @@ module Gamefic
 				self.send("#{key}=", value)
 			}
 			post_initialize
-			@@current_stack.pop
 		end
 		def post_initialize
 			# Nothing to do unless inherited
@@ -67,15 +64,11 @@ module Gamefic
 			@featuring.include? entity
 		end
 		def introduce(player)
-			if story.subplots_featuring(player).length > 0
-				player.tell "You're already involved in another subplot."
-			else
-				if player.kind_of?(Featurable) == false
-					player.extend Featurable
-				end
-				@featuring.push player
-				super
+			if player.kind_of?(Featurable) == false
+				player.extend Featurable
 			end
+			@featuring.push player
+			super
 		end
 		def conclude(player, key = nil)
 			super
@@ -88,14 +81,6 @@ module Gamefic
 			if @concluded.length > 0 and @featuring.length == 0
 				story.subplots.delete self
 			end
-		end
-		def load_script(filename)
-			@@current_stack.push self
-			super
-			@@current_stack.pop self
-		end
-		def Subplot.current
-			@@current_stack.last || Story.instance
 		end
 	end
 	
