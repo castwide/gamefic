@@ -1,3 +1,7 @@
-Action.new nil, :quit do |actor|
-	exit
+module Gamefic
+
+	Action.new nil, :quit do |actor|
+		exit
+	end
+
 end

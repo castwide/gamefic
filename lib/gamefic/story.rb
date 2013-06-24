@@ -4,6 +4,7 @@ module Gamefic
 
 	class Story < Plot
 		def post_initialize
+			super
 			@subplots = Array.new
 		end
 		def subplots

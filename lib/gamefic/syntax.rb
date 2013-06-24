@@ -11,6 +11,7 @@ module Gamefic
 			@command = arguments.shift
 			@arguments = arguments
 			if story == nil
+				@creation_order = 0
 				@@defaults.push self
 			else
 				@creation_order = story.syntaxes.length + 1
