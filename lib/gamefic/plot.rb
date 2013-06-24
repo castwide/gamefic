@@ -21,11 +21,12 @@ module Gamefic
 			post_initialize
 		end
 		def post_initialize
-			if Gamefic.with_base?
-				Dir[File.dirname(__FILE__) + '/action_ext/*.rb'].each do |file|
-					require_script file
-				end
-			end
+			Action.defaults.each {|a|
+				add_action a
+			}
+			Syntax.defaults.each {|s|
+				add_syntax s
+			}
 		end
 		#def require_defaults
 			#Dir[File.dirname(__FILE__) + '/entity_ext/*.rb'].each do |file|

@@ -2,6 +2,7 @@ module Gamefic
 
 	class Syntax
 		attr_reader :template, :command, :arguments, :creation_order
+		@@defaults = Array.new
 		def initialize(story, *arguments)
 			if arguments.length < 2
 				raise "Syntax.new requires at least two arguments (template and command)"
@@ -9,9 +10,16 @@ module Gamefic
 			@template = arguments.shift
 			@command = arguments.shift
 			@arguments = arguments
-			@creation_order = story.syntaxes.length + 1
-			story.send :add_syntax, self
-			@story = story
+			if story == nil
+				@@defaults.push self
+			else
+				@creation_order = story.syntaxes.length + 1
+				story.send :add_syntax, self
+				@story = story
+			end
+		end
+		def self.defaults
+			@@defaults.clone
 		end
 		def self.match(input, syntaxes)
 			# Given the input, return all the syntaxes that potentially match it.

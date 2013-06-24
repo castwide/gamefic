@@ -1,12 +1,12 @@
-Action.new story, :look do |actor|
+Action.new nil,.new story, :look do |actor|
 	actor.perform "itemize room full"
 end
 
-Action.new story, :look_around do |actor|
+Action.new nil,.new story, :look_around do |actor|
 	actor.perform "look"
 end
 
-Action.new story, :itemize_room, Query.new(:string) do |actor, option|
+Action.new nil,.new story, :itemize_room, Query.new(:string) do |actor, option|
 	actor.tell "#{actor.parent.longname.cap_first}"
 	if option == "full"
 		actor.tell actor.parent.description
@@ -27,22 +27,22 @@ Action.new story, :itemize_room, Query.new(:string) do |actor, option|
 		actor.tell "Obvious exits: none"	
 	end
 end
-Syntax.new story, "itemize room", :itemize_room, "short"
-Syntax.new story, "itemize room :option", :itemize_room, :option
+Syntax.new nil, "itemize room", :itemize_room, "short"
+Syntax.new nil, "itemize room :option", :itemize_room, :option
 
-Action.new story, :look, Query.new(:family) do |actor, thing|
+Action.new nil,.new story, :look, Query.new(:family) do |actor, thing|
 	actor.tell thing.description
 end
 
-Action.new story, :look, Query.new(:parent) do |actor, thing|
+Action.new nil,.new story, :look, Query.new(:parent) do |actor, thing|
 	actor.perform "look"
 end
 
-Action.new story, :look, String do |actor, string|
+Action.new nil,.new story, :look, String do |actor, string|
 	actor.tell "You don't see any \"#{string}\" here."
 end
 
-Syntax.new story, "look at :thing", :look, :thing
-Syntax.new story, "examine :thing", :look, :thing
-Syntax.new story, "exam :thing", :look, :thing
-Syntax.new story, "x :thing", :look, :thing
+Syntax.new nil, "look at :thing", :look, :thing
+Syntax.new nil, "examine :thing", :look, :thing
+Syntax.new nil, "exam :thing", :look, :thing
+Syntax.new nil, "x :thing", :look, :thing

@@ -1,3 +1,3 @@
-Action.new story, :quit do |actor|
+Action.new nil, :quit do |actor|
 	exit
 end

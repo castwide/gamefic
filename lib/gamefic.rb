@@ -11,12 +11,3 @@ require_relative "./gamefic/plot"
 require_relative "./gamefic/story"
 require_relative "./gamefic/engine"
 require_relative "./gamefic/user"
-
-module Gamefic
-
-	@@with_base = false
-	def with_base?
-		@@with_base
-	end
-
-end
