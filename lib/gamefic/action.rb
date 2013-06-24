@@ -1,7 +1,7 @@
 module Gamefic
 
 	class Action
-		attr_reader :command, :creation_order
+		attr_reader :command
 		@@defaults = Array.new
 		def initialize(story, command, *queries, &proc)
 			if (command.kind_of?(Symbol) == false)
@@ -14,14 +14,8 @@ module Gamefic
 			@queries = queries
 			@proc = proc
 			if story == nil
-				# TODO: This is a default.
-				@@defaults.push self
+				@@defaults.unshift self
 			else
-				# TODO: This is going straight into a Plot.
-				@creation_order = 1
-				story.commands.each { |key, array|
-					@creation_order += array.length
-				}
 				story.send :add_action, self
 			end
 		end

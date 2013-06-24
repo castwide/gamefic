@@ -137,12 +137,13 @@ module Gamefic
 			if @commands[syntax.command] == nil
 				raise "Action \"#{syntax.command}\" does not exist"
 			end
-			@syntaxes.push syntax
+			@syntaxes.unshift syntax
 			@syntaxes.sort! { |a, b|
 				al = a.template.split_words.length
 				bl = b.template.split_words.length
 				if al == bl
-					b.creation_order <=> a.creation_order
+					# For syntaxes of the same length, creation order takes precedence
+					0
 				else
 					bl <=> al
 				end
@@ -152,10 +153,11 @@ module Gamefic
 			if (@commands[action.command] == nil)
 				@commands[action.command] = Array.new
 			end
-			@commands[action.command].push action
+			@commands[action.command].unshift action
 			@commands[action.command].sort! { |a, b|
 				if a.specificity == b.specificity
-					b.creation_order <=> a.creation_order
+					# For actions of the same length, creation order takes precedence
+					0
 				else
 					b.specificity <=> a.specificity
 				end

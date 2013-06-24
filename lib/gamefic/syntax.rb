@@ -1,7 +1,7 @@
 module Gamefic
 
 	class Syntax
-		attr_reader :template, :command, :arguments, :creation_order
+		attr_reader :template, :command, :arguments
 		@@defaults = Array.new
 		def initialize(story, *arguments)
 			if arguments.length < 2
@@ -11,10 +11,8 @@ module Gamefic
 			@command = arguments.shift
 			@arguments = arguments
 			if story == nil
-				@creation_order = 0
-				@@defaults.push self
+				@@defaults.unshift self
 			else
-				@creation_order = story.syntaxes.length + 1
 				story.send :add_syntax, self
 				@story = story
 			end
