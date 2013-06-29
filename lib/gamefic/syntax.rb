@@ -11,7 +11,7 @@ module Gamefic
 			@command = arguments.shift
 			@arguments = arguments
 			if story == nil
-				@@defaults.unshift self
+				@@defaults.push self
 			else
 				story.send :add_syntax, self
 				@story = story

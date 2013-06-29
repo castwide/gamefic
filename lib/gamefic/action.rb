@@ -14,7 +14,7 @@ module Gamefic
 			@queries = queries
 			@proc = proc
 			if story == nil
-				@@defaults.unshift self
+				@@defaults.push self
 			else
 				story.send :add_action, self
 			end
