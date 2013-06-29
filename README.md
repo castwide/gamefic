@@ -13,7 +13,7 @@ The core Gamefic library and executable are available as a Ruby gem:
 The Git repo includes several demo games in the examples directory. You can
 run them from the command line like so:
 
-    ./play examples/simple.rb
+    gamefic examples/simple.rb
 
 The simple.rb example consists of a room and a closet. The room has a book in
 it. Try the following commands to see how it works:
@@ -61,14 +61,14 @@ library with default action and entity definitions. It accepts one argument,
 the name of a file that contains game data. Example:
 
 	cd /path/to/gamefic
-    ./play examples/example.rb
+    gamefic examples/example.rb
 
 The default game engine is a turn-based terminal program. Executing the above
 command drops you to a command line in-game, ready for you to enter an action.
 The example.rb game provides a very simple demonstration of what you can do
 with the default game environment.
 
-# Your First Game
+# Writing Your First Game
 
 To make your own game, all you need to do is create a script to load with the
 play command. Create a file in your gamefic directory named "tiny.rb" that
@@ -82,7 +82,7 @@ contains the following:
 
 Run the script from the command line:
 
-    ./play tiny.rb
+    gamefic tiny.rb
 
 The script will drop you into a game prompt. There's not much you can do except look around:
 
