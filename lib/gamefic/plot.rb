@@ -108,7 +108,8 @@ module Gamefic
 				p.call
 			}
 			@entities.flatten.each { |e|
-				recursive_update e
+				#recursive_update e
+				e.update
 			}
 		end
 		def tell entities, message, refresh = false

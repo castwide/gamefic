@@ -3,7 +3,7 @@ module Gamefic
 	class Character < Entity
 		attr_reader :state, :queue, :user
 		def post_initialize
-			self.state = CharacterState
+			@state = CharacterState.new(self)
 			@queue = Array.new
 		end
 		def connect(user)
@@ -34,13 +34,23 @@ module Gamefic
 				end
 			end
 		end
-		def state=(state_class)
-			@state = state_class.new(self)
+		def state=(new_state)
+			@state = new_state
+		end
+		def destroy
+			if @user != nil
+				@user.quit
+			end
+			super
+		end
+		def update
+			super
+			@state.update
 		end
 	end
 	class CharacterState
-		def initialize(user)
-			@user = user
+		def initialize(character)
+			@character = character
 			post_initialize
 		end
 		def post_initialize
@@ -50,10 +60,9 @@ module Gamefic
 			false
 		end
 		def update
-			# TODO: Since this is an idle state, commands should have already gotten performed. What else needs to be done here?
-			while (line = @user.queue.shift)
-				@user.perform line
-				if @user.state != self
+			while (line = @character.queue.shift)
+				@character.perform line
+				if @character.state != self
 					break
 				end
 			end
