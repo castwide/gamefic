@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+###############################################################################
+#
+# Gamefic CLI
+# A command-line interface for text-based Gamefic adventure games.
+#
+# Author: Fred Snyder
+# Company: Castwide Technologies
+# Website: http://gamefic.com
+#
+# Copyright (c) 2013 by Fred Snyder for Castwide Technologies
+#
+###############################################################################
+
+# Commands:
+# play [game] - play a game
+# list - list installed games
+# install [game] - install a game
+# update [game] - update game
+# search [keyword] - search for games
+
+require "gamefic"
+require "gamefic/base"
+include Gamefic
+
+story = Story.new
+story.require_script "#{ARGV[0]}"
+engine = Engine.new story
+engine.run

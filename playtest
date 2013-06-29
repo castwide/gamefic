@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require_relative "./lib/gamefic"
+require_relative "./lib/gamefic/base"
+include Gamefic
+
+story = Story.new
+story.require_script "#{ARGV[0]}"
+engine = Engine.new story
+engine.run
