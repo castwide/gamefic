@@ -23,6 +23,9 @@ module Gamefic
 		def story
 			@story
 		end
+		def quit
+			exit
+		end
 	end
 	
 	class UserStream
