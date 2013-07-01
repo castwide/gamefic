@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
-require_relative "./lib/gamefic"
-require_relative "./lib/gamefic/base"
+# Use the local lib instead of the gem for testing and debugging
+$LOAD_PATH.unshift File.dirname(__FILE__) + "/lib"
+
+require "gamefic"
+require "gamefic/base"
 include Gamefic
 
 story = Story.new

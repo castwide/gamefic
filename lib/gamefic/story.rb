@@ -1,4 +1,4 @@
-require_relative "./plot"
+require "gamefic/plot"
 
 module Gamefic
 

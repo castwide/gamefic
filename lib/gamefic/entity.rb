@@ -1,7 +1,7 @@
 require "digest/md5"
-require_relative "./node"
-require_relative "./describable"
-require_relative "./story"
+require "gamefic/node"
+require "gamefic/describable"
+require "gamefic/story"
 
 module Gamefic
 	

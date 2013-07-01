@@ -1,4 +1,4 @@
-require_relative "./itemized"
+require "gamefic/entity_ext/itemized"
 
 module Gamefic
 
