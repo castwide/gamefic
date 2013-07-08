@@ -68,7 +68,8 @@ module Gamefic
 		end
 		def destroy
 			self.parent = nil
-			@plot.rem_entity self
+			# TODO: Need to call this private method here?
+			@plot.send(:rem_entity, self)
 		end
 	end
 
