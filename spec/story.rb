@@ -25,6 +25,19 @@ describe Subplot do
 		character.plot.entities.include?(story_entity).should eq(true)
 		character.plot.entities.include?(subplot_entity).should eq(true)		
 	end
+	it "updates entities for featured characters" do
+		story = Story.new
+		character = story.make Character
+		story_entity = story.make Entity
+		subplot = Subplot.new story
+		subplot_entity = subplot.make Entity
+		subplot.introduce character
+		character.plot.entities.length.should eq(3)
+		story.make Item
+		character.plot.entities.length.should eq(4)
+		subplot.conclude character
+		character.plot.entities.length.should eq(3)
+	end
 	it "hides subplot entities from external characters" do
 		story = Story.new
 		character = story.make Character
@@ -51,9 +64,40 @@ describe Subplot do
 		character.perform "increment"
 		subplot_counter.should eq(1)
 		subplot.conclude character
-		character.plot.should eq(story)
+    subplot.features?(character).should eq(false)
+    StoryWithSubplots.cached_for?(story, character).should eq(false)
 		character.perform "increment"
 		story_counter.should eq(2)
 		subplot_counter.should eq(1)
 	end
+  it "causes characters to use StoryWithSubplots" do
+    story = Story.new
+    subplot = Subplot.new story
+    character = story.make Character
+    subplot.introduce character
+    character.plot.kind_of?(StoryWithSubplots).should eq(true)
+  end
+end
+
+describe StoryWithSubplots do
+  it "deletes an entity's story cache when a related plot gets a new entity" do
+    story = Story.new
+    subplot = Subplot.new story
+    character = story.make Character
+    subplot.introduce character
+    sws = character.plot
+    story.make Item
+    StoryWithSubplots.cached_for?(story, character).should eq(false)
+  end
+  it "deletes an entity's story cache when a related plot gets a new action" do
+    story = Story.new
+    subplot = Subplot.new story
+    character = story.make Character
+    subplot.introduce character
+    sws = character.plot
+    story.respond :do do |actor|
+      actor.tell "no op"
+    end
+    StoryWithSubplots.cached_for?(story, character).should eq(false)  
+  end
 end

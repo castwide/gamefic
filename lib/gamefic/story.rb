@@ -19,21 +19,79 @@ module Gamefic
 			}
 			return featured
 		end
+		private
+		def add_entity(entity)
+			super
+			invalidate_all
+		end
+		def rem_entity(entity)
+			super
+			invalidate_all
+		end
+		def add_action(action)
+			super
+			invalidate_all
+		end
+		def add_syntax(syntax)
+			super
+			invalidate_all
+		end
+		def invalidate_all
+			#entities.that_are(Featurable).each do |e|
+			#	StoryWithSubplots.invalidate_for self, e
+			#end
+      StoryWithSubplots.invalidate_for self
+		end
 	end
 	
 	class StoryWithSubplots < Plot
+		@@entity_hash = Hash.new
 		def initialize(story, entity)
+      super()
 			@story = story
 			@entities = @story.entities
-			@commands = @story.commands
-			@syntaxes = @story.syntaxes
-			story.subplots_featuring(entity).each { |sub|
+			@story.commands.each { |k, v|
+        @commands[k] = v.clone
+      }
+			@syntaxes = @story.syntaxes.clone
+			@story.subplots_featuring(entity).each { |sub|
 				@entities.concat(sub.entities)
-				# TODO: Commands and syntaxes should be concatenated and sorted
-				@commands = sub.commands
-				@syntaxes = sub.syntaxes
+        sub.commands.each { |key, array|
+          array.each { |a|
+            add_action a
+          }
+        }
+        sub.syntaxes.each { |s|
+          add_syntax s
+        }
 			}
+			@@entity_hash[StoryWithSubplots.cache_key_for(story, entity)] = self
 		end
+		def self.for(story, entity)
+      cached = @@entity_hash[self.cache_key_for(story, entity)]
+      if cached != nil
+        return cached
+      else
+        self.new story, entity
+      end
+		end
+		def self.invalidate_for(story)
+      @@entity_hash.each { |k, s|
+        if k.include?(story.object_id) == true
+          @@entity_hash.delete k
+        end
+      }
+		end
+    def self.cached_for?(story, entity)
+      return (@@entity_hash[self.cache_key_for(story, entity)] != nil)
+    end
+    def self.cache_key_for(story, entity)
+      key = Array.new
+      ([story] + story.subplots_featuring(entity)).each { |s|
+        key.push s.object_id
+      }
+      return key
+    end
 	end
 
 	class Subplot < Plot
@@ -43,17 +101,10 @@ module Gamefic
 			story.subplots.push self
 			@featuring = Array.new
 			@concluded = Array.new
-			# TODO: Maybe don't clone commands and stuff here.
-			# Do it in StoryWithSubplots instead.
-			@story.commands.each { |key, array|
-				@commands[key] = array.clone
-			}
-			@syntaxes = story.syntaxes.clone
 			@declared_scripts = story.declared_scripts.clone
 			args.each { |key, value|
 				self.send("#{key}=", value)
 			}
-			post_initialize
 		end
 		def post_initialize
 			# Nothing to do unless inherited
@@ -62,26 +113,44 @@ module Gamefic
 			@featuring.clone
 		end
 		def features?(entity)
-			@featuring.include? entity
+			@featuring.include?(entity)
 		end
 		def introduce(player)
 			if player.kind_of?(Featurable) == false
 				player.extend Featurable
 			end
+      StoryWithSubplots.invalidate_for self
 			@featuring.push player
 			super
 		end
 		def conclude(player, key = nil)
 			super
 			@concluded.push player
-			@concluded.each { |player|
-				if player.parent == nil or player.parent.plot != self
-					@featuring.delete player
-				end
-			}
+      @featuring.delete player
+			StoryWithSubplots.invalidate_for self
 			if @concluded.length > 0 and @featuring.length == 0
 				story.subplots.delete self
 			end
+		end
+		private
+		def add_entity(entity)
+			super
+			invalidate_all
+		end
+		def rem_entity(entity)
+			super
+			invalidate_all
+		end
+		def add_action(action)
+			super
+			invalidate_all
+		end
+		def add_syntax(syntax)
+			super
+			invalidate_all
+		end
+		def invalidate_all
+      StoryWithSubplots.invalidate_for self
 		end
 	end
 	
@@ -89,10 +158,7 @@ module Gamefic
 		# Access content in the Story and all Subplots featuring this entity.
 		def plot
 			story = super
-			if story.subplots_featuring(self).length == 0
-				return story
-			end
-			StoryWithSubplots.new story, self
+			StoryWithSubplots.for story, self
 		end
 	end
 
