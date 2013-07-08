@@ -7,9 +7,9 @@ module Gamefic
 			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :plot and context != :string
 				raise "Query context must be :family, :children, :siblings, :parent, :self, :plot, or :string"
 			end
-			if context == :string and arguments.length > 0
-				raise "Query with :string context cannot take additional arguments."
-			end
+			#if context == :string and arguments.length > 0
+			#	raise "Query with :string context cannot take additional arguments."
+			#end
 			@context = context
 			@arguments = arguments
 		end
@@ -28,7 +28,25 @@ module Gamefic
 				when :family
 					array = subject.children + subject.parent.children
 				when :string
-					return Matches.new([description], description, '')
+          if @arguments.length == 0
+            return Matches.new([description], description, '')
+          end
+          keywords = Keywords.new(description)
+          args = Keywords.new(@arguments)
+          found = Array.new
+          remainder = Array.new
+          keywords.each { |key|
+            if args.include?(key)
+              found.push key
+            else
+              remainder.push key
+            end
+          }
+          if found.length > 0
+            return Matches.new([description], found.join(' '), remainder.join(' '))
+          else
+            return Matches.new([], '', description)
+          end
 				else
 					raise "Unrecognized: #{context}"
 			end
@@ -123,7 +141,7 @@ module Gamefic
 						@specificity += 10
 					when :string
 						@specificity = 1
-						return @specificity
+						#return @specificity
 				end
 				magnitude = 1
 				@arguments.each { |item|
