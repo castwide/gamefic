@@ -19,6 +19,12 @@ module Gamefic
 			}
 			return featured
 		end
+    def update
+      super
+      @subplots.each { |subplot|
+        subplot.update
+      }
+    end
 		private
 		def add_entity(entity)
 			super
@@ -46,16 +52,16 @@ module Gamefic
 	
 	class StoryWithSubplots < Plot
 		@@entity_hash = Hash.new
-		def initialize(story, entity)
+    def initialize(plots)
       super()
-			@story = story
-			@entities = @story.entities
+      @story = plots.shift
+      @entities = @story.entities
 			@story.commands.each { |k, v|
         @commands[k] = v.clone
       }
 			@syntaxes = @story.syntaxes.clone
-			@story.subplots_featuring(entity).each { |sub|
-				@entities.concat(sub.entities)
+      plots.each { |sub|
+        @entities.concat(sub.entities)
         sub.commands.each { |key, array|
           array.each { |a|
             add_action a
@@ -64,37 +70,72 @@ module Gamefic
         sub.syntaxes.each { |s|
           add_syntax s
         }
-			}
-			@@entity_hash[StoryWithSubplots.cache_key_for(story, entity)] = self
+      }
+      @@entity_hash[[@story] + plots] = self
+    end
+		def old_initialize(story, entity)
+      super()
+			@story = story
+			@entities = @story.entities
+			@story.commands.each { |k, v|
+        @commands[k] = v.clone
+      }
+			@syntaxes = @story.syntaxes.clone
+      if entity != nil
+        @story.subplots_featuring(entity).each { |sub|
+          @entities.concat(sub.entities)
+          sub.commands.each { |key, array|
+            array.each { |a|
+              add_action a
+            }
+          }
+          sub.syntaxes.each { |s|
+            add_syntax s
+          }
+        }
+        @@entity_hash[StoryWithSubplots.cache_key_for(story, entity)] = self
+      end
 		end
 		def self.for(story, entity)
-      cached = @@entity_hash[self.cache_key_for(story, entity)]
+      plots = [story] + story.subplots_featuring(entity)
+      cached = @@entity_hash[plots]
       if cached != nil
         return cached
       else
-        self.new story, entity
+        self.new plots
       end
 		end
 		def self.invalidate_for(story)
       @@entity_hash.each { |k, s|
-        if k.include?(story.object_id) == true
+        if k.include?(story) == true
           @@entity_hash.delete k
         end
       }
 		end
     def self.cached_for?(story, entity)
-      return (@@entity_hash[self.cache_key_for(story, entity)] != nil)
+      #return (@@entity_hash[self.cache_key_for(story, entity)] != nil)
+      return (@@entity_hash[[story] + story.subplots_featuring(entity)] != nil)
     end
-    def self.cache_key_for(story, entity)
-      key = Array.new
-      ([story] + story.subplots_featuring(entity)).each { |s|
-        key.push s.object_id
-      }
-      return key
+    #def self.cache_key_for(story, entity)
+    #  key = Array.new
+    #  ([story] + story.subplots_featuring(entity)).each { |s|
+    #    key.push s.object_id
+    #  }
+    #  return key
+    #end
+    def self.join(plots)
+      cached = @@entity_hash[plots]
+      if cached != nil
+        return cached
+      else
+        sws = self.new plots
+        @@entity_hash[plots] = sws
+      end
     end
 	end
 
 	class Subplot < Plot
+    attr_reader :story
 		def initialize(story, args = {})
 			@story = story
 			super()
@@ -134,6 +175,9 @@ module Gamefic
 		end
 		private
 		def add_entity(entity)
+      if entity.kind_of?(Featurable) == false and entity.kind_of?(Subplotted) == false
+        entity.extend Subplotted
+      end
 			super
 			invalidate_all
 		end
@@ -162,4 +206,12 @@ module Gamefic
 		end
 	end
 
+  module Subplotted
+    def plot
+      subplot = super
+      story = subplot.story
+      StoryWithSubplots.join [story, subplot]
+    end
+  end
+  
 end

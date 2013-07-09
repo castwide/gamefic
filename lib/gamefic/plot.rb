@@ -107,7 +107,8 @@ module Gamefic
 			@update_procs.each { |p|
 				p.call
 			}
-			@entities.flatten.each { |e|
+			#@entities.flatten.each { |e|
+      @entities.each { |e|
 				#recursive_update e
 				e.update
 			}
