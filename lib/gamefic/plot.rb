@@ -119,7 +119,7 @@ module Gamefic
 			}
 		end
 		def load_script filename
-			story = self
+			plot = self
 			eval File.read(filename), nil, filename, 1
 		end
 		def require_script filename

@@ -3,9 +3,16 @@ require "gamefic/keywords"
 module Gamefic
 
 	class Query
+    FAMILY   = :family
+    CHILDREN = :children
+    SIBLINGS = :siblings
+    PARENT   = :parent
+    SELF     = :self
+    PLOT     = :plot
+    STRING   = :string
 		def initialize(context, *arguments)
 			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :plot and context != :string
-				raise "Query context must be :family, :children, :siblings, :parent, :self, :plot, or :string"
+				raise "Invalid Query context '#{context}'"
 			end
 			#if context == :string and arguments.length > 0
 			#	raise "Query with :string context cannot take additional arguments."

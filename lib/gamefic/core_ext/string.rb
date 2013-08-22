@@ -5,6 +5,15 @@ class String
 	def cap_first
 		self.capitalize_first
 	end
+  def specify
+    if self[0,2] == 'a ' or self[0,3] == 'an '
+      "the #{self.split(' ').shift.join(' ')}"
+    end
+    if self[0,2] == 'A ' or self[0,3] == 'An '
+      "The #{self.split(' ').shift.join(' ')}"
+    end
+    "#{self}"
+  end
 	def terminalize
 		output = ''
 		lines = self.split("\n")

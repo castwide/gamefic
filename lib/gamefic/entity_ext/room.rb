@@ -13,13 +13,13 @@ module Gamefic
 				if reverse == nil
 					raise "\"#{direction.cap_first}\" does not have an opposite direction"
 				end
-				portal = type.new(self.plot, {
+				portal2 = type.new(self.plot, {
 					:name => reverse,
 					:parent => destination,
 					:destination => self
 				})
 			end
-			self
+			portal
 		end
 		def tell(message, refresh = false)
 			children.each { |c|

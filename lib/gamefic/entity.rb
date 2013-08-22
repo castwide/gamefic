@@ -1,7 +1,7 @@
 require "digest/md5"
 require "gamefic/node"
 require "gamefic/describable"
-require "gamefic/story"
+require "gamefic/plot"
 
 module Gamefic
 	

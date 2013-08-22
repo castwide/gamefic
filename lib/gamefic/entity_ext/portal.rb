@@ -6,6 +6,16 @@ module Gamefic
 		#	super
 		#	@destination = nil
 		#end
+    def find_reverse
+      rev = Portal.reverse(self.name)
+      if rev != nil
+        destination.children.that_are(Portal).each { |c|
+          if c.name == rev
+            return c
+          end
+        }
+      end
+    end
 		def self.reverse(direction)
 			case direction.downcase
 				when "north"
