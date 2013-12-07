@@ -21,53 +21,27 @@ module Gamefic
 			post_initialize
 		end
 		def post_initialize
-			Action.defaults.each {|a|
-				add_action a
-			}
-			Syntax.defaults.each {|s|
-				add_syntax s
-			}
+      # TODO: Should this method be required by extended classes?
 		end
-		#def require_defaults
-			#Dir[File.dirname(__FILE__) + '/entity_ext/*.rb'].each do |file|
-			#	require file
-			#end
-			#Dir[File.dirname(__FILE__) + '/action_ext/*.rb'].each do |file|
-			#	require_script file
-			#end
-		#end
 		def action(command, *queries, &proc)
 			act = Action.new(self, command, *queries, &proc)
 		end
 		def respond(command, *queries, &proc)
 			self.action(command, *queries, &proc)
 		end
-		def entity(cls, args)
+		def make(cls, args = {})
 			ent = cls.new(self, args)
 			if ent.kind_of?(Entity) == false
 				raise "Invalid entity class"
 			end
-			#@entities.push ent
 			ent
 		end
-		def make(cls, args = {})
-			self.entity(cls, args)
-		end
 		def syntax(*args)
+		end
+		def xlate(*args)
 			syn = Syntax.new(self, *args)
 			@syntaxes.push syn
 			syn
-		end
-		def xlate(*args)
-			syntax(*args)
-		end
-		#def add_entity(entity)
-		#	if @entities.include?(entity) == false
-		#		@entities.push entity
-		#	end
-		#end
-		def rem_entity(entity)
-			@entities.delete(entity)
 		end
 		def entities
 			@entities.clone
@@ -128,7 +102,12 @@ module Gamefic
 				load_script filename
 			end
 		end
+    
 		private
+    
+		def rem_entity(entity)
+			@entities.delete(entity)
+		end
 		def recursive_update(entity)
 			entity.update
 			entity.children.each { |e|
@@ -180,6 +159,12 @@ module Gamefic
 			}
 			Syntax.new self, *[user_friendly, action.command] + args
 		end
+    def rem_action(action)
+      @commands[action.command].delete(action)
+    end
+    def rem_syntax(syntax)
+      @syntaxes.delete syntax
+    end
 		def add_entity(entity)
 			@entities.push entity
 		end
