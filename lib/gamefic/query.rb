@@ -12,7 +12,8 @@ module Gamefic
     STRING   = :string
 		def initialize(context, *arguments)
 			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :plot and context != :string
-				raise "Invalid Query context '#{context}'"
+      #if self.class.constants.include?(context.to_sym) == false
+				raise "Invalid Query context '#{context.to_sym}'"
 			end
 			#if context == :string and arguments.length > 0
 			#	raise "Query with :string context cannot take additional arguments."
