@@ -19,6 +19,9 @@ class Array
 	def random
 		return self[rand(self.length)]
 	end
+  def pop_random
+    delete_at(rand(self.length))
+  end
 	def shuffle
 		self.sort { |a, b|
 			rand(3) <=> rand(3)
