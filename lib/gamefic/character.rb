@@ -2,9 +2,10 @@ module Gamefic
 
 	class Character < Entity
 		attr_reader :state, :queue, :user
-		def post_initialize
+		def initialize(plot, args = {})
 			@state = CharacterState.new(self)
 			@queue = Array.new
+      super
 		end
 		def connect(user)
 			@user = user

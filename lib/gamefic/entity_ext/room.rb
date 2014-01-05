@@ -3,9 +3,6 @@ require "gamefic/entity_ext/portal"
 module Gamefic
 
 	class Room < Entity
-		def post_initialize
-		
-		end
 		def connect(destination, direction, type = Portal, two_way = true)
 			portal = type.new self.plot, :name => direction, :parent => self, :destination => destination
 			if two_way == true
