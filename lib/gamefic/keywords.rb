@@ -7,6 +7,9 @@ module Gamefic
 			if statement.kind_of?(Keywords)
 				self.concat statement
 			else
+        if statement.kind_of?(Array)
+          statement = statement.join(' ')
+        end
 				self.concat statement.to_s.gsub(/[^a-z0-9]/i, ' ').strip.downcase.split(' ')
 			end
 			self.delete_if { |w|
