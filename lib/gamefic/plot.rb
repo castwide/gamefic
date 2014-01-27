@@ -136,12 +136,13 @@ module Gamefic
 			end
 			@commands[action.command].unshift action
 			@commands[action.command].sort! { |a, b|
-				if a.specificity == b.specificity
-					# For actions of the same length, creation order takes precedence
-					0
-				else
-					b.specificity <=> a.specificity
-				end
+        if a.specificity == b.specificity
+          # Newer action takes precedence
+          b.order_key <=> a.order_key
+        else
+          # Higher specificity takes precedence
+          b.specificity <=> a.specificity
+        end
 			}
 			user_friendly = action.command.to_s.sub(/_/, ' ')
 			args = Array.new

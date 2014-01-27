@@ -1,9 +1,12 @@
 module Gamefic
 
 	class Action
-		attr_reader :command
+		attr_reader :command, :order_key
 		@@defaults = Array.new
+    @@order_key_seed = 0
 		def initialize(story, command, *queries, &proc)
+      @order_key = @@order_key_seed
+      @@order_key_seed += 1
 			if (command.kind_of?(Symbol) == false)
 				raise "Action commands must be symbols"
 			end
