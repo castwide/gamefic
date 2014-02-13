@@ -1,7 +1,7 @@
 module Gamefic
 
 	class Character < Entity
-		attr_reader :state, :queue, :user
+		attr_reader :state, :queue, :user, :last_command
 		def initialize(plot, args = {})
 			@state = CharacterState.new(self)
 			@queue = Array.new
@@ -18,6 +18,7 @@ module Gamefic
 			#if command != nil
 			#	@queue.push command
 			#end
+      @last_command = command
 			if state.busy? == false
 				Director.dispatch(self, command)
 			else
