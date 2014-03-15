@@ -7,12 +7,12 @@ class String
 	end
   def specify
     if self[0,2] == 'a ' or self[0,3] == 'an '
-      "the #{self.split(' ').shift.join(' ')}"
+      return "the #{self.split(' ')[1..-1].join(' ')}"
     end
     if self[0,2] == 'A ' or self[0,3] == 'An '
-      "The #{self.split(' ').shift.join(' ')}"
+      return "The #{self.split(' ')[1..-1].join(' ')}"
     end
-    "#{self}"
+    return self
   end
 	def terminalize
 		output = ''
