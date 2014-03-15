@@ -1,5 +1,12 @@
 module Gamefic
 
+	Action.new nil, :look, Query.new(:family, Container) do |actor, thing|
+    passthru
+    if thing.closeable?
+      actor.tell "#{thing.longname.specify.cap_first} is #{thing.closed? ? 'closed' : 'open'}."
+    end
+	end
+
 	Action.new nil, :look_inside, Query.new(:family, Container) do |actor, container|
     if container.closed?
       actor.tell "#{container.longname.cap_first.specify} is closed."
@@ -43,7 +50,7 @@ module Gamefic
       actor.tell "#{container.longname.cap_first.specify} is closed."
     else
       item.parent = actor
-      actor.tell "You take #{item.longname} from #{container.longname}."
+      actor.tell "You take #{item.longname} from #{container.longname.specify}."
     end
 	end
 	Syntax.new nil, "take :item from :container", :take_from, :container, :item
@@ -62,6 +69,14 @@ module Gamefic
 	Syntax.new nil, "put :item in :container", :drop_in, :container, :item
 	Syntax.new nil, "place :item in :container", :drop_in, :container, :item
   
+  Action.new nil, :open, Query.new(:string) do |actor, string|
+    actor.tell "You don't see any \"#{string}\" here."
+  end
+  
+  Action.new nil, :open, Query.new(:family, Entity) do |actor, thing|
+    actor.tell "You can't open #{thing.longname.specify}."
+  end
+  
   Action.new nil, :open, Query.new(:family, Container) do |actor, container|
     if container.closeable?
       if container.closed?
@@ -73,6 +88,14 @@ module Gamefic
     else
       actor.tell "You can't open #{container.longname.specify}."
     end
+  end
+
+  Action.new nil, :close, Query.new(:string) do |actor, string|
+    actor.tell "You don't see any \"#{string}\" here."
+  end
+
+  Action.new nil, :close, Query.new(:family, Entity) do |actor, thing|
+    actor.tell "You can't close #{thing.longname.specify}."
   end
   
   Action.new nil, :close, Query.new(:family, Container) do |actor, container|
