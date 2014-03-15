@@ -8,7 +8,7 @@ module Gamefic
 			user = User.new @plot
 			@plot.introduce user.character
 			while true
-				user.stream.select
+				user.stream.select user.character.state.prompt
 				user.state.update
 				@plot.update
 			end

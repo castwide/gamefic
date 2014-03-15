@@ -35,9 +35,10 @@ module Gamefic
 		def send(data)
 			print data
 		end
-		def select
-			print "> "
-			@queue.push STDIN.gets
+		def select(prompt)
+			print prompt
+			line = STDIN.gets
+      @queue.push line.strip
 		end
 		def recv
 			@queue.shift
@@ -56,7 +57,8 @@ module Gamefic
 		def update
 			line = @user.stream.recv
 			if line != nil
-				@user.character.perform line
+				#@user.character.perform line
+        @user.character.queue.push line
 			end
 		end
 	end

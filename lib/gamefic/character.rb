@@ -69,6 +69,9 @@ module Gamefic
 				end
 			end
 		end
+    def prompt
+      "> "
+    end
 	end
 
 end
