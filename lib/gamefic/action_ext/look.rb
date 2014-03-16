@@ -9,7 +9,7 @@ module Gamefic
 	end
 
 	Action.new nil, :itemize_room, Query.new(:string) do |actor, option|
-		actor.tell "#{actor.parent.longname.cap_first}"
+		actor.tell "## #{actor.parent.longname.cap_first}"
 		if option == "full"
 			actor.tell actor.parent.description
 		end
