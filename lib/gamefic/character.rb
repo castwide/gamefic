@@ -73,5 +73,9 @@ module Gamefic
       "> "
     end
 	end
-
+  class GameOverState < CharacterState
+    def prompt
+      "GAME OVER"
+    end
+  end
 end
