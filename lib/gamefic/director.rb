@@ -31,7 +31,12 @@ module Gamefic
 			}
 			options.push([
 				Proc.new { |actor|
-					actor.tell "I don't know what you mean by '#{command}.'"
+          first = Keywords.new(command)[0]
+          if actor.plot.commandwords.include?(first)
+            actor.tell "I know the verb '#{first}' but couldn't understand the rest of your sentence."
+          else
+            actor.tell "I don't understand '#{first}' as a command."
+          end
 				}, [actor], -1
 			])
 			del = Delegate.new(options)
