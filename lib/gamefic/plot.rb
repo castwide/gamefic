@@ -69,6 +69,7 @@ module Gamefic
 		def conclude(player, key = nil)
 			if key != nil and @conclusions[key]
 				@conclusions[key].call(player)
+        player.state = GameOverState.new(player)
 			end
 		end
 		def cue scene
