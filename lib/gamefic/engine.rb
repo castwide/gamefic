@@ -7,7 +7,7 @@ module Gamefic
 		def run
 			user = User.new @plot
 			@plot.introduce user.character
-			while true
+			while user.character.state.kind_of?(GameOverState) == false
 				user.stream.select user.character.state.prompt
 				user.state.update
 				@plot.update
