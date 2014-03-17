@@ -51,7 +51,7 @@ module Gamefic
 			}
 			options.push([
 				Proc.new { |actor|
-          first = command.split(' ')[0]
+          first = command.split(' ')[0].downcase
           if actor.plot.commandwords.include?(first)
             actor.tell "I know the verb '#{first}' but couldn't understand the rest of your sentence."
           else
