@@ -8,12 +8,16 @@ The core Gamefic library and executable are available as a Ruby gem:
 
     gem install gamefic
 
+**Note**: The examples in this README assume you are testing with a checkout of
+the Git repo, so they reference the playtest script instead of the binary in
+the gem.
+
 # Running the Examples
 
 The Git repo includes several demo games in the examples directory. You can
 run them from the command line like so:
 
-    gamefic examples/simple.rb
+    ./playtest examples/simple.rb
 
 The simple.rb example consists of a room and a closet. The room has a book in
 it. Try the following commands to see how it works:
@@ -61,7 +65,7 @@ library with default action and entity definitions. It accepts one argument,
 the name of a file that contains game data. Example:
 
 	cd /path/to/gamefic
-    gamefic examples/example.rb
+    ./playtest examples/example.rb
 
 The default game engine is a turn-based terminal program. Executing the above
 command drops you to a command line in-game, ready for you to enter an action.
@@ -82,7 +86,7 @@ contains the following:
 
 Run the script from the command line:
 
-    gamefic tiny.rb
+    ./playtest tiny.rb
 
 The script will drop you into a game prompt. There's not much you can do except look around:
 
