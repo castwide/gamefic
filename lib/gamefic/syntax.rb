@@ -76,7 +76,7 @@ module Gamefic
 							end
 						end
 					else
-						if input_words[0] == symbol
+						if input_words[0].downcase == symbol.downcase
 							input_words.shift
 						else
 							break
