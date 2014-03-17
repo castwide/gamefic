@@ -64,6 +64,8 @@ module Gamefic
               elsif v.kind_of?(CharacterState)
                 v.instance_variable_set(:@character, entity)
                 entity.instance_variable_set(s, v)
+              elsif v.kind_of?(Array)
+                entity.send(writer, decode_array(v))
               else
                 entity.send(writer, v)
               end
@@ -99,7 +101,7 @@ module Gamefic
         writer = "#{v.to_s[1..-1]}="
         if e.respond_to?(writer)
           value = e.instance_variable_get(v)
-          if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value.kind_of?(CharacterState) or value == nil
+          if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value.kind_of?(CharacterState) or value == nil or value.kind_of?(Array)
             if value.kind_of?(Entity)
               if value == @user.character
                 hash[v] = Key.new('player')
@@ -109,6 +111,8 @@ module Gamefic
             elsif value.kind_of?(CharacterState)
               value.instance_variable_set(:@character, nil)
               hash[v] = value
+            elsif value.kind_of?(Array)
+              hash[v] = encode_array(value)
             else
               hash[v] = value
             end
@@ -117,6 +121,28 @@ module Gamefic
       }
       hash[:session] = e.session
       hash
+    end
+    def encode_array(array)
+      result = Array.new
+      array.each { |item|
+        if item.kind_of?(Entity)
+          result.push Key.new(item.key)
+        else
+          result.push item
+        end
+      }
+      result
+    end
+    def decode_array(array)
+      result = Array.new
+      array.each { |item|
+        if item.kind_of?(Key)
+          result.push @entity_keys[item.value]
+        else
+          result.push item
+        end
+      }
+      result    
     end
   end
   
