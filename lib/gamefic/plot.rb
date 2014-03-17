@@ -95,7 +95,24 @@ module Gamefic
 		end
 		def load_script filename
 			plot = self
-			eval File.read(filename), nil, filename, 1
+      resolved = filename
+      if (File.exist?(filename) == false)
+        if File.exist?(filename + ".rb")
+          resolved = filename + ".rb"
+        else
+          $LOAD_PATH.each { |path|
+            if File.exist?(path + "/" + filename)
+              resolved = path + "/" + filename
+              break
+            end
+            if File.exist?(path + "/" + filename + ".rb")
+              resolved = path + "/" + filename + ".rb"
+              break
+            end
+          }
+        end
+      end
+			eval File.read(resolved), nil, resolved, 1
 		end
 		def require_script filename
 			if @declared_scripts.include?(filename) == false
