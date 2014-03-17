@@ -2,6 +2,7 @@ module Gamefic
 
 	class Character < Entity
 		attr_reader :state, :queue, :user, :last_command
+    attr_accessor :object_of_pronoun
 		def initialize(plot, args = {})
 			@state = CharacterState.new(self)
 			@queue = Array.new
