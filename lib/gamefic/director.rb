@@ -3,6 +3,26 @@ module Gamefic
 	class Director
 		def self.dispatch(actor, command)
 			command.strip!
+      verbs = actor.plot.commandwords
+      first = command.split(' ')[0].downcase
+      if verbs.include?(first) == false
+        possibles = []
+        verbs.each { |v|
+          if v.start_with?(first)
+            possibles.push v
+          end
+        }
+        if possibles.length == 1
+          command = possibles[0] + command[first.length..-1]
+        else
+          if possibles.length > 1
+            actor.tell "'#{first.cap_first}' is ambiguous."
+          else
+            actor.tell "I don't understand '#{first}' as a command."
+          end
+          return
+        end
+      end
 			handlers = Syntax.match(command, actor.plot.syntaxes)
 			options = Array.new
 			handlers.each { |handler|
@@ -31,7 +51,7 @@ module Gamefic
 			}
 			options.push([
 				Proc.new { |actor|
-          first = Keywords.new(command)[0]
+          first = command.split(' ')[0]
           if actor.plot.commandwords.include?(first)
             actor.tell "I know the verb '#{first}' but couldn't understand the rest of your sentence."
           else
@@ -63,9 +83,17 @@ module Gamefic
 							valid = false
 							next
 						end
-						result = context.execute(last[0], arg)
+            if arg == 'it' and actor.object_of_pronoun != nil
+              result = context.execute(last[0], "#{actor.object_of_pronoun.longname}")
+            else
+              result = context.execute(last[0], arg)
+            end
 					else
-						result = context.execute(actor, arg)
+            if arg == 'it' and actor.object_of_pronoun != nil
+              result = context.execute(actor, "#{actor.object_of_pronoun.longname}")
+            else
+              result = context.execute(actor, arg)
+            end
 					end
 					if result.objects.length == 0
 						valid = false
@@ -104,6 +132,11 @@ module Gamefic
 					if opt[1].length == 1
 						opt[0].call(opt[1][0])
 					else
+            if opt[1].length == 2 and opt[1][1].kind_of?(Entity)
+              opt[1][0].object_of_pronoun = opt[1][1]
+            else
+              opt[1][0].object_of_pronoun = nil
+            end
 						opt[0].call(opt[1])
 					end
 				end
