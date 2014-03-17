@@ -41,10 +41,29 @@ module Gamefic
 	end
 
 	Action.new nil, :look, String do |actor, string|
-		actor.tell "You don't see any \"#{string}\" here."
+    containers = actor.children.that_are(Container)
+    containers = containers + actor.parent.children.that_are(Container)
+    found = false
+    containers.each { |container|
+      if container.closed? == false
+        query = Query.new(:children, Portable)
+        result = query.execute(container, string)
+        if result.objects.length == 1
+          found = true
+          actor.tell "You look at #{result.objects[0].longname.specify} in #{container.longname.specify}."
+          actor.perform "look #{result.objects[0].longname} in #{container.longname}"
+          break
+        end
+      end
+    }
+    if found == false
+      actor.tell "You don't see any \"#{string}\" here."
+    end
 	end
 
 	Syntax.new nil, "look at :thing", :look, :thing
+  Syntax.new nil, "l", :look
+  Syntax.new nil, "l :thing", :look, :thing
 	Syntax.new nil, "examine :thing", :look, :thing
 	Syntax.new nil, "exam :thing", :look, :thing
 	Syntax.new nil, "x :thing", :look, :thing

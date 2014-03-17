@@ -34,7 +34,7 @@ module Gamefic
       end
     }
     if found == false
-      actor.tell "You don't see anything called \"#{thing}\" here."
+      actor.tell "You don't see any \"#{thing}\" here."
     end
 	end
 

@@ -82,6 +82,7 @@ module Gamefic
       if container.closed?
         actor.tell "You open #{container.longname.specify}."
         container.closed = false
+        actor.perform "look inside #{container.longname}"
       else
         actor.tell "It's already open."
       end
