@@ -39,6 +39,7 @@ module Gamefic
 		def select(prompt)
 			print prompt
 			line = STDIN.gets
+      print "\n"
       @queue.push line.strip
 		end
 		def recv
