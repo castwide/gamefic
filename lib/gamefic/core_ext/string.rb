@@ -34,7 +34,7 @@ class String
 				output = output + line + "\n"
 			end
 		}
-		return output.strip
+		return output
 	end
 	def split_words
 		self.gsub(/ +/, ' ').strip.split

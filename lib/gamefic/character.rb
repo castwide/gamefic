@@ -79,4 +79,5 @@ module Gamefic
       "GAME OVER"
     end
   end
+
 end
