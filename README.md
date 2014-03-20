@@ -8,16 +8,17 @@ The core Gamefic library and executable are available as a Ruby gem:
 
     gem install gamefic
 
-**Note**: The examples in this README assume you are testing with a checkout of
-the Git repo, so they reference the playtest script instead of the binary in
-the gem.
+**Note:** Most of the examples in this README assume you are working with the
+gamefic executable that gets distributed with the gem. There's another
+executable in the repo's root directory that is functionally equivalent to the
+gem's version, except it adds the local lib directory to Ruby's load paths.
 
 # Running the Examples
 
-The Git repo includes several demo games in the examples directory. You can
+The Git repo includes a demo game in the examples directory. You can
 run them from the command line like so:
 
-    ./playtest examples/simple.rb
+    gamefic test examples/simple
 
 The simple.rb example consists of a room and a closet. The room has a book in
 it. Try the following commands to see how it works:
@@ -60,23 +61,45 @@ Some other shortcuts:
 
 # Games on the Command Line
 
-The Gamefic repo includes a command-line script that invokes the Gamefic
-library with default action and entity definitions. It accepts one argument,
-the name of a file that contains game data. Example:
+The gamefic executable accepts six commands: play, init, test, fetch, build,
+and help. Use "gamefic help" to get information about the other commands.
 
-	cd /path/to/gamefic
-    ./playtest examples/example.rb
+To play a game:
+
+    gamefic play example.gfic
+
+Alternately, you can just give it the filename, and the "play" command is
+assumed:
+
+    gamefic example.gfic
 
 The default game engine is a turn-based terminal program. Executing the above
 command drops you to a command line in-game, ready for you to enter an action.
 The example.rb game provides a very simple demonstration of what you can do
 with the default game environment.
 
+## Play vs. Test
+
+There are two commands you'll typically use to play games: play and test. The
+play command executes compiled games (.gfic files). The test command lets you
+run source directories and scripts. Use test to debug your games before you
+build Gamefic files for distribution.
+
 # Writing Your First Game
 
-To make your own game, all you need to do is create a script to load with the
-play command. Create a file in your gamefic directory named "tiny.rb" that
-contains the following:
+The easiest way to start your own game is with the init command:
+
+    gamefic init mygame
+
+Gamefic will create a directory called "mygame" that contains the main script
+and an import directory. The game is already capable of running:
+
+    gamefic test mygame
+
+Right now the game is just a single featureless room. Open the mygame/main.rb
+file in a text editor. Delete the skeleon code and replace it with the following:
+
+    import 'basics'
 
     apartment = make Room, :name => "apartment", :description => "You are in a tiny one-room apartment."
 
@@ -86,21 +109,21 @@ contains the following:
 
 Run the script from the command line:
 
-    ./playtest tiny.rb
+    gamefic test mygame
 
-The script will drop you into a game prompt. There's not much you can do except look around:
+The script will drop you into a game prompt. There's still not much you can do
+except look around:
 
-    >look
+    > look
 	You are in a tiny one-room apartment.
 	Obvious exits: none
 	>
 
-"Look" is one of the actions defined in the action_ext library. As you can see,
+"Look" is one of the actions defined in the "basics" library. As you can see,
 it outputs the room's description and gives you a list of exits.
 
-Right now there's not much you can do in this game other than "look" and "quit." We
-can make things a little more interesting by putting something in the apartment.
-Add this code to tiny.rb:
+We can make things a little more interesting by putting something in the
+apartment. Add this code to main.rb:
 
     pencil = make Item, :name => "pencil", :description => "A plain old No. 2 yellow.", :parent => apartment
 
@@ -124,6 +147,16 @@ Play the script again. Now the apartment contains an item you can manipulate.
 ## The Script Code
 
 Let's take a closer look at the methods we used in the script.
+
+### import
+
+The import method is similar to Ruby's require method. It loads a script from
+your game's import directory. If the script doesn't exist locally, the program
+will look for it in the Gamefic library.
+
+The "basics" library provides a bunch of functionality common to text
+adventures, including the abilities to look around, move between rooms, and
+pick up objects.
 
 ### make
 
@@ -317,3 +350,18 @@ in it. We can add a few more Syntaxes like so:
 	xlate "go to sleep", :sleep
 	xlate "rest", :sleep
 	xlate "snooze", :sleep
+
+# Building Game Files
+
+Once you're happy with your game, you can compile it into a .gfic file for
+distribution:
+
+    gamefic build mygame
+
+This will create a file called mygame.gfic that you can share with other
+Gamefic users.
+
+# More Information
+
+Go to [the official Gamefic website](http://gamefic.com) for games, news, and
+more documentation.

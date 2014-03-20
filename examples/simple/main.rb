@@ -1,3 +1,6 @@
+import 'basics'
+import 'hello'
+
 room = make Room, :name => "room", :longname => "a room", :description => "Just a room with four walls."
 
 closet = make Room, :name => "closet", :longname => "a closet", :description => "A walk-in closet. The door leads west."
