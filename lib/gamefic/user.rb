@@ -1,5 +1,5 @@
 module Gamefic
-	
+
 	class User
 		attr_reader :state, :character, :story
 		def initialize(story)
@@ -31,9 +31,10 @@ module Gamefic
 	class UserStream
 		def initialize
 			@queue = Array.new
+      puts "\n"
 		end
 		def send(data)
-			print data
+			print data.terminalize + "\n"
 		end
 		def select(prompt)
 			print prompt
@@ -57,7 +58,6 @@ module Gamefic
 		def update
 			line = @user.stream.recv
 			if line != nil
-				#@user.character.perform line
         @user.character.queue.push line
 			end
 		end
