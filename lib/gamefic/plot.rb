@@ -1,5 +1,23 @@
 module Gamefic
 
+  def self.bind(plot)
+    mod = Module.new do
+      def self.bind(plot)
+        @@plot = plot
+      end
+      def self.get_binding
+        binding
+      end
+      def self.method_missing(name, *args, &block)
+        if @@plot.respond_to?(name)
+          @@plot.send name, *args, &block
+        end
+      end
+    end
+    mod.bind plot
+    mod.get_binding
+  end
+  
 	class Plot
 		attr_reader :scenes, :commands, :conclusions, :declared_scripts
 		attr_accessor :story
@@ -93,7 +111,7 @@ module Gamefic
 				entity.tell message, refresh
 			}
 		end
-		def load_script filename
+		def load_script_DEP filename, bind = nil
 			plot = self
       resolved = filename
       if (File.exist?(filename) == false)
@@ -112,17 +130,65 @@ module Gamefic
           }
         end
       end
-			eval File.read(resolved), nil, resolved, 1
+			eval File.read(resolved), bind, resolved, 1
 		end
-		def require_script filename
+		def require_script_DEP filename, bind = nil
 			if @declared_scripts.include?(filename) == false
 				@declared_scripts.push(filename)
-				load_script filename
+				load_script filename, bind
 			end
 		end
+
+    def load script
+      @source_directory = File.dirname(script)
+      eval File.read(script), ::Gamefic.bind(self), script, 1
+    end
+    
+    def import script
+      if script[-2, 2] == '/*'
+        directory = script[0..-3]
+        resolved = @source_directory + '/import/' + directory
+        if !File.directory?(resolved)
+          $LOAD_PATH.each { |path|
+            if File.directory?("#{path}/gamefic/import/#{directory}")
+              resolved = "#{path}/gamefic/import/#{directory}"
+              break
+            end
+          }
+        end
+        Dir[resolved + '/*'].each do |file|
+          if File.file?(file)
+            new_import = directory + '/' + File.basename(file)[0..(File.extname(file).length * -1)-1]
+            self.import new_import
+          else
+            # TODO: How to handle directories? Ignore them, probably
+          end
+        end
+      else
+        resolved = @source_directory + '/import/' + script
+        if !File.file?(resolved)
+          if File.file?(resolved + ".rb")
+            resolved = resolved + ".rb"
+          else
+            $LOAD_PATH.each { |path|
+              if File.file?("#{path}/gamefic/import/#{script}")
+                resolved = "#{path}/gamefic/import/#{script}"
+                break
+              elsif File.file?("#{path}/gamefic/import/#{script}.rb")
+                resolved = "#{path}/gamefic/import/#{script}.rb"
+                break
+              end
+            }
+          end
+        end
+        if @declared_scripts.include?(resolved) == false
+          @declared_scripts.push(resolved)
+          eval File.read(resolved), ::Gamefic.bind(self), resolved, 1
+        end
+      end
+    end
     
 		private
-    
 		def rem_entity(entity)
 			@entities.delete(entity)
 		end
@@ -187,6 +253,6 @@ module Gamefic
 		def add_entity(entity)
 			@entities.push entity
 		end
-	end
+  end
 
 end

@@ -15,7 +15,7 @@ module RoomModes
   end
 end
 
-class Gamefic::Character
+class Character
   include RoomModes
 end
 

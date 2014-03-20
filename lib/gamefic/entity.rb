@@ -4,7 +4,7 @@ require "gamefic/describable"
 require "gamefic/plot"
 
 module Gamefic
-	
+
 	class Entity
 		include Branch
 		include Describable
