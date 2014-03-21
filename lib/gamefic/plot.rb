@@ -100,43 +100,15 @@ module Gamefic
 			@update_procs.each { |p|
 				p.call
 			}
-			#@entities.flatten.each { |e|
       @entities.each { |e|
-				#recursive_update e
 				e.update
 			}
 		end
+
 		def tell entities, message, refresh = false
 			entities.each { |entity|
 				entity.tell message, refresh
 			}
-		end
-		def load_script_DEP filename, bind = nil
-			plot = self
-      resolved = filename
-      if (File.exist?(filename) == false)
-        if File.exist?(filename + ".rb")
-          resolved = filename + ".rb"
-        else
-          $LOAD_PATH.each { |path|
-            if File.exist?(path + "/" + filename)
-              resolved = path + "/" + filename
-              break
-            end
-            if File.exist?(path + "/" + filename + ".rb")
-              resolved = path + "/" + filename + ".rb"
-              break
-            end
-          }
-        end
-      end
-			eval File.read(resolved), bind, resolved, 1
-		end
-		def require_script_DEP filename, bind = nil
-			if @declared_scripts.include?(filename) == false
-				@declared_scripts.push(filename)
-				load_script filename, bind
-			end
 		end
 
     def load script
