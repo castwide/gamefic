@@ -1,4 +1,4 @@
-require_relative "../lib/gamefic"
+require "gamefic"
 include Gamefic
 
 describe Keywords do

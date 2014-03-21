@@ -1,3 +1,3 @@
-require_relative "./../lib/gamefic"
-require_relative "./../lib/gamefic/base"
+require "gamefic"
+require "gamefic/base"
 include Gamefic
