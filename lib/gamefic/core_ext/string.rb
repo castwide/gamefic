@@ -20,7 +20,7 @@ class String
 		lines.each { |line|
 			if line.size > 79
 				while (line.size > 79)
-					offset = line.rindex(/[\s\W]/, 79)
+					offset = line.rindex(/[\s\-]/, 79)
 					if (offset == 0 or offset == nil)
 						output = output + line + "\n"
 						line = ''
