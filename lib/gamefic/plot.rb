@@ -34,6 +34,7 @@ module Gamefic
 			@syntaxes = Array.new
 			@conclusions = Hash.new
 			@update_procs = Array.new
+      @available_scripts = Hash.new
 			@declared_scripts = Array.new
 			@entities = Array.new
 			post_initialize
@@ -112,55 +113,64 @@ module Gamefic
 		end
 
     def load script
+      puts "The script is #{script}"
+      code = File.read(script)
+      code.untaint
       @source_directory = File.dirname(script)
-      eval File.read(script), ::Gamefic.bind(self), script, 1
+      puts "The directory is #{@source_directory}"
+      get_scripts @source_directory + '/import'
+      proc {
+        $SAFE = 3
+        eval code, ::Gamefic.bind(self), script, 1
+      }.call
     end
     
     def import script
       if script[-2, 2] == '/*'
         directory = script[0..-3]
-        resolved = @source_directory + '/import/' + directory
-        if !File.directory?(resolved)
-          $LOAD_PATH.each { |path|
-            if File.directory?("#{path}/gamefic/import/#{directory}")
-              resolved = "#{path}/gamefic/import/#{directory}"
-              break
-            end
-          }
-        end
-        Dir[resolved + '/*'].each do |file|
-          if File.file?(file)
-            new_import = directory + '/' + File.basename(file)[0..(File.extname(file).length * -1)-1]
-            self.import new_import
-          else
-            # TODO: How to handle directories? Ignore them, probably
+        resolved = directory
+        @available_scripts.each { |f, c|
+          if f.start_with?(resolved)
+            self.import f
           end
-        end
+        }
       else
-        resolved = @source_directory + '/import/' + script
-        if !File.file?(resolved)
-          if File.file?(resolved + ".rb")
-            resolved = resolved + ".rb"
-          else
-            $LOAD_PATH.each { |path|
-              if File.file?("#{path}/gamefic/import/#{script}")
-                resolved = "#{path}/gamefic/import/#{script}"
-                break
-              elsif File.file?("#{path}/gamefic/import/#{script}.rb")
-                resolved = "#{path}/gamefic/import/#{script}.rb"
-                break
-              end
-            }
+        resolved = script
+        if !@available_scripts.has_key?(resolved)
+          if @available_scripts.has_key?(resolved + '.rb')
+            resolved = resolved + '.rb'
           end
         end
-        if @declared_scripts.include?(resolved) == false
-          @declared_scripts.push(resolved)
-          eval File.read(resolved), ::Gamefic.bind(self), resolved, 1
+        if @available_scripts.has_key?(resolved)
+          if @available_scripts[resolved] != nil
+            code = @available_scripts[resolved]
+            @available_scripts[resolved] = nil
+            proc {
+              $SAFE = 3
+              @declared_scripts.push resolved
+              eval code, Gamefic.bind(self), resolved, 1
+            }.call
+          end
+        else
+          raise "Unavailable import: #{resolved}"
         end
       end
     end
     
 		private
+    def get_scripts(directory)
+      puts "Going into #{directory}"
+      Dir[directory + '/*'].each { |f|
+        if File.directory?(f)
+          get_scripts f
+        else
+          relative = f[(f.index('/import/')+8)..-1]
+          puts "Available script: #{relative}"
+          @available_scripts[relative] = File.read(f)
+          @available_scripts[relative].untaint
+        end
+      }
+    end
 		def rem_entity(entity)
 			@entities.delete(entity)
 		end

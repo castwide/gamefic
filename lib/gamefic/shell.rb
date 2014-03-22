@@ -56,6 +56,7 @@ module Gamefic
           exit 1
         end
         Dir.mktmpdir 'gamefic_' do |dir|
+          puts "Loading..."
           story = Story.new
           begin
             decompress file, dir
@@ -66,12 +67,14 @@ module Gamefic
           end
           story.load dir + '/main.rb'
           engine = Engine.new story
+          puts "\n"
           engine.run
         end
       end
       def test path
+        puts "Loading..."
         story = Story.new
-        begin
+        #begin
           if File.directory?(path)
             if !File.file?(path + '/main.rb')
               raise "#{path}/main.rb does not exist"
@@ -80,11 +83,11 @@ module Gamefic
           else
             story.load path
           end
-        rescue Exception => e
-          puts "An error occurred in #{path}:"
-          puts "#{e}"
-          exit 1
-        end
+        #rescue Exception => e
+        #  puts "An error occurred in #{path}:"
+        #  puts "#{e.inspect}"
+        #  exit 1
+        #end
         engine = Engine.new story
         engine.run
       end
@@ -119,6 +122,7 @@ introduction do |player|
 end
 EOS
         main_rb.close
+        fetch directory
         puts "Game directory '#{directory}' initialized."
       end
       def fetch directory
@@ -140,15 +144,21 @@ EOS
           exit 1
         end
         puts "Checking for external script references..."
+        fetched = 0
         story.declared_scripts.each { |script|
           if !script.start_with?(directory)
             base = script[(script.index('import/') + 7)..-1]
             puts "Fetching #{base}"
             FileUtils.mkdir_p directory + '/import/' + File.dirname(base)
             FileUtils.copy script, directory + '/import/' + base
+            fetched += 1
           end
         }
-        puts "Done"
+        if fetched == 0
+          puts "Nothing to fetch."
+        else
+          puts "Done."
+        end
       end
       def build directory
         if directory.to_s == ''
@@ -199,10 +209,12 @@ EOS
             Gem::Package::TarHeader.set_mtime Time.now
             tar.mkdir('import', 0700)
             story.declared_scripts.each { |script|
-              base = script[script.index('import/') + 7..-1]
+              puts "Here's #{script}"
+              #base = script[script.index('import/') + 7..-1]
+              base = script
               Gem::Package::TarHeader.set_mtime Time.now
               tar.add_file('import/' + base, 0700) do |io|
-                File.open(script, "rb") { |f| io.write f.read }
+                File.open(directory + '/import/' + script, "rb") { |f| io.write f.read }
               end
             }
           end
