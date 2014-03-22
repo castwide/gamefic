@@ -19,7 +19,7 @@ module Gamefic
   end
   
 	class Plot
-		attr_reader :scenes, :commands, :conclusions, :declared_scripts
+		attr_reader :scenes, :commands, :conclusions, :imported_scripts
 		attr_accessor :story
 		def commandwords
 			words = Array.new
@@ -35,7 +35,7 @@ module Gamefic
 			@conclusions = Hash.new
 			@update_procs = Array.new
       @available_scripts = Hash.new
-			@declared_scripts = Array.new
+			@imported_scripts = Array.new
 			@entities = Array.new
 			post_initialize
 		end
@@ -112,12 +112,15 @@ module Gamefic
 			}
 		end
 
-    def load script
-      puts "The script is #{script}"
+    def load script, with_libs = true
       code = File.read(script)
       code.untaint
       @source_directory = File.dirname(script)
-      puts "The directory is #{@source_directory}"
+      if with_libs == true
+        $LOAD_PATH.reverse.each { |path|
+          get_scripts path + '/gamefic/import'
+        }
+      end
       get_scripts @source_directory + '/import'
       proc {
         $SAFE = 3
@@ -147,7 +150,7 @@ module Gamefic
             @available_scripts[resolved] = nil
             proc {
               $SAFE = 3
-              @declared_scripts.push resolved
+              @imported_scripts.push resolved
               eval code, Gamefic.bind(self), resolved, 1
             }.call
           end
@@ -159,13 +162,11 @@ module Gamefic
     
 		private
     def get_scripts(directory)
-      puts "Going into #{directory}"
       Dir[directory + '/*'].each { |f|
         if File.directory?(f)
           get_scripts f
         else
           relative = f[(f.index('/import/')+8)..-1]
-          puts "Available script: #{relative}"
           @available_scripts[relative] = File.read(f)
           @available_scripts[relative].untaint
         end

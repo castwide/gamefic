@@ -79,7 +79,7 @@ module Gamefic
             if !File.file?(path + '/main.rb')
               raise "#{path}/main.rb does not exist"
             end
-            story.load path + '/main.rb'
+            story.load path + '/main.rb', true
           else
             story.load path
           end
@@ -145,7 +145,7 @@ EOS
         end
         puts "Checking for external script references..."
         fetched = 0
-        story.declared_scripts.each { |script|
+        story.imported_scripts.each { |script|
           if !script.start_with?(directory)
             base = script[(script.index('import/') + 7)..-1]
             puts "Fetching #{base}"
@@ -192,7 +192,7 @@ EOS
         story = Story.new
         puts "Loading game data..."
         begin
-          story.load directory + '/main.rb'
+          story.load directory + '/main.rb', true
         rescue Exception => e
           puts "'#{directory}' has errors or is not a valid source directory."
           puts "#{e}"
@@ -205,10 +205,10 @@ EOS
           tar.add_file('main.rb', 0600) do |io|
             File.open(directory + '/main.rb', "rb") { |f| io.write f.read }
           end
-          if story.declared_scripts.length > 0
+          if story.imported_scripts.length > 0
             Gem::Package::TarHeader.set_mtime Time.now
             tar.mkdir('import', 0700)
-            story.declared_scripts.each { |script|
+            story.imported_scripts.each { |script|
               puts "Here's #{script}"
               #base = script[script.index('import/') + 7..-1]
               base = script
