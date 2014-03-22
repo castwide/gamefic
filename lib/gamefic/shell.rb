@@ -137,7 +137,7 @@ EOS
         puts "Loading game data..."
         story = Story.new
         begin
-          story.load directory + '/main.rb'
+          story.load directory + '/main.rb', true
         rescue Exception => e
           puts "'#{directory}' has errors or is not a valid source directory."
           puts "#{e}"
@@ -146,11 +146,11 @@ EOS
         puts "Checking for external script references..."
         fetched = 0
         story.imported_scripts.each { |script|
-          if !script.start_with?(directory)
-            base = script[(script.index('import/') + 7)..-1]
+          if !script.filename.start_with?(directory)
+            base = script.filename[(script.filename.rindex('import/') + 7)..-1]
             puts "Fetching #{base}"
             FileUtils.mkdir_p directory + '/import/' + File.dirname(base)
-            FileUtils.copy script, directory + '/import/' + base
+            FileUtils.copy script.filename, directory + '/import/' + base
             fetched += 1
           end
         }
@@ -209,12 +209,10 @@ EOS
             Gem::Package::TarHeader.set_mtime Time.now
             tar.mkdir('import', 0700)
             story.imported_scripts.each { |script|
-              puts "Here's #{script}"
-              #base = script[script.index('import/') + 7..-1]
-              base = script
+              base = script.filename[script.filename.rindex('import/') + 7..-1]
               Gem::Package::TarHeader.set_mtime Time.now
               tar.add_file('import/' + base, 0700) do |io|
-                File.open(directory + '/import/' + script, "rb") { |f| io.write f.read }
+                io.write script.code
               end
             }
           end

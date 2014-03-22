@@ -146,12 +146,12 @@ module Gamefic
         end
         if @available_scripts.has_key?(resolved)
           if @available_scripts[resolved] != nil
-            code = @available_scripts[resolved]
+            script_object = @available_scripts[resolved]
             @available_scripts[resolved] = nil
             proc {
               $SAFE = 3
-              @imported_scripts.push resolved
-              eval code, Gamefic.bind(self), resolved, 1
+              @imported_scripts.push script_object
+              eval script_object.code, Gamefic.bind(self), script_object.filename, 1
             }.call
           end
         else
@@ -167,8 +167,7 @@ module Gamefic
           get_scripts f
         else
           relative = f[(f.index('/import/')+8)..-1]
-          @available_scripts[relative] = File.read(f)
-          @available_scripts[relative].untaint
+          @available_scripts[relative] = Script.new(f)
         end
       }
     end
@@ -236,6 +235,14 @@ module Gamefic
 		def add_entity(entity)
 			@entities.push entity
 		end
+    class Script
+      attr_reader :filename, :code
+      def initialize filename
+        @filename = filename
+        @code = File.read(filename)
+        @code.untaint
+      end
+    end
   end
 
 end
