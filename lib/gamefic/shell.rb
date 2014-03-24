@@ -2,6 +2,7 @@ require 'rubygems/package'
 require 'zlib'
 require 'tmpdir'
 require 'getoptlong'
+require 'gamefic/engine/tty'
 
 # Crazy hack to set file mtimes in tar file
 class Gem::Package::TarHeader
@@ -66,7 +67,7 @@ module Gamefic
             exit 1
           end
           story.load dir + '/main.rb'
-          engine = Engine.new story
+          engine = Tty::Engine.new story
           puts "\n"
           engine.run
         end
@@ -88,7 +89,7 @@ module Gamefic
         #  puts "#{e.inspect}"
         #  exit 1
         #end
-        engine = Engine.new story
+        engine = Tty::Engine.new story
         engine.run
       end
       def init directory
