@@ -19,7 +19,7 @@ module Gamefic
   end
   
 	class Plot
-		attr_reader :scenes, :commands, :conclusions, :declared_scripts
+		attr_reader :scenes, :commands, :conclusions, :imported_scripts
 		attr_accessor :story
 		def commandwords
 			words = Array.new
@@ -34,7 +34,8 @@ module Gamefic
 			@syntaxes = Array.new
 			@conclusions = Hash.new
 			@update_procs = Array.new
-			@declared_scripts = Array.new
+      @available_scripts = Hash.new
+			@imported_scripts = Array.new
 			@entities = Array.new
 			post_initialize
 		end
@@ -100,95 +101,76 @@ module Gamefic
 			@update_procs.each { |p|
 				p.call
 			}
-			#@entities.flatten.each { |e|
       @entities.each { |e|
-				#recursive_update e
 				e.update
 			}
 		end
+
 		def tell entities, message, refresh = false
 			entities.each { |entity|
 				entity.tell message, refresh
 			}
 		end
-		def load_script_DEP filename, bind = nil
-			plot = self
-      resolved = filename
-      if (File.exist?(filename) == false)
-        if File.exist?(filename + ".rb")
-          resolved = filename + ".rb"
-        else
-          $LOAD_PATH.each { |path|
-            if File.exist?(path + "/" + filename)
-              resolved = path + "/" + filename
-              break
-            end
-            if File.exist?(path + "/" + filename + ".rb")
-              resolved = path + "/" + filename + ".rb"
-              break
-            end
-          }
-        end
-      end
-			eval File.read(resolved), bind, resolved, 1
-		end
-		def require_script_DEP filename, bind = nil
-			if @declared_scripts.include?(filename) == false
-				@declared_scripts.push(filename)
-				load_script filename, bind
-			end
-		end
 
-    def load script
+    def load script, with_libs = true
+      code = File.read(script)
+      code.untaint
       @source_directory = File.dirname(script)
-      eval File.read(script), ::Gamefic.bind(self), script, 1
+      if with_libs == true
+        $LOAD_PATH.reverse.each { |path|
+          get_scripts path + '/gamefic/import'
+        }
+      end
+      get_scripts @source_directory + '/import'
+      proc {
+        $SAFE = 3
+        eval code, ::Gamefic.bind(self), script, 1
+      }.call
     end
     
     def import script
       if script[-2, 2] == '/*'
         directory = script[0..-3]
-        resolved = @source_directory + '/import/' + directory
-        if !File.directory?(resolved)
-          $LOAD_PATH.each { |path|
-            if File.directory?("#{path}/gamefic/import/#{directory}")
-              resolved = "#{path}/gamefic/import/#{directory}"
-              break
-            end
-          }
-        end
-        Dir[resolved + '/*'].each do |file|
-          if File.file?(file)
-            new_import = directory + '/' + File.basename(file)[0..(File.extname(file).length * -1)-1]
-            self.import new_import
-          else
-            # TODO: How to handle directories? Ignore them, probably
+        resolved = directory
+        @available_scripts.each { |f, c|
+          if f.start_with?(resolved)
+            self.import f
           end
-        end
+        }
       else
-        resolved = @source_directory + '/import/' + script
-        if !File.file?(resolved)
-          if File.file?(resolved + ".rb")
-            resolved = resolved + ".rb"
-          else
-            $LOAD_PATH.each { |path|
-              if File.file?("#{path}/gamefic/import/#{script}")
-                resolved = "#{path}/gamefic/import/#{script}"
-                break
-              elsif File.file?("#{path}/gamefic/import/#{script}.rb")
-                resolved = "#{path}/gamefic/import/#{script}.rb"
-                break
-              end
-            }
+        resolved = script
+        if !@available_scripts.has_key?(resolved)
+          if @available_scripts.has_key?(resolved + '.rb')
+            resolved = resolved + '.rb'
           end
         end
-        if @declared_scripts.include?(resolved) == false
-          @declared_scripts.push(resolved)
-          eval File.read(resolved), ::Gamefic.bind(self), resolved, 1
+        if @available_scripts.has_key?(resolved)
+          if @available_scripts[resolved] != nil
+            script_object = @available_scripts[resolved]
+            @available_scripts[resolved] = nil
+            proc {
+              $SAFE = 3
+              @imported_scripts.push script_object
+              eval script_object.code, Gamefic.bind(self), script_object.filename, 1
+            }.call
+          end
+        else
+          raise "Unavailable import: #{resolved}"
         end
       end
     end
     
 		private
+    def get_scripts(directory)
+      Dir[directory + '/*'].each { |f|
+        if File.directory?(f)
+          get_scripts f
+        else
+          relative = f[(f.index('/import/')+8)..-1]
+          @available_scripts[relative] = Script.new(f)
+        end
+      }
+    end
 		def rem_entity(entity)
 			@entities.delete(entity)
 		end
@@ -253,6 +235,14 @@ module Gamefic
 		def add_entity(entity)
 			@entities.push entity
 		end
+    class Script
+      attr_reader :filename, :code
+      def initialize filename
+        @filename = filename
+        @code = File.read(filename)
+        @code.untaint
+      end
+    end
   end
 
 end
