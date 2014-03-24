@@ -3,6 +3,9 @@ module Gamefic
 	class Director
 		def self.dispatch(actor, command)
 			command.strip!
+      if command.to_s == ''
+        return
+      end
       verbs = actor.plot.commandwords
       first = command.split(' ')[0].downcase
       if verbs.include?(first) == false
