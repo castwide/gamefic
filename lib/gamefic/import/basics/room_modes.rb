@@ -7,7 +7,7 @@ module RoomModes
     if value.kind_of?(Array)
       @description_seen = value
     else
-      raise "Character#visited must be an Array"
+      raise "Character#description_seen must be an Array"
     end
   end
   def description_mode
@@ -44,5 +44,5 @@ end
 
 respond :superbrief do |actor|
   actor.description_mode = "superbrief"
-  actor.tell "You are now in VERBOSE mode. Detailed room descriptions will never be displayed unless you LOOK AROUND. Other options are BRIEF and VERBOSE."
+  actor.tell "You are now in SUPERBRIEF mode. Detailed room descriptions will never be displayed unless you LOOK AROUND. Other options are BRIEF and VERBOSE."
 end

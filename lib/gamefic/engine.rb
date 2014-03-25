@@ -49,7 +49,7 @@ module Gamefic
 			# Nothing to do
 		end
 		def quit
-			exit
+			#exit
 		end
 	end
 	
