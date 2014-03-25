@@ -1,5 +1,5 @@
 respond :quit do |actor|
-  actor.destroy
+  actor.state = GameOverState.new(actor)
 end
 respond :commands do |actor|
   actor.tell actor.plot.commandwords.sort.join(", ")
