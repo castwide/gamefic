@@ -1,3 +1,5 @@
+require 'json'
+
 module Gamefic
 
   class Entity
@@ -60,13 +62,20 @@ module Gamefic
             tick
           end
         end
+        proc {
+          $SAFE = 3
+          response = Hash.new
+          response[:output] = @user.stream.output
+          response[:prompt] = @user.character.state.prompt
+          response[:state] = @user.character.state.class.to_s.split('::').last
+          puts JSON.generate(response)
+        }.call
       end
       def end_session
         save @session_file
       end
       private
       def load(filename)
-        #x = File.read(filename)
         x = File.open(filename, "r")
         ser = x.read
         x.close
@@ -107,7 +116,6 @@ module Gamefic
         @plot.entities.each { |e|
           data[e.key] = entity_hash(e)
         }
-        #data['player'] = entity_hash(@user.character)
         f = File.new(filename, "w")
         f.write Marshal.dump data
         f.close
@@ -171,6 +179,12 @@ module Gamefic
     end
     
     class UserStream < Gamefic::UserStream
+      def output
+        @output ||= Array.new
+      end
+      def send(data)
+        output.push data.strip
+      end
       def select(prompt)
         # TODO: non-blocking read
         line = STDIN.gets
