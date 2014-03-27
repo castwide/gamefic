@@ -218,7 +218,7 @@ tiny.rb demo.
     cupboard = make Container, :name => "cupboard", :description => "A small wooden cupboard.", :parent => apartment
 
     closet = make Room, :name => "closet", :description => "This closet is surprisingly spacious for such a small apartment."
-    closet.connect room, "east"
+    closet.connect apartment, "east"
 
 Run the demo again and try interacting with the new Entities. Among the new
 actions you can perform are walking into the closet ("west" from the apartment)
