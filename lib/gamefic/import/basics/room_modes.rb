@@ -11,7 +11,7 @@ module RoomModes
     end
   end
   def description_mode
-    @description_mode ||= "brief"
+    @description_mode ||= "verbose"
   end
 end
 
@@ -23,9 +23,9 @@ respond :go, Query.new(:siblings, Portal) do |actor, portal|
   actor.tell "You go #{portal.name}."
   actor.parent = portal.destination
   if actor.description_mode == "superbrief" or (actor.description_mode == "brief" and actor.description_seen.include?(actor.parent))
-    actor.perform "itemize room"
+    actor.tell actor.parent.longname.cap_first
   else
-    actor.perform "itemize room full"
+    actor.perform "look"
   end
   if actor.description_seen.include?(actor.parent) == false
     actor.description_seen.push actor.parent

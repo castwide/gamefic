@@ -1,21 +1,18 @@
 respond :look do |actor|
-  actor.perform "itemize room full"
+  actor.perform "look #{actor.parent.longname}"
 end
 
 respond :look_around do |actor|
-  actor.perform "look"
+  actor.perform "look @{actor.parent.longname}"
 end
 
-respond :itemize_room, Query.new(:string) do |actor, option|
-  actor.tell "## #{actor.parent.longname.cap_first}"
-  if option == "full"
-    actor.tell actor.parent.description
-  end
+respond :look, Query.new(:parent) do |actor, room|
+  actor.tell actor.parent.longname.cap_first
+  actor.tell actor.parent.description
   chars = actor.parent.children.that_are(Character) - [actor]
   if chars.length > 0
     actor.tell "Others here: #{chars.join(", ")}"
   end
-  #items = actor.parent.children.that_are(Itemized) - [chars] - [actor] - actor.parent.children.that_are(Portal)
   items = actor.parent.children.that_are(Itemized)
   if items.length > 0
     actor.tell "Visible items: #{items.join(", ")}"
@@ -27,15 +24,9 @@ respond :itemize_room, Query.new(:string) do |actor, option|
     actor.tell "Obvious exits: none"	
   end
 end
-xlate "itemize room", :itemize_room, "short"
-xlate "itemize room :option", :itemize_room, :option
 
 respond :look, Query.new(:family) do |actor, thing|
   actor.tell thing.description
-end
-
-respond :look, Query.new(:parent) do |actor, thing|
-  actor.perform "look"
 end
 
 respond :look, String do |actor, string|

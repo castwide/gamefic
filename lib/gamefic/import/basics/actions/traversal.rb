@@ -1,7 +1,7 @@
 respond :go, Query.new(:siblings, Portal) do |actor, portal|
   actor.parent = portal.destination
   actor.tell "You go #{portal.name}."
-  actor.perform "itemize room"
+  actor.perform "look"
 end
 
 respond :go, String do |actor, string|
