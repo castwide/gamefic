@@ -25,7 +25,7 @@ module Gamefic
       def select(prompt)
         print "#{terminalize prompt}"
         line = STDIN.gets
-        send "\n"
+        puts "\n"
         @queue.push line.strip
       end
       def terminalize string, max_length = 80
