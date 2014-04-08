@@ -19,12 +19,13 @@ module Gamefic
   end
   
 	class Plot
-		attr_reader :scenes, :commands, :conclusions, :imported_scripts
+		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules
 		attr_accessor :story
 		def commandwords
 			words = Array.new
 			@syntaxes.each { |s|
-				words.push(s.template.split_words[0])
+        word = s.template.split_words[0]
+				words.push(s.template.split_words[0]) if word[0.1] != ":"
 			}
 			words.uniq
 		end
@@ -37,16 +38,26 @@ module Gamefic
       @available_scripts = Hash.new
 			@imported_scripts = Array.new
 			@entities = Array.new
+      @rules = Hash.new
 			post_initialize
 		end
+    def assert name, &block
+      @rules[name] = Requirement.new self, name, &block
+    end
 		def post_initialize
       # TODO: Should this method be required by extended classes?
+		end
+		def meta(command, *queries, &proc)
+			act = Meta.new(self, command, *queries, &proc)
 		end
 		def action(command, *queries, &proc)
 			act = Action.new(self, command, *queries, &proc)
 		end
 		def respond(command, *queries, &proc)
 			self.action(command, *queries, &proc)
+		end
+		def before(command, *queries, &proc)
+			bef = Before.new(self, command, *queries, &proc)
 		end
 		def make(cls, args = {})
 			ent = cls.new(self, args)
@@ -97,6 +108,12 @@ module Gamefic
 		def passthru
 			Director::Delegate.passthru
 		end
+    def pass requirement
+      Director::Delegate.pass requirement
+    end
+    def deny requirement
+      Director::Delegate.deny requirement
+    end
 		def update
 			@update_procs.each { |p|
 				p.call
@@ -186,8 +203,14 @@ module Gamefic
 			end
 			@syntaxes.unshift syntax
 			@syntaxes.sort! { |a, b|
-				al = a.template.split_words.length
-				bl = b.template.split_words.length
+				al = a.template.length
+        if (a.command.nil?)
+          al -= 1
+        end
+				bl = b.template.length
+        if (b.command.nil?)
+          bl -= 1
+        end
 				if al == bl
 					# For syntaxes of the same length, creation order takes precedence
 					0
@@ -210,21 +233,23 @@ module Gamefic
           b.specificity <=> a.specificity
         end
 			}
-			user_friendly = action.command.to_s.sub(/_/, ' ')
-			args = Array.new
-			used_names = Array.new
-			action.queries.each { |c|
-				num = 1
-				new_name = "var"
-				while used_names.include? new_name
-					num = num + 1
-					new_name = "var#{num}"
-				end
-				used_names.push new_name
-				user_friendly += " :#{new_name}"
-				args.push new_name.to_sym
-			}
-			Syntax.new self, *[user_friendly, action.command] + args
+      #if action.command != nil
+        user_friendly = action.command.to_s.sub(/_/, ' ')
+        args = Array.new
+        used_names = Array.new
+        action.queries.each { |c|
+          num = 1
+          new_name = "var"
+          while used_names.include? new_name
+            num = num + 1
+            new_name = "var#{num}"
+          end
+          used_names.push new_name
+          user_friendly += " :#{new_name}"
+          args.push new_name.to_sym
+        }
+        Syntax.new self, *[user_friendly.strip, action.command] + args
+      #end
 		end
     def rem_action(action)
       @commands[action.command].delete(action)
