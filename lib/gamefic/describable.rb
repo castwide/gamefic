@@ -65,23 +65,23 @@ module Gamefic
 		end
 	end
 
-end
+  def self.a(entity)
+    entity.indefinitely
+  end
+  def self.an(entity)
+    entity.indefinitely
+  end
+  def self.the(entity)
+    entity.definitely
+  end
+  def self.A(entity)
+    entity.indefinitely.cap_first
+  end
+  def self.An(entity)
+    entity.indefinitely.cap_first
+  end
+  def self.The(entity)
+    entity.definitely.cap_first
+  end
 
-def a(entity)
-  entity.indefinitely
-end
-def an(entity)
-  entity.indefinitely
-end
-def the(entity)
-  entity.definitely
-end
-def A(entity)
-  entity.indefinitely.cap_first
-end
-def An(entity)
-  entity.indefinitely.cap_first
-end
-def The(entity)
-  entity.definitely.cap_first
 end

@@ -11,6 +11,8 @@ module Gamefic
       def self.method_missing(name, *args, &block)
         if @@plot.respond_to?(name)
           @@plot.send name, *args, &block
+        elsif Gamefic.respond_to?(name)
+          Gamefic.send name, *args, &block
         end
       end
     end
