@@ -23,7 +23,7 @@ frontDoor = make Portal,
   :description => "The door to the street.", 
   :parent => foyer
 
-respond :go, Query.new(:siblings, frontDoor) do |actor, dest|
+respond :go, Query::Siblings.new(frontDoor) do |actor, dest|
   actor.tell "You've only just arrived, and besides, the weather outside seems to be getting worse."
 end
 
@@ -41,23 +41,22 @@ foyer.connect cloakroom, "west"
 # It doesn't need a new class, it's just a fixture which responds to "put on" and "look".
 
 hook = make Fixture, 
-  :name => "small brass hook",
+  :name => "a small brass hook",
   :description => "It's just a brass hook.",
   :parent => cloakroom, 
-  :synonyms => "peg",
-  :longname => "the brass hook"
+  :synonyms => "peg"
 
-respond :look, Query.new(:family, hook) do |actor, hook|
+respond :look, Query::Family.new(hook) do |actor, hook|
   if hook.children.empty?
     actor.tell "It's just a brass hook, screwed to the wall."
   else
-    actor.tell "It's just a brass hook, with #{hook.children[0].longname} hanging on it, screwed to the wall."
+    actor.tell "It's just a brass hook, with #{a hook.children[0]} hanging on it, screwed to the wall."
   end
 end
 
-respond :put_on, Query.new(:family, hook), Query.new(:children) do |actor, hook, item|
+respond :put_on, Query::Family.new(hook), Query::Children.new() do |actor, hook, item|
   item.parent = hook
-  actor.tell "You put #{item.longname} on #{hook.longname}."
+  actor.tell "You put #{the item} on #{the hook}."
 end
 
 xlate "put :item on :hook", :put_on, :hook, :item
@@ -69,15 +68,14 @@ xlate "hang :item on :hook", :put_on, :hook, :item
 # We don't handle wearing it different from carrying it. 
 
 cloak = make Item,
-  :name => "velvet cloak",
+  :name => "a velvet cloak",
   :description => "A handsome cloak, of velvet trimmed with satin, and slightly splattered with raindrops. Its blackness is so deep that it almost seems to suck light from the room.", 
-  :synonyms => "dark black satin",
-  :longname => "the velvet cloak"
+  :synonyms => "dark black satin"
 
 
 # Stop the player from dropping the cloak except in the cloak room.
 
-respond :drop, Query.new(:children, cloak) do |actor, message|
+respond :drop, Query::Children.new(cloak) do |actor, message|
   if actor.parent != cloakroom then 
       actor.tell "This isn't the best place to leave a smart cloak lying around."
   else
@@ -105,7 +103,7 @@ message = make Scenery,
   :parent => bar,
   :synonyms => "scrawl scrawled sawdust dust"
 
-respond :look, Query.new(:siblings, message) do |actor, message|
+respond :look, Query::Siblings.new(message) do |actor, message|
   if actor.session[:disturbed] then 
     conclude actor, :you_have_lost
   else
@@ -118,7 +116,7 @@ xlate "read :message", :look, :message
 
 # When the player walks in to the bar with the cloak we enter a special InDarkState
 
-respond :go, Query.new(:siblings, Portal) do |actor, portal|
+respond :go, Query::Siblings.new(Portal) do |actor, portal|
   if portal.destination == bar && cloak.parent == actor then
     actor.tell "You go south."
     actor.tell "## Darkness"
@@ -179,7 +177,7 @@ end
 
 # "test me" command 
 # TODO this kind of works, but gamefic should maybe provide something for game testing. 
-respond :test, Query.new(:string) do |actor, string|
+respond :test, Query::Text.new() do |actor, string|
   actor.tell "> s"
   actor.perform "s"
   actor.tell "> n"
