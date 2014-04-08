@@ -24,8 +24,8 @@ module Gamefic
 		def commandwords
 			words = Array.new
 			@syntaxes.each { |s|
-        word = s.template.split_words[0]
-				words.push(s.template.split_words[0]) if word[0.1] != ":"
+        word = s.template[0]
+				words.push(word) if !word.kind_of?(Symbol)
 			}
 			words.uniq
 		end
@@ -67,6 +67,7 @@ module Gamefic
 			ent
 		end
 		def syntax(*args)
+      xlate *args
 		end
 		def xlate(*args)
 			syn = Syntax.new(self, *args)
