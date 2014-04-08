@@ -6,27 +6,13 @@ module Gamefic
       if command.to_s == ''
         return
       end
-      verbs = actor.plot.commandwords
-      first = command.split(' ')[0].downcase
-      if verbs.include?(first) == false
-        possibles = []
-        verbs.each { |v|
-          if v.start_with?(first)
-            possibles.push v
-          end
-        }
-        if possibles.length == 1
-          command = possibles[0] + command[first.length..-1]
-        else
-          if possibles.length > 1
-            actor.tell "'#{first.cap_first}' is ambiguous."
-          else
-            actor.tell "I don't understand '#{first}' as a command."
-          end
-          return
-        end
+      begin
+        handlers = Syntax.match(command, actor.plot)
+      rescue Exception => e
+        puts "#{e}"
+        return
       end
-			handlers = Syntax.match(command, actor.plot.syntaxes)
+      befores = Array.new
 			options = Array.new
 			handlers.each { |handler|
 				actions = actor.plot.commands[handler.command]
@@ -40,38 +26,42 @@ module Gamefic
 								if a.length > 1
 									longnames = Array.new
 									a.each { |b|
-										longnames.push b.longname
+										longnames.push "#{the b}"
 									}
 									actor.tell "I don't know which you mean: #{longnames.join(', ')}"
 									return
 								end
 								args.push a[0]
 							}
-							options.push [order.action.proc, args]
+              if order.action.kind_of?(Before)
+                befores.push [order.action, args]
+              else
+                options.push [order.action, args]
+              end
 						}
 					}
 				end
 			}
-			options.push([
-				Proc.new { |actor|
-          first = command.split(' ')[0].downcase
-          if actor.plot.commandwords.include?(first)
-            actor.tell "I know the verb '#{first}' but couldn't understand the rest of your sentence."
-          else
-            actor.tell "I don't understand '#{first}' as a command."
-          end
-				}, [actor], -1
-			])
-			del = Delegate.new(options)
+			del = Delegate.new(actor, befores, options)
 			del.execute
 		end
 		private
 		def self.bind_contexts_in_result(actor, handler, action)
+      queries = action.queries.clone
+      objects = self.execute_query(actor, handler.arguments.clone, queries, action)
+      num_nil = 0
+      while objects.length == 0 and queries.last.optional?
+        num_nil +=1
+        queries.pop
+        objects = self.execute_query(actor, handler.arguments.clone, queries, action, num_nil)
+      end
+      return objects
+		end
+    def self.execute_query(actor, arguments, queries, action, num_nil = 0)
+			prepared = Array.new
 			objects = Array.new
 			valid = true
-			prepared = Array.new
-			arguments = handler.arguments.clone
-			action.queries.each { |context|
+			queries.clone.each { |context|
 				arg = arguments.shift
 				if arg == nil or arg == ''
 					valid = false
@@ -79,25 +69,12 @@ module Gamefic
 				end
 				if context == String
 					prepared.push [arg]
-				elsif context.kind_of?(Query)
-					if context.kind_of?(Subquery)
-						last = prepared.last
-						if last == nil or last.length > 1
-							valid = false
-							next
-						end
-            if arg == 'it' and actor.object_of_pronoun != nil
-              result = context.execute(last[0], "#{actor.object_of_pronoun.longname}")
-            else
-              result = context.execute(last[0], arg)
-            end
-					else
-            if arg == 'it' and actor.object_of_pronoun != nil
-              result = context.execute(actor, "#{actor.object_of_pronoun.longname}")
-            else
-              result = context.execute(actor, arg)
-            end
-					end
+				elsif context.kind_of?(Query::Base)
+          if arg == 'it' and actor.object_of_pronoun != nil
+            result = context.execute(actor, "#{actor.object_of_pronoun.longname}")
+          else
+            result = context.execute(actor, arg)
+          end
 					if result.objects.length == 0
 						valid = false
 						next
@@ -116,43 +93,90 @@ module Gamefic
 				prepared.each { |p|
 					p.uniq!
 				}
+        num_nil.times do
+          prepared.push [nil]
+        end
 				objects.push Order.new(action, prepared)
 			end
-			return objects
-		end
+      objects
+    end
 	end
 	
 	class Director
 		class Delegate
+      @@assertion_stack = Array.new
 			@@delegation_stack = Array.new
-			def initialize(options)
-				@options = options
+			def initialize(actor, befores, actions)
+        @actor = actor
+        @befores = befores
+				@actions = actions
 			end
 			def execute
-				@@delegation_stack.push @options
-				if @options.length > 0
-					opt = @options.shift
+        @@assertion_stack.push Hash.new
+        @@delegation_stack.push @befores
+        handle @befores
+        @@delegation_stack.pop
+        if @@assertion_stack.last[:everything] == false
+          @@assertion_stack.pop
+          return
+        end
+        result = true
+        @@delegation_stack.push @actions
+        # Nil commands pass assertions to facilitate error messages.
+        if @@assertion_stack.last[:everything] != true and Director::Delegate.next_command != nil
+          @actor.plot.rules.each { |k, v|
+            if @@assertion_stack.last[k] == true
+              next
+            elsif @@assertion_stack.last[k] == false
+              result = false
+              break
+            end
+            result = v.test(@actor)
+            if result == false
+              break
+            end
+            result = true
+          }
+        end
+        @@assertion_stack.pop
+        if result == true
+          handle @actions
+        end
+        @@delegation_stack.pop
+			end
+      def handle options
+				if options.length > 0
+					opt = options.shift
 					if opt[1].length == 1
-						opt[0].call(opt[1][0])
+						opt[0].execute(opt[1][0])
 					else
             if opt[1].length == 2 and opt[1][1].kind_of?(Entity)
               opt[1][0].object_of_pronoun = opt[1][1]
             else
               opt[1][0].object_of_pronoun = nil
             end
-						opt[0].call(opt[1])
+						opt[0].execute(opt[1])
 					end
 				end
-				@@delegation_stack.pop
-			end
+      end
+      def self.pass requirement
+        @@assertion_stack.last[requirement] = true
+      end
+      def self.deny requirement
+        @@assertion_stack.last[requirement] = false
+      end
+      def self.next_command
+        return nil if @@delegation_stack.last.nil? or @@delegation_stack.last[0].length == 0
+        return @@delegation_stack.last[0][0].command
+      end
 			def self.passthru
 				if @@delegation_stack.last != nil
 					if @@delegation_stack.last.length > 0
 						opt = @@delegation_stack.last.shift
 						if opt[1].length == 1
-							opt[0].call(opt[1][0])
+							opt[0].execute(opt[1][0])
 						else
-							opt[0].call(opt[1])
+							opt[0].execute(opt[1])
 						end
 					end
 				end
@@ -165,10 +189,6 @@ module Gamefic
 				@arguments = arguments
 			end
 		end
-	end
-
-	def self.passthru
-		Director::Delegate.passthru
 	end
 
 end
