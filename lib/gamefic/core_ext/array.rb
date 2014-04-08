@@ -2,8 +2,8 @@ class Array
 	def that_are(cls)
 		if (cls.kind_of?(Class) or cls.kind_of?(Module))
 			return self.clone.delete_if { |i| i.kind_of?(cls) == false }
-    elsif cls.kind_of?(Sym)
-      return self.clone.delete_if { |i| i.option_selected?(cls) == true }
+    elsif cls.kind_of?(Symbol)
+      return self.clone.delete_if { |i| i.option_selected?(cls) == false }
 		else
 			if self.include?(cls)
 				return [cls]
@@ -14,8 +14,8 @@ class Array
 	def that_are_not(cls)
 		if (cls.kind_of?(Class) or cls.kind_of?(Module))
 			return self.clone.delete_if { |i| i.kind_of?(cls) == true }
-    elsif cls.kind_of?(Sym)
-      return self.clone.delete_if { |i| i.option_selected?(cls) == false }
+    elsif cls.kind_of?(Symbol)
+      return self.clone.delete_if { |i| i.option_selected?(cls) == true }
 		else
 			return self.clone - [cls]
 		end

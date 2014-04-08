@@ -17,6 +17,7 @@ class OptionSet
       end
       @@option_map[cls][o] = self
     }
+    @default = @options[0]
   end
   def default=(val)
     if @options.include?(val) == false
@@ -90,9 +91,7 @@ module OptionSettings
   end
   def option_selected?(opt)
     set = OptionSet.get_option_set_for(self.class, opt)
-    if set == nil
-      raise "Undefined option #{opt}"
-    end
+    return false if set.nil?
     return true if option_array.include?(opt)
     other = set.options & option_array
     if other.length == 0 and set.default == opt
