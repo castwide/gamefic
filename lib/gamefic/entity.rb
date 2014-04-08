@@ -49,9 +49,6 @@ module Gamefic
 			#TODO: Should this even be here? In all likelihood, only Characters receive tells, right?
 			#TODO: On second thought, it might be interesting to see logs from an npc point of view.
 		end
-		def to_s
-			name
-		end
 		def update
 			@update_procs.each { |p|
 				p.call self
