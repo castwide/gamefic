@@ -23,6 +23,7 @@ module Gamefic
 	class Plot
 		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules
 		attr_accessor :story
+    include OptionMap
 		def commandwords
 			words = Array.new
 			@syntaxes.each { |s|

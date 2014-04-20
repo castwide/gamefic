@@ -1,6 +1,6 @@
-require "gamefic/core_ext/optionset"
 require "gamefic/core_ext/array"
 require "gamefic/core_ext/string"
+require "gamefic/optionset"
 require "gamefic/keywords"
 require "gamefic/entity"
 require "gamefic/thing"

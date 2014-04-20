@@ -8,6 +8,7 @@ module Gamefic
 	class Entity
 		include Branch
 		include Describable
+    include OptionSettings
 		attr_reader :session, :plot
 		def initialize(plot, args = {})
 			if (plot.kind_of?(Plot) == false)
@@ -17,6 +18,7 @@ module Gamefic
 			#self.state = State
 			#@story = Subplot.current
 			@plot = plot
+      @option_mapper = @plot
 			@plot.send :add_entity, self
 			#@story.add_entity self
 			args.each { |key, value|
