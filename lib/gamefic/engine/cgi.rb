@@ -6,10 +6,10 @@ module Gamefic
     def key
       if @key == nil
         stack = Array.new
-        stack.push longname
+        stack.push name
         p = @parent
         while p != nil
-          stack.push p.longname
+          stack.push p.name
           p = p.parent
         end
         @key = stack.join("|")
