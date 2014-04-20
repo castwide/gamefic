@@ -1,3 +1,0 @@
-module Itemized
-
-end

@@ -5,9 +5,10 @@ module Gamefic
 		@@defaults = Array.new
     @@order_key_seed = 0
 		def initialize(story, command, *queries, &proc)
+      @plot = story
       @order_key = @@order_key_seed
       @@order_key_seed += 1
-			if (command.kind_of?(Symbol) == false)
+			if (command.kind_of?(Symbol) == false and !command.nil?)
 				raise "Action commands must be symbols"
 			end
 			if (queries.length + 1 != proc.arity) and (queries.length == 0 and proc.arity != -1)
@@ -29,7 +30,7 @@ module Gamefic
 			spec = 0
 			magnitude = 1
 			@queries.each { |q|
-				if q.kind_of?(Query)
+				if q.kind_of?(Query::Base)
 					spec += (q.specificity * magnitude)
 				else
 					spec += magnitude
@@ -44,9 +45,9 @@ module Gamefic
 		def queries
 			@queries
 		end
-		def proc
-			@proc
-		end
+    def execute *args
+      @proc.call *args
+    end
 		private
 			def self.explode(entity)
 				arr = Array.new

@@ -7,37 +7,54 @@ module Gamefic
 			if arguments.length < 2
 				raise "Syntax.new requires at least two arguments (template and command)"
 			end
-			@template = arguments.shift
-			@command = arguments.shift
-			@arguments = arguments
-			if story == nil
-				@@defaults.push self
-			else
-				story.send :add_syntax, self
-				@story = story
-			end
+      if arguments.length == 2 and arguments[0].kind_of?(Array) and arguments[1].kind_of?(Array)
+        @template = arguments[0]
+        @command = arguments[1].shift
+        @arguments = arguments[1]
+      else
+        @template = []
+        string = arguments.shift
+        string.split_words.each { |word|
+          if word[0,1] == ":"
+            @template.push word[1..-1].to_sym
+          else
+            @template.push word
+          end
+        }
+        #@template = arguments.shift
+        @command = arguments.shift
+        @arguments = arguments
+        if story == nil
+          #@@defaults.push self
+          raise "Default syntaxes are deprecated"
+        else
+          story.send :add_syntax, self
+          @story = story
+        end
+      end
 		end
 		def self.defaults
 			@@defaults.clone
 		end
-		def self.match(input, syntaxes)
+		def self.match(input, context)
 			# Given the input, return all the syntaxes that potentially match it.
+      syntaxes = (context.kind_of?(Plot) ? context.syntaxes : context)
 			matches = Array.new
 			words = input.split_words
 			syntaxes.each { |syntax|
 				input_words = words.clone
 				tokens = Hash.new
-				syntax_words = syntax.template.split_words
+				syntax_words = syntax.template.clone
 				while syntax_words.length > 0
 					if input_words.length == 0
 						# No more input. Break with an imbalance.
 						break
 					end
 					symbol = syntax_words.shift
-					if symbol[0, 1] == ":"
+					if symbol.kind_of?(Symbol)
 						if syntax_words.length == 0
 							# Last syntax word.
-							tokens[symbol[1..-1].to_sym] = input_words.join(' ')
+							tokens[symbol] = input_words.join(' ')
 							input_words.clear
 							break
 						elsif input_words.length == 0
@@ -45,11 +62,11 @@ module Gamefic
 							break
 						else
 							non_vars = syntax_words.clone.delete_if { |w|
-								w[0, 1] == ':'
+								w.kind_of?(Symbol)
 							}
 							if non_vars.length == 0
 								# All remaining words in the syntax are variables. Dump everything now.
-								tokens[symbol[1..-1].to_sym] = input_words.join(' ')
+								tokens[symbol] = input_words.join(' ')
 								syntax_words.clear
 								input_words.clear
 							else
@@ -58,7 +75,7 @@ module Gamefic
 								if syntax_words.length == 0
 									last_input_word = input_words.pop
 									if last_input_word == next_syntax_word
-										tokens[symbol[1..-1].to_sym] = input_words.join(' ')
+										tokens[symbol] = input_words.join(' ')
 										input_words.clear
 									end
 									break
@@ -71,7 +88,7 @@ module Gamefic
 								if input_words.length == 0 and syntax_words.length > 0
 									break
 								else
-									tokens[symbol[1..-1].to_sym] = token.strip
+									tokens[symbol] = token.strip
 								end
 							end
 						end
@@ -93,7 +110,7 @@ module Gamefic
 						else
 							if a != nil and a != ''
 								arguments.push(a)
-							end						
+							end
 						end
 					}
 					if syntax.arguments.length == arguments.length

@@ -1,5 +1,5 @@
-import 'basics/entities/itemized'
+class Fixture < Thing
 
-class Fixture < Entity
-  include Itemized
 end
+
+set_default_for(Fixture, :not_portable)

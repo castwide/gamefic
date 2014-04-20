@@ -1,8 +1,7 @@
-import 'basics/entities/portal'
-
 class Room < Entity
   def connect(destination, direction, type = Portal, two_way = true)
     portal = type.new self.plot, :name => direction, :parent => self, :destination => destination
+    portal.proper_named = true
     if two_way == true
       reverse = Portal.reverse(direction)
       if reverse == nil
@@ -13,8 +12,12 @@ class Room < Entity
         :parent => destination,
         :destination => self
       })
+      portal2.proper_named = true
     end
     portal
+  end
+  def synonyms
+    super.to_s + " around here room"
   end
   def tell(message, refresh = false)
     children.each { |c|
@@ -22,3 +25,6 @@ class Room < Entity
     }
   end
 end
+
+options(Room, :lighted, :dark).default = :lighted
+options(Room, :enterable).default = :enterable

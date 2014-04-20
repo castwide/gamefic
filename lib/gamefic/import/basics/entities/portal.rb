@@ -1,9 +1,5 @@
 class Portal < Entity
   attr_accessor :destination
-  #def initialize
-  #	super
-  #	@destination = nil
-  #end
   def find_reverse
     rev = Portal.reverse(self.name)
     if rev != nil
@@ -13,6 +9,7 @@ class Portal < Entity
         end
       }
     end
+    nil
   end
   def self.reverse(direction)
     case direction.downcase
