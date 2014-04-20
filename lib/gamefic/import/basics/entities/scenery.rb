@@ -1,5 +1,5 @@
 class Scenery < Thing
 
 end
-OptionSet.set_default_for(Scenery, :not_portable)
-OptionSet.set_default_for(Scenery, :not_itemized)
+set_default_for(Scenery, :not_portable)
+set_default_for(Scenery, :not_itemized)

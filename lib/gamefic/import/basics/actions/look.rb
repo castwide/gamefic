@@ -16,7 +16,11 @@ respond :look, Query::Room.new(Room) do |actor, room|
   end
   portals = room.children.that_are(Portal)
   if portals.length > 0
-    actor.tell "There are exits #{portals.join_and(', ')}."
+    if portals.length == 1
+      actor.tell "There is an exit #{portals[0]}."
+    else
+      actor.tell "There are exits #{portals.join_and(', ')}."
+    end
   end
   if actor.is? :supported
     actor.tell "You are on #{the actor.parent}."
@@ -64,3 +68,4 @@ xlate "l", :look
 xlate "l :thing", :look, :thing
 xlate "examine :thing", :look, :thing
 xlate "x :thing", :look, :thing
+xlate "search :thing", :look, :thing

@@ -26,5 +26,5 @@ class Room < Entity
   end
 end
 
-OptionSet.new(Room, :lighted, :dark).default = :lighted
-OptionSet.new(Room, :enterable).default = :enterable
+options(Room, :lighted, :dark).default = :lighted
+options(Room, :enterable).default = :enterable

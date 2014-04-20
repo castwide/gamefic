@@ -8,4 +8,4 @@ class Entity
   end
 end
 
-OptionSet.new(Entity, :portable).default = :not_portable
+options(Entity, :portable).default = :not_portable

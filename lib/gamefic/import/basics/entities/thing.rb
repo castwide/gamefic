@@ -1,6 +1,6 @@
-OptionSet.new(Thing, :located, :contained, :supported, :attached).default = :located
-OptionSet.new(Thing, :itemized)
-OptionSet.set_default_for(Thing, :portable)
+options(Thing, :located, :contained, :supported, :attached).default = :located
+options(Thing, :itemized)
+set_default_for(Thing, :portable)
 
 class Thing
   def parent=(entity)
