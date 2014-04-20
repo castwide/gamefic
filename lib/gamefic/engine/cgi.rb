@@ -30,6 +30,7 @@ module Gamefic
     end
 
     class Engine < Gamefic::Engine
+      attr_reader :user
       def initialize(plot, args = {})
         super(plot)
         @session_file = args[:session_file] || 'save.dat'
@@ -175,6 +176,7 @@ module Gamefic
       def post_initialize
         @stream = Cgi::UserStream.new
         @state = UserState.new self
+        #@character = @plot.make Character, :name => 'player'
       end
     end
     
