@@ -35,7 +35,7 @@ module Gamefic
 				else
 					spec += magnitude
 				end
-				magnitude = magnitude * 10
+				#magnitude = magnitude * 10
 			}
 			return spec
 		end

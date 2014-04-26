@@ -11,7 +11,7 @@
 
 class Query::Visible < Query::Family
   def base_specificity
-    30
+    40
   end
   def context_from(subject)
     array = super

@@ -71,7 +71,7 @@ module Gamefic
 					prepared.push [arg]
 				elsif context.kind_of?(Query::Base)
           if arg == 'it' and actor.object_of_pronoun != nil
-            result = context.execute(actor, "#{actor.object_of_pronoun.longname}")
+            result = context.execute(actor, "#{actor.object_of_pronoun.name}")
           else
             result = context.execute(actor, arg)
           end
