@@ -9,6 +9,7 @@ module Gamefic
 		include Branch
 		include Describable
     include OptionSettings
+    attr_writer :option_array
 		attr_reader :session, :plot
 		def initialize(plot, args = {})
 			if (plot.kind_of?(Plot) == false)
