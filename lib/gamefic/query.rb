@@ -37,18 +37,18 @@ module Gamefic
           @arguments.each { |item|
             if item.kind_of?(Entity)
               @specificity += (magnitude * 10)
-              item = item.class
-            end
-            if item.kind_of?(Class)
-              s = item
-              while s != nil
-                @specificity += (magnitude * 10)
-                s = s.superclass
-              end
+            #  item = item.class
+            #end
+            #if item.kind_of?(Class)
+            #  s = item
+            #  while s != nil
+            #    @specificity += (magnitude * 10)
+            #    s = s.superclass
+            #  end
             else
               @specificity += magnitude
             end
-            magnitude = magnitude * 10
+            #magnitude = magnitude * 10
           }
         end
         @specificity
@@ -81,7 +81,7 @@ module Gamefic
 
     class Self < Base
       def base_specificity
-        50
+        30
       end
       def context_from(subject)
         [subject]
@@ -90,7 +90,7 @@ module Gamefic
 
     class Parent < Base
       def base_specificity
-        50
+        30
       end
       def context_from(subject)
         [subject.parent]
