@@ -25,7 +25,7 @@ respond :look, Query::Room.new(Room) do |actor, room|
   if actor.is? :supported
     actor.tell "You are on #{the actor.parent}."
     actor.parent.children.that_are(:supported).that_are_not(actor).each { |s|
-      actor.tell "#{A s} is on the chair."
+      actor.tell "#{A s} is on #{the actor.parent}."
     }
   end
 end
