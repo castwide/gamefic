@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.dirname(__FILE__) + "/lib"
+require 'gamefic'
+require 'gamefic/engine/cgi'
+include Gamefic
+
+plot = Plot.new
+file = "#{ARGV[0]}/main.rb"
+plot.load file, true
+if ARGV[1] != "new"
+  savename = ARGV[1]
+else
+  savename = ARGV[2]
+end
+engine = Cgi::Engine.new plot, :session_file => savename
+engine.begin_session
+engine.run
+engine.end_session
+if engine.user.character.state.kind_of?(GameOverState)
+  File.delete savename
+end
