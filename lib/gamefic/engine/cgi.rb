@@ -82,8 +82,8 @@ module Gamefic
         x.close
         data = Marshal.restore(ser)
         data.each { |k, h|
-          if k == 'player'
-            entity = @entity_keys['player']
+          if k == 'yourself'
+            entity = @entity_keys['yourself']
           else
             entity = @entity_keys[k]
           end
@@ -130,7 +130,7 @@ module Gamefic
             if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value.kind_of?(CharacterState) or value == nil or value.kind_of?(Array)
               if value.kind_of?(Entity)
                 if value == @user.character
-                  hash[v] = Key.new('player')
+                  hash[v] = Key.new('yourself')
                 else
                   hash[v] = Key.new(value.key)
                 end

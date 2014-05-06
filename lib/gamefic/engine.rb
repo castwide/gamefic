@@ -28,7 +28,7 @@ module Gamefic
 		attr_reader :state, :character, :story
 		def initialize(plot)
 			@plot = plot
-      @character = Character.new @plot, :name => 'player'
+      @character = Character.new @plot, :name => 'yourself', :synonyms => 'self myself you me'
       @character.connect self
       post_initialize
 		end
