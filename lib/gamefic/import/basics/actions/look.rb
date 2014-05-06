@@ -33,7 +33,7 @@ xlate "look", :look, "around"
 
 respond :look, Query::Visible.new() do |actor, thing|
   actor.tell thing.description
-  thing.children.that_are(:attached).each { |item|
+  thing.children.that_are(:attached).that_are(:itemized).each { |item|
     actor.tell "#{An item} is attached to #{the thing}."
   }
 end
