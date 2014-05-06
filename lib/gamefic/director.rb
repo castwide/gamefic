@@ -26,9 +26,9 @@ module Gamefic
 								if a.length > 1
 									longnames = Array.new
 									a.each { |b|
-										longnames.push "#{the b}"
+										longnames.push "#{b.definitely}"
 									}
-									actor.tell "I don't know which you mean: #{longnames.join(', ')}"
+									actor.tell "I don't know which you mean: #{longnames.join_and(', ', ' or ')}."
 									return
 								end
 								args.push a[0]
