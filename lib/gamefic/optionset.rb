@@ -46,11 +46,9 @@ module OptionMap
     os.default = opt
   end
   def get_all_option_sets_for(cls)
-    puts "Checking sets"
     all = []
     option_map.each_value { |s|
       s.each_key { |o|
-        puts "Option: #{o}"
         set = get_option_set_for(cls, o, false)
         if set != nil
           all.push set
