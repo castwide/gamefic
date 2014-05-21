@@ -29,6 +29,11 @@ it. Try the following commands to see how it works:
 	read book
 	drop book
 
+There is also a working implementation of [Cloak of Darkness](http://www.firthworks.com/roger/cloak/),
+courtesy of Peter Orme:
+
+    gamefic test examples/cloak_of_darkness
+
 # Game Commands
 
 The Gamefic library provides a collection of commands that are common in most
@@ -243,7 +248,7 @@ northeast, southwest, southeast, up, and down.
 Now let's try making a new action for players to perform. Add the following
 code to the demo:
 
-    respond :lie_on, Query.new(:siblings, bed) do |actor, bed|
+    respond :lie_on, Query::Siblings.new(bed) do |actor, bed|
 	    actor.tell "You take a short nap. That was refreshing!"
 	end
 
@@ -263,13 +268,35 @@ into a space, so the player can invoke this action by entering "lie on."
 ### The Query Object
 
 The second argument in our example is a Query object that the game's command
-parser uses to identify an Entity in the game. The :siblings symbol means that
-it should search the player's siblings, i.e., the other Entities in the Room.
+parser uses to identify an Entity in the game. The Query::Siblings class
+searches the player's siblings, i.e., the other Entities in the Room.
 
 Additional arguments to the Query object filter the scope of Entities that
 trigger the Action. In this case, bed means that the Action can only be
 performed on the bed. If the player references any other Entity (e.g., "lie on
 cupboard"), the Action's proc will not be executed.
+
+### Types of Queries
+
+Different Query classes have different rules for filtering the entities that
+are available to the Action.
+
+* Query::Reachable is perhaps the most useful type of query. It will return all
+  the entities that players can reach, including things in the room, things in
+  their inventory, things supported by other things in the room, and things
+  inside the room's open containers.
+
+* Query::Visible returns everything available from Query::Reachable plus the
+  things that are visible without being reachable, such as things that are in a
+  closed transparent container.
+
+* Query::Children returns the subject's children, i.e., the player's inventory.
+
+* Query::Siblings returns the parent entity's other children.
+
+* Query::Text returns whatever plain text was parsed from the command. Unlike
+  typical queries that produce an Entity, the argument that results from a
+  Query::Text is a String.
 
 ### The Action's Proc
 

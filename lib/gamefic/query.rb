@@ -2,80 +2,129 @@ require "gamefic/keywords"
 
 module Gamefic
 
-	class Query
-    FAMILY   = :family
-    CHILDREN = :children
-    SIBLINGS = :siblings
-    PARENT   = :parent
-    SELF     = :self
-    PLOT     = :plot
-    STRING   = :string
-		def initialize(context, *arguments)
-			if context != :family and context != :children and context != :siblings and context != :parent and context != :self and context != :plot and context != :string
-      #if self.class.constants.include?(context.to_sym) == false
-				raise "Invalid Query context '#{context.to_sym}'"
-			end
-			#if context == :string and arguments.length > 0
-			#	raise "Query with :string context cannot take additional arguments."
-			#end
-			@context = context
-			@arguments = arguments
-		end
-		def execute(subject, description)
-			case context
-				when :self
-					array = [subject]
-				when :parent
-					array = [subject.parent]
-				when :plot
-					array = subject.plot.entities
-				when :children
-					array = subject.children
-				when :siblings
-					array = subject.parent.children
-				when :family
-					array = subject.children + subject.parent.children
-				when :string
-          if @arguments.length == 0
-            return Matches.new([description], description, '')
-          end
-          keywords = Keywords.new(description)
-          args = Keywords.new(@arguments)
-          found = Array.new
-          remainder = Array.new
-          keywords.each { |key|
-            if args.include?(key)
-              found.push key
+  module Query
+
+    class Base
+      attr_accessor :arguments
+      def initialize *arguments
+        @optional = false
+        if arguments.include?(:optional)
+          @optional = true
+          arguments.delete :optional
+        end
+        @arguments = arguments
+      end
+      def optional?
+        @optional
+      end
+      def context_from(subject)
+        subject
+      end
+      def execute(subject, description)
+        array = context_from(subject)
+        @arguments.each { |arg|
+          array = array.that_are(arg)
+        }
+        return Query.match(description, array)
+      end
+      def base_specificity
+        0
+      end
+      def specificity
+        if @specificity == nil
+          @specificity = base_specificity
+          magnitude = 1
+          @arguments.each { |item|
+            if item.kind_of?(Entity)
+              @specificity += (magnitude * 10)
+            #  item = item.class
+            #end
+            #if item.kind_of?(Class)
+            #  s = item
+            #  while s != nil
+            #    @specificity += (magnitude * 10)
+            #    s = s.superclass
+            #  end
             else
-              remainder.push key
+              @specificity += magnitude
             end
+            #magnitude = magnitude * 10
           }
-          if found.length > 0
-            return Matches.new([description], found.join(' '), remainder.join(' '))
+        end
+        @specificity
+      end
+    end
+    
+    class Text < Base
+      def execute(subject, description)
+        if @arguments.length == 0
+          return Matches.new([description], description, '')
+        end
+        keywords = Keywords.new(description)
+        args = Keywords.new(@arguments)
+        found = Array.new
+        remainder = Array.new
+        keywords.each { |key|
+          if args.include?(key)
+            found.push key
           else
-            return Matches.new([], '', description)
+            remainder.push key
           end
-				else
-					raise "Unrecognized: #{context}"
-			end
-			@arguments.each { |arg|
-				if arg.kind_of?(Class) or arg.kind_of?(Module)
-					array.delete_if { |entity| entity.kind_of?(arg) == false }
-				else
-					if array.include?(arg)
-						array = Array.new
-						array.push(arg)
-					else
-						array.clear
-					end
-				end
-			}
-			return Query.match(description, array)
-		end
-		def context
-			@context
-		end
-		def Query.match(description, array)
+        }
+        if found.length > 0
+          return Matches.new([description], found.join(' '), remainder.join(' '))
+        else
+          return Matches.new([], '', description)
+        end
+      end
+    end
+
+    class Self < Base
+      def base_specificity
+        30
+      end
+      def context_from(subject)
+        [subject]
+      end
+    end
+
+    class Parent < Base
+      def base_specificity
+        30
+      end
+      def context_from(subject)
+        [subject.parent]
+      end
+    end
+    
+    class Children < Base
+      def base_specificity
+        50
+      end
+      def context_from(subject)
+        subject.children
+      end
+    end
+    
+    class Siblings < Base
+      def base_specificity
+        40
+      end
+      def context_from(subject)
+        (subject.parent.children - [subject])
+      end
+    end
+    
+    class Family < Base
+      def base_specificity
+        40
+      end
+      def context_from(subject)
+        subject.children + subject.parent.children #+ [subject.parent]
+      end
+    end
+    
+    def self.match(description, array)
 			array.each {|e|
 				if e.uid == description
 					return Matches.new([e], description, '')
@@ -125,64 +174,37 @@ module Gamefic
 				end
 			end
 			return Matches.new(results, used.join(' '), keywords.join(' '))
-		end
-		def Query.match_one(description, array)
-			result = self.match(description, array)
-			if result.objects.length == 1
-				return result.objects[0]
-			end
-			return nil
-		end
-		def specificity
-			if @specificity == nil
-				@specificity = 0
-				case @context
-					when :children
-						@specificity += 50
-					when :siblings
-						@specificity += 40
-					when :family
-						@specificity += 30
-					when :parent
-						@specificity += 20
-					when :self
-						@specificity += 10
-					when :string
-						@specificity = 1
-						#return @specificity
-				end
-				magnitude = 1
-				@arguments.each { |item|
-					if item.kind_of?(Entity)
-						@specificity += (magnitude * 10)
-						item = item.class
-					end
-					if item.kind_of?(Class)
-						s = item
-						while s != nil
-							@specificity += magnitude
-							s = s.superclass
-						end
-					else
-						@specificity += magnitude
-					end
-					magnitude = magnitude * 10
-				}
-			end
-			@specificity
-		end
+    end
+
+    class Subquery < Base
+      def base_specificity
+        40
+      end
+      def context_from(subject)
+        last = Matches.last_match
+        return [] if last.nil?
+        last.children
+      end
+    end
+
 		class Matches
+      @@last_match = nil
 			attr_reader :objects, :matching_text, :remainder
 			def initialize(objects, matching_text, remainder)
 				@objects = objects
 				@matching_text = matching_text
 				@remainder = remainder
+        @@last_match = self
 			end
+      def self.last_match
+        return nil if @@last_match.nil?
+        if @@last_match.objects.length == 1
+          return @@last_match.objects[0]
+        end
+        return nil
+      end
 		end
-	end
 
-	class Subquery < Query
-	
-	end
-	
+  end
+
 end

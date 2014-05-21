@@ -1,24 +1,8 @@
-import 'basics/entities/itemized'
+class Container < Thing
 
-class Container < Entity
-  include Itemized
-  def closeable=(bool)
-    @closeable = bool
-  end
-  def closeable?
-    @closeable ||= false
-    if (@closeable == true && @closed == nil)
-      @closed = false
-    end
-    @closeable
-  end
-  def closed?
-    (@closed == true)
-  end
-  def closed=(bool)
-    if bool == true
-      @closeable = true
-    end
-    @closed = bool
-  end
 end
+
+options(Container, :enterable).default = :not_enterable
+options(Container, :opaque, :transparent).default = :opaque
+options(Container, :open, :closed).default = :open
+options(Container, :openable, :unopenable).default = :unopenable

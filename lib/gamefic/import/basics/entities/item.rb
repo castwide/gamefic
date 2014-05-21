@@ -1,7 +1,5 @@
-import 'basics/entities/itemized'
-import 'basics/entities/portable'
+class Item < Thing
 
-class Item < Entity
-  include Itemized
-  include Portable
 end
+
+set_default_for(Item, :portable)

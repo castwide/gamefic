@@ -1,58 +1,71 @@
-respond :look do |actor|
-  actor.perform "look #{actor.parent.longname}"
+respond :look, Query::Parent.new(Supporter) do |actor, supporter|
+  actor.tell supporter.description
+  actor.tell "You are currently on #{the supporter}."
 end
 
-respond :look_around do |actor|
-  actor.perform "look @{actor.parent.longname}"
-end
-
-respond :look, Query.new(:parent) do |actor, room|
-  actor.tell actor.parent.longname.cap_first
-  actor.tell actor.parent.description
-  chars = actor.parent.children.that_are(Character) - [actor]
+respond :look, Query::Room.new(Room) do |actor, room|
+  actor.tell room.name.cap_first
+  actor.tell room.description
+  chars = room.children.that_are(Character) - [actor]
   if chars.length > 0
     actor.tell "Others here: #{chars.join(", ")}"
   end
-  items = actor.parent.children.that_are(Itemized)
+  items = room.children.that_are(:itemized) - [actor]
   if items.length > 0
-    actor.tell "Visible items: #{items.join(", ")}"
+    actor.tell "You see #{items.join_and}."
   end
-  portals = actor.parent.children.that_are(Portal)
+  portals = room.children.that_are(Portal)
   if portals.length > 0
-    actor.tell "Obvious exits: #{portals.join(', ')}"
-  else
-    actor.tell "Obvious exits: none"	
-  end
-end
-
-respond :look, Query.new(:family) do |actor, thing|
-  actor.tell thing.description
-end
-
-respond :look, String do |actor, string|
-  containers = actor.children.that_are(Container)
-  containers = containers + actor.parent.children.that_are(Container)
-  found = false
-  containers.each { |container|
-    if container.closed? == false
-      query = Query.new(:children, Portable)
-      result = query.execute(container, string)
-      if result.objects.length == 1
-        found = true
-        actor.tell "You look at #{result.objects[0].longname.specify} in #{container.longname.specify}."
-        actor.perform "look #{result.objects[0].longname} in #{container.longname}"
-        break
-      end
+    if portals.length == 1
+      actor.tell "There is an exit #{portals[0]}."
+    else
+      actor.tell "There are exits #{portals.join_and(', ')}."
     end
-  }
-  if found == false
-    actor.tell "You don't see any \"#{string}\" here."
   end
+  if actor.is? :supported
+    actor.tell "You are on #{the actor.parent}."
+    actor.parent.children.that_are(:supported).that_are_not(actor).each { |s|
+      actor.tell "#{A s} is on #{the actor.parent}."
+    }
+  end
+end
+xlate "look", :look, "around"
+
+respond :look, Query::Visible.new() do |actor, thing|
+  actor.tell thing.description
+  thing.children.that_are(:attached).that_are(:itemized).each { |item|
+    actor.tell "#{An item} is attached to #{the thing}."
+  }
+end
+
+respond :look, Query::Text.new() do |actor, string|
+  actor.tell "You don't see any \"#{string}\" here."
+end
+
+respond :look, Query::Reachable.new(Container) do |actor, container|
+  passthru
+  if container.is? :openable
+    actor.tell "#{The container} is #{container.is?(:open) ? 'open' : 'closed'}."
+  end
+  if container.is? :open
+    contents = container.children.that_are(:contained)
+    contents.each { |thing|
+      actor.tell "You see #{a thing} inside #{the container}."
+    }
+  end
+end
+
+respond :look, Query::Siblings.new(Supporter) do |actor, supporter|
+  passthru
+  supported = supporter.children.that_are(:supported)
+  supported.each { |thing|
+    actor.tell "You see #{a thing} sitting there."
+  }
 end
 
 xlate "look at :thing", :look, :thing
 xlate "l", :look
 xlate "l :thing", :look, :thing
 xlate "examine :thing", :look, :thing
-xlate "exam :thing", :look, :thing
 xlate "x :thing", :look, :thing
+xlate "search :thing", :look, :thing
