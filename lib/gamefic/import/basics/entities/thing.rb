@@ -1,5 +1,5 @@
 options(Thing, :located, :contained, :supported, :attached).default = :located
-options(Thing, :itemized)
+options(Thing, :itemized, :not_itemized)
 set_default_for(Thing, :portable)
 
 class Thing

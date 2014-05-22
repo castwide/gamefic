@@ -7,7 +7,7 @@ class OptionSet
       raise "No options defined"
     end
     if @options.length == 1
-      @options.push "not_#{args[0]}".to_sym
+      raise "Option sets require at least 2 options"
     end
     @default = @options[0]
   end

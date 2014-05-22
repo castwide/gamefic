@@ -27,4 +27,4 @@ class Room < Entity
 end
 
 options(Room, :lighted, :dark).default = :lighted
-options(Room, :enterable).default = :enterable
+options(Room, :enterable, :not_enterable)
