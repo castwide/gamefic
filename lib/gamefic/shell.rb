@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'rubygems/package'
 require 'zlib'
 require 'tmpdir'
