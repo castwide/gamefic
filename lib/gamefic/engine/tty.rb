@@ -2,10 +2,9 @@ require 'gamefic/engine'
 begin
   require 'io/console'
 rescue LoadError
-  begin
-    require "curses"
-  rescue LoadError
-    puts "This version of Ruby does not support io/console or curses. It is recommended that you upgrade to Ruby 2.0.0, which should include io/console by default."
+  puts "This version of Ruby does not support io/console. Text may not wrap correctly."
+  if RUBY_VERSION.split('.')[0].to_i < 2
+    puts "It is recommended that you upgrade to Ruby 2.0.0 or higher."
   end
 end
 
@@ -15,7 +14,6 @@ module Gamefic
     class Engine < Gamefic::Engine
       def post_initialize
         @user = Tty::User.new @plot
-        print "\n"
       end
     end
     class User < Gamefic::User
@@ -31,11 +29,6 @@ module Gamefic
       def size
         if STDOUT.respond_to?(:winsize)
           return STDOUT.winsize.reverse
-        elsif Object.const_defined?('Curses')
-          Curses.init_screen()
-          size = [Curses.cols, Curses.lines]
-          Curses.close_screen()
-          return size
         end
         return [nil,nil]
       end
@@ -44,9 +37,12 @@ module Gamefic
         if width.nil?
           super
         else
-          puts "Width: #{width}"
           super "#{terminalize(data, width - 1)}\n\n"
         end
+      end
+      def select(prompt)
+        super
+        print "\n"
       end
       def terminalize string, max_length
         if max_length == nil
