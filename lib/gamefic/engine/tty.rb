@@ -35,7 +35,7 @@ module Gamefic
       def send data
         width = size[0]
         if width.nil?
-          super
+          super "#{data}\n"
         else
           super "#{terminalize(data, width - 1)}\n\n"
         end
