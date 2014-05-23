@@ -37,14 +37,14 @@ module Gamefic
           @arguments.each { |item|
             if item.kind_of?(Entity)
               @specificity += (magnitude * 10)
-            #  item = item.class
-            #end
-            #if item.kind_of?(Class)
-            #  s = item
-            #  while s != nil
-            #    @specificity += (magnitude * 10)
-            #    s = s.superclass
-            #  end
+              item = item.class
+            end
+            if item.kind_of?(Class)
+              s = item
+              while s != nil
+                @specificity += magnitude
+                s = s.superclass
+              end
             else
               @specificity += magnitude
             end
@@ -56,6 +56,9 @@ module Gamefic
     end
     
     class Text < Base
+      def base_specificity
+        10
+      end
       def execute(subject, description)
         if @arguments.length == 0
           return Matches.new([description], description, '')
