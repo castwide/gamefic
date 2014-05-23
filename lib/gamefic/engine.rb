@@ -16,7 +16,7 @@ module Gamefic
 		end
     def tick
       proc {
-        $SAFE = 3
+        $SAFE = Gamefic.safe_level
         @user.stream.select @user.character.state.prompt
         @user.state.update
         @plot.update

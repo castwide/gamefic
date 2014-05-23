@@ -20,6 +20,10 @@ module Gamefic
     mod.get_binding
   end
   
+  def self.safe_level
+    @@safe_level ||= (RUBY_VERSION.split('.')[0].to_i < 2 ? 2 : 3)
+  end
+  
 	class Plot
 		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules
 		attr_accessor :story
@@ -144,7 +148,7 @@ module Gamefic
       end
       get_scripts @source_directory + '/import'
       proc {
-        $SAFE = 3
+        $SAFE = Gamefic.safe_level
         eval code, ::Gamefic.bind(self), script, 1
       }.call
     end
@@ -170,7 +174,7 @@ module Gamefic
             script_object = @available_scripts[resolved]
             @available_scripts[resolved] = nil
             proc {
-              $SAFE = 3
+              $SAFE = Gamefic.safe_level
               @imported_scripts.push script_object
               eval script_object.code, Gamefic.bind(self), script_object.filename, 1
             }.call

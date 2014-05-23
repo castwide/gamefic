@@ -64,7 +64,7 @@ module Gamefic
           end
         end
         proc {
-          $SAFE = 3
+          $SAFE = Gamefic.safe_level
           response = Hash.new
           response[:output] = @user.stream.output
           response[:prompt] = @user.character.state.prompt
@@ -92,7 +92,7 @@ module Gamefic
               entity.instance_variable_set(:@session, v)
             else
               proc {
-                $SAFE = 3
+                $SAFE = Gamefic.safe_level
                 writer = "#{s.to_s[1..-1]}="
                 if entity.respond_to?(writer)
                   if v.kind_of?(Key)
