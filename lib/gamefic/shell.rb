@@ -90,6 +90,7 @@ module Gamefic
         #  puts "#{e.inspect}"
         #  exit 1
         #end
+        story.import 'debug'
         engine = Tty::Engine.new story
         puts "\n"
         engine.run
