@@ -91,6 +91,7 @@ module Gamefic
         #  exit 1
         #end
         engine = Tty::Engine.new story
+        puts "\n"
         engine.run
       end
       def init directory
