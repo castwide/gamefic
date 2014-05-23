@@ -53,6 +53,9 @@ module Gamefic
         end
         @specificity
       end
+      def signature
+        return "#{self.class}(#{@arguments.join(',')})"
+      end
     end
     
     class Text < Base

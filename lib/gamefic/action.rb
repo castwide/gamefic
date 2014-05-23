@@ -48,6 +48,13 @@ module Gamefic
     def execute *args
       @proc.call *args
     end
+    def signature
+      sig = ["#{@command}"]
+      @queries.each { |q|
+        sig.push q.signature
+      }
+      sig.join(' ')
+    end
 		private
 			def self.explode(entity)
 				arr = Array.new
