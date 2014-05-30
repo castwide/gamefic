@@ -17,3 +17,27 @@ respond :debug, Query::Text.new() do |actor, selection|
     actor.tell "'#{selection}' is not a recognized debug option."
   end
 end
+
+respond :options, Query::Text.new() do |actor, string|
+  begin
+    cls = Gamefic.const_get(string)
+  rescue NameError
+    actor.tell "I don't know what '#{string}' is."
+    next
+  end
+  sets = get_all_option_sets_for(cls)
+  opts = []
+  sets.each { |set|
+    opts.push set.default
+  }
+  actor.tell "A default #{string} is #{opts.join_and}."
+end
+
+respond :options, Query::Visible.new() do |actor, thing|
+  sets = get_all_option_sets_for(thing.class)
+  opts = []
+  sets.each { |set|
+    opts.push thing.option_from(set)
+  }
+  actor.tell "#{The thing} is #{opts.join_and}."
+end
