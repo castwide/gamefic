@@ -105,6 +105,14 @@ module OptionSettings
     end
     return false
   end
+  def option_from_set(os)
+    os.options.each { |o|
+      if self.is?(o)
+        return o
+      }
+    }
+    nil
+  end
   def is(opt)
     option_select opt
   end

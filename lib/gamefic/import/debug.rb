@@ -37,7 +37,7 @@ respond :options, Query::Visible.new() do |actor, thing|
   sets = get_all_option_sets_for(thing.class)
   opts = []
   sets.each { |set|
-    opts.push thing.option_from(set)
+    opts.push thing.option_from_set(set)
   }
   actor.tell "#{The thing} is #{opts.join_and}."
 end
