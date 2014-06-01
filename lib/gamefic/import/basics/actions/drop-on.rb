@@ -1,3 +1,7 @@
+respond :drop_on, Query::Children.new(), Query::Reachable.new() do |actor, thing, supporter|
+  actor.tell "You can't put #{the thing} on #{the supporter}."
+end
+
 respond :drop_on, Query::Children.new(), Query::Reachable.new(Supporter) do |actor, thing, supporter|
   thing.parent = supporter
   thing.is :supported

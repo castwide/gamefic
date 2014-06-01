@@ -156,7 +156,16 @@ module Gamefic
           if opt[1][0].is?(:debugging)
             opt[1][0].tell "Executing #{opt[0].signature}"
           end
-          opt[0].execute *opt[1]
+					if opt[1].length == 1
+						opt[0].execute(opt[1][0])
+					else
+            if opt[1].length == 2 and opt[1][1].kind_of?(Entity) and opt[1][0].parent != opt[1][1]
+              opt[1][0].object_of_pronoun = opt[1][1]
+            else
+              opt[1][0].object_of_pronoun = nil
+            end
+						opt[0].execute(opt[1])
+					end
 				end
       end
       def self.pass requirement
@@ -176,7 +185,16 @@ module Gamefic
             if opt[1][0].is?(:debugging)
               opt[1][0].tell "Executing #{opt[0].signature}"
             end
-            opt[0].execute *opt[1]
+						if opt[1].length == 1
+							opt[0].execute(opt[1][0])
+						else
+              if opt[1].length == 2 and opt[1][1].kind_of?(Entity) and opt[1][0].parent != opt[1][1]
+                opt[1][0].object_of_pronoun = opt[1][1]
+              else
+                opt[1][0].object_of_pronoun = nil
+              end
+							opt[0].execute(opt[1])
+						end
 					end
 				end
 			end

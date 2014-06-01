@@ -7,6 +7,13 @@ respond :open, Query::Reachable.new(Entity) do |actor, thing|
 end
 
 respond :open, Query::Reachable.new(Container, :openable) do |actor, container|
+  # Portable containers need to be picked up before they are opened.
+  if container.is? :portable
+    actor.perform "take #{container}"
+    if container.parent != actor
+      break
+    end
+  end
   if container.is? :closed
     actor.tell "You open #{the container}."
     container.is :open
