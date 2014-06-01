@@ -18,6 +18,9 @@ module Gamefic
 				actions = actor.plot.commands[handler.command]
 				if actions != nil
 					actions.each { |action|
+            if action.queries.length == 0 and handler.arguments.length > 0
+              next
+            end
 						orders = bind_contexts_in_result(actor, handler, action)
 						orders.each { |order|
 							args = Array.new
