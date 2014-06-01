@@ -59,6 +59,10 @@ respond :take, Query::Reachable.new(:portable, :supported) do |actor, thing|
   thing.parent = actor
 end
 
+respond :take, Query::Children.new() do |actor, thing|
+  actor.tell "You're already carrying #{the thing}."
+end
+
 xlate "get :thing", :take, :thing
 xlate "pick up :thing", :take, :thing
 xlate "pick :thing up", :take, :thing
