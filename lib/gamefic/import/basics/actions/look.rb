@@ -30,6 +30,7 @@ respond :look, Query::Room.new(Room) do |actor, room|
   end
 end
 xlate "look", :look, "around"
+xlate "l", :look, "around"
 
 respond :look, Query::Visible.new() do |actor, thing|
   actor.tell thing.description
@@ -64,7 +65,6 @@ respond :look, Query::Siblings.new(Supporter) do |actor, supporter|
 end
 
 xlate "look at :thing", :look, :thing
-xlate "l", :look
 xlate "l :thing", :look, :thing
 xlate "examine :thing", :look, :thing
 xlate "x :thing", :look, :thing
