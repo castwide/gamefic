@@ -109,7 +109,7 @@ module OptionSettings
     os.options.each { |o|
       if self.is?(o)
         return o
-      }
+      end
     }
     nil
   end
