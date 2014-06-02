@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'json'
 
 module Gamefic
@@ -91,9 +92,10 @@ module Gamefic
             if s == :session
               entity.instance_variable_set(:@session, v)
             else
+              writer = "#{s.to_s[1..-1]}="
+              writer.untaint
               proc {
                 $SAFE = Gamefic.safe_level
-                writer = "#{s.to_s[1..-1]}="
                 if entity.respond_to?(writer)
                   if v.kind_of?(Key)
                     entity.send(writer, @entity_keys[v.value])
