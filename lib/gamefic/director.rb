@@ -152,10 +152,11 @@ module Gamefic
 					opt = options.shift
 					if opt[1].length == 1
 						opt[0].execute(opt[1][0])
+            opt[1][0].object_of_pronoun = nil
 					else
             if opt[1].length == 2 and opt[1][1].kind_of?(Entity) and opt[1][0].parent != opt[1][1]
               opt[1][0].object_of_pronoun = opt[1][1]
-            else
+            elsif opt[1][0].parent == opt[1][1]
               opt[1][0].object_of_pronoun = nil
             end
 						opt[0].execute(opt[1])
@@ -178,10 +179,11 @@ module Gamefic
 						opt = @@delegation_stack.last.shift
 						if opt[1].length == 1
 							opt[0].execute(opt[1][0])
+              opt[1][0].object_of_pronoun = nil
 						else
               if opt[1].length == 2 and opt[1][1].kind_of?(Entity) and opt[1][0].parent != opt[1][1]
                 opt[1][0].object_of_pronoun = opt[1][1]
-              else
+              elsif opt[1][0].parent == opt[1][1]
                 opt[1][0].object_of_pronoun = nil
               end
 							opt[0].execute(opt[1])
