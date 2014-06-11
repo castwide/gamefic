@@ -27,13 +27,19 @@ respond :options, Query::Text.new() do |actor, string|
   end
   sets = get_all_option_sets_for(cls)
   opts = []
+  #sets.each { |set|
+  #  opts.push set.default
+  #}
+  #actor.tell "A default #{string} is #{opts.join_and}."
+  #all = "All options for #{string}:\n"
+  actor.tell "Option sets for #{string} (and default):"
   sets.each { |set|
-    opts.push set.default
+    actor.tell "  #{set.options.join_and(', ', ' or ')} (#{set.default})"
   }
-  actor.tell "A default #{string} is #{opts.join_and}."
 end
 
-respond :options, Query::Visible.new() do |actor, thing|
+respond :analyze, Query::Visible.new() do |actor, thing|
+  actor.tell "#{The thing} is a #{thing.class}."
   sets = get_all_option_sets_for(thing.class)
   opts = []
   sets.each { |set|
@@ -41,3 +47,4 @@ respond :options, Query::Visible.new() do |actor, thing|
   }
   actor.tell "#{The thing} is #{opts.join_and}."
 end
+
