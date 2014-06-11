@@ -116,7 +116,7 @@ module Gamefic
         Dir.mkdir(directory + '/import')
         main_rb = File.new(directory + '/main.rb', 'w')
         main_rb.write <<EOS
-import 'basics'
+import 'standard'
 
 room = make Room, :name => 'room'
 
@@ -126,7 +126,7 @@ introduction do |player|
 end
 EOS
         main_rb.close
-        fetch directory
+        #fetch directory
         puts "Game directory '#{directory}' initialized."
       end
       def fetch directory

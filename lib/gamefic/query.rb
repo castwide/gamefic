@@ -169,9 +169,10 @@ module Gamefic
 					else
 						previous_match = true
 						results = new_results
-						if results.length == 1
-							break
-						end
+            # TODO: Uncommenting this code results in "lazy" word matching
+						#if results.length == 1
+						#	break
+						#end
 					end
 				end
 				if previous_match == false
