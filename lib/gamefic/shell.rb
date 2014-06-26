@@ -59,7 +59,7 @@ module Gamefic
         end
         Dir.mktmpdir 'gamefic_' do |dir|
           puts "Loading..."
-          story = Story.new
+          story = Plot.new
           begin
             decompress file, dir
           rescue Exception => e
@@ -75,7 +75,7 @@ module Gamefic
       end
       def test path
         puts "Loading..."
-        story = Story.new
+        story = Plot.new
         #begin
           if File.directory?(path)
             if !File.file?(path + '/main.rb')
@@ -138,7 +138,7 @@ EOS
           exit 1
         end
         puts "Loading game data..."
-        story = Story.new
+        story = Plot.new
         begin
           story.load directory + '/main.rb', true
         rescue Exception => e
@@ -192,7 +192,7 @@ EOS
           puts "The file #{filename} already exists."
           exit 1
         end
-        story = Story.new
+        story = Plot.new
         puts "Loading game data..."
         begin
           story.load directory + '/main.rb', true
