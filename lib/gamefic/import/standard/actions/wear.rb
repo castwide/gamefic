@@ -12,7 +12,7 @@ respond :wear, Query::Reachable.new(Clothing) do |actor, clothing|
         clothing.is :worn
         actor.tell "You put on #{the clothing}."
       else
-        actor.tell "You're already wearing #{a already[0]}."
+        actor.tell "You're already wearing #{an already[0]}."
       end
     end
   end
