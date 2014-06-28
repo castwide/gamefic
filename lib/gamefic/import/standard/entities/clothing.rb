@@ -9,4 +9,3 @@ class Clothing < Item
 end
 
 options(Clothing, :not_worn, :worn)
-#set_default_for(Clothing, :portable)

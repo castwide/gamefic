@@ -7,8 +7,13 @@ respond :wear, Query::Reachable.new(Clothing) do |actor, clothing|
     if clothing.is?(:worn)
       actor.tell "You're already wearing #{the clothing}."
     else
-      clothing.is :worn
-      actor.tell "You put on #{the clothing}."
+      already = actor.children.that_are(clothing.class).that_are(:worn)
+      if already.length == 0
+        clothing.is :worn
+        actor.tell "You put on #{the clothing}."
+      else
+        actor.tell "You're already wearing #{a already[0]}."
+      end
     end
   end
 end
