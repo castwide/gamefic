@@ -1,4 +1,4 @@
-import 'basics'
+import 'standard'
 import 'hello'
 
 room = make Room, :name => "a room", :description => "Just a room with four walls."
