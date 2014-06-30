@@ -60,12 +60,24 @@ module OptionMap
   def get_option_set_for(cls, opt, create_if_inherited = true)
     if option_map[cls] and option_map[cls][opt]
       return option_map[cls][opt]
-    elsif cls.superclass
-      os = get_option_set_for(cls.superclass, opt, false)
-      if os != nil and create_if_inherited == true
-        os = options(cls, *os.options)
+    else
+      from = cls.superclass
+      while from != nil
+        if option_map[from] and option_map[from][opt]
+          os = option_map[from][opt]
+          if os != nil and create_if_inherited == true
+            os = os.clone
+            option_map[cls] ||= {}
+            os.options.each { |o|
+              option_map[cls][o] = os
+            }
+          end
+          if os != nil
+            return os
+          end
+        end
+        from = from.superclass
       end
-      return os
     end
     return nil
   end
