@@ -39,7 +39,7 @@ respond :options, Query::Text.new() do |actor, string|
 end
 
 respond :analyze, Query::Visible.new() do |actor, thing|
-  actor.tell "#{The thing} is a #{thing.class}."
+  actor.tell "#{The thing} is a #{thing.class.to_s.gsub(/Gamefic::/, '')}."
   sets = get_all_option_sets_for(thing.class)
   opts = []
   sets.each { |set|
@@ -48,3 +48,12 @@ respond :analyze, Query::Visible.new() do |actor, thing|
   actor.tell "#{The thing} is #{opts.join_and}."
 end
 
+respond :analyze, Query::Room.new() do |actor, thing|
+  actor.tell "#{The thing} is a #{thing.class.to_s.gsub(/Gamefic::/, '')}."
+  sets = get_all_option_sets_for(thing.class)
+  opts = []
+  sets.each { |set|
+    opts.push thing.option_from_set(set)
+  }
+  actor.tell "#{The thing} is #{opts.join_and}."
+end
