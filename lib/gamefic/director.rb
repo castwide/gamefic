@@ -149,12 +149,6 @@ module Gamefic
 			end
       def handle options
 				if options.length > 0
-          #if options[0][1][0].is?(:debugging)
-          #  options[0][1][0].tell "Options: "
-          #  options.each { |o|
-          #    options[0][1][0].tell "  #{o[0].signature}"
-          #  }
-          #end
 					opt = options.shift
           if opt[1][0].is?(:debugging)
             opt[1][0].tell "Executing #{opt[0].signature}"
