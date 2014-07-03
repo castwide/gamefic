@@ -151,7 +151,7 @@ module Gamefic
 				if options.length > 0
 					opt = options.shift
           if opt[1][0].is?(:debugging)
-            opt[1][0].tell "Executing #{opt[0].signature}"
+            opt[1][0].tell "[DEBUG] Executing action: #{opt[0].signature}"
           end
 					if opt[1].length == 1
 						opt[0].execute(opt[1][0])
@@ -181,7 +181,7 @@ module Gamefic
 					if @@delegation_stack.last.length > 0
 						opt = @@delegation_stack.last.shift
             if opt[1][0].is?(:debugging)
-              opt[1][0].tell "Executing #{opt[0].signature}"
+              opt[1][0].tell "[DEBUG] Executing action: #{opt[0].signature}"
             end
 						if opt[1].length == 1
 							opt[0].execute(opt[1][0])
