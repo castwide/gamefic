@@ -56,7 +56,7 @@ respond :look, Query::Reachable.new(Container) do |actor, container|
   end
 end
 
-respond :look, Query::Siblings.new(Supporter) do |actor, supporter|
+respond :look, Query::Visible.new(Supporter) do |actor, supporter|
   passthru
   supported = supporter.children.that_are(:supported)
   supported.each { |thing|
