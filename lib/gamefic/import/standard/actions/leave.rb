@@ -24,6 +24,7 @@ xlate "get off :supporter", :leave, :supporter
 xlate "get up from :supporter", :leave, :supporter
 xlate "get up", :leave
 xlate "stand", :leave
+xlate "stand up", :leave
 xlate "get off", :leave
 xlate "get out :container", :leave, :container
 xlate "get out of :container", :leave, :container
