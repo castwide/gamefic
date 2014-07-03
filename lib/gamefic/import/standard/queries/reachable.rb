@@ -17,6 +17,9 @@ class Query::Reachable < Query::Family
     if subject.is?(:supported) or subject.is?(:contained)
       array.push subject.parent
     end
+    if subject.parent != subject.room
+      array += subject.room.children
+    end
     array.each { |thing|
       if thing.kind_of?(Container)
         if thing.is? :open
