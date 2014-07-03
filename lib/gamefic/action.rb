@@ -53,7 +53,7 @@ module Gamefic
       @queries.each { |q|
         sig.push q.signature
       }
-      sig.join(' ')
+      sig.join(' ').gsub(/Gamefic::/, '')
     end
 		private
 			def self.explode(entity)
