@@ -103,6 +103,18 @@ module Gamefic
 			if @introduction != nil
 				@introduction.call(player)
 			end
+      if player.parent.nil?
+        Proc.new {
+          $SAFE = 3
+          rooms = entities.that_are(Room)
+          if rooms.length == 0
+            room = make(Room, :name => 'nowhere')
+            player.parent = room
+          else
+            player.parent = rooms[0]
+          end
+        }.call
+      end
 		end
 		def conclude(player, key = nil)
 			if key != nil and @conclusions[key]
