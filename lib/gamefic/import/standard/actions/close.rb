@@ -7,7 +7,7 @@ respond :close, Query::Reachable.new(Entity) do |actor, thing|
 end
 
 respond :close, Query::Reachable.new(Container, :openable) do |actor, container|
-  if container.is? :closed
+  if container.is? :closed or container.is? :locked
     actor.tell "It's already closed."
   else
     actor.tell "You close #{the container}."

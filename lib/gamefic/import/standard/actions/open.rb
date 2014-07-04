@@ -14,7 +14,9 @@ respond :open, Query::Reachable.new(Container, :openable) do |actor, container|
       break
     end
   end
-  if container.is? :closed
+  if container.is? :locked
+    actor.tell "#{The container} is locked."
+  elsif container.is? :closed
     actor.tell "You open #{the container}."
     container.is :open
   else
