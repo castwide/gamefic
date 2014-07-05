@@ -125,8 +125,10 @@ module OptionSettings
     }
     nil
   end
-  def is(opt)
-    option_select opt
+  def is(*opts)
+    opts.each { |opt|
+      option_select opt
+    }
   end
   def is?(opt)
     option_selected?(opt)
