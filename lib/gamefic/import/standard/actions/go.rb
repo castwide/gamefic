@@ -1,4 +1,10 @@
-respond :go, Query::Siblings.new(Portal) do |actor, portal|
+respond :go, Query::Reachable.new(Portal) do |actor, portal|
+  if actor.parent != actor.room
+    actor.perform "leave"
+    if actor.parent != actor.room
+      break
+    end
+  end
   actor.parent = portal.destination
   actor.tell "You go #{portal.name}."
   actor.perform "look"

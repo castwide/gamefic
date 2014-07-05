@@ -19,6 +19,7 @@ end
 respond :leave do |actor|
   actor.perform "leave #{actor.parent}"
 end
+xlate "exit", :leave
 xlate "exit :supporter", :leave, :supporter
 xlate "get off :supporter", :leave, :supporter
 xlate "get up from :supporter", :leave, :supporter

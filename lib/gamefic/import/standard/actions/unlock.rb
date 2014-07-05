@@ -17,7 +17,7 @@ respond :unlock, Query::Reachable.new(Container, :lockable) do |actor, container
   if container.is?(:locked) == false
     actor.tell "#{The container} isn't locked."
   else
-    if container.is?(:assumably_keyed)
+    if container.is?(:auto_lockable)
       key = nil
       if container.key.nil? == false
         if container.key.parent == actor
@@ -39,10 +39,10 @@ end
 respond :unlock, Query::Reachable.new(Container, :lockable), Query::Children.new do |actor, container, key|
   if container.is?(:locked)
     if container.key == key
-      if container.is?(:not_assumably_keyed)
-        container.is :assumably_keyed
+      if container.is?(:not_auto_lockable)
+        container.is :auto_lockable
         actor.perform "unlock #{container}"
-        container.is :not_assumably_keyed
+        container.is :not_auto_lockable
       else
         actor.perform "unlock #{container}"      
       end
