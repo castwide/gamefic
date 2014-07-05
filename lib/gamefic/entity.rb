@@ -29,6 +29,11 @@ module Gamefic
 			@session = Hash.new
 			post_initialize
 		end
+    def options=(array)
+      array.each { |option|
+        is option
+      }
+    end
 		#def self.present(args = {})
 		#	story = Plot.Loading
 		#	if story == nil
