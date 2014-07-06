@@ -113,7 +113,7 @@ module Gamefic
 							end
 						end
 					}
-					if syntax.arguments.length == arguments.length
+					if syntax.arguments.length >= arguments.length
 						matches.push CommandHandler.new(syntax.command, arguments)
 					end
 				end
