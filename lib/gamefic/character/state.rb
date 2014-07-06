@@ -36,10 +36,10 @@ module Gamefic
     class Prompted < Base
       def post_initialize prompt, &block
         @prompt = prompt
-        @accept_block = block
+        @block = block
       end
       def accept line
-        block.call @character, line
+        @block.call @character, line
       end
     end
 
