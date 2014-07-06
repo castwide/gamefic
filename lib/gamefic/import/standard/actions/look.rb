@@ -8,9 +8,9 @@ respond :look, Query::Room.new(Room) do |actor, room|
   actor.tell room.description
   chars = room.children.that_are(Character) - [actor]
   if chars.length > 0
-    actor.tell "Others here: #{chars.join(", ")}"
+    actor.tell "#{chars.join_and.cap_first} #{chars.length == 1 ? 'is' : 'are'} here."
   end
-  items = room.children.that_are(:itemized) - [actor]
+  items = room.children.that_are(:itemized) - [actor] - room.children.that_are(Character)
   if items.length > 0
     actor.tell "You see #{items.join_and}."
   end

@@ -131,58 +131,54 @@ module Gamefic
     end
     
     def self.match(description, array)
-			array.each {|e|
-				if e.uid == description
-					return Matches.new([e], description, '')
-				end
-			}
-			keywords = description.split_words
-			results = array
-			used = Array.new
-			if results.length > 0
-				previous_match = false
-				while keywords.length > 0
-					used.push keywords.shift
-					new_results = Array.new
-					mostMatches = 0.0
-					results.each { |r|
-						words = Keywords.new(used.join(' '))
-						if words.length > 0
-							matches = words.found_in r.keywords
-							if matches >= mostMatches and matches > 0
-								if matches - mostMatches > 0.5
-									new_results = Array.new
-								end
-								new_results.push r
-								mostMatches = matches
-							end
-						end
-					}
-					if new_results.length == 0
-						if previous_match == true
-							keywords.unshift used.pop
-							if used.length == 0
-								results = new_results
-							end
-							break
-						end
-					else
-						previous_match = true
-						results = new_results
-            # TODO: Uncommenting this code results in "lazy" word matching
-						#if results.length == 1
-						#	break
-						#end
-					end
-				end
-				if previous_match == false
-					# Scrolled through every word and not a single thing matched
-					results = Array.new
-				end
-			end
-			return Matches.new(results, used.join(' '), keywords.join(' '))
+      keywords = description.split_words
+      array.each { |e|
+        if e.uid == keywords[0]
+          return Matches.new([e], keywords.shift, keywords.join(' '))
+        end
+      }
+      used = []
+      skipped = []
+      possibilities = array
+      at_least_one_match = false
+      while keywords.length > 0
+        used.push keywords.shift
+        new_results = []
+        most_matches = 0.0
+        possibilities.each { |p|
+          words = Keywords.new(used.last)
+          if words.length > 0
+            matches = words.found_in(p.keywords)
+            if matches >= most_matches and matches > 0
+              if matches - most_matches > 0.5
+                new_results = []
+              end
+              new_results.push p
+              most_matches = matches
+            end
+          end
+        }
+        if new_results.length > 0
+          at_least_one_match = true
+          intersection = possibilities & new_results
+          if intersection.length == 0
+            skipped.push used.pop
+            #return Matches.new(possibilities, used.join(' '), skipped.join(' '))
+          else
+            skipped.clear
+            possibilities = intersection
+          end
+        else
+          skipped.push used.pop
+        end
+      end
+      if at_least_one_match
+        return Matches.new(possibilities, used.join(' '), skipped.join(' '))
+      else
+        return Matches.new([], '', description)
+      end
     end
-
+    
     class Subquery < Base
       def base_specificity
         40
