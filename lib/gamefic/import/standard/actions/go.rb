@@ -5,9 +5,13 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
       break
     end
   end
-  actor.parent = portal.destination
-  actor.tell "You go #{portal.name}."
-  actor.perform "look"
+  if portal.destination.nil?
+    actor.tell "That portal leads nowhere."
+  else
+    actor.parent = portal.destination
+    actor.tell "You go #{portal.name}."
+    actor.perform "look"
+  end
 end
 
 respond :go, Query::Text.new() do |actor, string|
