@@ -47,9 +47,11 @@ module Gamefic
 			@syntaxes = Array.new
 			@conclusions = Hash.new
 			@update_procs = Array.new
+      @player_procs = Array.new
       @available_scripts = Hash.new
 			@imported_scripts = Array.new
 			@entities = Array.new
+      @players = Array.new
       @rules = Hash.new
 			post_initialize
 		end
@@ -105,6 +107,7 @@ module Gamefic
 			@scenes[key] = proc
 		end
 		def introduce(player)
+      @players.push player
 			if @introduction != nil
 				@introduction.call(player)
 			end
@@ -127,8 +130,8 @@ module Gamefic
         player.state = GameOverState.new(player)
 			end
 		end
-		def cue scene
-			@scenes[scene].call
+		def cue actor, scene
+			@scenes[scene].call(actor)
 		end
 		def passthru
 			Director::Delegate.passthru
@@ -146,6 +149,11 @@ module Gamefic
       @entities.each { |e|
 				e.update
 			}
+      @players.each { |player|
+        @player_procs.each { |proc|
+          proc.call player
+        }
+      }
 		end
 
 		def tell entities, message, refresh = false
@@ -159,9 +167,7 @@ module Gamefic
       code.untaint
       @source_directory = File.dirname(script)
       if with_libs == true
-        $LOAD_PATH.reverse.each { |path|
-          get_scripts path + '/gamefic/import'
-        }
+        preload_libs
       end
       get_scripts @source_directory + '/import'
       proc {
@@ -201,8 +207,16 @@ module Gamefic
         end
       end
     end
+    def on_player_update &block
+      @player_procs.push block
+    end
     
 		private
+    def preload_libs
+      $LOAD_PATH.reverse.each { |path|
+        get_scripts path + '/gamefic/import'
+      }
+    end
     def get_scripts(directory)
       Dir[directory + '/*'].each { |f|
         if File.directory?(f)
