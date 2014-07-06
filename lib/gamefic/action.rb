@@ -1,7 +1,7 @@
 module Gamefic
 
 	class Action
-		attr_reader :command, :order_key
+		attr_reader :command, :order_key, :caller
 		@@defaults = Array.new
     @@order_key_seed = 0
 		def initialize(story, command, *queries, &proc)
@@ -53,7 +53,7 @@ module Gamefic
       @queries.each { |q|
         sig.push q.signature
       }
-      sig.join(' ').gsub(/Gamefic::/, '')
+      sig.join(', ').gsub(/Gamefic::/, '')
     end
 		private
 			def self.explode(entity)

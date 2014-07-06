@@ -151,7 +151,7 @@ module Gamefic
 				if options.length > 0
 					opt = options.shift
           if opt[1][0].is?(:debugging)
-            opt[1][0].tell "[DEBUG] Executing action: #{opt[0].signature}"
+            opt[1][0].tell "[DEBUG] Executing action: #{opt[0].signature} - defined at #{opt[0].caller.split(':')[0..-2].join(':')})"
           end
 					if opt[1].length == 1
 						opt[0].execute(opt[1][0])
