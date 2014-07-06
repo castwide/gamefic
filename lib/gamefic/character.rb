@@ -1,10 +1,12 @@
+require "gamefic/character/state"
+
 module Gamefic
 
 	class Character < Thing
 		attr_reader :state, :queue, :user, :last_command
     attr_accessor :object_of_pronoun
 		def initialize(plot, args = {})
-			@state = CharacterState.new(self)
+			set_state CharacterState::Active
 			@queue = Array.new
       super
 		end
@@ -37,9 +39,12 @@ module Gamefic
 				end
 			end
 		end
-		def state=(new_state)
-			@state = new_state
-		end
+		#def state=(new_state)
+		#	@state = new_state
+		#end
+    def set_state new_state, *args, &block
+      @state = new_state.new(self, *args, &block)
+    end
 		def destroy
 			if @user != nil
 				@user.quit
@@ -51,33 +56,5 @@ module Gamefic
 			@state.update
 		end
 	end
-	class CharacterState
-		def initialize(character)
-			@character = character
-			post_initialize
-		end
-		def post_initialize
-			# TODO: Required by subclasses?
-		end
-		def busy?
-			false
-		end
-		def update
-			while (line = @character.queue.shift)
-				@character.perform line
-				if @character.state != self
-					break
-				end
-			end
-		end
-    def prompt
-      "> "
-    end
-	end
-  class GameOverState < CharacterState
-    def prompt
-      "GAME OVER"
-    end
-  end
 
 end

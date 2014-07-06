@@ -1,4 +1,12 @@
+require 'gamefic/character/state'
+
 module Gamefic
+
+  # Constant shortcuts for common character states
+  ACTIVE = CharacterState::Active
+  PAUSED = CharacterState::Paused
+  PROMPTED = CharacterState::Prompted
+  CONCLUDED = CharacterState::Concluded
 
   def self.bind(plot)
     mod = Module.new do
@@ -127,7 +135,7 @@ module Gamefic
 		def conclude(player, key = nil)
 			if key != nil and @conclusions[key]
 				@conclusions[key].call(player)
-        player.state = GameOverState.new(player)
+        player.set_state CharacterState::Concluded
 			end
 		end
 		def cue actor, scene

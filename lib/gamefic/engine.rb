@@ -10,7 +10,7 @@ module Gamefic
     end
 		def run
       @plot.introduce @user.character
-			while @user.character.state.kind_of?(GameOverState) == false
+			while @user.character.state.kind_of?(CharacterState::Concluded) == false
         tick
 			end
 		end

@@ -1,3 +1,3 @@
 meta :quit do |actor|
-  actor.state = GameOverState.new(actor)
+  actor.set_state CONCLUDED
 end
