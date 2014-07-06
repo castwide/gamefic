@@ -8,11 +8,16 @@ module Gamefic
       def self.get_binding
         binding
       end
-      def self.method_missing(name, *args, &block)
-        if @@plot.respond_to?(name)
-          @@plot.send name, *args, &block
-        elsif Gamefic.respond_to?(name)
-          Gamefic.send name, *args, &block
+      def self.method_missing(method_name, *args, &block)
+        if @@plot.respond_to?(method_name)
+          if method_name == :action or method_name == :respond
+            result = @@plot.send method_name, *args, &block
+            result.instance_variable_set(:@caller, caller[0])
+          else
+            @@plot.send method_name, *args, &block
+          end
+        elsif Gamefic.respond_to?(method_name)
+          Gamefic.send method_name, *args, &block
         end
       end
     end
