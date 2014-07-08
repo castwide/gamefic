@@ -15,12 +15,11 @@ module Gamefic
       end
       def update
         while (line = @character.queue.shift)
-          accept line
-          @character.state.update
-        end    
+          @character.state.accept line
+        end
       end
       def accept line
-        @character.perform line
+        Director.dispatch(@character, line)
       end
       def prompt
         @prompt ||= "> "
