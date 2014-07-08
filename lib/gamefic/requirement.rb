@@ -6,8 +6,8 @@ module Gamefic
       @name = name
       @proc = proc
     end
-    def test actor
-      return @proc.call actor
+    def test actor, action
+      return @proc.call actor, action
     end
   end
 
