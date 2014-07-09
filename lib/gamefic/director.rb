@@ -124,9 +124,10 @@ module Gamefic
           end
         }
         @@delegation_stack.push befores
+        has_befores = (befores.length > 0)
         handle befores
         @@delegation_stack.pop
-        if afters.length == 0 or afters[0][0].command == nil
+        if afters.length == 0 or (has_befores and afters[0][0].command == nil)
           return
         end
         @@assertion_stack.push Hash.new
