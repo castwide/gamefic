@@ -23,6 +23,9 @@ module Gamefic
             parts = caller[0].split(':')[0..-2]
             line = parts.pop
             file = parts.join(':').gsub(/\/+/, '/')
+            # The caller value shouldn't really be user-definable, so we're
+            # injecting it into the instance variable instead of defining a
+            # writer method in the receiver.
             result.instance_variable_set(:@caller, "#{file}, line #{line}")
           else
             @@plot.send method_name, *args, &block
