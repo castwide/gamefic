@@ -21,7 +21,8 @@ foyer = make Room,
 frontDoor = make Portal,
   :name => "north",
   :description => "The door to the street.", 
-  :parent => foyer
+  :parent => foyer,
+  :proper_named => true
 
 respond :go, Query::Siblings.new(frontDoor) do |actor, dest|
   actor.tell "You've only just arrived, and besides, the weather outside seems to be getting worse."
@@ -40,7 +41,7 @@ foyer.connect cloakroom, "west"
 # In the cloak room there's a hook where we can hang the cloak. 
 # It doesn't need a new class, it's just a fixture which responds to "put on" and "look".
 
-hook = make Fixture, 
+hook = make Supporter, 
   :name => "a small brass hook",
   :description => "It's just a brass hook.",
   :parent => cloakroom, 
@@ -54,15 +55,7 @@ respond :look, Query::Family.new(hook) do |actor, hook|
   end
 end
 
-respond :put_on, Query::Family.new(hook), Query::Children.new() do |actor, hook, item|
-  item.parent = hook
-  actor.tell "You put #{the item} on #{the hook}."
-end
-
-xlate "put :item on :hook", :put_on, :hook, :item
-xlate "place :item on :hook", :put_on, :hook, :item
-xlate "hang :item on :hook", :put_on, :hook, :item
-
+xlate "hang :item on :hook", :drop_on, :item, :hook
 
 # The eponymous Cloak of Darkness: when the player takes it to the bar, everything is dark.
 # We don't handle wearing it different from carrying it. 
@@ -90,7 +83,7 @@ end
 bar = make Room, 
   :name => "Foyer Bar", 
   :description => "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty. There seems to be some sort of message scrawled in the sawdust on the floor."
-
+bar.is :dark
 foyer.connect bar, "south"
 
 
@@ -113,42 +106,29 @@ end
 
 xlate "read :message", :look, :message
 
+# Customize the :has_enough_light rule to check if the player has the cloak.
 
-# When the player walks in to the bar with the cloak we enter a special InDarkState
-
-respond :go, Query::Siblings.new(Portal) do |actor, portal|
-  if portal.destination == bar && cloak.parent == actor then
-    actor.tell "You go south."
-    actor.tell "## Darkness"
-    actor.tell "It is pitch black, and you can't see a thing."
-    actor.parent = portal.destination # you still need to move the player there
-    actor.state = InDarkState.new(actor)
+assert_action :has_enough_light do |actor, action|
+  if cloak.parent == actor
+    bar.is :dark
   else
-    passthru
+    bar.is :lighted
   end
-end
-
-
-# We are using a CharacterState to deal with being in the darkened bar, and explicitly only
-# allow going north.
-
-class InDarkState < CharacterState
-  @@allowed = ["n", "north", "go north"]
-  def update
-    if (line = @character.queue.shift)
-      if line != ""
-        if @@allowed.include?(line) then
-          @character.state = CharacterState.new(@character)
-          @character.perform "go north"
-        else
-          @character.tell "In the dark? You could easily disturb something."
-          @character.session[:disturbed] = true
-        end
-      end
+  if actor.room.is? :dark
+    if action == :go
+      true
+    elsif action == :look
+      actor.tell "It's too dark in here."
+      false
+    else
+      actor.tell "Uh oh, you're wandering around in the dark!"
+      actor.session[:disturbed] = true
+      false
     end
+  else
+    true
   end
 end
-
 
 # The player
 
@@ -160,20 +140,17 @@ introduction do |player|
     player.perform "look"
 end
 
-
 # Two different endings
-# TODO actor.tell does not seem to get printed out in the conclusions so I'm using puts for now
 
 conclusion :you_have_won do |actor|
-  puts "The message, neatly marked in the sawdust, reads..."
-  puts "*** You have won ***"
+  actor.tell "The message, neatly marked in the sawdust, reads..."
+  actor.tell "*** You have won ***"
 end
 
 conclusion :you_have_lost do |actor|
-  puts "The message has been carelessly trampled, making it difficult to read. You can just distinguish the words..."
-  puts "*** You have lost ***"
+  actor.tell "The message has been carelessly trampled, making it difficult to read. You can just distinguish the words..."
+  actor.tell "*** You have lost ***"
 end
-
 
 # "test me" command 
 # TODO this kind of works, but gamefic should maybe provide something for game testing. 
