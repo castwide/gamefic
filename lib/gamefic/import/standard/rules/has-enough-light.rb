@@ -1,4 +1,4 @@
-assert :has_enough_light do |actor, action|
+assert_action :has_enough_light do |actor, action|
   if actor.room.is? :lighted
     true
   else

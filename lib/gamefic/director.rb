@@ -12,7 +12,6 @@ module Gamefic
         puts "#{e}"
         return
       end
-      befores = Array.new
 			options = Array.new
 			handlers.each { |handler|
 				actions = actor.plot.commands[handler.command]
@@ -36,16 +35,12 @@ module Gamefic
 								end
 								args.push a[0]
 							}
-              if order.action.kind_of?(Before)
-                befores.push [order.action, args]
-              else
-                options.push [order.action, args]
-              end
+              options.push [order.action, args]
 						}
 					}
 				end
 			}
-			del = Delegate.new(actor, befores, options)
+			del = Delegate.new(actor, options, actor.plot.asserts, actor.plot.finishes)
 			del.execute
 		end
 		private
@@ -109,55 +104,60 @@ module Gamefic
 		class Delegate
       @@assertion_stack = Array.new
 			@@delegation_stack = Array.new
-			def initialize(actor, befores, actions)
+			def initialize(actor, actions, asserts, finishes)
         @actor = actor
-        @befores = befores
 				@actions = actions
+        @asserts = asserts
+        @finishes = finishes
 			end
 			def execute
-        @@assertion_stack.push Hash.new
-        #@@delegation_stack.push @befores
-        #handle @befores
-        #@@delegation_stack.pop
-        @@delegation_stack.push nil
-        @befores.each { |opt|
-          handle [opt]
+        if @actor.is?(:debugging)
+          @actor.tell "[DEBUG] Performing action"
+        end
+        befores = []
+        afters = []
+        @actions.each { |action|
+          if action[0].kind_of?(Meta)
+            befores.push action
+          else
+            afters.push action
+          end
         }
-        #handle @befores
+        @@delegation_stack.push befores
+        handle befores
         @@delegation_stack.pop
-        if @@assertion_stack.last[:everything] == false
-          @@assertion_stack.pop
+        if afters.length == 0 or afters[0][0].command == nil
           return
         end
+        @@assertion_stack.push Hash.new
+        # Assertion of action is assumed true unless an assertion rule explicitly
+        # returns false
         result = true
-        @@delegation_stack.push @actions
-        # Nil commands pass assertions to facilitate error messages.
-        if @@assertion_stack.last[:everything] != true and Director::Delegate.next_command != nil
-          @actor.plot.rules.each { |k, v|
-            if @@assertion_stack.last[k] == true
-              next
-            elsif @@assertion_stack.last[k] == false
-              result = false
-              break
+        @asserts.each { |key, rule|
+          result = rule.test(@actor, @actions[0][0].command)
+          if result == false
+            if @actor.is?(:debugging)
+              @actor.tell "[DEBUG] Asserting #{key} - defined at #{rule.caller}) - FALSE"
             end
-            result = v.test(@actor, @actions[0][0].command)
-            if result == false
-              break
+            break
+          else
+            if @actor.is?(:debugging)
+              @actor.tell "[DEBUG] Asserting #{key} - defined at #{rule.caller}) - TRUE"
             end
-            result = true
-          }
+          end
+        }
+        if result == false
+          return
         end
-        @@assertion_stack.pop
-        if result == true
-          handle @actions
-        end
+        @@delegation_stack.push afters
+        handle afters
         @@delegation_stack.pop
 			end
       def handle options
 				if options.length > 0
 					opt = options.shift
           if opt[1][0].is?(:debugging)
-            opt[1][0].tell "[DEBUG] Executing #{opt[0].class}: #{opt[0].signature} - defined at #{opt[0].caller.split(':')[0..-2].join(':')})"
+            opt[1][0].tell "[DEBUG] Executing #{opt[0].class}: #{opt[0].signature} - defined at #{opt[0].caller})"
           end
 					if opt[1].length == 1
 						opt[0].execute(opt[1][0])
@@ -172,12 +172,6 @@ module Gamefic
 					end
 				end
       end
-      def self.pass requirement
-        @@assertion_stack.last[requirement] = true
-      end
-      def self.deny requirement
-        @@assertion_stack.last[requirement] = false
-      end
       def self.next_command
         return nil if @@delegation_stack.last.nil? or @@delegation_stack.last[0].length == 0
         return @@delegation_stack.last[0][0].command
@@ -187,7 +181,7 @@ module Gamefic
 					if @@delegation_stack.last.length > 0
 						opt = @@delegation_stack.last.shift
             if opt[1][0].is?(:debugging)
-              opt[1][0].tell "[DEBUG] Executing #{opt[0].class}: #{opt[0].signature} - defined at #{opt[0].caller.split(':')[0..-2].join(':')})"
+              opt[1][0].tell "[DEBUG] Executing #{opt[0].class}: #{opt[0].signature} - defined at #{opt[0].caller})"
             end
 						if opt[1].length == 1
 							opt[0].execute(opt[1][0])

@@ -18,9 +18,12 @@ module Gamefic
       end
       def self.method_missing(method_name, *args, &block)
         if @@plot.respond_to?(method_name)
-          if method_name == :action or method_name == :respond
+          if method_name == :action or method_name == :respond or method_name == :assert_action or method_name == :finish_action or method_name == :meta
             result = @@plot.send method_name, *args, &block
-            result.instance_variable_set(:@caller, caller[0])
+            parts = caller[0].split(':')[0..-2]
+            line = parts.pop
+            file = parts.join(':').gsub(/\/+/, '/')
+            result.instance_variable_set(:@caller, "#{file}, line #{line}")
           else
             @@plot.send method_name, *args, &block
           end
@@ -38,7 +41,7 @@ module Gamefic
   end
   
 	class Plot
-		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules
+		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes
 		attr_accessor :story
     include OptionMap
 		def commandwords
@@ -60,11 +63,16 @@ module Gamefic
 			@imported_scripts = Array.new
 			@entities = Array.new
       @players = Array.new
-      @rules = Hash.new
+      #@rules = Hash.new
+      @asserts = Hash.new
+      @finishes = Hash.new
 			post_initialize
 		end
-    def assert name, &block
-      @rules[name] = Requirement.new self, name, &block
+    def assert_action name, &block
+      @asserts[name] = Assert.new(name, &block)
+    end
+    def finish_action name, &block
+      @finishes[name] = Finish.new(name, &block)
     end
 		def post_initialize
       # TODO: Should this method be required by extended classes?
@@ -144,12 +152,6 @@ module Gamefic
 		def passthru
 			Director::Delegate.passthru
 		end
-    def pass requirement
-      Director::Delegate.pass requirement
-    end
-    def deny requirement
-      Director::Delegate.deny requirement
-    end
 		def update
 			@update_procs.each { |p|
 				p.call
