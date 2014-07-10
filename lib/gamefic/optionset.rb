@@ -109,7 +109,13 @@ module OptionSettings
   end
   def option_selected?(opt)
     set = option_mapper.get_option_set_for(self.class, opt)
-    return false if set.nil?
+    if set.nil?
+      if opt.to_s[0..3] == 'not_'
+        return true
+      else
+        return false
+      end
+    end
     return true if option_array.include?(opt)
     other = set.options & option_array
     if other.length == 0 and set.default == opt
