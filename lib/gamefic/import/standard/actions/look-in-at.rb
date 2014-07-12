@@ -8,7 +8,7 @@ end
 
 respond :look_in_at, Query::Reachable.new(), Query::Subquery.new() do |actor, container, thing|
   if thing.is?(:supported) or thing.is?(:attached) or ( thing.is?(:contained) and (container.is?(:open) or container.is?(:transparent)) )
-    actor.perform "look #{thing}"
+    actor.perform :look, thing
   elsif container.is?(:closed)
     actor.tell "#{The container} is closed."
   else

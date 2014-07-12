@@ -1,6 +1,6 @@
 respond :go, Query::Reachable.new(Portal) do |actor, portal|
   if actor.parent != actor.room
-    actor.perform "leave"
+    actor.perform :leave
     if actor.parent != actor.room
       break
     end
@@ -10,7 +10,7 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
   else
     actor.parent = portal.destination
     actor.tell "You go #{portal.name}."
-    actor.perform "look"
+    actor.perform :look, actor.room
   end
 end
 

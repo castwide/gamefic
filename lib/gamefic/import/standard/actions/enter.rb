@@ -13,7 +13,7 @@ end
 respond :sit do |actor|
   supporters = actor.room.children.that_are(Supporter).that_are(:enterable)
   if supporters.length == 1
-    actor.perform "enter #{supporters[0]}"
+    actor.perform :enter, supporters[0]
   elsif supporters.length > 1
     actor.tell "I don't know where you want to sit: #{supporters.join_and(', ', ' or ')}."
   else

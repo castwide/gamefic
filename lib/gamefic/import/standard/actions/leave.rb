@@ -11,13 +11,13 @@ respond :leave, Query::Parent.new(Room) do |actor, room|
   if portals.length == 0
     actor.tell "You don't see any obvious exits."
   elsif portals.length == 1
-    actor.perform "go #{portals[0]}"
+    actor.perform :go, portals[0]
   else
     actor.tell "I don't know which way you want to go: #{portals.join_and(', ', ' or ')}."
   end
 end
 respond :leave do |actor|
-  actor.perform "leave #{actor.parent}"
+  actor.perform :leave, actor.parent
 end
 xlate "exit", :leave
 xlate "exit :supporter", :leave, :supporter

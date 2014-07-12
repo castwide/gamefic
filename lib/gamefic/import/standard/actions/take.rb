@@ -75,19 +75,19 @@ xlate "pick :thing up", :take, :thing
 #   * take key from room
 #   * take key from box
 respond :take_from, Query::Room.new(), Query::Siblings.new() do |actor, container, thing|
-  actor.perform "take #{thing}"
+  actor.perform :take, thing
 end
 respond :take_from, Query::Reachable.new(Container, :closed), Query::Text.new() do |actor, container, thing|
   actor.tell "#{The container} is closed."
 end
 respond :take_from, Query::Reachable.new(Container, :open), Query::Subquery.new(:contained) do |actor, container, thing|
-  actor.perform "take #{thing}"
+  actor.perform :take, thing
 end
 respond :take_from, Query::Reachable.new(Container, :open), Query::Subquery.new(:attached) do |actor, container, thing|
   actor.tell "#{The thing} is attached to #{the container}."
 end
 respond :take_from, Query::Reachable.new(Supporter), Query::Subquery.new(:supported) do |actor, container, thing|
-  actor.perform "take #{thing}"
+  actor.perform :take, thing
 end
 xlate "take :thing from :container", :take_from, :container, :thing
 xlate "get :thing from :container", :take_from, :container, :thing

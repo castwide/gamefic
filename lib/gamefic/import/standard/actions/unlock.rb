@@ -9,7 +9,7 @@ end
 respond :unlock, Query::Reachable.new(Container, :lockable) do |actor, container|
   # Portable containers need to be picked up before they are unlocked.
   if container.is? :portable and container.parent != actor
-    actor.perform "take #{container}"
+    actor.perform :take, container
     if container.parent != actor
       break
     end
@@ -41,10 +41,10 @@ respond :unlock, Query::Reachable.new(Container, :lockable), Query::Children.new
     if container.key == key
       if container.is?(:not_auto_lockable)
         container.is :auto_lockable
-        actor.perform "unlock #{container}"
+        actor.perform :unlock, container
         container.is :not_auto_lockable
       else
-        actor.perform "unlock #{container}"      
+        actor.perform :unlock, container
       end
     else
       actor.tell "You can't unlock #{the container} with #{the key}."

@@ -9,7 +9,7 @@ end
 respond :open, Query::Reachable.new(Container, :openable) do |actor, container|
   # Portable containers need to be picked up before they are opened.
   if container.is? :portable and container.parent != actor
-    actor.perform "take #{container}"
+    actor.perform :take, container
     if container.parent != actor
       break
     end

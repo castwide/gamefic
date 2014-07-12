@@ -3,7 +3,7 @@ respond :talk do |actor|
 end
 
 respond :talk, Query::Self.new do |actor, yourself|
-  actor.perform "talk"
+  actor.perform :talk
 end
 
 respond :talk, Query::Reachable.new do |actor, thing|
@@ -15,7 +15,7 @@ respond :talk, Query::Reachable.new(Character) do |actor, character|
 end
 
 respond :talk, Query::Reachable.new(Character), Query::Text.new do |actor, character, text|
-  actor.perform "talk #{character}"
+  actor.perform :talk, character
 end
 
 xlate "talk to :character", :talk, :character
