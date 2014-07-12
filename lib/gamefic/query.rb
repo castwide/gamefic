@@ -20,6 +20,10 @@ module Gamefic
       def context_from(subject)
         subject
       end
+      def validate(subject, object)
+        array = context_from(subject)
+        return array.include?(object)
+      end
       def execute(subject, description)
         array = context_from(subject)
         @arguments.each { |arg|

@@ -17,14 +17,15 @@ module Gamefic
 			# TODO: We might need some cleanup here. Like, move the character out of the game, or set a timeout to allow dropped users to reconnect... figure it out.
 			@user = nil
 		end
-		def perform(command)
+		def perform(*command)
 			#if command != nil
 			#	@queue.push command
 			#end
       @last_command = command
 			if state.busy? == false
-				Director.dispatch(self, command)
+				Director.dispatch(self, *command)
 			else
+        # TODO: The queue needs to accept both arrays and strings
 				@queue.push command
 			end
 		end

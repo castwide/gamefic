@@ -1,45 +1,67 @@
 module Gamefic
 
 	class Director
-		def self.dispatch(actor, command)
-			command.strip!
-      if command.to_s == ''
-        return
-      end
-      begin
-        handlers = Syntax.match(command, actor.plot)
-      rescue Exception => e
-        puts "#{e}"
-        return
-      end
-			options = Array.new
-			handlers.each { |handler|
-				actions = actor.plot.commands[handler.command]
-				if actions != nil
-					actions.each { |action|
-            if action.queries.length == 0 and handler.arguments.length > 0
-              next
+		def self.dispatch(actor, *args)
+      command = args.shift
+      if command.kind_of?(Symbol)
+        options = Array.new
+        actions = actor.plot.commands[command]
+        actions.each { |action|
+          if action.queries.length == args.length
+            valid = true
+            index = 0
+            action.queries.each { |query|
+              if query.validate(actor, args[index]) == false
+                valid = false
+                break
+              end
+              index += 1
+            }
+            if valid
+              options.push [action, [actor] + args]
             end
-						orders = bind_contexts_in_result(actor, handler, action)
-						orders.each { |order|
-							args = Array.new
-							args.push actor
-							order.arguments.each { |a|
-								if a.length > 1
-									longnames = Array.new
-									a.each { |b|
-										longnames.push "#{b.definitely}"
-									}
-									actor.tell "I don't know which you mean: #{longnames.join_and(', ', ' or ')}."
-									return
-								end
-								args.push a[0]
-							}
-              options.push [order.action, args]
-						}
-					}
-				end
-			}
+          end
+        }
+      else
+        command.to_s.strip!
+        if command.to_s == ''
+          return
+        end
+        begin
+          handlers = Syntax.match(command, actor.plot)
+        rescue Exception => e
+          puts "#{e}"
+          return
+        end
+        options = Array.new
+        handlers.each { |handler|
+          actions = actor.plot.commands[handler.command]
+          if actions != nil
+            actions.each { |action|
+              if action.queries.length == 0 and handler.arguments.length > 0
+                next
+              end
+              orders = bind_contexts_in_result(actor, handler, action)
+              orders.each { |order|
+                args = Array.new
+                args.push actor
+                order.arguments.each { |a|
+                  if a.length > 1
+                    longnames = Array.new
+                    a.each { |b|
+                      longnames.push "#{b.definitely}"
+                    }
+                    actor.tell "I don't know which you mean: #{longnames.join_and(', ', ' or ')}."
+                    return
+                  end
+                  args.push a[0]
+                }
+                options.push [order.action, args]
+              }
+            }
+          end
+        }
+      end
 			del = Delegate.new(actor, options, actor.plot.asserts, actor.plot.finishes)
 			del.execute
 		end
