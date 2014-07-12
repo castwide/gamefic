@@ -22,6 +22,9 @@ module Gamefic
       end
       def validate(subject, object)
         array = context_from(subject)
+        @arguments.each { |arg|
+          array = array.that_are(arg)
+        }
         return array.include?(object)
       end
       def execute(subject, description)
@@ -65,6 +68,18 @@ module Gamefic
     class Text < Base
       def base_specificity
         10
+      end
+      def validate(subject, description)
+        return false unless description.kind_of?(String)
+        valid = false
+        words = description.split_words
+        words.each { |word|
+          if description.include?(word)
+            valid = true
+            break
+          end
+        }
+        valid
       end
       def execute(subject, description)
         if @arguments.length == 0
