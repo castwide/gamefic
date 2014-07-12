@@ -1,11 +1,11 @@
 options Character, :not_debugging, :debugging
 
-respond :debug do |actor|
-    current = actor.is?(:debugging) ? 'ON' : 'OFF'
-    actor.tell "Debugging is currently #{current}."
+meta :debug do |actor|
+  current = actor.is?(:debugging) ? 'ON' : 'OFF'
+  actor.tell "Debugging is currently #{current}."
 end
 
-respond :debug, Query::Text.new() do |actor, selection|
+meta :debug, Query::Text.new() do |actor, selection|
   entered = selection.to_s.downcase
   if entered == 'on'
     actor.is :debugging
@@ -18,7 +18,7 @@ respond :debug, Query::Text.new() do |actor, selection|
   end
 end
 
-respond :options, Query::Text.new() do |actor, string|
+meta :options, Query::Text.new() do |actor, string|
   begin
     cls = Gamefic.const_get(string)
   rescue NameError
@@ -27,18 +27,13 @@ respond :options, Query::Text.new() do |actor, string|
   end
   sets = get_all_option_sets_for(cls)
   opts = []
-  #sets.each { |set|
-  #  opts.push set.default
-  #}
-  #actor.tell "A default #{string} is #{opts.join_and}."
-  #all = "All options for #{string}:\n"
   actor.tell "Option sets for #{string} (and default):"
   sets.each { |set|
     actor.tell "  #{set.options.join_and(', ', ' or ')} (#{set.default})"
   }
 end
 
-respond :analyze, Query::Visible.new() do |actor, thing|
+meta :analyze, Query::Visible.new() do |actor, thing|
   actor.tell "#{The thing} is a #{thing.class.to_s.gsub(/Gamefic::/, '')}."
   sets = get_all_option_sets_for(thing.class)
   opts = []
@@ -48,7 +43,7 @@ respond :analyze, Query::Visible.new() do |actor, thing|
   actor.tell "#{The thing} is #{opts.join_and}."
 end
 
-respond :analyze, Query::Room.new() do |actor, thing|
+meta :analyze, Query::Room.new() do |actor, thing|
   actor.tell "#{The thing} is a #{thing.class.to_s.gsub(/Gamefic::/, '')}."
   sets = get_all_option_sets_for(thing.class)
   opts = []
