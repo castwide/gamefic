@@ -7,7 +7,9 @@ import 'standard'
 # Cloak of Darkness is a "hello world" example for interactive fiction.
 # See http://www.firthworks.com/roger/cloak/
 # Based on the Inform7 implementation by Emily Short and Graham Nelson.
-
+#
+# Version 2.0.0 / 12 July 2014 by Fred Snyder
+# Updated to use new features of Gamefic.
 
 # The Foyer is where the player starts. 
 
@@ -154,7 +156,7 @@ end
 
 # "test me" command 
 # TODO this kind of works, but gamefic should maybe provide something for game testing. 
-respond :test, Query::Text.new() do |actor, string|
+meta :test, Query::Text.new() do |actor, string|
   actor.tell "> s"
   actor.perform "s"
   actor.tell "> n"
