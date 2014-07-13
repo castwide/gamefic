@@ -49,16 +49,32 @@ describe OptionMap do
     set.default = :black
     set.default.should eq(:black)
   end
+  it "lets subclasses use different defaults" do
+    mapper = OptionMapper.new
+    mapper.options(BaseUser, :white, :black)
+    mapper.set_default_for(SubUser, :black)
+    mapper.get_default_for(BaseUser, :white).should eq(:white)
+    mapper.get_default_for(SubUser, :white).should eq(:black)
+  end
 end
 
 describe OptionSettings do
-  it "receives option settings from its option mapper" do
+  it "receives default settings from its option mapper" do
     mapper = OptionMapper.new
     mapper.options(BaseUser, :white, :black)
     mapper.options(BaseUser, :red, :blue).default = :blue
     user = BaseUser.new(mapper)
     user.is?(:white).should eq(true)
     user.is?(:blue).should eq(true)
+  end
+  it "overrides default settings" do
+    mapper = OptionMapper.new
+    mapper.options(BaseUser, :white, :black)
+    user = BaseUser.new(mapper)
+    user.is?(:white).should eq(true)
+    user.is :black
+    user.is?(:white).should eq(false)
+    user.is?(:black).should eq(true)
   end
   it "inherits option settings from its parent class" do
     mapper = OptionMapper.new
