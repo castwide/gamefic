@@ -17,6 +17,6 @@ engine = Cgi::Engine.new plot, :session_file => savename
 engine.begin_session
 engine.run
 engine.end_session
-if engine.user.character.state.kind_of?(GameOverState)
+if engine.user.character.state.kind_of?(CharacterState::Concluded)
   File.delete savename
 end

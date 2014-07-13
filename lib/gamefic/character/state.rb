@@ -3,8 +3,7 @@ module Gamefic
   module CharacterState
   
     class Base
-      def initialize character, *args, &block
-        @character = character
+      def initialize *args, &block
         post_initialize *args, &block
       end
       def post_initialize *args, &block
@@ -13,13 +12,13 @@ module Gamefic
       def busy?
         @busy ||= false
       end
-      def update
-        while (line = @character.queue.shift)
-          @character.state.accept line
+      def update character
+        while (line = character.queue.shift)
+          character.state.accept character, line
         end
       end
-      def accept line
-        Director.dispatch(@character, line)
+      def accept character, line
+        Director.dispatch(character, line)
       end
       def prompt
         @prompt ||= "> "
@@ -27,7 +26,7 @@ module Gamefic
     end
     
     class Active < Base
-      def post_initialize prompt = nil
+      def post_initialize prompt = "> "
         @prompt = prompt
       end
     end
@@ -37,29 +36,29 @@ module Gamefic
         @prompt = prompt
         @block = block
       end
-      def accept line
-        @block.call @character, line
+      def accept character, line
+        @block.call character, line
       end
     end
 
     class Paused < Base
-      def post_initialize prompt = nil, &block
-        @prompt = prompt || "Press enter to continue... "
+      def post_initialize prompt = "Press enter to continue... ", &block
+        @prompt = prompt
         @block = block
       end
-      def accept line
-        @character.set_state Active
+      def accept character, line
+        character.state = :active
         if @block != nil
-          @block.call @character
+          @block.call character
         end
       end
     end
     
     class Concluded < Base
-      def prompt
-        @prompt ||= "GAME OVER"
+      def post_initialize prompt = "GAME OVER"
+        @prompt = prompt
       end
-      def accept line
+      def accept character, line
         return
       end
     end

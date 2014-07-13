@@ -1,3 +1,3 @@
 meta :quit do |actor|
-  actor.set_state CONCLUDED
+  actor.state = :concluded
 end

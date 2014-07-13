@@ -3,12 +3,13 @@ require "gamefic/character/state"
 module Gamefic
 
 	class Character < Thing
-		attr_reader :state, :queue, :user, :last_command
+		attr_reader :state, :state_name, :queue, :user, :last_command
     attr_accessor :object_of_pronoun
 		def initialize(plot, args = {})
-			set_state CharacterState::Active
+			#set_state CharacterState::Active
 			@queue = Array.new
       super
+      self.state = :active
 		end
 		def connect(user)
 			@user = user
@@ -18,9 +19,6 @@ module Gamefic
 			@user = nil
 		end
 		def perform(*command)
-			#if command != nil
-			#	@queue.push command
-			#end
       @last_command = command
 			if state.busy? == false
 				Director.dispatch(self, *command)
@@ -29,9 +27,16 @@ module Gamefic
 				@queue.push command
 			end
 		end
-		#def inject(command)
-		#	Director.dispatch(self, command)
-		#end
+    def state
+      @state
+    end
+    def state=(name)
+      if plot.states[name].nil?
+        raise "Invalid state #{name}"
+      end
+      @state_name = name
+      @state = plot.states[name]
+    end
 		def tell(message, refresh = false)
 			if user != nil and message.to_s != ''
 				user.stream.send "#{message}\n"
@@ -40,12 +45,9 @@ module Gamefic
 				end
 			end
 		end
-		#def state=(new_state)
-		#	@state = new_state
-		#end
-    def set_state new_state, *args, &block
-      @state = new_state.new(self, *args, &block)
-    end
+    #def set_state name
+    #  @state = @plot.states[name]
+    #end
 		def destroy
 			if @user != nil
 				@user.quit
@@ -54,7 +56,7 @@ module Gamefic
 		end
 		def update
 			super
-			@state.update
+			@state.update self
 		end
 	end
 

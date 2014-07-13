@@ -44,7 +44,7 @@ module Gamefic
   end
   
 	class Plot
-		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes
+		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states
 		attr_accessor :story
     include OptionMap
 		def commandwords
@@ -69,6 +69,9 @@ module Gamefic
       #@rules = Hash.new
       @asserts = Hash.new
       @finishes = Hash.new
+      @states = Hash.new
+      @states[:active] = CharacterState::Active.new
+      @states[:concluded] = CharacterState::Concluded.new
 			post_initialize
 		end
     def assert_action name, &block
@@ -99,6 +102,12 @@ module Gamefic
 			end
 			ent
 		end
+    def pause name, *args, &block
+      @states[name] = CharacterState::Paused.new(*args, &block)
+    end
+    def prompt name, *args, &block
+      @states[name] = CharacterState::Prompted.new(*args, &block)
+    end
 		def syntax(*args)
       xlate *args
 		end
@@ -146,7 +155,7 @@ module Gamefic
 		def conclude(player, key = nil)
 			if key != nil and @conclusions[key]
 				@conclusions[key].call(player)
-        player.set_state CharacterState::Concluded
+        player.state = :concluded
 			end
 		end
 		def cue actor, scene

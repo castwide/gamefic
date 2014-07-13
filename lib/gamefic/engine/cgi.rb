@@ -4,18 +4,18 @@ require 'json'
 module Gamefic
 
   class Entity
-    def key
-      if @key == nil
+    def cgi_key
+      if @cgi_key == nil
         stack = Array.new
         stack.push name
-        p = @parent
+        p = parent
         while p != nil
           stack.push p.name
           p = p.parent
         end
-        @key = stack.join("|")
+        @cgi_key = stack.join("|")
       end
-      @key
+      @cgi_key
     end
   end
 
@@ -46,9 +46,12 @@ module Gamefic
       end
       def begin_session
         # Initialize keys for all entities
-        @plot.entities.each { |e|
-          @entity_keys[e.key] = e
-        }
+        proc {
+          $SAFE = 3
+          @plot.entities.each { |e|
+            @entity_keys[e.cgi_key] = e
+          }
+        }.call
         if !@new_game and @session_file != nil
           if File.exist?(@session_file)
             load @session_file
@@ -91,6 +94,12 @@ module Gamefic
           h.each { |s, v|
             if s == :session
               entity.instance_variable_set(:@session, v)
+            elsif s == :state
+              entity.state = v
+            elsif s == :options
+              v.each { |opt|
+                entity.is opt
+              }
             else
               writer = "#{s.to_s[1..-1]}="
               writer.untaint
@@ -116,9 +125,12 @@ module Gamefic
       end
       def save(filename)
         data = Hash.new
-        @plot.entities.each { |e|
-          data[e.key] = entity_hash(e)
-        }
+        proc { |data|
+          $SAFE = 3
+          @plot.entities.each { |e|
+            data[e.cgi_key] = entity_hash(e)
+          }
+        }.call(data)
         f = File.new(filename, "w")
         f.write Marshal.dump data
         f.close
@@ -126,15 +138,16 @@ module Gamefic
       def entity_hash(e)
         hash = Hash.new
         e.instance_variables.each { |v|
+          next if v == :@state or v == :@option_array
           writer = "#{v.to_s[1..-1]}="
           if e.respond_to?(writer)
             value = e.instance_variable_get(v)
-            if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value.kind_of?(CharacterState::Base) or value == nil or value.kind_of?(Array)
+            if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value == nil or value.kind_of?(Array)
               if value.kind_of?(Entity)
                 if value == @user.character
                   hash[v] = Key.new('yourself')
                 else
-                  hash[v] = Key.new(value.key)
+                  hash[v] = Key.new(value.cgi_key)
                 end
               elsif value.kind_of?(CharacterState::Base)
                 value.instance_variable_set(:@character, nil)
@@ -147,6 +160,12 @@ module Gamefic
             end
           end
         }
+        if e.respond_to?("state")
+          hash[:state] = e.state_name
+        end
+        if e.respond_to?("option_array")
+          hash[:options] = e.option_array
+        end
         hash[:session] = e.session
         hash
       end
@@ -154,7 +173,7 @@ module Gamefic
         result = Array.new
         array.each { |item|
           if item.kind_of?(Entity)
-            result.push Key.new(item.key)
+            result.push Key.new(item.cgi_key)
           else
             result.push item
           end
