@@ -60,7 +60,7 @@ module Gamefic
         if @introducing == true
           @plot.introduce @user.character
         else
-          if @user.character.state.kind_of?(GameOverState) == false
+          if @user.character.state.kind_of?(CharacterState::Concluded) == false
             tick
           end
         end
@@ -99,7 +99,7 @@ module Gamefic
                 if entity.respond_to?(writer)
                   if v.kind_of?(Key)
                     entity.send(writer, @entity_keys[v.value])
-                  elsif v.kind_of?(CharacterState)
+                  elsif v.kind_of?(CharacterState::Base)
                     v.instance_variable_set(:@character, entity)
                     entity.instance_variable_set(s, v)
                   elsif v.kind_of?(Array)
@@ -129,14 +129,14 @@ module Gamefic
           writer = "#{v.to_s[1..-1]}="
           if e.respond_to?(writer)
             value = e.instance_variable_get(v)
-            if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value.kind_of?(CharacterState) or value == nil or value.kind_of?(Array)
+            if value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(TrueClass) or value.kind_of?(FalseClass) or value.kind_of?(Entity) or value.kind_of?(Character) or value.kind_of?(CharacterState::Base) or value == nil or value.kind_of?(Array)
               if value.kind_of?(Entity)
                 if value == @user.character
                   hash[v] = Key.new('yourself')
                 else
                   hash[v] = Key.new(value.key)
                 end
-              elsif value.kind_of?(CharacterState)
+              elsif value.kind_of?(CharacterState::Base)
                 value.instance_variable_set(:@character, nil)
                 hash[v] = value
               elsif value.kind_of?(Array)
@@ -178,7 +178,7 @@ module Gamefic
       def post_initialize
         @stream = Cgi::UserStream.new
         @state = UserState.new self
-        #@character = @plot.make Character, :name => 'player'
+        #@character = @plot.make Character, :name => 'pWlayer'
       end
     end
     
