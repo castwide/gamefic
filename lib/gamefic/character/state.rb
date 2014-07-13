@@ -44,7 +44,7 @@ module Gamefic
 
     class Paused < Base
       def post_initialize prompt = nil, &block
-        @prompt = prompt || "Press any key to continue... "
+        @prompt = prompt || "Press enter to continue... "
         @block = block
       end
       def accept line
