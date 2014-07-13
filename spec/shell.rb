@@ -10,14 +10,14 @@ describe Shell do
   it "initializes a game source directory" do
     shell = Shell.new
     ARGV.clear
-    ARGV.push 'init', "#{@dir}/game"
+    ARGV.push 'init', "#{@dir}/game", "-q"
     shell.execute
     File.exist?("#{@dir}/game").should eq(true)
   end
   it "builds a game file" do
     shell = Shell.new
     ARGV.clear
-    ARGV.push 'build', "#{@dir}/game", '-o', "#{@dir}/game.gfic"
+    ARGV.push 'build', "#{@dir}/game", '-o', "#{@dir}/game.gfic", "-q"
     shell.execute
     File.exist?("#{@dir}/game.gfic").should eq(true)
   end

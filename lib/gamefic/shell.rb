@@ -96,6 +96,21 @@ module Gamefic
         engine.run
       end
       def init directory
+        quiet = false
+        opts = GetoptLong.new(
+          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ]
+        )
+        begin
+          opts.each { |opt, arg|
+            case opt
+              when '-q'
+                quiet = true
+            end
+          }
+        rescue Exception => e
+          puts "#{e}"
+          exit 1
+        end
         if directory.to_s == ''
           puts "No directory specified."
           exit 1
@@ -120,7 +135,7 @@ import 'standard'
 EOS
         main_rb.close
         #fetch directory
-        puts "Game directory '#{directory}' initialized."
+        puts "Game directory '#{directory}' initialized." unless quiet
       end
       def fetch directory
         if directory.to_s == ''
@@ -158,6 +173,7 @@ EOS
         end
       end
       def build directory
+        quiet = false
         if directory.to_s == ''
           puts "No source directory was specified."
           exit 1
@@ -168,14 +184,16 @@ EOS
         end
         filename = File.basename(directory) + '.gfic'
         opts = GetoptLong.new(
-          [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ]
+          [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ],
+          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ]
         )
-        opts.quiet = true
         begin
           opts.each { |opt, arg|
             case opt
               when '-o'
                 filename = arg
+              when '-q'
+                quiet = true
             end
           }
         rescue Exception => e
@@ -187,7 +205,7 @@ EOS
           exit 1
         end
         story = Plot.new
-        puts "Loading game data..."
+        puts "Loading game data..." unless quiet
         begin
           story.load directory + '/main.rb', true
         rescue Exception => e
@@ -195,7 +213,7 @@ EOS
           puts "#{e}"
           exit 1
         end
-        puts "Building file..."
+        puts "Building file..." unless quiet
         stream = StringIO.new("")
         Gem::Package::TarWriter.new(stream) do |tar|
           Gem::Package::TarHeader.set_mtime Time.now
@@ -222,7 +240,7 @@ EOS
         file = File.new(filename, "w")
         file.write gz.string
         file.close
-        puts "Gamefic file '#{filename}' complete."
+        puts "Gamefic file '#{filename}' complete." unless quiet
       end
       def help command
         shell_script = File.basename($0)
