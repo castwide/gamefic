@@ -82,4 +82,10 @@ describe OptionSettings do
     user = SubUser.new(mapper)
     user.is?(:white).should eq(true)
   end
+  it "returns true for undefined :not_* options and false for others" do
+    mapper = OptionMapper.new
+    user = BaseUser.new(mapper)
+    user.is?(:foo).should eq(false)
+    user.is?(:not_foo).should eq(true)
+  end
 end
