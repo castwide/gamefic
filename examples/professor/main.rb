@@ -23,11 +23,13 @@ end
 
 professor = make Character, :name => 'the professor', :synonyms => 'Sam Worthington', :description => 'A gangly older gentleman with thick glasses and a jaunty bowtie.', :parent => office
 
+prompt :talk_to_professor, "What do you want to ask him about? " do |actor, line|
+  actor.state = :active
+  actor.perform "ask professor about #{line}" unless line == ""
+end
+
 respond :talk, Query::Reachable.new(professor) do |actor, professor|
-  actor.set_state PROMPTED, "What do you want to ask him about? " do |actor, line|
-    actor.set_state ACTIVE
-    actor.perform "ask professor about #{line}" unless line == ""
-  end
+  actor.state = :talk_to_professor
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new do |actor, professor, subject|
