@@ -15,4 +15,17 @@ describe Syntax do
 		syn = Syntax.new @plot, "command", :command
 		Syntax.match("invalid", [syn]).length.should eq(0)	
 	end
+  it "does not accept extra text sent to a one-word command" do
+    plot = Plot.new
+    plot.respond :one do |actor|
+      actor.tell "ok"
+    end
+    Syntax.match("one", plot).length.should eq(1)
+    Syntax.match("one two", plot).length.should eq(0)
+    plot.respond :one, Query::Text.new() do |actor, text|
+      actor.tell "ok"
+    end
+    Syntax.match("one", plot).length.should eq(1)
+    Syntax.match("one two", plot).length.should eq(1)
+  end 
 end
