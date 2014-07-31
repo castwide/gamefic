@@ -46,12 +46,9 @@ module Gamefic
       end
       def begin_session
         # Initialize keys for all entities
-        proc {
-          $SAFE = 3
-          @plot.entities.each { |e|
-            @entity_keys[e.cgi_key] = e
-          }
-        }.call
+        @plot.entities.each { |e|
+          @entity_keys[e.cgi_key] = e
+        }
         if !@new_game and @session_file != nil
           if File.exist?(@session_file)
             load @session_file
@@ -67,14 +64,11 @@ module Gamefic
             tick
           end
         end
-        proc {
-          $SAFE = Gamefic.safe_level
-          response = Hash.new
-          response[:output] = @user.stream.output
-          response[:prompt] = @user.character.state.prompt
-          response[:state] = @user.character.state.class.to_s.split('::').last
-          puts JSON.generate(response)
-        }.call
+        response = Hash.new
+        response[:output] = @user.stream.output
+        response[:prompt] = @user.character.state.prompt
+        response[:state] = @user.character.state.class.to_s.split('::').last
+        puts JSON.generate(response)
       end
       def end_session
         save @session_file
@@ -103,21 +97,18 @@ module Gamefic
             else
               writer = "#{s.to_s[1..-1]}="
               writer.untaint
-              proc {
-                $SAFE = Gamefic.safe_level
-                if entity.respond_to?(writer)
-                  if v.kind_of?(Key)
-                    entity.send(writer, @entity_keys[v.value])
-                  elsif v.kind_of?(CharacterState::Base)
-                    v.instance_variable_set(:@character, entity)
-                    entity.instance_variable_set(s, v)
-                  elsif v.kind_of?(Array)
-                    entity.send(writer, decode_array(v))
-                  else
-                    entity.send(writer, v)
-                  end
+              if entity.respond_to?(writer)
+                if v.kind_of?(Key)
+                  entity.send(writer, @entity_keys[v.value])
+                elsif v.kind_of?(CharacterState::Base)
+                  v.instance_variable_set(:@character, entity)
+                  entity.instance_variable_set(s, v)
+                elsif v.kind_of?(Array)
+                  entity.send(writer, decode_array(v))
+                else
+                  entity.send(writer, v)
                 end
-              }.call
+              end
             end
           }
         }
@@ -125,12 +116,9 @@ module Gamefic
       end
       def save(filename)
         data = Hash.new
-        proc { |data|
-          $SAFE = 3
-          @plot.entities.each { |e|
-            data[e.cgi_key] = entity_hash(e)
-          }
-        }.call(data)
+        @plot.entities.each { |e|
+          data[e.cgi_key] = entity_hash(e)
+        }
         f = File.new(filename, "w")
         f.write Marshal.dump data
         f.close

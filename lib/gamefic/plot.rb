@@ -39,10 +39,6 @@ module Gamefic
     mod.get_binding
   end
   
-  def self.safe_level
-    @@safe_level ||= (RUBY_VERSION.split('.')[0].to_i < 2 ? 2 : 3)
-  end
-  
 	class Plot
 		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states
 		attr_accessor :story
@@ -140,16 +136,13 @@ module Gamefic
 				@introduction.call(player)
 			end
       if player.parent.nil?
-        Proc.new {
-          $SAFE = 3
-          rooms = entities.that_are(Room)
-          if rooms.length == 0
-            room = make(Room, :name => 'nowhere')
-            player.parent = room
-          else
-            player.parent = rooms[0]
-          end
-        }.call
+        rooms = entities.that_are(Room)
+        if rooms.length == 0
+          room = make(Room, :name => 'nowhere')
+          player.parent = room
+        else
+          player.parent = rooms[0]
+        end
       end
 		end
 		def conclude(player, key = nil)
@@ -192,10 +185,7 @@ module Gamefic
         preload_libs
       end
       get_scripts @source_directory + '/import'
-      proc {
-        $SAFE = Gamefic.safe_level
-        eval code, ::Gamefic.bind(self), script, 1
-      }.call
+      eval code, ::Gamefic.bind(self), script, 1
     end
     
     def import script
@@ -218,11 +208,8 @@ module Gamefic
           if @available_scripts[resolved] != nil
             script_object = @available_scripts[resolved]
             @available_scripts[resolved] = nil
-            proc {
-              $SAFE = Gamefic.safe_level
-              @imported_scripts.push script_object
-              eval script_object.code, Gamefic.bind(self), script_object.filename, 1
-            }.call
+            @imported_scripts.push script_object
+            eval script_object.code, Gamefic.bind(self), script_object.filename, 1
           end
         else
           raise "Unavailable import: #{resolved}"
