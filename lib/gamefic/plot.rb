@@ -88,9 +88,6 @@ module Gamefic
 		def respond(command, *queries, &proc)
 			self.action(command, *queries, &proc)
 		end
-		def before(command, *queries, &proc)
-			bef = Before.new(self, command, *queries, &proc)
-		end
 		def make(cls, args = {})
 			ent = cls.new(self, args)
 			if ent.kind_of?(Entity) == false
