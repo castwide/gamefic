@@ -224,10 +224,10 @@ EOS
             Gem::Package::TarHeader.set_mtime Time.now
             tar.mkdir('import', 0700)
             story.imported_scripts.each { |script|
-              base = script.filename[script.filename.rindex('import/') + 7..-1]
+              base = script[script.rindex('import/') + 7..-1]
               Gem::Package::TarHeader.set_mtime Time.now
               tar.add_file('import/' + base, 0700) do |io|
-                io.write script.code
+                io.write File.read(script)
               end
             }
           end

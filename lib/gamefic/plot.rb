@@ -43,6 +43,9 @@ module Gamefic
 		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states
 		attr_accessor :story
     include OptionMap
+    def self.common_import_dir
+      "#{File.dirname(__FILE__)}/import"
+    end
 		def commandwords
 			words = Array.new
 			@syntaxes.each { |s|
@@ -58,11 +61,10 @@ module Gamefic
 			@conclusions = Hash.new
 			@update_procs = Array.new
       @player_procs = Array.new
-      @available_scripts = Hash.new
 			@imported_scripts = Array.new
+      @imported_identifiers = Array.new
 			@entities = Array.new
       @players = Array.new
-      #@rules = Hash.new
       @asserts = Hash.new
       @finishes = Hash.new
       @states = Hash.new
@@ -175,41 +177,60 @@ module Gamefic
 		end
 
     def load script, with_libs = true
-      code = File.read(script)
-      code.untaint
       @source_directory = File.dirname(script)
-      if with_libs == true
-        preload_libs
-      end
-      get_scripts @source_directory + '/import'
+      code = File.read(script)
       eval code, ::Gamefic.bind(self), script, 1
     end
     
     def import script
+      script.gsub!(/\/+/, '/')
+      if script[0, 1] == '/'
+        script = script[1..-1]
+      end
       if script[-2, 2] == '/*'
         directory = script[0..-3]
         resolved = directory
-        @available_scripts.each { |f, c|
-          if f.start_with?(resolved)
-            self.import f
-          end
+        if !@source_directory.nil?
+          Dir["#{@source_directory}/#{script}"].each { |f|
+            import f[@source_directory.length..-1]
+          }
+        end
+        Dir["#{Plot.common_import_dir}/#{script}"].each { |f|
+          import f[Plot.common_import_dir.length..-1]
         }
       else
         resolved = script
-        if !@available_scripts.has_key?(resolved)
-          if @available_scripts.has_key?(resolved + '.rb')
+        base = nil
+        found = false
+        if !@source_directory.nil?
+          if File.file?("#{@source_directory}/#{resolved}")
+            base = @source_directory
+            found = true
+          elsif File.file?("#{@source_directory}/#{resolved}.rb")
+            base = @source_directory
             resolved = resolved + '.rb'
+            found = true
           end
         end
-        if @available_scripts.has_key?(resolved)
-          if @available_scripts[resolved] != nil
-            script_object = @available_scripts[resolved]
-            @available_scripts[resolved] = nil
-            @imported_scripts.push script_object
-            eval script_object.code, Gamefic.bind(self), script_object.filename, 1
+        if !found
+          if File.file?("#{Plot.common_import_dir}/#{resolved}")
+            base = Plot.common_import_dir
+            found = true
+          elsif File.file?("#{Plot.common_import_dir}/#{resolved}.rb")
+            base = Plot.common_import_dir
+            resolved = resolved + '.rb'
+            found = true
+          end
+        end
+        if found
+          if @imported_identifiers.include?(resolved) == false
+            code = File.read("#{base}/#{resolved}")
+            @imported_identifiers.push resolved
+            @imported_scripts.push "#{base}/#{resolved}"
+            eval code, Gamefic.bind(self), "#{base}/#{resolved}", 1
           end
         else
-          raise "Unavailable import: #{resolved}"
+          raise "Unavailable import: #{script}"
         end
       end
     end
@@ -218,21 +239,6 @@ module Gamefic
     end
     
 		private
-    def preload_libs
-      $LOAD_PATH.reverse.each { |path|
-        get_scripts path + '/gamefic/import'
-      }
-    end
-    def get_scripts(directory)
-      Dir[directory + '/*'].each { |f|
-        if File.directory?(f)
-          get_scripts f
-        else
-          relative = f[(f.index('/import/')+8)..-1]
-          @available_scripts[relative] = Script.new(f)
-        end
-      }
-    end
 		def rem_entity(entity)
 			@entities.delete(entity)
 		end
@@ -305,14 +311,6 @@ module Gamefic
 		def add_entity(entity)
 			@entities.push entity
 		end
-    class Script
-      attr_reader :filename, :code
-      def initialize filename
-        @filename = filename
-        @code = File.read(filename)
-        @code.untaint
-      end
-    end
   end
 
 end
