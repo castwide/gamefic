@@ -2,7 +2,6 @@ module Gamefic
 
 	class Action
 		attr_reader :command, :order_key, :caller
-		@@defaults = Array.new
     @@order_key_seed = 0
 		def initialize(story, command, *queries, &proc)
       @plot = story
@@ -17,14 +16,7 @@ module Gamefic
 			@command = command
 			@queries = queries
 			@proc = proc
-			if story == nil
-				@@defaults.push self
-			else
-				story.send :add_action, self
-			end
-		end
-		def self.defaults
-			@@defaults.clone
+      story.send :add_action, self
 		end
 		def specificity
 			spec = 0
