@@ -42,8 +42,12 @@ module Gamefic
         value = value[words[0].length+1..-1].strip
       else
         if words[0].downcase == 'the'
-          @definite_article = 'the'
-          value = value[4..-1].strip
+          if proper_named?
+            @definite_article = nil
+          else
+            @definite_article = 'the'
+            value = value[4..-1].strip
+          end
         end
         # Try to guess the indefinite article
         if ['a','e','i','o','u'].include?(value[0,1].downcase)
