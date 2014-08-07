@@ -11,7 +11,11 @@ respond :talk, Query::Reachable.new do |actor, thing|
 end
 
 respond :talk, Query::Reachable.new(Character) do |actor, character|
-  actor.tell "#{The character} has nothing to say."
+  if actor == character
+    actor.perform :talk
+  else
+    actor.tell "#{The character} has nothing to say."
+  end
 end
 
 respond :talk, Query::Reachable.new(Character), Query::Text.new do |actor, character, text|
