@@ -204,7 +204,7 @@ module Gamefic
       end
       def context_from(subject)
         last = Matches.last_match
-        return [] if last.nil?
+        return [] if !last.kind_of?(Array)
         last.children
       end
     end
