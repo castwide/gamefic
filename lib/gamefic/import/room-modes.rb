@@ -32,17 +32,17 @@ respond :go, Query::Siblings.new(Portal) do |actor, portal|
   end
 end
 
-respond :brief do |actor|
+meta :brief do |actor|
   actor.description_mode = "brief"
   actor.tell "You are now in BRIEF mode. Detailed descriptions of rooms will only be displayed the first time you visit them. Other options are SUPERBRIEF and VERBOSE."
 end
 
-respond :verbose do |actor|
+meta :verbose do |actor|
   actor.description_mode = "verbose"
   actor.tell "You are now in VERBOSE mode. Detailed descriptions will be displayed every time you enter a room. Other options are BRIEF and SUPERBRIEF."
 end
 
-respond :superbrief do |actor|
+meta :superbrief do |actor|
   actor.description_mode = "superbrief"
   actor.tell "You are now in SUPERBRIEF mode. Detailed room descriptions will never be displayed unless you LOOK AROUND. Other options are BRIEF and VERBOSE."
 end
