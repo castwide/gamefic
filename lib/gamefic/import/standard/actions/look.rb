@@ -50,9 +50,9 @@ respond :look, Query::Reachable.new(Container) do |actor, container|
   end
   if container.is? :open
     contents = container.children.that_are(:contained)
-    contents.each { |thing|
-      actor.tell "You see #{a thing} inside #{the container}."
-    }
+    if contents.length > 0
+      actor.tell "You see #{contents.join_and} inside #{the container}."
+    end
   end
 end
 
