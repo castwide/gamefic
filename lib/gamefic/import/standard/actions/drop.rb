@@ -4,7 +4,7 @@ end
 
 respond :drop, Query::Children.new() do |actor, thing|
   thing.parent = actor.parent
-  actor.tell "You drop #{the thing}.", true
+  actor.tell "You drop #{the thing}."
 end
 
 xlate "put down :thing", :drop, :thing
