@@ -36,6 +36,17 @@ describe Describable do
     d.name = "object"
     d.indefinite_article.should eq("an")
   end
+  it "accepts custom articles" do
+    d = Described.new
+    definite = "the bunch of"
+    indefinite = "a bunch of"
+    name = "grapes"
+    d.name = name
+    d.definite_article = definite
+    d.indefinite_article = indefinite
+    d.definitely.should eq("#{definite} #{name}")
+    d.indefinitely.should eq("#{indefinite} #{name}")
+  end
   it "ignores articles for proper names" do
     d = Described.new
     d.name = "John Smith"
