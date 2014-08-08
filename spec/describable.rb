@@ -29,6 +29,13 @@ describe Describable do
     d.definitely.should eq("the thing")
     d.indefinitely.should eq("a thing")
   end
+  it "tries to guess indefinite articles" do
+    d = Described.new
+    d.name = "thing"
+    d.indefinite_article.should eq("a")
+    d.name = "object"
+    d.indefinite_article.should eq("an")
+  end
   it "ignores articles for proper names" do
     d = Described.new
     d.name = "John Smith"
