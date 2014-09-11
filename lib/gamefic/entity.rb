@@ -52,7 +52,7 @@ module Gamefic
 		def post_initialize
 			# raise NotImplementedError, "#{self.class} must implement post_initialize"
 		end
-		def tell(message, refresh = false)
+		def tell(message)
 			#TODO: Should this even be here? In all likelihood, only Characters receive tells, right?
 			#TODO: On second thought, it might be interesting to see logs from an npc point of view.
 		end
