@@ -37,14 +37,19 @@ module Gamefic
       @state_name = name
       @state = plot.states[name]
     end
-		def tell(message, refresh = false)
+		def tell(message)
 			if user != nil and message.to_s != ''
-				user.stream.send "#{message}\n"
-				if (refresh == true)
-					user.refresh
-				end
+				user.stream.send "#{message}\n\n"
 			end
 		end
+    def stream(message)
+      if user != nil and message.to_s != ''
+        user.stream.send message
+      end
+    end
+    #def send(message)
+    #  user.stream.send message
+    #end
     #def set_state name
     #  @state = @plot.states[name]
     #end
