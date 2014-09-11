@@ -4,7 +4,7 @@ respond :look, Query::Parent.new(Supporter) do |actor, supporter|
 end
 
 respond :look, Query::Room.new(Room) do |actor, room|
-  actor.tell room.name.cap_first
+  actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description
   chars = room.children.that_are(Character) - [actor]
   if chars.length > 0
