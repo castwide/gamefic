@@ -65,7 +65,7 @@ module Gamefic
           end
         end
         response = Hash.new
-        response[:output] = @user.stream.output
+        response[:output] = @user.stream.flush
         response[:prompt] = @user.character.state.prompt
         response[:state] = @user.character.state.class.to_s.split('::').last
         puts JSON.generate(response)
@@ -190,11 +190,16 @@ module Gamefic
     end
     
     class UserStream < Gamefic::UserStream
-      def output
-        @output ||= Array.new
+      def flush
+        buffer = "#{@output}"
+        @output.clear
+        buffer
       end
       def send(data)
-        output.push data.strip
+        if data[-2, 2] == "\n\n"
+          data = "<p>#{data.rstrip}</p>"
+        end
+        @output = "#{@output}#{data}"
       end
       def select(prompt)
         # TODO: non-blocking read

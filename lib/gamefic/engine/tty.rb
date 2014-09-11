@@ -33,6 +33,11 @@ module Gamefic
         return [nil,nil]
       end
       def send data
+        # TODO: This is a quick and dirty way to strip HTML tags.
+        # A parser would be a better solution.
+        #data.gsub!(/<[a-z]+[^>]*>/i, "")
+        #data.gsub!(/<\/[^>]*>/, "")
+        return if data.strip == ''
         width = size[0]
         if width.nil?
           super "#{data}\n"
