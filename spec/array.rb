@@ -23,4 +23,8 @@ describe Array do
     array = ["one", "two"]
     array.join_and.should eq("one and two")
   end
+  it "joins three elements without a serial comma" do
+    array = ["one", "two", "three"]
+    array.join_and(', ', ' and ', false).should eq("one, two and three")
+  end
 end
