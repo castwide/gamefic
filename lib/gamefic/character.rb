@@ -39,7 +39,7 @@ module Gamefic
     end
 		def tell(message)
 			if user != nil and message.to_s != ''
-				user.stream.send "#{message}\n\n"
+				user.stream.send "<p>#{message}</p>"
 			end
 		end
     def stream(message)

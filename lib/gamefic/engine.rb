@@ -55,7 +55,10 @@ module Gamefic
 			@queue = Array.new
 		end
 		def send(data)
-      puts data
+      # Quick and dirty HTML sanitization
+      data.gsub!(/<[a-z]+[^>]*>/i, "")
+      data.gsub!(/<\/[^>]*>/, "")
+      print data
 		end
 		def select(prompt)
 			print prompt

@@ -196,8 +196,8 @@ module Gamefic
         buffer
       end
       def send(data)
-        if data[-2, 2] == "\n\n"
-          data = "<p>#{data.rstrip}</p>"
+        if data.start_with?(Ansi::NEL)
+          data = "<p>#{data[Ansi::NEL.length..-1].rstrip}</p>"
         end
         @output = "#{@output}#{data}"
       end
