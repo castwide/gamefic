@@ -13,6 +13,6 @@ class Assert < Rule
 
 end
 
-class Finish < Rule
-
-end
+#class Finish < Rule
+#
+#end
