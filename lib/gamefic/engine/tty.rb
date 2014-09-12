@@ -73,7 +73,7 @@ module Gamefic
       end
       def has_code?(fmt, code)
         if fmt.kind_of?(Array)
-          return fmt.include?(code)
+          return fmt.flatten.include?(code)
         end
         return fmt == code
       end
@@ -111,7 +111,7 @@ module Gamefic
               element.text = "#{element.attribute('alt') ? element.attribute('alt') : '[Image]'}"
             end
             element.text = "#{Ansi.graphics_mode(*stack.flatten.that_are_not(Custom))}#{element.text}"
-            format_recursively element, stack
+            format_recursively element, stack.clone
             element.add_text "#{Ansi.graphics_mode(*stack[0..-2].flatten.that_are_not(Custom))}"
             if has_code?(stack.last, Extra::COMMAND)
               element.add_text "#{Ansi.graphics_mode(Foreground::GREEN)}"
@@ -126,6 +126,9 @@ module Gamefic
             end
             if has_code?(stack.last, Extra::IMAGE)
               element.add_text(" [#{element.attribute('src')}]")
+              if !has_code?(stack, Extra::BLOCK)
+                element.add_text("\n\n")
+              end
             end
             stack.pop
           else
