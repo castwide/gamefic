@@ -76,7 +76,7 @@ module Gamefic
       @asserts[name] = Assert.new(name, &block)
     end
     def finish_action name, &block
-      @finishes[name] = Finish.new(name, &block)
+      @finishes[name] = block #Finish.new(name, &block)
     end
 		def post_initialize
       # TODO: Should this method be required by extended classes?
@@ -102,6 +102,9 @@ module Gamefic
     end
     def prompt name, *args, &block
       @states[name] = CharacterState::Prompted.new(*args, &block)
+    end
+    def yes_or_no name, *args, &block
+      @states[name] = CharacterState::YesOrNo.new(*args, &block)
     end
 		def syntax(*args)
       xlate *args
