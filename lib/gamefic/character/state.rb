@@ -63,6 +63,27 @@ module Gamefic
       end
     end
     
+    class YesOrNo < Base
+      def post_initialize prompt, &block
+        @prompt = prompt
+        @block = block
+      end
+      def accept character, line
+        line.downcase!
+        answer = nil
+        if "yes".start_with?(line) == true
+          answer = "yes"
+        elsif "no".start_with?(line) == true
+          answer = "no"
+        end
+        if answer.nil?
+          character.tell "Please select Yes or No."
+        else
+          @block.call(character, answer)
+        end
+      end
+    end
+    
   end
 
 end

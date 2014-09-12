@@ -175,6 +175,9 @@ module Gamefic
         @@delegation_stack.push afters
         handle afters
         @@delegation_stack.pop
+        @actor.plot.finishes.each { |key, rule|
+          rule.call(@actor)
+        }
 			end
       def handle options
 				if options.length > 0
