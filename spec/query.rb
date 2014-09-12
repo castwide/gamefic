@@ -29,6 +29,14 @@ describe Query::Base do
     result.objects.length.should eq(1)
     result.objects[0].should eq(object2)
   end
+  it "separates matching text from remainder" do
+    plot = Plot.new
+    object1 = plot.make Entity, :name => 'object one', :synonyms => 'first primary'
+    query = Query::Base.new
+    result = query.execute(plot.entities, 'primary object superfluous')
+    result.matching_text.should eq('primary object')
+    result.remainder.should eq('superfluous')
+  end
 end
 
 describe Query::Text do
@@ -36,5 +44,10 @@ describe Query::Text do
     query = Query::Text.new('first', 'second', 'third')
     result = query.execute(nil, 'first')
     result.matching_text.should eq('first')
+  end
+  it "identifies a remainder" do
+    query = Query::Text.new('first', 'second', 'third')
+    result = query.execute(nil, 'first third fifth')
+    result.remainder.should eq('fifth')
   end
 end
