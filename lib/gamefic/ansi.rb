@@ -40,6 +40,7 @@ module Gamefic
         IMAGE = Custom.new("image")
         SRC = Custom.new("src")
         UPPERCASE = Custom.new("uppercase")
+        COMMAND = Custom.new("command")
       end
     end  
     def self.graphics_mode(*settings)

@@ -86,7 +86,12 @@ module Gamefic
             when 'em', 'i', 'u'
               stack.push Attribute::UNDERSCORE
             when 'a'
-              stack.push [Attribute::UNDERSCORE, Foreground::CYAN, Extra::HREF]
+              if element.attributes['href'].to_s.start_with?('gfic:')
+                element.attributes['href'] = element.attributes['href'][5..-1]
+                stack.push [Extra::COMMAND]
+              else
+                stack.push [Attribute::UNDERSCORE, Foreground::CYAN, Extra::HREF]
+              end
             when 'img'
               stack.push [Extra::IMAGE, Attribute::UNDERSCORE, Foreground::CYAN]
             when 'p'
@@ -108,6 +113,11 @@ module Gamefic
             element.text = "#{Ansi.graphics_mode(*stack.flatten.that_are_not(Custom))}#{element.text}"
             format_recursively element, stack
             element.add_text "#{Ansi.graphics_mode(*stack[0..-2].flatten.that_are_not(Custom))}"
+            if has_code?(stack.last, Extra::COMMAND)
+              element.add_text "#{Ansi.graphics_mode(Foreground::GREEN)}"
+              element.add_text " [#{element.attribute('href')}]"
+              element.add_text "#{Ansi.graphics_mode(*stack[0..-2].flatten.that_are_not(Custom))}"
+            end
             if has_code?(stack.last, Extra::BLOCK)
               element.add_text("\n\n")
             end

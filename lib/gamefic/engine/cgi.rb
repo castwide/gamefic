@@ -190,15 +190,19 @@ module Gamefic
     end
     
     class UserStream < Gamefic::UserStream
+      def initialize
+        super
+        @output = ''
+      end
       def flush
         buffer = "#{@output}"
         @output.clear
         buffer
       end
       def send(data)
-        if data.start_with?(Ansi::NEL)
-          data = "<p>#{data[Ansi::NEL.length..-1].rstrip}</p>"
-        end
+        #if data.start_with?(Ansi::NEL)
+        #  data = "<p>#{data[Ansi::NEL.length..-1].rstrip}</p>"
+        #end
         @output = "#{@output}#{data}"
       end
       def select(prompt)
