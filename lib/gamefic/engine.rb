@@ -56,8 +56,8 @@ module Gamefic
 		end
 		def send(data)
       # Quick and dirty HTML sanitization
-      data.gsub!(/<[a-z]+[^>]*>/i, "")
-      data.gsub!(/<\/[^>]*>/, "")
+      #data.gsub!(/<[a-z]+[^>]*>/i, "")
+      #data.gsub!(/<\/[^>]*>/, "")
       print data
 		end
 		def select(prompt)
