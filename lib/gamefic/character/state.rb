@@ -69,7 +69,7 @@ module Gamefic
         @block = block
       end
       def accept character, line
-        line.downcase!
+        line.strip!.downcase!
         answer = nil
         if "yes".start_with?(line) == true
           answer = "yes"
@@ -81,6 +81,30 @@ module Gamefic
         else
           @block.call(character, answer)
         end
+      end
+    end
+    
+    class MultipleChoice < Base
+      def post_initialize *options, &block
+        @options = options
+        @block = block
+      end
+      def accept character, line
+        selected = line.to_i
+        if selected < 1 or @options[selected - 1].nil?
+          character.tell "Invalid choice. Please select from 1 through #{@options.length}."
+        else
+          @block.call(character, selected)
+        end
+      end
+      def prompt
+        p = ''
+        i = 1
+        @options.each { |o|
+          p += "#{i}. #{o}\n"
+          i += 1
+        }
+        p += "Enter selection (1-#{@options.length}): "
       end
     end
     

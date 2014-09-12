@@ -106,6 +106,9 @@ module Gamefic
     def yes_or_no name, *args, &block
       @states[name] = CharacterState::YesOrNo.new(*args, &block)
     end
+    def multiple_choice name, *args, &block
+      @states[name] = CharacterState::MultipleChoice.new(*args, &block)
+    end
 		def syntax(*args)
       xlate *args
 		end
