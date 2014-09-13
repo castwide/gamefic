@@ -46,10 +46,10 @@ module Gamefic
       def send data
         return if data.strip == ''
         doc = REXML::Document.new "<line>#{data}</line>"
-        stack = [Attribute::NORMAL]
-        format_recursively doc, stack
+        format_recursively doc
         texts = REXML::XPath.match(doc, './/text()')
         output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
+        output += Ansi.graphics_mode(Attribute::NORMAL)
         width = size[0]
         if width.nil?
           super output
@@ -70,34 +70,39 @@ module Gamefic
       
       private
       
-      def format_recursively(top, stack)
+      def format_recursively(top, stack = nil)
+        stack ||= [Attribute::NORMAL]
         top.elements.each { |element|
+          formats = [Attribute::NORMAL]
+          classes = element.attribute('class').to_s.split(' ')
+          if classes.include?('hint')
+            formats.push Foreground::YELLOW
+          end
           case element.name
             when 'strong', 'b'
-              stack.push Attribute::BOLD
+              formats.push Attribute::BOLD
             when 'em', 'i', 'u'
-              stack.push Attribute::UNDERSCORE
+              formats.push Attribute::UNDERSCORE
             when 'a'
               if element.attributes['href'].to_s.start_with?('gfic:')
                 element.attributes['href'] = element.attributes['href'][5..-1]
-                stack.push [Extra::COMMAND]
+                formats.push [Extra::COMMAND]
               else
-                stack.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::HREF]
+                formats.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::HREF]
               end
             when 'img'
-              stack.push [Extra::IGNORED]
+              formats.push [Extra::IGNORED]
             when 'p'
-              stack.push Extra::BLOCK
-            when 'h1'
-              stack.push [Attribute::BOLD, Attribute::UNDERSCORE, Extra::BLOCK, Extra::UPPERCASE]
+              formats.push Extra::BLOCK
             when 'h1', 'h2', 'h3', 'h4', 'h5'
-              stack.push [Attribute::BOLD, Extra::BLOCK, Extra::UPPERCASE]
+              formats.push [Attribute::BOLD, Extra::BLOCK, Extra::UPPERCASE]
             when 'kbd'
-              stack.push [Extra::UPPERCASE, Foreground::GREEN]
+              formats.push [Foreground::GREEN]
           end
           if has_code?(stack, Extra::IGNORED)
             element.parent.delete_element(element)
           end
+          stack.push formats
           if has_code?(stack, Extra::UPPERCASE)
             element.texts.each { |text|
               text.value.upcase!
@@ -138,7 +143,6 @@ module Gamefic
           if char == "\e"
             # Right now, graphics modes are the only supported ANSI sequences.
             end_of_seq = string.index("m", i)
-            # TODO: Check if we're permitting ANSI formatting
             output += string[i..end_of_seq]
             i = end_of_seq + 1
           elsif char == " "
