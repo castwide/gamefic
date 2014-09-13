@@ -1,9 +1,9 @@
 module Gamefic
 
-  # Constants for ANSI codes, plus extras for custom formatting.
+  # Constants for ANSI codes, plus Extras for custom formatting.
   module Ansi
     module Code
-      class Custom < String
+      class Nonstandard < String
       
       end
       module Attribute
@@ -35,16 +35,19 @@ module Gamefic
         WHITE = 47
       end
       module Extra
-        BLOCK = Custom.new("block")
-        HREF = Custom.new("href")
-        IMAGE = Custom.new("image")
-        SRC = Custom.new("src")
-        UPPERCASE = Custom.new("uppercase")
-        COMMAND = Custom.new("command")
+        BLOCK = Nonstandard.new("block")
+        HREF = Nonstandard.new("href")
+        IMAGE = Nonstandard.new("image")
+        SRC = Nonstandard.new("src")
+        UPPERCASE = Nonstandard.new("uppercase")
+        COMMAND = Nonstandard.new("command")
+        IGNORED = Nonstandard.new("ignored")
       end
     end  
     def self.graphics_mode(*settings)
-      "\e[#{settings.join(';')}m"
+      ansi = settings.flatten.that_are_not(Code::Nonstandard)
+      return '' if ansi.length == 0
+      "\e[#{ansi.join(';')}m"
     end
   end
 

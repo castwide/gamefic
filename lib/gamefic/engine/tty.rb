@@ -45,19 +45,9 @@ module Gamefic
       end
       def send data
         return if data.strip == ''
-        #eol = ''
-        #if data.start_with?(Ansi::NEL)
-        #  data = data[Ansi::NEL.length..-1]
-        #  eol = "\n\n"
-        #end
-        #width = size[0]
-        #if width.nil?
-        #  super "#{data}#{eol}"
-        #else
-        #  super "#{terminalize(data, width - 1)}#{eol}"
-        #end
         doc = REXML::Document.new "<line>#{data}</line>"
-        format_recursively doc, [Attribute::NORMAL]
+        stack = [Attribute::NORMAL]
+        format_recursively doc, stack
         texts = REXML::XPath.match(doc, './/text()')
         output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
         width = size[0]
@@ -77,9 +67,11 @@ module Gamefic
         end
         return fmt == code
       end
+      
+      private
+      
       def format_recursively(top, stack)
         top.elements.each { |element|
-          formatting = true
           case element.name
             when 'strong', 'b'
               stack.push Attribute::BOLD
@@ -93,47 +85,49 @@ module Gamefic
                 stack.push [Attribute::UNDERSCORE, Foreground::CYAN, Extra::HREF]
               end
             when 'img'
-              stack.push [Extra::IMAGE, Attribute::UNDERSCORE, Foreground::CYAN]
+              stack.push [Extra::IGNORED]
             when 'p'
               stack.push Extra::BLOCK
             when 'h1'
               stack.push [Attribute::BOLD, Attribute::UNDERSCORE, Extra::BLOCK, Extra::UPPERCASE]
             when 'h1', 'h2', 'h3', 'h4', 'h5'
               stack.push [Attribute::BOLD, Extra::BLOCK, Extra::UPPERCASE]
-            else
-              formatting = false
+            when 'kbd'
+              stack.push [Extra::UPPERCASE, Foreground::GREEN]
           end
-          if formatting
-            if has_code?(stack.last, Extra::UPPERCASE)
-              element.text = element.text.to_s.upcase
-            end
-            if has_code?(stack.last, Extra::IMAGE)
-              element.text = "#{element.attribute('alt') ? element.attribute('alt') : '[Image]'}"
-            end
-            element.text = "#{Ansi.graphics_mode(*stack.flatten.that_are_not(Custom))}#{element.text}"
-            format_recursively element, stack.clone
-            element.add_text "#{Ansi.graphics_mode(*stack[0..-2].flatten.that_are_not(Custom))}"
-            if has_code?(stack.last, Extra::COMMAND)
-              element.add_text "#{Ansi.graphics_mode(Foreground::GREEN)}"
-              element.add_text " [#{element.attribute('href')}]"
-              element.add_text "#{Ansi.graphics_mode(*stack[0..-2].flatten.that_are_not(Custom))}"
-            end
-            if has_code?(stack.last, Extra::BLOCK)
+          if has_code?(stack, Extra::IGNORED)
+            element.parent.delete_element(element)
+          end
+          if has_code?(stack, Extra::UPPERCASE)
+            element.texts.each { |text|
+              text.value.upcase!
+            }
+          end
+          element.texts.each { |text|
+            text.value = "#{Ansi.graphics_mode(*stack)}#{text.value}"
+          }
+          if has_code?(stack.last, Extra::IMAGE)
+            element.text = "#{element.attribute('alt') ? element.attribute('alt') : '[Image]'}"
+          end
+          format_recursively element, stack
+          if has_code?(stack.last, Extra::COMMAND)
+            #element.add_text "#{Ansi.graphics_mode(Foreground::GREEN)}"
+            element.add_text " [#{element.attribute('href')}]"
+            #element.add_text "#{Ansi.graphics_mode(*stack[0..-2])}"
+          end
+          if has_code?(stack.last, Extra::BLOCK)
+            element.add_text("\n\n")
+          end
+          if has_code?(stack.last, Extra::HREF)
+            element.add_text(" [#{element.attribute('href')}]")
+          end
+          if has_code?(stack.last, Extra::IMAGE)
+            element.add_text(" [#{element.attribute('src')}]")
+            if !has_code?(stack, Extra::BLOCK)
               element.add_text("\n\n")
             end
-            if has_code?(stack.last, Extra::HREF)
-              element.add_text(" [#{element.attribute('href')}]")
-            end
-            if has_code?(stack.last, Extra::IMAGE)
-              element.add_text(" [#{element.attribute('src')}]")
-              if !has_code?(stack, Extra::BLOCK)
-                element.add_text("\n\n")
-              end
-            end
-            stack.pop
-          else
-            format_recursively element, stack
           end
+          stack.pop
         }
       end
       def terminalize string, max_length
