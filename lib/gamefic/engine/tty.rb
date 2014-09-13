@@ -82,7 +82,7 @@ module Gamefic
                 element.attributes['href'] = element.attributes['href'][5..-1]
                 stack.push [Extra::COMMAND]
               else
-                stack.push [Attribute::UNDERSCORE, Foreground::CYAN, Extra::HREF]
+                stack.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::HREF]
               end
             when 'img'
               stack.push [Extra::IGNORED]
@@ -111,9 +111,7 @@ module Gamefic
           end
           format_recursively element, stack
           if has_code?(stack.last, Extra::COMMAND)
-            #element.add_text "#{Ansi.graphics_mode(Foreground::GREEN)}"
             element.add_text " [#{element.attribute('href')}]"
-            #element.add_text "#{Ansi.graphics_mode(*stack[0..-2])}"
           end
           if has_code?(stack.last, Extra::BLOCK)
             element.add_text("\n\n")
