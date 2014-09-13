@@ -1,5 +1,5 @@
 respond :drop_in, Query::Children.new(), Query::Reachable.new() do |actor, thing, target|
-  puts "You can't put #{the thing} inside #{the target}."
+  actor.tell "You can't put #{the thing} inside #{the target}."
 end
 
 respond :drop_in, Query::Visible.new(), Query::Reachable.new(Container) do |actor, thing, container|
