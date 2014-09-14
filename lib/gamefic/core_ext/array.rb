@@ -44,4 +44,7 @@ class Array
 			start.join(sep) + "#{serial ? sep.strip : ''}#{andSep}#{self.last}"
 		end
 	end
+  def join_or(sep = ', ', orSep = ' or ', serial = true)
+    join_and(sep, orSep, serial)
+  end
 end
