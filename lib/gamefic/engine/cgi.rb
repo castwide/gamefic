@@ -4,18 +4,13 @@ require 'json'
 module Gamefic
 
   class Entity
-    def cgi_key
-      if @cgi_key == nil
-        stack = Array.new
-        stack.push name
-        p = parent
-        while p != nil
-          stack.push p.name
-          p = p.parent
-        end
-        @cgi_key = stack.join("|")
-      end
-      @cgi_key
+    attr_reader :cgi_key
+    @@cgi_key_index = 0
+    alias_method :orig_post_initialize, :post_initialize
+    def post_initialize
+      orig_post_initialize
+      @cgi_key = "entity_#{@@cgi_key_index}"
+      @@cgi_key_index += 1
     end
   end
 
@@ -49,6 +44,7 @@ module Gamefic
         @plot.entities.each { |e|
           @entity_keys[e.cgi_key] = e
         }
+        @entity_keys['yourself'] = @user.character
         if !@new_game and @session_file != nil
           if File.exist?(@session_file)
             load @session_file
@@ -60,6 +56,7 @@ module Gamefic
         if @introducing == true
           @plot.introduce @user.character
         else
+          @plot.instance_variable_get(:@players).push @user.character
           if @user.character.state.kind_of?(CharacterState::Concluded) == false
             tick
           end
@@ -68,7 +65,7 @@ module Gamefic
         response[:output] = @user.stream.flush
         response[:prompt] = @user.character.state.prompt
         response[:state] = @user.character.state.class.to_s.split('::').last
-        puts JSON.generate(response)
+        return JSON.generate(response)
       end
       def end_session
         save @session_file
@@ -126,7 +123,7 @@ module Gamefic
       def entity_hash(e)
         hash = Hash.new
         e.instance_variables.each { |v|
-          next if v == :@state or v == :@option_array
+          next if v == :@state or v == :@option_array or v == :@update_procs
           writer = "#{v.to_s[1..-1]}="
           if e.respond_to?(writer)
             value = e.instance_variable_get(v)
@@ -154,7 +151,16 @@ module Gamefic
         if e.respond_to?("option_array")
           hash[:options] = e.option_array
         end
-        hash[:session] = e.session
+        hash[:session] = Hash.new
+        e.session.each { |k, v|
+          if v.kind_of?(Entity)
+            hash[:session][k] = Key.new(v.cgi_key)
+          elsif v.kind_of?(Array)
+            hash[:session][k] = encode_array(v)
+          else
+            hash[:session][k] = v
+          end
+        }
         hash
       end
       def encode_array(array)

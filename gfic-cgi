@@ -16,11 +16,12 @@ begin
   end
   engine = Cgi::Engine.new plot, :session_file => savename
   engine.begin_session
-  engine.run
+  json = engine.run
   engine.end_session
   if engine.user.character.state.kind_of?(CharacterState::Concluded)
     File.delete savename
   end
+  puts json
 rescue Exception => e
   response = Hash.new
   response[:error] = e.message
