@@ -146,7 +146,7 @@ module Gamefic
             output += string[i..end_of_seq]
             i = end_of_seq + 1
           elsif char == " "
-            next_space = string.index(" ", i + 1)
+            next_space = string.index(/[\s]/, i + 1)
             if !next_space.nil? and line_length + (next_space - i) > max_length
               output += "\n"
               line_length = 0
@@ -162,7 +162,7 @@ module Gamefic
             i += 1
           end
         end
-        output
+        output.strip
       end
     end
   end
