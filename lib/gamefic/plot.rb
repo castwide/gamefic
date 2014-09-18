@@ -2,12 +2,6 @@ require 'gamefic/character/state'
 
 module Gamefic
 
-  # Constant shortcuts for common character states
-  ACTIVE = CharacterState::Active
-  PAUSED = CharacterState::Paused
-  PROMPTED = CharacterState::Prompted
-  CONCLUDED = CharacterState::Concluded
-
   def self.bind(plot)
     mod = Module.new do
       def self.bind(plot)
