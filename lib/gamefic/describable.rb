@@ -58,9 +58,15 @@ module Gamefic
       end
       @name = value
     end
+    def has_description?
+      (@description.to_s != '')
+    end
 		def description
-			@description.to_s != '' ? @description : "Nothing special."
+			@description.to_s != '' ? @description : default_description
 		end
+    def default_description
+      "There's nothing special about #{definitely}."
+    end
 		def description=(value)
 			@description = value
 		end
