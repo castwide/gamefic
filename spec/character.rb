@@ -10,6 +10,6 @@ describe Character do
 			x = x + 1
 		end
 		character.perform "increment number"
-		x.should eq(1)
+		expect(x).to eq(1)
 	end
 end
