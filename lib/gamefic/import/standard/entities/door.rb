@@ -1,3 +1,5 @@
+import 'standard/entities/portal'
+
 class Door < Portal
   attr_reader :key
   def post_initialize
