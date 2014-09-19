@@ -1,18 +1,21 @@
 class Room < Entity
   def connect(destination, direction, type = Portal, two_way = true)
-    portal = type.new self.plot, :name => direction, :parent => self, :destination => destination
-    portal.proper_named = true
+    if direction.kind_of?(String)
+      direction = eval("#{direction.upcase}")
+    end
+    portal = type.new self.plot, :direction => direction, :parent => self, :destination => destination
+    portal.proper_named = true if type == Portal
     if two_way == true
-      reverse = Portal.reverse(direction)
+      reverse = direction.reverse
       if reverse == nil
-        raise "\"#{direction.cap_first}\" does not have an opposite direction"
+        raise "#{direction.name.cap_first} does not have an opposite direction"
       end
       portal2 = type.new(self.plot, {
-        :name => reverse,
+        :direction => reverse,
         :parent => destination,
         :destination => self
       })
-      portal2.proper_named = true
+      portal2.proper_named = true if type == Portal
     end
     portal
   end
@@ -24,7 +27,13 @@ class Room < Entity
       c.tell message, refresh
     }
   end
+  def find_portal(direction)
+    d = direction.to_s
+    portals = children.that_are(Portal).delete_if { |p| p.direction.to_s != d }
+    portals[0]
+  end
 end
 
 options(Room, :lighted, :dark).default = :lighted
 options(Room, :enterable, :not_enterable)
+options(Room, :explicit_with_exits, :not_explicit_with_exits)

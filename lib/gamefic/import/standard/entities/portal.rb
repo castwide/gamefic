@@ -1,40 +1,26 @@
 class Portal < Entity
-  attr_accessor :destination
+  attr_accessor :destination, :direction
   def find_reverse
-    rev = Portal.reverse(self.name)
+    #rev = Portal.reverse(self.direction)
+    rev = direction.reverse
     if rev != nil
       destination.children.that_are(Portal).each { |c|
-        if c.name == rev
+        if c.direction == rev
           return c
         end
       }
     end
     nil
   end
-  def self.reverse(direction)
-    case direction.downcase
-      when "north"
-        "south"
-      when "south"
-        "north"
-      when "west"
-        "east"
-      when "east"
-        "west"
-      when "northwest"
-        "southeast"
-      when "southeast"
-        "northwest"
-      when "northeast"
-        "southwest"
-      when "southwest"
-        "northeast"
-      when "up"
-        "down"
-      when "down"
-        "up"
-      else
-        nil
-    end
+  # Portals have distinct direction and name properties so games can display a
+  # bare compass direction for exits, e.g., "south" vs. "the southern door."
+  def direction
+    @direction || @name
+  end
+  def name
+    @name || @direction.to_s
+  end
+  def synonyms
+    "#{super} #{@direction} #{@direction.adjective} #{@direction.adverb}"
   end
 end
