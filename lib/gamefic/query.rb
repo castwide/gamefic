@@ -4,8 +4,16 @@ module Gamefic
 
   module Query
 
+    def self.last_new
+      Base.last_new
+    end
+    
     class Base
+      @@last_new = nil
       attr_accessor :arguments
+      def self.last_new
+        @@last_new
+      end
       def initialize *arguments
         @optional = false
         if arguments.include?(:optional)
@@ -13,6 +21,11 @@ module Gamefic
           arguments.delete :optional
         end
         @arguments = arguments
+        @@last_new = self
+        @match_hash = Hash.new
+      end
+      def last_match_for(subject)
+        @match_hash[subject]
       end
       def optional?
         @optional
@@ -29,10 +42,14 @@ module Gamefic
       end
       def execute(subject, description)
         array = context_from(subject)
+        matches = Query.match(description, array)
+        objects = matches.objects
         @arguments.each { |arg|
-          array = array.that_are(arg)
+          objects = objects.that_are(arg)
         }
-        return Query.match(description, array)
+        matches = Matches.new(objects, matches.matching_text, matches.remainder)
+        @match_hash[subject] = matches
+        matches
       end
       def base_specificity
         0
@@ -202,15 +219,22 @@ module Gamefic
       def base_specificity
         40
       end
+      def initialize *arguments
+        if arguments[0].kind_of?(Query::Base)
+          @parent = arguments.shift
+        else
+          @parent = Query.last_new
+        end
+        super
+      end
       def context_from(subject)
-        last = Matches.last_match
-        return [] if !last.kind_of?(Array)
-        last.children
+        last = @parent.last_match_for(subject)
+        return [] if last.nil? or last.objects.length != 1
+        last.objects[0].children
       end
     end
 
 		class Matches
-      @@last_match = nil
 			attr_reader :objects, :matching_text, :remainder
 			def initialize(objects, matching_text, remainder)
 				@objects = objects
@@ -218,13 +242,6 @@ module Gamefic
 				@remainder = remainder
         @@last_match = self
 			end
-      def self.last_match
-        return nil if @@last_match.nil?
-        if @@last_match.objects.length == 1
-          return @@last_match.objects[0]
-        end
-        return nil
-      end
 		end
 
   end

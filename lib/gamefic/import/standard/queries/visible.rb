@@ -25,7 +25,13 @@ class Query::Visible < Query::Family
       elsif thing.kind_of?(Supporter)
         array += thing.children.that_are(:supported)
       end
-      array += thing.children.that_are(:attached)
+      thing.children.that_are(:attached).each { |att|
+        array.push att
+        if att.kind_of?(Supporter) or att.is?(:open)
+          array += att.children.that_are(:contained)
+          array += att.children.that_are(:supported)
+        end
+      }
     }
     array
   end
