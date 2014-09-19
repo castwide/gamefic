@@ -78,6 +78,12 @@ module Gamefic
 			# TODO: Need to call this private method here?
 			@plot.send(:rem_entity, self)
 		end
+    def [](key)
+      session[key]
+    end
+    def []=(key, value)
+      session[key] = value
+    end
 	end
 
 end
