@@ -1,6 +1,6 @@
 #Gamefic
 
-A Ruby Adventure Engine
+A Ruby Interactive Fiction Framework
 
 Gamefic is a system for developing and playing adventure games.
 
@@ -15,21 +15,12 @@ gem's version, except it adds the local lib directory to Ruby's load paths.
 
 # Running the Examples
 
-The Git repo includes a demo game in the examples directory. You can
+The Git repo includes several demo games in the examples directory. You can
 run them from the command line like so:
 
-    gamefic test examples/simple
+    gamefic test examples/[name]
 
-The simple.rb example consists of a room and a closet. The room has a book in
-it. Try the following commands to see how it works:
-
-    look
-	look at book
-	pick up book
-	read book
-	drop book
-
-There is also a working implementation of [Cloak of Darkness](http://www.firthworks.com/roger/cloak/),
+One of the examples is a Gamefic implementation of [Cloak of Darkness](http://www.firthworks.com/roger/cloak/),
 courtesy of Peter Orme:
 
     gamefic test examples/cloak_of_darkness
@@ -80,8 +71,8 @@ assumed:
 
 The default game engine is a turn-based terminal program. Executing the above
 command drops you to a command line in-game, ready for you to enter an action.
-The example.rb game provides a very simple demonstration of what you can do
-with the default game environment.
+The example games provide simple demonstrations of what you can do with the
+default game environment.
 
 ## Play vs. Test
 
@@ -102,9 +93,9 @@ and an import directory. The game is already capable of running:
     gamefic test mygame
 
 Right now the game is just a single featureless room. Open the mygame/main.rb
-file in a text editor. Delete the skeleon code and replace it with the following:
+file in a text editor. Modify it to the following:
 
-    import 'basics'
+    import 'standard'
 
     apartment = make Room, :name => "apartment", :description => "You are in a tiny one-room apartment."
 
@@ -120,33 +111,29 @@ The script will drop you into a game prompt. There's still not much you can do
 except look around:
 
     > look
+	*Apartment*
 	You are in a tiny one-room apartment.
-	Obvious exits: none
 	>
-
-"Look" is one of the actions defined in the "basics" library. As you can see,
-it outputs the room's description and gives you a list of exits.
 
 We can make things a little more interesting by putting something in the
 apartment. Add this code to main.rb:
 
-    pencil = make Item, :name => "pencil", :description => "A plain old No. 2 yellow.", :parent => apartment
+    pencil = make Item, :name => "a pencil", :description => "A plain old No. 2 yellow.", :parent => apartment
 
 Play the script again. Now the apartment contains an item you can manipulate.
 
 	> look
 	Apartment
 	You are in a tiny one-room apartment.
-	Visible items: pencil
-	Obvious exits: none
+	You see a pencil.
 	> look at pencil
 	A plain old No. 2 yellow.
 	> take pencil
-	You take pencil.
+	You take the pencil.
 	> inventory
 	pencil
 	> drop pencil
-	You drop pencil.
+	You drop the pencil.
 	> quit
 
 ## The Script Code
@@ -159,7 +146,7 @@ The import method is similar to Ruby's require method. It loads a script from
 your game's import directory. If the script doesn't exist locally, the program
 will look for it in the Gamefic library.
 
-The "basics" library provides a bunch of functionality common to text
+The "standard" library provides a bunch of functionality common to text
 adventures, including the abilities to look around, move between rooms, and
 pick up objects.
 
@@ -182,7 +169,7 @@ also output an introductory message:
 
 We've created two types of entities for this demo, a Room and an Item. These
 are likely the most common entity types you'll use while creating a game, but
-there are several others defined in the entity_ext library. Here's a brief
+there are several others defined in the standard library. Here's a brief
 explanation of each:
 
 #### Container
