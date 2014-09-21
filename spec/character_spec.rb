@@ -12,4 +12,22 @@ describe Character do
 		character.perform "increment number"
 		expect(x).to eq(1)
 	end
+  it "formats #tell messages into HTML paragraphs" do
+    plot = Plot.new
+    user = User.new plot
+    user.character.tell "This is one paragraph."
+    expect(user.stream.flush).to eq("<p>This is one paragraph.</p>")
+  end
+  it "formats newlines in #tell messages into HTML line breaks and paragraphs" do
+    plot = Plot.new
+    user = User.new plot
+    user.character.tell "This is a paragraph with a \nline break.\n\nThis is a second paragraph."
+    expect(user.stream.flush).to eq("<p>This is a paragraph with a <br/>line break.</p><p>This is a second paragraph.</p>")
+  end
+  it "does not format #tell messages beginning with a paragraph tag" do
+    plot = Plot.new
+    user = User.new plot
+    user.character.tell "<p>This is one paragraph.</p>"
+    expect(user.stream.flush).to eq("<p>This is one paragraph.</p>")
+  end
 end
