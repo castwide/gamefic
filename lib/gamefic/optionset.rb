@@ -85,6 +85,10 @@ end
 
 module OptionSettings
   attr_reader :option_mapper
+  def option_mapper
+    raise "Object does not have an option mapper" if @option_mapper.nil?
+    @option_mapper
+  end
   def option_array
     @option_array ||= []
   end

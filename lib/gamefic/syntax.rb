@@ -21,13 +21,9 @@ module Gamefic
             @template.push word
           end
         }
-        #@template = arguments.shift
         @command = arguments.shift
         @arguments = arguments
-        if story == nil
-          #@@defaults.push self
-          raise "Default syntaxes are deprecated"
-        else
+        if !story.nil?
           story.send :add_syntax, self
           @story = story
         end

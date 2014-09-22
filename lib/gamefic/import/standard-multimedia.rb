@@ -6,7 +6,10 @@ class Entity
 end
 
 class Character
-  attr_accessor :sees_image
+  attr_writer :sees_image
+  def sees_image?
+    (@sees_image != false)
+  end
   def show_image(filename)
     stream "<img src=\"#{filename}\" />";
     @sees_image = true
@@ -32,7 +35,7 @@ respond :look, Query::Visible.new() do |actor, subject|
 end
 
 finish_action :check_for_image do |actor|
-  if actor.sees_image == false and actor.room.has_image?
+  if !actor.sees_image? and actor.room.has_image?
     actor.show_image actor.room.image
   end
 end

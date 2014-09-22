@@ -25,7 +25,7 @@ module Gamefic
 		attr_reader :state, :character, :story
 		def initialize(plot)
 			@plot = plot
-      @character = Character.new @plot, :name => 'yourself', :synonyms => 'self myself you me'
+      @character = Character.new @plot, :name => 'yourself', :synonyms => 'self myself you me', :proper_named => true
       @character.connect self
       post_initialize
 		end
@@ -53,15 +53,21 @@ module Gamefic
 	class UserStream
 		def initialize
 			@queue = Array.new
+      @buffer = ''
 		end
+    def flush
+      tmp = @buffer.clone
+      @buffer.clear
+      tmp
+    end
 		def send(data)
       # Quick and dirty HTML sanitization
       #data.gsub!(/<[a-z]+[^>]*>/i, "")
       #data.gsub!(/<\/[^>]*>/, "")
-      print data
+      @buffer += data
 		end
 		def select(prompt)
-			print prompt
+			print prompt + " "
 			line = STDIN.gets
       @queue.push line.strip
 		end
@@ -76,6 +82,7 @@ module Gamefic
 			@user = user
 		end
 		def update
+      print @user.stream.flush
 			line = @user.stream.recv
 			if line != nil
         @user.character.queue.push line

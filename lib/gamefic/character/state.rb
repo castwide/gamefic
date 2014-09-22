@@ -21,12 +21,12 @@ module Gamefic
         Director.dispatch(character, line)
       end
       def prompt
-        @prompt ||= "> "
+        @prompt ||= ">"
       end
     end
     
     class Active < Base
-      def post_initialize prompt = "> "
+      def post_initialize prompt = ">"
         @prompt = prompt
       end
     end
@@ -42,7 +42,7 @@ module Gamefic
     end
 
     class Paused < Base
-      def post_initialize prompt = "Press enter to continue... ", &block
+      def post_initialize prompt = "Press enter to continue...", &block
         @prompt = prompt
         @block = block
       end
@@ -69,7 +69,8 @@ module Gamefic
         @block = block
       end
       def accept character, line
-        line.strip!.downcase!
+        line.strip!
+        line.downcase!
         answer = nil
         if "yes".start_with?(line) == true
           answer = "yes"
@@ -104,7 +105,7 @@ module Gamefic
           p += "#{i}. #{o}\n"
           i += 1
         }
-        p += "Enter selection (1-#{@options.length}): "
+        p += "Enter selection (1-#{@options.length}):"
       end
     end
     

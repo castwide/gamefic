@@ -12,14 +12,14 @@ describe Shell do
     ARGV.clear
     ARGV.push 'init', "#{@dir}/game", "-q"
     shell.execute
-    File.exist?("#{@dir}/game").should eq(true)
+    expect(File.exist?("#{@dir}/game")).to eq(true)
   end
   it "builds a game file" do
     shell = Shell.new
     ARGV.clear
     ARGV.push 'build', "#{@dir}/game", '-o', "#{@dir}/game.gfic", "-q"
     shell.execute
-    File.exist?("#{@dir}/game.gfic").should eq(true)
+    expect(File.exist?("#{@dir}/game.gfic")).to eq(true)
   end
   after :all do
     FileUtils.remove_entry_secure @dir
