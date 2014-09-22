@@ -22,9 +22,9 @@ class Room < Entity
   def synonyms
     super.to_s + " around here room"
   end
-  def tell(message, refresh = false)
+  def tell(message)
     children.each { |c|
-      c.tell message, refresh
+      c.tell message
     }
   end
   def find_portal(direction)
