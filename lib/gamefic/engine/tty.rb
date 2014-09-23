@@ -1,6 +1,7 @@
 require 'gamefic/engine'
 require 'rexml/document'
 require 'gamefic/ansi'
+require 'gamefic/html'
 
 begin
   require 'io/console'
@@ -45,11 +46,17 @@ module Gamefic
       end
       def send data
         return if data.strip == ''
-        doc = REXML::Document.new "<line>#{data}</line>"
-        format_recursively doc
-        texts = REXML::XPath.match(doc, './/text()')
-        output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
-        output += Ansi.graphics_mode(Attribute::NORMAL)
+        output = ''
+        begin
+          doc = Html.parse(data)
+          format_recursively doc
+          texts = REXML::XPath.match(doc, './/text()')
+          output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
+          output += Ansi.graphics_mode(Attribute::NORMAL)
+          output = Html::decode(output)
+        rescue REXML::ParseException => e
+          output = Html.encode(data) + "\n\n"
+        end
         width = size[0]
         if width.nil?
           super output
@@ -162,7 +169,7 @@ module Gamefic
             i += 1
           end
         end
-        output.strip
+        output #output.strip
       end
     end
   end
