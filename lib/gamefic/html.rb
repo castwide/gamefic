@@ -28,14 +28,8 @@ module Gamefic
       }
       text
     end
-    def self.parse(code, pre = true)
+    def self.parse(code)
       code = fix_ampersands(code).strip
-      if pre
-        #if ['<p>', '<p '].include?(code[0,3])
-          code.gsub!(/\n\n/, '</p><p>')
-        #end
-        code.gsub!(/\n/, "<br/>")
-      end
       last = nil
       begin
         doc = REXML::Document.new code

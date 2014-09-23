@@ -24,10 +24,4 @@ describe Character do
     user.character.tell "This is a paragraph with a \nline break.\n\nThis is a second paragraph."
     expect(user.stream.flush).to eq("<p>This is a paragraph with a <br/>line break.</p><p>This is a second paragraph.</p>")
   end
-  it "does not format #tell messages beginning with a paragraph tag" do
-    plot = Plot.new
-    user = User.new plot
-    user.character.tell "<p>This is one paragraph.</p>"
-    expect(user.stream.flush).to eq("<p>This is one paragraph.</p>")
-  end
 end
