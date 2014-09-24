@@ -8,7 +8,7 @@ include Gamefic
 begin
   plot = Plot.new
   file = "#{ARGV[0]}/main.rb"
-  plot.load file, true
+  plot.load file
   if ARGV[1] != "new"
     savename = ARGV[1]
   else

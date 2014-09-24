@@ -1,4 +1,5 @@
 require 'gamefic/character/state'
+require 'gamefic/build'
 
 module Gamefic
 
