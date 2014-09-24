@@ -1,4 +1,5 @@
 import 'standard'
+import 'standard/tests'
 
 # Cloak of Darkness for Gamefic. 
 # Gamefic implementation by Peter Orme. 
@@ -154,23 +155,13 @@ conclusion :you_have_lost do |actor|
   actor.tell "*** You have lost ***"
 end
 
-# "test me" command 
-# TODO this kind of works, but gamefic should maybe provide something for game testing. 
-meta :test, Query::Text.new() do |actor, string|
-  actor.tell "> s"
+on_test :me do |actor|
   actor.perform "s"
-  actor.tell "> n"
   actor.perform "n"
-  actor.tell "> w"
   actor.perform "w"
-  actor.tell "> inventory"
   actor.perform "inventory"
-  actor.tell "> hang cloak on hook"
   actor.perform "hang cloak on hook"
-  actor.tell "> e"
   actor.perform "e"
-  actor.tell "> s"
   actor.perform "s"
-  actor.tell "> read message"
   actor.perform "read message"
 end
