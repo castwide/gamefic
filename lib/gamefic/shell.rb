@@ -4,6 +4,7 @@ require 'zlib'
 require 'tmpdir'
 require 'getoptlong'
 require 'gamefic/engine/tty'
+require 'gamefic/build'
 
 # Crazy hack to set file mtimes in tar file
 class Gem::Package::TarHeader
@@ -59,7 +60,9 @@ module Gamefic
         end
         Dir.mktmpdir 'gamefic_' do |dir|
           puts "Loading..."
-          story = Plot.new
+          config = Build.load
+          config.import_paths.unshift dir + '/import'
+          story = Plot.new config
           begin
             decompress file, dir
           rescue Exception => e
@@ -75,23 +78,26 @@ module Gamefic
       end
       def test path
         puts "Loading..."
-        story = Plot.new
-        #begin
-          if File.directory?(path)
-            if !File.file?(path + '/main.rb')
-              raise "#{path}/main.rb does not exist"
-            end
-            story.load path + '/main.rb', true
-          else
-            story.load path
+        build_file = nil
+        main_file = path
+        if File.directory?(main_file)
+          if !File.file?(path + '/main.rb')
+            raise "#{path}/main.rb does not exist"
           end
-        #rescue Exception => e
-        #  puts "An error occurred in #{path}:"
-        #  puts "#{e.inspect}"
-        #  exit 1
-        #end
-        story.import 'debug'
-        engine = Tty::Engine.new story
+          if File.file?(path + '/build.rb')
+            build_file = path + '/build.rb'
+          end
+          main_file = path + '/main.rb'
+          config = Build.load build_file
+          config.import_paths.unshift path + '/import'
+        else
+          config = Build.load
+        end
+        config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
+        plot = Plot.new config
+        plot.load main_file
+        plot.import 'debug'
+        engine = Tty::Engine.new plot
         puts "\n"
         engine.run
       end
@@ -182,6 +188,14 @@ EOS
           puts "#{directory} is not a directory."
           exit 1
         end
+        config = nil
+        build_file = nil
+        if File.file?(directory + '/build.rb')
+          build_file = directory + '/build.rb'
+        end
+        config = Build.load build_file
+        config.import_paths.unshift directory + '/import'
+        config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
         filename = File.basename(directory) + '.gfic'
         opts = GetoptLong.new(
           [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ],
@@ -204,10 +218,10 @@ EOS
           puts "The file #{filename} already exists."
           exit 1
         end
-        story = Plot.new
+        story = Plot.new config
         puts "Loading game data..." unless quiet
         begin
-          story.load directory + '/main.rb', true
+          story.load directory + '/main.rb'
         rescue Exception => e
           puts "'#{directory}' has errors or is not a valid source directory."
           puts "#{e}"

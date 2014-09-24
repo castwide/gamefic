@@ -37,9 +37,6 @@ module Gamefic
 		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states
 		attr_accessor :story
     include OptionMap
-    def self.common_import_dir
-      "#{File.dirname(__FILE__)}/import"
-    end
 		def commandwords
 			words = Array.new
 			@syntaxes.each { |s|
@@ -48,7 +45,12 @@ module Gamefic
 			}
 			words.uniq
 		end
-		def initialize
+		def initialize config = nil
+      if config.nil?
+        config = Build::Configuration.new
+        config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
+      end
+      @import_paths = config.import_paths
 			@scenes = Hash.new
 			@commands = Hash.new
 			@syntaxes = Array.new
@@ -176,8 +178,8 @@ module Gamefic
 			}
 		end
 
-    def load script, with_libs = true
-      @source_directory = File.dirname(script)
+    def load script
+      @import_paths.unshift [File.dirname(script)]
       code = File.read(script)
       eval code, ::Gamefic.bind(self), script, 1
     end
@@ -188,40 +190,29 @@ module Gamefic
         script = script[1..-1]
       end
       if script[-2, 2] == '/*'
+        # Import all matching scripts in all paths
         directory = script[0..-3]
         resolved = directory
-        if !@source_directory.nil?
-          Dir["#{@source_directory}/#{script}"].each { |f|
-            import f[@source_directory.length..-1]
+        @import_paths.each { |path|
+          Dir["#{path}/#{script}"].each { |f|
+            import f[path.length..-1]
           }
-        end
-        Dir["#{Plot.common_import_dir}/#{script}"].each { |f|
-          import f[Plot.common_import_dir.length..-1]
         }
       else
         resolved = script
         base = nil
         found = false
-        if !@source_directory.nil?
-          if File.file?("#{@source_directory}/#{resolved}")
-            base = @source_directory
+        @import_paths.each { |path|
+          if File.file?("#{path}/#{resolved}")
+            base = path
             found = true
-          elsif File.file?("#{@source_directory}/#{resolved}.rb")
-            base = @source_directory
+          elsif File.file?("#{path}/#{resolved}.rb")
+            base = path
             resolved = resolved + '.rb'
             found = true
           end
-        end
-        if !found
-          if File.file?("#{Plot.common_import_dir}/#{resolved}")
-            base = Plot.common_import_dir
-            found = true
-          elsif File.file?("#{Plot.common_import_dir}/#{resolved}.rb")
-            base = Plot.common_import_dir
-            resolved = resolved + '.rb'
-            found = true
-          end
-        end
+          break if found
+        }
         if found
           if @imported_identifiers.include?(resolved) == false
             code = File.read("#{base}/#{resolved}")

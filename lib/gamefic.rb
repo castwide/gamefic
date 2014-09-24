@@ -15,3 +15,7 @@ require "gamefic/director"
 require "gamefic/plot"
 require "gamefic/engine"
 require "gamefic/direction"
+
+module Gamefic
+  GLOBAL_IMPORT_PATH = File.dirname(__FILE__) + "/../import/"
+end
