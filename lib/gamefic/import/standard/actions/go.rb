@@ -1,16 +1,15 @@
 respond :go, Query::Reachable.new(Portal) do |actor, portal|
   if actor.parent != actor.room
     actor.perform :leave
-    if actor.parent != actor.room
-      break
-    end
   end
-  if portal.destination.nil?
-    actor.tell "That portal leads nowhere."
-  else
-    actor.parent = portal.destination
-    actor.tell "You go #{portal.name}."
-    actor.perform :look, actor.room
+  if actor.parent == actor.room
+    if portal.destination.nil?
+      actor.tell "That portal leads nowhere."
+    else
+      actor.parent = portal.destination
+      actor.tell "You go #{portal.name}."
+      actor.perform :look, actor.room
+    end
   end
 end
 
