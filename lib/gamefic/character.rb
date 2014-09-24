@@ -20,11 +20,10 @@ module Gamefic
 		end
 		def perform(*command)
       @last_command = command
-			if state.busy? == false
+			if @state_name == :active
 				Director.dispatch(self, *command)
 			else
-        # TODO: The queue needs to accept both arrays and strings
-				@queue.push command
+				@queue.push *command
 			end
 		end
     def state
