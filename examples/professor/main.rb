@@ -1,4 +1,4 @@
-# Interview
+# Interview with The Professor
 # A Gamefic demo by Fred Snyder
 #
 # This game demonstrates interaction with characters. The professor has custom

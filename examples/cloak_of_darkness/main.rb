@@ -1,5 +1,4 @@
 import 'standard'
-import 'standard/tests'
 
 # Cloak of Darkness for Gamefic. 
 # Gamefic implementation by Peter Orme. 
@@ -153,15 +152,4 @@ end
 conclusion :you_have_lost do |actor|
   actor.tell "The message has been carelessly trampled, making it difficult to read. You can just distinguish the words..."
   actor.tell "*** You have lost ***"
-end
-
-on_test :me do |actor|
-  actor.perform "s"
-  actor.perform "n"
-  actor.perform "w"
-  actor.perform "inventory"
-  actor.perform "hang cloak on hook"
-  actor.perform "e"
-  actor.perform "s"
-  actor.perform "read message"
 end
