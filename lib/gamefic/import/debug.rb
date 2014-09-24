@@ -19,15 +19,28 @@ meta :debug, Query::Text.new() do |actor, selection|
 end
 
 meta :options, Query::Text.new() do |actor, string|
+  class_name = string
+  tries = 0
   begin
-    cls = Gamefic.const_get(string)
+    cls = Gamefic.const_get(class_name)
   rescue NameError
-    actor.tell "I don't know what '#{string}' is."
-    next
+    case tries
+      when 0
+        class_name = class_name.cap_first
+        tries += 1
+        retry
+      when 1
+        class_name = class_name.downcase.cap_first
+        tries += 1
+        retry
+      else
+        actor.tell "I don't know what '#{string}' is."
+        next
+    end
   end
   sets = get_all_option_sets_for(cls)
   opts = []
-  actor.tell "Option sets for #{string} (and default):"
+  actor.tell "Option sets for #{class_name} (and default):"
   sets.each { |set|
     actor.tell "  #{set.options.join_and(', ', ' or ')} (#{set.default})"
   }
