@@ -26,6 +26,8 @@ module Gamefic
           end
         elsif Gamefic.respond_to?(method_name)
           Gamefic.send method_name, *args, &block
+        else
+          super
         end
       end
     end

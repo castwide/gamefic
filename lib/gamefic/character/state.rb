@@ -13,7 +13,7 @@ module Gamefic
         @busy ||= false
       end
       def update character
-        while (line = character.queue.shift)
+        if (line = character.queue.shift)
           character.state.accept character, line
         end
       end

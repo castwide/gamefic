@@ -80,12 +80,16 @@ module Gamefic
         puts "Loading..."
         build_file = nil
         main_file = path
+        test_file = nil
         if File.directory?(main_file)
           if !File.file?(path + '/main.rb')
             raise "#{path}/main.rb does not exist"
           end
           if File.file?(path + '/build.rb')
             build_file = path + '/build.rb'
+          end
+          if File.file?(path + '/test.rb')
+            test_file = path + '/test.rb'
           end
           main_file = path + '/main.rb'
           config = Build.load build_file
@@ -95,6 +99,9 @@ module Gamefic
         end
         config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
         plot = Plot.new config
+        if test_file != nil
+          plot.load test_file
+        end
         plot.load main_file
         plot.import 'debug'
         engine = Tty::Engine.new plot

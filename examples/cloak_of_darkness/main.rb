@@ -153,24 +153,3 @@ conclusion :you_have_lost do |actor|
   actor.tell "The message has been carelessly trampled, making it difficult to read. You can just distinguish the words..."
   actor.tell "*** You have lost ***"
 end
-
-# "test me" command 
-# TODO this kind of works, but gamefic should maybe provide something for game testing. 
-meta :test, Query::Text.new() do |actor, string|
-  actor.tell "> s"
-  actor.perform "s"
-  actor.tell "> n"
-  actor.perform "n"
-  actor.tell "> w"
-  actor.perform "w"
-  actor.tell "> inventory"
-  actor.perform "inventory"
-  actor.tell "> hang cloak on hook"
-  actor.perform "hang cloak on hook"
-  actor.tell "> e"
-  actor.perform "e"
-  actor.tell "> s"
-  actor.perform "s"
-  actor.tell "> read message"
-  actor.perform "read message"
-end
