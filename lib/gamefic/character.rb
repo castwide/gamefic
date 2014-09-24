@@ -20,21 +20,34 @@ module Gamefic
 		end
 		def perform(*command)
       @last_command = command
+      # TODO: The :active symbol is game-specific. It doesn't belong at this level of code.
 			if @state_name == :active
 				Director.dispatch(self, *command)
 			else
 				@queue.push *command
 			end
 		end
-    def state
-      @state
-    end
-    def state=(name)
+    def set_state name
       if plot.states[name].nil?
         raise "Invalid state #{name}"
       end
       @state_name = name
       @state = plot.states[name]
+    end
+    def state
+      @state
+    end
+    def state=(name)
+      if name.kind_of?(CharacterState::Base)
+        @state_name = nil
+        @state = name
+      else
+        if plot.states[name].nil?
+          raise "Invalid state #{name}"
+        end
+        @state_name = name
+        @state = plot.states[name]
+      end
     end
 		def tell(message)
 			if user != nil and message.to_s != ''
