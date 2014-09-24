@@ -76,20 +76,18 @@ module Gamefic
       def test path
         puts "Loading..."
         story = Plot.new
-        #begin
-          if File.directory?(path)
-            if !File.file?(path + '/main.rb')
-              raise "#{path}/main.rb does not exist"
-            end
-            story.load path + '/main.rb', true
-          else
-            story.load path
+        if File.directory?(path)
+          if !File.file?(path + '/main.rb')
+            raise "#{path}/main.rb does not exist"
           end
-        #rescue Exception => e
-        #  puts "An error occurred in #{path}:"
-        #  puts "#{e.inspect}"
-        #  exit 1
-        #end
+          story.load path + '/main.rb', true
+        else
+          story.load path
+        end
+        # Load optional test script
+        if File.file?(path + '/test.rb')
+          story.load path + '/test.rb', true
+        end
         story.import 'debug'
         engine = Tty::Engine.new story
         puts "\n"

@@ -8,6 +8,9 @@ module Tester
   def run_test name, actor
     actor.testing = true
     test_procs[name].call actor
+    while actor.queue.length > 0
+      actor.plot.update
+    end
     actor.testing = false
   end
 end
@@ -16,19 +19,13 @@ class Plot
 end
 
 class Character
-  @@performance_depth = 0
   attr_accessor :testing
   alias_method :orig_tester_perform, :perform
   def perform *args
-    @@performance_depth += 1
     if testing == true
       tell "[TEST] #{state.prompt} #{args.join(' ')}"
     end
     orig_tester_perform *args
-    if testing == true and @@performance_depth == 1
-      plot.update
-    end
-    @@performance_depth -= 1
   end
 end
 
