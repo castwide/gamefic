@@ -13,6 +13,23 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
   end
 end
 
+respond :go, Query::Reachable.new(Door) do |actor, door|
+  if door.is? :locked
+    actor.tell "It's locked."
+  else
+    if door.is? :closed and door.is? :automatic
+      actor.perform :open, door
+    end
+    if door.is? :open
+      passthru
+    end
+  end
+end
+
+respond :go, Query::Reachable.new(Door, :closed, :not_automatic) do |actor, door|
+  actor.tell "#{The door} is closed."
+end
+
 respond :go, Query::Text.new() do |actor, string|
   actor.tell "You don't see any exit \"#{string}\" from here."
 end

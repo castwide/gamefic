@@ -38,11 +38,9 @@ module Gamefic
     end
 		def tell(message)
 			if user != nil and message.to_s != ''
-        if !message.start_with?('<p>')
-          message = "<p>#{message}</p>"
-          message.gsub!(/\n\n/, '</p><p>')
-          message.gsub!(/\n/, '<br/>')
-        end
+        message = "<p>#{message}</p>"
+        message.gsub!(/\n\n/, '</p><p>')
+        message.gsub!(/\n/, '<br/>')
 				user.stream.send message
       end
 		end

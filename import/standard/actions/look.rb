@@ -6,20 +6,42 @@ end
 respond :look, Query::Room.new(Room) do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description
+  with_locales = []
   chars = room.children.that_are(Character) - [actor]
+  chars.each { |char|
+    if char.locale_description != ""
+      with_locales.push char
+      chars.delete char
+    end
+  }
   if chars.length > 0
     actor.tell "#{chars.join_and.cap_first} #{chars.length == 1 ? 'is' : 'are'} here."
   end
   items = room.children.that_are(:itemized) - [actor] - room.children.that_are(Character)
+  items.each { |item|
+    if item.locale_description != ""
+      with_locales.push item
+      items.delete item
+    end
+  }
   if items.length > 0
     actor.tell "You see #{items.join_and}."
   end
-  portals = room.children.that_are(Portal)
-  if portals.length > 0
-    if portals.length == 1
-      actor.tell "There is an exit #{portals[0]}."
-    else
-      actor.tell "There are exits #{portals.join_and(', ')}."
+  with_locales.each { |entity|
+    actor.tell entity.locale_description
+  }
+  if room.is? :explicit_with_exits
+    portals = room.children.that_are(Portal)
+    if portals.length > 0
+      if portals.length == 1
+        actor.tell "There is an exit #{portals[0].direction}."
+      else
+        dirs = []
+        portals.each { |p|
+          dirs.push p.direction
+        }
+        actor.tell "There are exits #{dirs.join_and(', ')}."
+      end
     end
   end
   if actor.is? :supported
@@ -62,6 +84,13 @@ respond :look, Query::Visible.new(Supporter) do |actor, supporter|
   supported.each { |thing|
     actor.tell "You see #{a thing} sitting there."
   }
+end
+
+respond :look, Query::Reachable.new(Door, :openable) do |actor, door|
+  if door.has_description?
+    passthru
+  end
+  actor.tell "#{The door} is " + ((door.is?(:open) and door.is?(:not_locked)) ? 'open' : 'closed') + '.'
 end
 
 xlate "look at :thing", :look, :thing

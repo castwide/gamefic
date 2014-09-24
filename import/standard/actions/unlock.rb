@@ -2,11 +2,11 @@ respond :unlock, Query::Text.new() do |actor, string|
   actor.tell "You don't see any \"#{string}\" here."
 end
 
-respond :unlock, Query::Reachable.new(Entity) do |actor, thing|
+respond :unlock, Query::Reachable.new() do |actor, thing|
   actor.tell "You can't unlock #{the thing}."
 end
 
-respond :unlock, Query::Reachable.new(Container, :lockable) do |actor, container|
+respond :unlock, Query::Reachable.new(:lockable) do |actor, container|
   # Portable containers need to be picked up before they are unlocked.
   if container.is? :portable and container.parent != actor
     actor.perform :take, container
@@ -36,7 +36,7 @@ respond :unlock, Query::Reachable.new(Container, :lockable) do |actor, container
   end
 end
 
-respond :unlock, Query::Reachable.new(Container, :lockable), Query::Children.new do |actor, container, key|
+respond :unlock, Query::Reachable.new(:lockable), Query::Children.new do |actor, container, key|
   if container.is?(:locked)
     if container.key == key
       if container.is?(:not_auto_lockable)

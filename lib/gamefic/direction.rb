@@ -20,6 +20,9 @@ module Gamefic
     def reverse=(dir)
       @reverse = dir
     end
+    def synonyms
+      "#{adjective} #{adverb}"
+    end
     def to_s
       @name
     end
