@@ -187,6 +187,7 @@ EOS
       end
       def build directory
         quiet = false
+        force = false
         if directory.to_s == ''
           puts "No source directory was specified."
           exit 1
@@ -206,7 +207,8 @@ EOS
         filename = File.basename(directory) + '.gfic'
         opts = GetoptLong.new(
           [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ],
-          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ]
+          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
+          [ '-f', '--force', GetoptLong::NO_ARGUMENT ]
         )
         begin
           opts.each { |opt, arg|
@@ -215,13 +217,15 @@ EOS
                 filename = arg
               when '-q'
                 quiet = true
+              when '-f'
+                force = true
             end
           }
         rescue Exception => e
           puts "#{e}"
           exit 1
         end
-        if File.exist?(filename)
+        if File.exist?(filename) and !force
           puts "The file #{filename} already exists."
           exit 1
         end
