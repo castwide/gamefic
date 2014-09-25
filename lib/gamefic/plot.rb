@@ -54,6 +54,7 @@ module Gamefic
         config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
       end
       @import_paths = config.import_paths
+      puts @import_paths
 			@scenes = Hash.new
 			@commands = Hash.new
 			@syntaxes = Array.new

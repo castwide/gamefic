@@ -21,7 +21,7 @@ module Gamefic
 		def perform(*command)
       @last_command = command
       # TODO: The :active symbol is game-specific. It doesn't belong at this level of code.
-			if @state_name == :active
+			if @state_name == :active and !@state.kind_of?(CharacterState::Bypassed)
 				Director.dispatch(self, *command)
 			else
 				@queue.push *command

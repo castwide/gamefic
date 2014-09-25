@@ -7,8 +7,9 @@ module Tester
   end
   def run_test name, actor
     actor.state = Testing.new
+    actor.perform ""
     test_procs[name].call actor
-    actor.state = :active    
+    actor.state = :active
     while actor.queue.length > 0
       actor.tell "#{actor.state.prompt} #{actor.queue[0]}"
       actor.state.update actor
@@ -20,7 +21,7 @@ class Plot
   include Tester
 end
 
-class Testing < CharacterState::Base
+class Testing < CharacterState::Bypassed
   def busy?
     true
   end

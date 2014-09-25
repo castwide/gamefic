@@ -109,6 +109,10 @@ module Gamefic
       end
     end
     
+    class Bypassed < Base
+      
+    end
+    
   end
 
 end
