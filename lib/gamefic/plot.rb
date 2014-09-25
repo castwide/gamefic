@@ -182,7 +182,6 @@ module Gamefic
 		end
 
     def load script
-      @import_paths.unshift [File.dirname(script)]
       code = File.read(script)
       eval code, ::Gamefic.bind(self), script, 1
     end
@@ -220,7 +219,7 @@ module Gamefic
           if @imported_identifiers.include?(resolved) == false
             code = File.read("#{base}/#{resolved}")
             @imported_identifiers.push resolved
-            @imported_scripts.push "#{base}/#{resolved}"
+            @imported_scripts.push Imported.new(base, resolved)
             eval code, Gamefic.bind(self), "#{base}/#{resolved}", 1
           end
         else
@@ -278,23 +277,21 @@ module Gamefic
           b.specificity <=> a.specificity
         end
 			}
-      #if action.command != nil
-        user_friendly = action.command.to_s.sub(/_/, ' ')
-        args = Array.new
-        used_names = Array.new
-        action.queries.each { |c|
-          num = 1
-          new_name = "var"
-          while used_names.include? new_name
-            num = num + 1
-            new_name = "var#{num}"
-          end
-          used_names.push new_name
-          user_friendly += " :#{new_name}"
-          args.push new_name.to_sym
-        }
-        Syntax.new self, *[user_friendly.strip, action.command] + args
-      #end
+      user_friendly = action.command.to_s.sub(/_/, ' ')
+      args = Array.new
+      used_names = Array.new
+      action.queries.each { |c|
+        num = 1
+        new_name = "var"
+        while used_names.include? new_name
+          num = num + 1
+          new_name = "var#{num}"
+        end
+        used_names.push new_name
+        user_friendly += " :#{new_name}"
+        args.push new_name.to_sym
+      }
+      Syntax.new self, *[user_friendly.strip, action.command] + args
 		end
     def rem_action(action)
       @commands[action.command].delete(action)
@@ -305,6 +302,16 @@ module Gamefic
 		def add_entity(entity)
 			@entities.push entity
 		end
+    class Imported
+      attr_reader :base, :relative
+      def initialize base, relative
+        @base = base
+        @relative = relative
+      end
+      def absolute
+        "#{base}/#{relative}".gsub(/\/+/, '/')
+      end
+    end
   end
 
 end

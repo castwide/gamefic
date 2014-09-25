@@ -94,6 +94,11 @@ module Gamefic
           main_file = path + '/main.rb'
           config = Build.load build_file
           config.import_paths.unshift path + '/import'
+          config.import_paths.each_index { |i|
+            if config.import_paths[i][0,1] != '/'
+              config.import_paths[i] = path + '/' + config.import_paths[i]
+            end
+          }
         else
           config = Build.load
         end
@@ -147,6 +152,18 @@ module Gamefic
 import 'standard'
 EOS
         main_rb.close
+        test_rb = File.new(directory + '/test.rb', 'w')
+        test_rb.write <<EOS
+import 'standard/test'
+EOS
+        test_rb.close
+        build_rb = File.new(directory + '/build.rb', 'w')
+        build_rb.write <<EOS
+Build::Configuration.new do |config|
+  config.import_paths << './import'
+end
+EOS
+        build_rb.close
         #fetch directory
         puts "Game directory '#{directory}' initialized." unless quiet
       end
@@ -202,6 +219,11 @@ EOS
           build_file = directory + '/build.rb'
         end
         config = Build.load build_file
+        config.import_paths.each_index { |i|
+          if config.import_paths[i][0,1] != '/'
+            config.import_paths[i] = directory + '/' + config.import_paths[i]
+          end
+        }
         config.import_paths.unshift directory + '/import'
         config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
         filename = File.basename(directory) + '.gfic'
@@ -249,10 +271,9 @@ EOS
             Gem::Package::TarHeader.set_mtime Time.now
             tar.mkdir('import', 0700)
             story.imported_scripts.each { |script|
-              base = script[script.rindex('import/') + 7..-1]
               Gem::Package::TarHeader.set_mtime Time.now
-              tar.add_file('import/' + base, 0700) do |io|
-                io.write File.read(script)
+              tar.add_file('import/' + script.relative, 0700) do |io|
+                io.write File.read(script.absolute)
               end
             }
           end
