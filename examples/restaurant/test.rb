@@ -1,4 +1,4 @@
-import 'standard/tests'
+import 'standard/test'
 
 on_test :me do |actor|
   actor.perform "n"
