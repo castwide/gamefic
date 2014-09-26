@@ -104,10 +104,10 @@ module Gamefic
         end
         config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
         plot = Plot.new config
+        plot.load main_file
         if test_file != nil
           plot.load test_file
         end
-        plot.load main_file
         plot.import 'debug'
         engine = Tty::Engine.new plot
         puts "\n"
