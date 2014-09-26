@@ -16,7 +16,7 @@ module Gamefic
 		end
     def tick
       @user.stream.select @user.character.state.prompt
-      @user.state.update
+      @user.state.input
       @plot.update
       @user.state.output
     end
@@ -82,7 +82,7 @@ module Gamefic
 		def initialize(user)
 			@user = user
 		end
-		def update
+		def input
 			line = @user.stream.recv
 			if line != nil
         @user.character.queue.push line
