@@ -10,15 +10,16 @@ module Gamefic
     end
 		def run
       @plot.introduce @user.character
+      print @user.state.output
 			while @user.character.state.kind_of?(CharacterState::Concluded) == false
         tick
+        print @user.state.output
 			end
 		end
     def tick
       @user.stream.select @user.character.state.prompt
       @user.state.input
       @plot.update
-      @user.state.output
     end
 	end
 
@@ -89,7 +90,7 @@ module Gamefic
 			end
 		end
     def output
-      print @user.stream.flush
+      @user.stream.flush
     end
 	end
 
