@@ -57,9 +57,7 @@ module Gamefic
           @plot.introduce @user.character
         else
           @plot.instance_variable_get(:@players).push @user.character
-          if @user.character.state.kind_of?(CharacterState::Concluded) == false
-            tick
-          end
+          tick
         end
         response = Hash.new
         response[:output] = @user.stream.flush
