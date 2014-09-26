@@ -44,24 +44,28 @@ module Gamefic
         end
         return [nil,nil]
       end
-      def send data
+      def flush
+        data = @buffer.clone
+        @buffer.clear
         return if data.strip == ''
         output = ''
         begin
-          doc = Html.parse(data)
+          doc = Html.parse("<body>#{data}</body>")
           format_recursively doc
           texts = REXML::XPath.match(doc, './/text()')
           output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
           output += Ansi.graphics_mode(Attribute::NORMAL)
           output = Html::decode(output)
         rescue REXML::ParseException => e
+          puts e.inspect
           output = Html.encode(data) + "\n\n"
         end
+        output.gsub!(/(\n\n)+/, "\n\n")
         width = size[0]
         if width.nil?
-          super output
+          output
         else
-          print "#{terminalize(output, width - 1)}"
+          "#{terminalize(output, width - 1)}"
         end
       end
       def select(prompt)
@@ -91,15 +95,17 @@ module Gamefic
             when 'em', 'i', 'u'
               formats.push Attribute::UNDERSCORE
             when 'a'
-              if element.attributes['href'].to_s.start_with?('gfic:')
+              if element.attributes['rel'].to_s == 'gamefic'
                 element.attributes['href'] = element.attributes['href'][5..-1]
-                formats.push [Extra::COMMAND]
+                formats.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::COMMAND]
               else
                 formats.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::HREF]
               end
             when 'img'
               formats.push [Extra::IGNORED]
             when 'p'
+              formats.push Extra::BLOCK
+            when 'nav'
               formats.push Extra::BLOCK
             when 'h1', 'h2', 'h3', 'h4', 'h5'
               formats.push [Attribute::BOLD, Extra::BLOCK, Extra::UPPERCASE]
@@ -123,13 +129,25 @@ module Gamefic
           end
           format_recursively element, stack
           if has_code?(stack.last, Extra::COMMAND)
-            element.add_text " [#{element.attribute('href')}]"
+            if element.attribute('data-command').to_s != ''
+              tmp = stack.pop
+              element.add_text "#{Ansi.graphics_mode(*stack)}"
+              element.add_text " [#{element.attribute('data-command')}]"
+              stack.push tmp
+              element.add_text "#{Ansi.graphics_mode(*stack)}"
+            end
           end
           if has_code?(stack.last, Extra::BLOCK)
             element.add_text("\n\n")
           end
           if has_code?(stack.last, Extra::HREF)
-            element.add_text(" [#{element.attribute('href')}]")
+            if element.attribute('href').to_s != "#"
+              tmp = stack.pop
+              element.add_text "#{Ansi.graphics_mode(*stack)}"
+              element.add_text(" [#{element.attribute('href')}]")
+              stack.push tmp
+              element.add_text "#{Ansi.graphics_mode(*stack)}"
+            end
           end
           if has_code?(stack.last, Extra::IMAGE)
             element.add_text(" [#{element.attribute('src')}]")

@@ -18,6 +18,7 @@ module Gamefic
       @user.stream.select @user.character.state.prompt
       @user.state.update
       @plot.update
+      @user.state.output
     end
 	end
 
@@ -82,12 +83,14 @@ module Gamefic
 			@user = user
 		end
 		def update
-      print @user.stream.flush
 			line = @user.stream.recv
 			if line != nil
         @user.character.queue.push line
 			end
 		end
+    def output
+      print @user.stream.flush
+    end
 	end
 
 end
