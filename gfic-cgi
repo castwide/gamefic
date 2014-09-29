@@ -23,6 +23,11 @@ rescue Exception => e
   exit 1
 end
 
+# Unlike the Gamefic shell, this executable always expects the target to be a
+# source directory instead of a packaged game file. That way it doesn't need to
+# uncompress the game on every iteration. Build and test scripts will not be
+# executed unless the -d option is specified.
+
 begin
   path = "#{ARGV[0]}"
   build_file = nil
