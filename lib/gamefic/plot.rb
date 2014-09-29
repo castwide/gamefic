@@ -230,6 +230,18 @@ module Gamefic
     def on_player_update &block
       @player_procs.push block
     end
+    def pick(description)
+      result = Query.match(description, entities)
+      if result.objects.length == 0
+        raise "Unable to find entity from '#{description}'"
+      elsif result.objects.length > 1
+        raise "Ambiguous entities found from '#{description}'"
+      end
+      result.objects[0]
+    end
+    def _(description)
+      pick description
+    end
     
 		private
 		def rem_entity(entity)
