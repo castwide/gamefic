@@ -7,12 +7,14 @@ module Tester
   end
   def run_test name, actor
     actor.state = Testing.new
-    actor.perform ""
     test_procs[name].call actor
     actor.state = :active
+    update
     while actor.queue.length > 0
       actor.tell "#{actor.state.prompt} #{actor.queue[0]}"
-      actor.state.update actor
+      if actor.state.kind_of?(CharacterState::Paused)
+        actor.queue.unshift ""
+      end
       update
     end
   end
