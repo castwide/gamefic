@@ -54,4 +54,20 @@ respond :unlock, Query::Reachable.new(:lockable), Query::Children.new do |actor,
   end
 end
 
+respond :open, Query::Reachable.new(:lockable), Query::Children.new do |actor, container, key|
+  if container.is?(:locked)
+    actor.perform :unlock, container, key
+    if !container.is?(:locked)
+      actor.perform :open, container
+    end
+  else
+    actor.perform :open, container
+  end
+end
+
+respond :use, Query::Children.new, Query::Reachable.new(:lockable) do |actor, key, container|
+  actor.perform :unlock, container, key
+end
+
 xlate "unlock :container with :key", :unlock, :container, :key
+xlate "open :container with :key", :open, :container, :key
