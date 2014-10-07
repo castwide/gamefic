@@ -5,6 +5,7 @@ module Gamefic
 
   def self.bind(plot)
     mod = Module.new do
+      include Gamefic
       def self.bind(plot)
         @@plot = plot
       end
@@ -28,12 +29,13 @@ module Gamefic
         elsif Gamefic.respond_to?(method_name)
           Gamefic.send method_name, *args, &block
         else
-          super
+          raise "Unknown method #{method_name} in plot script"
         end
       end
     end
     mod.bind plot
-    mod.get_binding
+    #mod.get_binding
+    mod
   end
   
 	class Plot
@@ -183,7 +185,7 @@ module Gamefic
 
     def load script
       code = File.read(script)
-      eval code, ::Gamefic.bind(self), script, 1
+      eval code, ::Gamefic.bind(self).get_binding, script, 1
     end
     
     def import script
@@ -219,8 +221,8 @@ module Gamefic
           if @imported_identifiers.include?(resolved) == false
             code = File.read("#{base}/#{resolved}")
             @imported_identifiers.push resolved
+            eval code, Gamefic.bind(self).get_binding, "#{base}/#{resolved}", 1
             @imported_scripts.push Imported.new(base, resolved)
-            eval code, Gamefic.bind(self), "#{base}/#{resolved}", 1
           end
         else
           raise "Unavailable import: #{script}"
