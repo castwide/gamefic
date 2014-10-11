@@ -97,9 +97,9 @@ module Gamefic
             when 'a'
               if element.attributes['rel'].to_s == 'gamefic'
                 element.attributes['href'] = element.attributes['href'][5..-1]
-                formats.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::COMMAND]
+                formats.push [Attribute::UNDERSCORE, Extra::COMMAND]
               else
-                formats.push [Attribute::UNDERSCORE, Foreground::BLUE, Extra::HREF]
+                formats.push [Attribute::UNDERSCORE, Extra::HREF]
               end
             when 'img'
               formats.push [Extra::IGNORED]
