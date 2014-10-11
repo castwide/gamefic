@@ -1,7 +1,7 @@
 class Room < Entity
   def connect(destination, direction, type = Portal, two_way = true)
     if direction.kind_of?(String)
-      direction = eval("#{direction.upcase}")
+      direction = Direction.find(direction)
     end
     portal = type.new self.plot, :direction => direction, :parent => self, :destination => destination
     portal.proper_named = true if type == Portal
@@ -34,6 +34,6 @@ class Room < Entity
   end
 end
 
-options(Room, :lighted, :dark).default = :lighted
+options(Room, :lighted, :dark)
 options(Room, :enterable, :not_enterable)
 options(Room, :explicit_with_exits, :not_explicit_with_exits)

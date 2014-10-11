@@ -26,6 +26,10 @@ module Gamefic
     def to_s
       @name
     end
+    def self.find(str)
+      x = { "north" => NORTH, "south" => SOUTH, "west" => WEST, "east" => EAST, "up" => UP, "down" => DOWN, "northwest" => NORTHWEST, "northeast" => NORTHEAST, "southwest" => SOUTHWEST, "southeast" => SOUTHEAST }
+      x[str]
+    end
   end
 
   NORTH = Direction.new(:name => 'north', :adjective => 'northern')

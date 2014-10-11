@@ -52,8 +52,10 @@ module Gamefic
 		def tell(message)
 			if user != nil and message.to_s != ''
         message = "<p>#{message}</p>"
-        message.gsub!(/\n\n/, '</p><p>')
-        message.gsub!(/\n/, '<br/>')
+        # This method uses String#gsub instead of String#gsub! for
+        # compatibility with Opal.
+        message = message.gsub(/\n\n/, '</p><p>')
+        message = message.gsub(/\n/, '<br/>')
 				user.stream.send message
       end
 		end

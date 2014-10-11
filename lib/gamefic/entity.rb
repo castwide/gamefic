@@ -1,4 +1,4 @@
-require "digest/md5"
+#require "digest/md5"
 require "gamefic/node"
 require "gamefic/describable"
 require "gamefic/plot"
@@ -42,7 +42,7 @@ module Gamefic
 		#end
 		def uid
 			if @uid == nil
-				@uid = Digest::MD5.hexdigest(self.object_id.to_s)[0,8]
+				@uid = self.object_id.to_s
 			end
 			@uid
 		end

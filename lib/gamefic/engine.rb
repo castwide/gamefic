@@ -59,7 +59,8 @@ module Gamefic
 		end
     def flush
       tmp = @buffer.clone
-      @buffer.clear
+      #@buffer.clear
+      @buffer = ''
       tmp
     end
 		def send(data)

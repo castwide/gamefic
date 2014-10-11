@@ -1,4 +1,4 @@
-options(Thing, :located, :contained, :supported, :attached).default = :located
+options(Thing, :located, :contained, :supported, :attached)
 options(Thing, :itemized, :not_itemized)
 set_default_for(Thing, :portable)
 

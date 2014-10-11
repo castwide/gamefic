@@ -43,6 +43,7 @@ module OptionMap
   end
   def set_default_for(cls, opt)
     os = get_option_set_for(cls, opt)
+    raise "No #{opt} for #{cls}" if os.nil?
     os.default = opt
   end
   def get_all_option_sets_for(cls)

@@ -10,7 +10,7 @@ end
 
 options(Container, :not_enterable, :enterable)
 options(Container, :opaque, :transparent)
-options(Container, :open, :closed, :locked).default = :open
+options(Container, :open, :closed, :locked)
 options(Container, :not_openable, :openable)
 options(Container, :not_lockable, :lockable)
 options(Container, :auto_lockable, :not_auto_lockable)
