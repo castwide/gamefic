@@ -72,10 +72,12 @@ module Gamefic
         line.strip!
         line.downcase!
         answer = nil
-        if "yes".start_with?(line) == true
-          answer = "yes"
-        elsif "no".start_with?(line) == true
-          answer = "no"
+        if line != ''
+          if "yes".start_with?(line) == true
+            answer = "yes"
+          elsif "no".start_with?(line) == true
+            answer = "no"
+          end
         end
         if answer.nil?
           character.tell "Please select Yes or No."
