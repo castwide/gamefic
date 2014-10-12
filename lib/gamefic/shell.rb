@@ -161,6 +161,8 @@ EOS
         build_rb.write <<EOS
 Build::Configuration.new do |config|
   config.import_paths << './import'
+  config.extras << 'html/**/*'
+  config.extras << 'media/**/*'
 end
 EOS
         build_rb.close
@@ -277,6 +279,16 @@ EOS
               end
             }
           end
+          config.extras.each { |extra|
+            Dir[directory + '/' + extra].each { |file|
+              if File.file?(file)
+                Gem::Package::TarHeader.set_mtime Time.now
+                tar.add_file(file[directory.length+1..-1].gsub(/\.\.\//, ''), 0700) do |io|
+                  io.write File.read(file)
+                end
+              end
+            }
+          }
         end
         gz = StringIO.new("")
         z = Zlib::GzipWriter.new(gz)

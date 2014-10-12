@@ -11,10 +11,11 @@ module Gamefic
     end
     class Configuration
       attr_reader :import_paths
+      attr_reader :extras
       @@current = nil
       def initialize &block
         @import_paths = []
-        @media_paths = []
+        @extras = []
         yield self if block_given?
         @@current = self
       end
