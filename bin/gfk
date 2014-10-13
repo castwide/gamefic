@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'gamefic'
+require 'gamefic-sdk'
+
+shell = Gamefic::Sdk::Gfk.new
+shell.execute
