@@ -1,5 +1,4 @@
 require 'gamefic/character/state'
-require 'gamefic/build'
 
 module Gamefic
 
@@ -52,10 +51,11 @@ module Gamefic
 		end
 		def initialize config = nil
       if config.nil?
-        config = Build::Configuration.new
-        config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
+        @import_paths = [Gamefic::GLOBAL_IMPORT_PATH]
+      else
+        @import_paths = config.import_paths
       end
-      @import_paths = config.import_paths
+      
 			@scenes = Hash.new
 			@commands = Hash.new
 			@syntaxes = Array.new

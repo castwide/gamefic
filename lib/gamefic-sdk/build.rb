@@ -1,4 +1,4 @@
-module Gamefic
+module Gamefic::Sdk
 
   module Build
     def self.load filename = nil
