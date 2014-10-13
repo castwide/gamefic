@@ -51,9 +51,7 @@ module Gamefic
         end
         Dir.mktmpdir 'gamefic_' do |dir|
           puts "Loading..."
-          config = Build.load
-          config.import_paths.unshift dir + '/import'
-          story = Plot.new config
+          story = Plot.new [dir + '/import']
           begin
             decompress file, dir
           rescue Exception => e

@@ -15,13 +15,6 @@ describe Gfk do
     shell.execute
     expect(File.exist?("#{@dir}/game")).to eq(true)
   end
-  it "builds a game file" do
-    shell = Gfk.new
-    ARGV.clear
-    ARGV.push 'build', "#{@dir}/game", '-o', "#{@dir}/game.gfic", "-q"
-    shell.execute
-    expect(File.exist?("#{@dir}/game.gfic")).to eq(true)
-  end
   after :all do
     FileUtils.remove_entry_secure @dir
   end

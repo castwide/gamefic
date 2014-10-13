@@ -52,6 +52,8 @@ module Gamefic
 		def initialize config = nil
       if config.nil?
         @import_paths = [Gamefic::GLOBAL_IMPORT_PATH]
+      elsif config.kind_of?(Array)
+        @import_paths = config
       else
         @import_paths = config.import_paths
       end

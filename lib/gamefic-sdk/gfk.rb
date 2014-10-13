@@ -5,6 +5,7 @@ require 'tmpdir'
 require 'getoptlong'
 require 'gamefic/engine/tty'
 require 'gamefic-sdk/build'
+include Gamefic
 
 # Crazy hack to set file mtimes in tar file
 class Gem::Package::TarHeader
@@ -131,8 +132,6 @@ EOS
         build_rb.write <<EOS
 Build::Configuration.new do |config|
   config.import_paths << './import'
-  config.extras << 'html/**/*'
-  config.extras << 'media/**/*'
 end
 EOS
         build_rb.close
@@ -232,42 +231,15 @@ EOS
           puts "#{e}"
           exit 1
         end
-        puts "Building file..." unless quiet
-        stream = StringIO.new("")
-        Gem::Package::TarWriter.new(stream) do |tar|
-          Gem::Package::TarHeader.set_mtime Time.now
-          tar.add_file('main.rb', 0600) do |io|
-            File.open(directory + '/main.rb', "rb") { |f| io.write f.read }
+        config.platforms.each_pair { |k, v|
+          platform_dir = "#{directory}/release/#{k}"
+          puts "I would build a platform release at #{platform_dir}"
+          if File.exist?(platform_dir)
+            #FileUtils.remove_entry_secure(platform_dir)
           end
-          if story.imported_scripts.length > 0
-            Gem::Package::TarHeader.set_mtime Time.now
-            tar.mkdir('import', 0700)
-            story.imported_scripts.each { |script|
-              Gem::Package::TarHeader.set_mtime Time.now
-              tar.add_file('import/' + script.relative, 0700) do |io|
-                io.write File.read(script.absolute)
-              end
-            }
-          end
-          config.extras.each { |extra|
-            Dir[directory + '/' + extra].each { |file|
-              if File.file?(file)
-                Gem::Package::TarHeader.set_mtime Time.now
-                tar.add_file(file[directory.length+1..-1].gsub(/\.\.\//, ''), 0700) do |io|
-                  io.write File.read(file)
-                end
-              end
-            }
-          }
-        end
-        gz = StringIO.new("")
-        z = Zlib::GzipWriter.new(gz)
-        z.mtime = Time.now
-        z.write stream.string
-        z.close
-        file = File.new(filename, "w")
-        file.write gz.string
-        file.close
+          #Dir.mkdir platform_dir
+          v.build directory, platform_dir, story
+        }
         puts "Gamefic file '#{filename}' complete." unless quiet
       end
       def help command
