@@ -7,8 +7,8 @@ respond :drop, Query::Children.new() do |actor, thing|
   actor.tell "You drop #{the thing}."
 end
 
-xlate "put down :thing", :drop, :thing
-xlate "put :thing down", :drop, :thing
+xlate "put down :thing", "drop :thing"
+xlate "put :thing down", "drop :thing"
 
 #respond :drop, Query::Family.new(Thing), Query::Reachable.new(Thing) do |actor, thing, supporter|
 #  actor.tell "You're not carrying #{thing}."

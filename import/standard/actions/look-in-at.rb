@@ -16,12 +16,12 @@ respond :look_in_at, Query::Reachable.new(), Query::Subquery.new() do |actor, co
   end
 end
 
-xlate "look in :container at :thing", :look_in_at, :container, :thing
-xlate "l in :container at :thing", :look_in_at, :container, :thing
+xlate "look in :container at :thing", "look_in_at :container :thing"
+xlate "l in :container at :thing", "look_in_at :container :thing"
 
-xlate "look :thing in :container", :look_in_at, :container, :thing
-xlate "look at :thing in :container", :look_in_at, :container, :thing
-xlate "l :thing in :container", :look_in_at, :container, :thing
-xlate "examine :thing in :container", :look_in_at, :container, :thing
-xlate "exam :thing in :container", :look_in_at, :container, :thing
-xlate "x :thing in :container", :look_in_at, :container, :thing
+xlate "look :thing in :container", "look_in_at :container :thing"
+xlate "look at :thing in :container", "look_in_at :container :thing"
+xlate "l :thing in :container", "look_in_at :container :thing"
+xlate "examine :thing in :container", "look_in_at :container :thing"
+xlate "exam :thing in :container", "look_in_at :container :thing"
+xlate "x :thing in :container", "look_in_at :container :thing"

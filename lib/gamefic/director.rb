@@ -2,10 +2,11 @@ module Gamefic
 
 	class Director
 		def self.dispatch(actor, *args)
-      command = args.shift
-      if command.kind_of?(Symbol)
+      #command = args.shift
+      if args.length > 1
+        command = args.shift
         options = Array.new
-        actions = actor.plot.commands[command]
+        actions = actor.plot.commands[command.to_sym]
         actions.each { |action|
           if action.queries.length == args.length
             valid = true
@@ -23,22 +24,23 @@ module Gamefic
           end
         }
       else
-        command.to_s.strip!
+        command = args.join(' ')
+        command = command.to_s.strip
         if command.to_s == ''
           return
         end
         begin
-          handlers = Syntax.match(command, actor.plot)
+          handlers = Syntax.match(command, actor.plot.syntaxes)
         rescue Exception => e
           puts "#{e}"
           return
         end
         options = Array.new
         handlers.each { |handler|
-          actions = actor.plot.commands[handler.command]
+          actions = actor.plot.commands[handler[0]]
           if actions != nil
             actions.each { |action|
-              if action.queries.length == 0 and handler.arguments.length > 0
+              if action.queries.length == 0 and handler.length > 1
                 next
               end
               orders = bind_contexts_in_result(actor, handler, action)
@@ -68,12 +70,12 @@ module Gamefic
 		private
 		def self.bind_contexts_in_result(actor, handler, action)
       queries = action.queries.clone
-      objects = self.execute_query(actor, handler.arguments.clone, queries, action)
+      objects = self.execute_query(actor, handler[1..-1], queries, action)
       num_nil = 0
       while objects.length == 0 and queries.last.optional?
         num_nil +=1
         queries.pop
-        objects = self.execute_query(actor, handler.arguments.clone, queries, action, num_nil)
+        objects = self.execute_query(actor, handler[1..-1], queries, action, num_nil)
       end
       return objects
 		end

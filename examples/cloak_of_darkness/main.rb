@@ -57,7 +57,7 @@ respond :look, Query::Family.new(hook) do |actor, hook|
   end
 end
 
-xlate "hang :item on :hook", :drop_on, :item, :hook
+xlate "hang :item on :hook", "drop_on :item :hook"
 
 # The eponymous Cloak of Darkness: when the player takes it to the bar, everything is dark.
 # We don't handle wearing it different from carrying it. 
@@ -106,7 +106,7 @@ respond :look, Query::Siblings.new(message) do |actor, message|
   end
 end
 
-xlate "read :message", :look, :message
+xlate "read :message", "look :message"
 
 # Customize the :has_enough_light rule to check if the player has the cloak.
 

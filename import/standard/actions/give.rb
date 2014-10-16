@@ -19,4 +19,4 @@ respond :give, Query::Text.new, Query::Children.new do |actor, character, gift|
   actor.tell "You don't see any \"#{character}\" here."
 end
 
-xlate "give :gift to :character", :give, :character, :gift
+xlate "give :gift to :character", "give :character :gift"

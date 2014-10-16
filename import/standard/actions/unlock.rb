@@ -69,5 +69,5 @@ respond :use, Query::Children.new, Query::Reachable.new(:lockable) do |actor, ke
   actor.perform :unlock, container, key
 end
 
-xlate "unlock :container with :key", :unlock, :container, :key
-xlate "open :container with :key", :open, :container, :key
+xlate "unlock :container with :key", "unlock :container :key"
+xlate "open :container with :key", "open :container :key"

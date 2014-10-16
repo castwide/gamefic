@@ -93,8 +93,8 @@ respond :look, Query::Reachable.new(Door, :openable) do |actor, door|
   actor.tell "#{The door} is " + ((door.is?(:open) and door.is?(:not_locked)) ? 'open' : 'closed') + '.'
 end
 
-xlate "look at :thing", :look, :thing
-xlate "l :thing", :look, :thing
-xlate "examine :thing", :look, :thing
-xlate "x :thing", :look, :thing
-xlate "search :thing", :look, :thing
+xlate "look at :thing", "look :thing"
+xlate "l :thing", "look :thing"
+xlate "examine :thing", "look :thing"
+xlate "x :thing", "look :thing"
+xlate "search :thing", "look :thing"

@@ -2,7 +2,7 @@ module Tester
   def test_procs
     @test_procs ||= Hash.new
   end
-  def on_test name = 'me', &block
+  def on_test name = :me, &block
     test_procs[name] = block
   end
   def run_test name, actor
@@ -10,10 +10,14 @@ module Tester
     test_procs[name].call actor
     actor.state = :active
     update
-    while actor.queue.length > 0
-      actor.tell "#{actor.state.prompt} #{actor.queue[0]}"
+    test_queue = actor.queue.clone
+    actor.queue.clear
+    while test_queue.length > 0
+      actor.tell "#{actor.state.prompt} #{test_queue[0]}"
       if actor.state.kind_of?(CharacterState::Paused)
         actor.queue.unshift ""
+      else
+        actor.queue.unshift test_queue.shift
       end
       update
     end
@@ -30,7 +34,7 @@ class Testing < CharacterState::Bypassed
 end
 
 meta :test, Query::Text.new do |actor, name|
-  sym = name.gsub(/ /, '_').to_sym
+  sym = name.to_sym
   if test_procs[sym].nil?
     actor.tell "There's no test named '#{name}' in this game."
   else

@@ -1,9 +1,13 @@
 module Gamefic
 
 	class Action
-		attr_reader :command, :order_key, :caller
+		attr_reader :order_key, :caller
     @@order_key_seed = 0
 		def initialize(story, command, *queries, &proc)
+      if !command.kind_of?(Symbol)
+        command = command.to_s
+        command = nil if command == ''
+      end
       @plot = story
       @order_key = @@order_key_seed
       @@order_key_seed += 1
@@ -31,6 +35,9 @@ module Gamefic
 			}
 			return spec
 		end
+    def command
+      @command
+    end
 		def key
 			@key
 		end

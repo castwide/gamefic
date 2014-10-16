@@ -22,10 +22,10 @@ respond :talk, Query::Reachable.new(Character), Query::Text.new do |actor, chara
   actor.perform :talk, character
 end
 
-xlate "talk to :character", :talk, :character
-xlate "talk to :character about :subject", :talk, :character, :subject
-xlate "ask :character :subject", :talk, :character, :subject
-xlate "ask :character about :subject", :talk, :character, :subject
-xlate "tell :character :subject", :talk, :character, :subject
-xlate "tell :character about :subject", :talk, :character, :subject
-xlate "ask :character for :subject", :talk, :character, :subject
+xlate "talk to :character", "talk :character"
+xlate "talk to :character about :subject", "talk :character :subject"
+xlate "ask :character :subject", "talk :character :subject"
+xlate "ask :character about :subject", "talk :character :subject"
+xlate "tell :character :subject", "talk :character :subject"
+xlate "tell :character about :subject", "talk :character :subject"
+xlate "ask :character for :subject", "talk :character :subject"

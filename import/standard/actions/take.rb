@@ -63,9 +63,9 @@ respond :take, Query::Children.new() do |actor, thing|
   actor.tell "You're already carrying #{the thing}."
 end
 
-xlate "get :thing", :take, :thing
-xlate "pick up :thing", :take, :thing
-xlate "pick :thing up", :take, :thing
+xlate "get :thing", "take :thing"
+xlate "pick up :thing", "take :thing"
+xlate "pick :thing up", "take :thing"
 
 # The :take_from actions make it a little easier to disambiguate things. For
 # example, if there's a green key in the room and a red key in a box, any of
@@ -89,19 +89,19 @@ end
 respond :take_from, Query::Reachable.new(Supporter), Query::Subquery.new(:supported) do |actor, container, thing|
   actor.perform :take, thing
 end
-xlate "take :thing from :container", :take_from, :container, :thing
-xlate "get :thing from :container", :take_from, :container, :thing
-xlate "pick :thing up from :container", :take_from, :container, :thing
-xlate "pick up :thing from :container", :take_from, :container, :thing
-xlate "take :thing in :container", :take_from, :container, :thing
-xlate "get :thing in :container", :take_from, :container, :thing
-xlate "pick :thing up in :container", :take_from, :container, :thing
-xlate "pick up :thing in :container", :take_from, :container, :thing
-xlate "take :thing on :container", :take_from, :container, :thing
-xlate "get :thing on :container", :take_from, :container, :thing
-xlate "pick :thing up on :container", :take_from, :container, :thing
-xlate "pick up :thing on :container", :take_from, :container, :thing
-xlate "take :thing inside :container", :take_from, :container, :thing
-xlate "get :thing inside :container", :take_from, :container, :thing
-xlate "pick :thing up inside :container", :take_from, :container, :thing
-xlate "pick up :thing inside :container", :take_from, :container, :thing
+xlate "take :thing from :container", "take from :container :thing"
+xlate "get :thing from :container", "take from :container :thing"
+xlate "pick :thing up from :container", "take from :container :thing"
+xlate "pick up :thing from :container", "take from :container :thing"
+xlate "take :thing in :container", "take from :container :thing"
+xlate "get :thing in :container", "take from :container :thing"
+xlate "pick :thing up in :container", "take from :container :thing"
+xlate "pick up :thing in :container", "take from :container :thing"
+xlate "take :thing on :container", "take from :container :thing"
+xlate "get :thing on :container", "take from :container :thing"
+xlate "pick :thing up on :container", "take from :container :thing"
+xlate "pick up :thing on :container", "take from :container :thing"
+xlate "take :thing inside :container", "take from :container :thing"
+xlate "get :thing inside :container", "take from :container :thing"
+xlate "pick :thing up inside :container", "take from :container :thing"
+xlate "pick up :thing inside :container", "take from :container :thing"

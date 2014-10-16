@@ -5,4 +5,4 @@ respond :inventory do |actor|
     actor.tell "You aren't carrying anything."
   end
 end
-xlate "i", :inventory
+xlate "i", "inventory"

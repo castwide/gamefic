@@ -44,8 +44,8 @@ module Gamefic
 		def commandwords
 			words = Array.new
 			@syntaxes.each { |s|
-        word = s.template[0]
-				words.push(word) if !word.kind_of?(Symbol)
+        word = s.first_word
+				words.push(word) if !word.nil?
 			}
 			words.uniq
 		end
@@ -258,24 +258,17 @@ module Gamefic
 			}
 		end	
 		def add_syntax syntax
-			if @commands[syntax.command] == nil
-				raise "Action \"#{syntax.command}\" does not exist"
+      return if @syntaxes.include?(syntax)
+			if @commands[syntax.action] == nil
+				raise "Action \"#{syntax.action}\" does not exist"
 			end
 			@syntaxes.unshift syntax
 			@syntaxes.sort! { |a, b|
-				al = a.template.length
-        if (a.command.nil?)
-          al -= 1
-        end
-				bl = b.template.length
-        if (b.command.nil?)
-          bl -= 1
-        end
-				if al == bl
-					# For syntaxes of the same length, creation order takes precedence
-					0
+				if a.token_count == b.token_count
+					# For syntaxes of the same length, length of action takes precedence
+					b.first_word <=> a.first_word
 				else
-					bl <=> al
+					b.token_count <=> a.token_count
 				end
 			}			
 		end
@@ -293,21 +286,23 @@ module Gamefic
           b.specificity <=> a.specificity
         end
 			}
-      user_friendly = action.command.to_s.sub(/_/, ' ')
+      #user_friendly = action.command.to_s.sub(/_/, ' ')
+      user_friendly = action.command.to_s
       args = Array.new
       used_names = Array.new
       action.queries.each { |c|
         num = 1
-        new_name = "var"
+        new_name = ":var"
         while used_names.include? new_name
           num = num + 1
-          new_name = "var#{num}"
+          new_name = ":var#{num}"
         end
         used_names.push new_name
-        user_friendly += " :#{new_name}"
-        args.push new_name.to_sym
+        user_friendly += " #{new_name}"
+        args.push new_name
       }
-      Syntax.new self, *[user_friendly.strip, action.command] + args
+      #Syntax.new self, *[user_friendly.strip, action.command] + args
+      Syntax.new self, user_friendly.strip, "#{action.command} #{args.join(' ')}"
 		end
     def rem_action(action)
       @commands[action.command].delete(action)

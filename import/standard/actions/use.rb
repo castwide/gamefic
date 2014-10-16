@@ -14,4 +14,4 @@ respond :use, Query::Children.new, Query::Reachable.new do |actor, tool, object|
   actor.perform "I don't know how. (A more specific command might work.)"
 end
 
-xlate "use :tool on :object", :use, :tool, :object
+xlate "use :tool on :object", "use :tool :subject"

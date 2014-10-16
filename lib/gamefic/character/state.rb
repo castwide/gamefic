@@ -69,8 +69,7 @@ module Gamefic
         @block = block
       end
       def accept character, line
-        line.strip!
-        line.downcase!
+        line = line.strip.downcase
         answer = nil
         if line != ''
           if "yes".start_with?(line) == true

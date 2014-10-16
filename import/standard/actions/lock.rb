@@ -54,4 +54,4 @@ respond :lock, Query::Reachable.new(:lockable), Query::Children.new do |actor, c
   end
 end
 
-xlate "lock :container with :key", :lock, :container, :key
+xlate "lock :container with :key", "lock :container :key"

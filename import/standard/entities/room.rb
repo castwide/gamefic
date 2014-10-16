@@ -20,7 +20,7 @@ class Room < Entity
     portal
   end
   def synonyms
-    super.to_s + " around here room"
+    @synonyms.to_s + " around here room"
   end
   def tell(message)
     children.each { |c|

@@ -33,6 +33,6 @@ respond :drop_in, Query::Text.new(), Query::Text.new() do |actor, thing, contain
   actor.tell "I don't know what you mean by \"#{thing}\" or \"#{container}.\""
 end
 
-xlate "drop :item in :container", :drop_in, :item, :container
-xlate "put :item in :container", :drop_in, :item, :container
-xlate "place :item in :container", :drop_in, :item, :container
+xlate "drop :item in :container", "drop_in :item :container"
+xlate "put :item in :container", "drop_in :item :container"
+xlate "place :item in :container", "drop_in :item :container"

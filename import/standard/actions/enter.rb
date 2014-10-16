@@ -21,9 +21,9 @@ respond :sit do |actor|
   end
 end
 
-xlate "sit :thing", :enter, :thing
-xlate "sit on :thing", :enter, :thing
-xlate "get on :thing", :enter, :thing
-xlate "get in :thing", :enter, :thing
-xlate "stand on :thing", :enter, :thing
-xlate "sit down", :sit
+xlate "sit :thing", "enter :thing"
+xlate "sit on :thing", "enter :thing"
+xlate "get on :thing", "enter :thing"
+xlate "get in :thing", "enter :thing"
+xlate "stand on :thing", "enter :thing"
+xlate "sit down", "sit"

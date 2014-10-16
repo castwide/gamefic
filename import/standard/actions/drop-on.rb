@@ -29,9 +29,9 @@ respond :drop_on, Query::Text.new(), Query::Text.new() do |actor, thing, support
   actor.tell "I don't know what you mean by \"#{thing}\" or \"#{supporter}.\""
 end
 
-xlate "put :thing on :supporter", :drop_on, :thing, :supporter
-xlate "put :thing down on :supporter", :drop_on, :thing, :supporter
-xlate "set :thing on :supporter", :drop_on, :thing, :supporter
-xlate "set :thing down on :supporter", :drop_on, :thing, :supporter
-xlate "drop :thing on :supporter", :drop_on, :thing, :supporter
-xlate "place :thing on :supporter", :drop_on, :thing, :supporter
+xlate "put :thing on :supporter", "drop_on :thing :supporter"
+xlate "put :thing down on :supporter", "drop_on :thing :supporter"
+xlate "set :thing on :supporter", "drop_on :thing :supporter"
+xlate "set :thing down on :supporter", "drop_on :thing :supporter"
+xlate "drop :thing on :supporter", "drop_on :thing :supporter"
+xlate "place :thing on :supporter", "drop_on :thing :supporter"
