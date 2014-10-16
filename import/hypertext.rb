@@ -40,15 +40,15 @@ respond :look, Query::Visible.new do |actor, thing|
   passthru
   if thing.is? :portable
     if thing.parent == actor
-      actor.stream PC.menu "commands", "drop #{the thing}"
+      actor.suggest "drop #{the thing}"
     else
-      actor.stream PC.menu "commands", "take #{the thing}"    
+      actor.suggest "take #{the thing}"    
     end
   end
   objects = thing.children.that_are(:attached)
   actor.stream '<nav class="objects">'
   objects.each { |object|
-    actor.stream PC.link "look #{object}", object
+    actor.tell Hypertext.link "look #{object}", object
   }
   actor.stream '</nav>'
 end
@@ -56,18 +56,18 @@ end
 respond :look, Query::Visible.new(Container) do |actor, container|
   passthru
   if container.is?(:lockable) and container.is?(:locked)
-    actor.stream PC.menu "commands", "unlock #{the container}"
+    actor.suggest "unlock #{the container}"
   elsif container.is?(:openable) and container.is?(:closed)
-    actor.stream PC.menu "commands", "open #{the container}"
+    actor.suggest "open #{the container}"
   else
     if container.is?(:openable) and container.is?(:open)
-      actor.stream PC.menu "commands", "close #{the container}"
+      actor.suggest "close #{the container}"
     end
     if container.is?(:open)
       actor.stream '<nav class="objects">'
       objects = container.children.that_are(:itemized)
       objects.each { |object|
-        actor.stream PC.link "look #{object}", object
+        actor.stream Hypertext.link "look #{object}", object
       }
       actor.stream '</nav>'
     end
@@ -98,13 +98,14 @@ end
 respond :go, Query::Reachable.new(Door, :locked) do |actor, door|
   passthru
   if door.is? :locked
-    #actor.stream PC.menu "commands", "unlock #{the door}"
     actor.suggest "unlock #{the door}"
   end
 end
 
-finish_action :show_links do |actor|
-  next if actor.state_name != :active
+on_player_update do |actor|
+  if actor.state_name != :active and actor.state.kind_of?(CharacterState::Active) == false
+    next
+  end
   if actor[:looking_at_room] != true
     actor.suggest "look around"
   end
@@ -128,6 +129,9 @@ finish_action :show_links do |actor|
     }
     actor.stream '</nav>'
   end
+  if actor.room.is? :dark
+    next
+  end
   characters = entities.that_are(Character) - [actor]
   if characters.length > 0
     actor.stream '<nav class="characters">'
@@ -137,7 +141,10 @@ finish_action :show_links do |actor|
     }
     actor.stream '</nav>'
   end
-  objects = entities.that_are(:itemized) - characters - [actor]
+  objects = entities.that_are(:itemized) - characters - [actor] - portals
+  if !actor[:checking_inventory]
+    objects -= actor.children
+  end
   if objects.length > 0
     actor.stream '<nav class="objects">'
     actor.stream "Objects: "
@@ -146,7 +153,7 @@ finish_action :show_links do |actor|
     }
     actor.stream '</nav>'
   end
-  extras = entities.that_are(:not_itemized) - characters - [actor]
+  extras = entities.that_are(:not_itemized) - characters - [actor] - portals - actor.children
   if extras.length > 0
     actor.stream '<nav class="incidentals">'
     actor.stream "Incidentals: "
