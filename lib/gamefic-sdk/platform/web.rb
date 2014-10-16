@@ -88,6 +88,7 @@ Gamefic.Engine = new function() {
     } else {
       return;
     }
+    response.command = command;
     response.state = Opal.Gamefic.$player().$character().$state().$class().$to_s().split('::').pop();
     callback(response);
   }
