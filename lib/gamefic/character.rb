@@ -9,7 +9,7 @@ module Gamefic
 			#set_state CharacterState::Active
 			@queue = Array.new
       super
-      self.state = :active
+      self.state = CharacterState::Active.new
 		end
 		def connect(user)
 			@user = user
@@ -20,8 +20,7 @@ module Gamefic
 		end
 		def perform(*command)
       @last_command = command
-      # TODO: The :active symbol is game-specific. It doesn't belong at this level of code.
-			if @state_name == :active and !@state.kind_of?(CharacterState::Bypassed)
+			if !@state.busy?
 				Director.dispatch(self, *command)
 			else
 				@queue.push *command

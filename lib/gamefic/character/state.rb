@@ -111,7 +111,9 @@ module Gamefic
     end
     
     class Bypassed < Base
-      
+      def post_initialize
+        @busy = true
+      end
     end
     
   end
