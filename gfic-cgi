@@ -3,7 +3,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/lib"
 require 'gamefic'
 require 'gamefic/engine/cgi'
-require 'gamefic/build'
+require 'gamefic-sdk/build'
 require 'getoptlong'
 include Gamefic
 
@@ -39,7 +39,7 @@ begin
   if dev and File.file?(path + '/test.rb')
     test_file = path + '/test.rb'
   end
-  config = Build.load build_file
+  config = Sdk::Build.load build_file
   config.import_paths.unshift path + '/import'
   config.import_paths.each_index { |i|
   if config.import_paths[i][0,1] != '/'
