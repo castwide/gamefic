@@ -9,7 +9,7 @@ module Gamefic::Sdk
       # Platforms can use this method to define the default configuration.
       @defaults ||= Hash.new
     end
-    def build source_dir, target_dir, plot
+    def build source_dir, target_dir, plot, config
       # Platforms need to build/compile the deployment here.
     end
   end

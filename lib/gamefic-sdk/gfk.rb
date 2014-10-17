@@ -197,6 +197,16 @@ EOS
             config.import_paths[i] = directory + '/' + config.import_paths[i]
           end
         }
+        if !quiet
+          if config.title.to_s == ''
+            puts "WARNING: title is not specified in build.rb"
+            config.title = 'Untitled'
+          end
+          if config.author.to_s == ''
+            puts "WARNING: author is not specified in build.rb"
+            config.author = 'Anonymous'
+          end
+        end
         config.import_paths.unshift directory + '/import'
         config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
         opts = GetoptLong.new(
@@ -230,6 +240,8 @@ EOS
         end
         if config.platforms.length > 0
           config.platforms.each_pair { |k, v|
+            v.config[:title] = config.title
+            v.config[:author] = config.author
             puts "Building release/#{k}..." unless quiet
             platform_dir = "#{directory}/release/#{k}"
             v.build directory, platform_dir, story

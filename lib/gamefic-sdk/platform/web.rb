@@ -86,19 +86,15 @@ Gamefic.Engine = new function() {
       Opal.Gamefic.$plot().$introduce(Opal.Gamefic.$player().$character());
       Opal.Gamefic.$plot().$update();
       response.output = Opal.Gamefic.$player().$state().$output();
-    } else if (command) {
+    } else {
         Opal.Gamefic.$player().$character().$queue().$push(command);
         while (Opal.Gamefic.$player().$character().$queue().$length() > 0) {
           Opal.Gamefic.$player().$character().$state().$accept(Opal.Gamefic.$player().$character(), Opal.Gamefic.$player().$character().$queue().$pop());
         }
         Opal.Gamefic.$plot().$update();
-        // TODO: The player character gets initialized with an invalid state. Fix that,
-        // then move this line down so it always gets executed.
-        response.prompt = Opal.Gamefic.$player().$character().$state().$prompt();
         response.output = Opal.Gamefic.$player().$state().$output();
-    } else {
-      return;
     }
+    response.prompt = Opal.Gamefic.$player().$character().$state().$prompt();
     response.command = command;
     response.state = Opal.Gamefic.$player().$character().$state().$class().$to_s().split('::').pop();
     callback(response);
@@ -108,6 +104,20 @@ EOS
       File.open("#{target_dir}/engine.js", "w") do |out|
         out << engine_js
       end
+      FileUtils.remove_entry_secure "#{target_dir}/game.rb"
+      vars = {
+        "title" => config[:title],
+        "author" => config[:author]
+      }
+      Dir["#{target_dir}/*.html"].each { |file|
+        source = File.read(file)
+        source.gsub!(/\{\{([a-z0-9_]*)\}\}/i) { |match|
+          vars[$1]
+        }
+        File.open(file, 'w') do |out|
+          out << source
+        end
+      }
     end
   end
 

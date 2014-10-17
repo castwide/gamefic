@@ -10,8 +10,8 @@ module Gamefic::Sdk
       Configuration.current
     end
     class Configuration
-      attr_reader :import_paths
-      attr_reader :html_paths
+      attr_reader :import_paths, :html_paths
+      attr_accessor :title, :author
       @@current = nil
       def initialize &block
         @import_paths = []
