@@ -8,22 +8,28 @@ The core Gamefic library and executable are available as a Ruby gem:
 
     gem install gamefic
 
-**Note:** Most of the examples in this README assume you are working with the
-gamefic executable that gets distributed with the gem. There's another
-executable in the repo's root directory that is functionally equivalent to the
-gem's version, except it adds the local lib directory to Ruby's load paths.
+The Gamefic SDK is also a gem:
+
+    gem install gamefic-sdk
+
+There are two Gamefic executables: "gamefic" for playing games and "gfk" for
+development. The examples in this README assume you are working with the
+executables that get distributed with the gems. There are alternate versions of
+the executables in the repo's root directory that are functionally equivalent
+to the gems' versions, except they add the local lib directory to Ruby's load
+paths.
 
 # Running the Examples
 
 The Git repo includes several demo games in the examples directory. You can
 run them from the command line like so:
 
-    gamefic test examples/[name]
+    gfk test examples/[name]
 
 One of the examples is a Gamefic implementation of [Cloak of Darkness](http://www.firthworks.com/roger/cloak/),
 courtesy of Peter Orme:
 
-    gamefic test examples/cloak_of_darkness
+    gfk test examples/cloak_of_darkness
 
 # Game Commands
 
@@ -76,21 +82,21 @@ default game environment.
 
 ## Play vs. Test
 
-There are two commands you'll typically use to play games: play and test. The
-play command executes compiled games (.gfic files). The test command lets you
-run source directories and scripts. Use test to debug your games before you
-build Gamefic files for distribution.
+There are two commands you'll typically use to play games: gamefic play and
+gfk test. The play command executes compiled games (.gfic files). The test
+command lets you run source directories and scripts. Use test to debug your
+games before you build Gamefic files for distribution.
 
 # Writing Your First Game
 
 The easiest way to start your own game is with the init command:
 
-    gamefic init mygame
+    gfk init mygame
 
 Gamefic will create a directory called "mygame" that contains the main script
 and an import directory. The game is already capable of running:
 
-    gamefic test mygame
+    gfk test mygame
 
 Right now the game is just a single featureless room. Open the mygame/main.rb
 file in a text editor. Modify it to the following:
@@ -105,7 +111,7 @@ file in a text editor. Modify it to the following:
 
 Run the script from the command line:
 
-    gamefic test mygame
+    gfk test mygame
 
 The script will drop you into a game prompt. There's still not much you can do
 except look around:
@@ -306,7 +312,7 @@ keep your game fun and immersive, it's a good idea to support multiple
 Syntaxes for actions. We can make "lie down" work with the following line of
 code:
 
-    xlate "lie down on :thing", :lie_on, :thing
+    xlate "lie down on :thing", "lie_on :thing"
 
 This code tells the game to accept a Syntax that matches "lie down on :thing"
 where :thing is a placeholder for a Query. The action the Syntax executes
@@ -321,8 +327,8 @@ Now "lie down on" works the same as "lie on":
 
 Here are a couple more syntaxes that might prove useful:
 
-    xlate "sleep on :thing", :lie_on, :thing
-	xlate "sleep", :lie_on, "bed"
+    xlate "sleep on :thing", "lie_on :thing"
+	xlate "sleep", "lie_on bed"
 
 The first Syntax allows the player to enter "sleep on bed."
 
@@ -361,19 +367,19 @@ Let's fix this with another Action:
 This Action will let the player sleep as long as he's in the room with the bed
 in it. We can add a few more Syntaxes like so:
 
-	xlate "go to sleep", :sleep
-	xlate "rest", :sleep
-	xlate "snooze", :sleep
+	xlate "go to sleep", "sleep"
+	xlate "rest", "sleep"
+	xlate "snooze", "sleep"
 
 # Building Game Files
 
 Once you're happy with your game, you can compile it into a .gfic file for
 distribution:
 
-    gamefic build mygame
+    gfk build mygame
 
-This will create a file called mygame.gfic that you can share with other
-Gamefic users.
+This will create a file called mygame.gfic in mygame/release that you can share
+with other Gamefic users.
 
 # More Information
 
