@@ -2,7 +2,7 @@ require "gamefic/character/state"
 
 module Gamefic
 
-	class Character < Thing
+	class Character < Entity
 		attr_reader :state, :state_name, :queue, :user, :last_command
     attr_accessor :object_of_pronoun
 		def initialize(plot, args = {})
