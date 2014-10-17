@@ -29,7 +29,6 @@ require "gamefic/core_ext/string"
 require "gamefic/optionset"
 require "gamefic/keywords"
 require "gamefic/entity"
-require "gamefic/thing"
 require "gamefic/character"
 require "gamefic/character/state"
 require "gamefic/action"
@@ -68,7 +67,6 @@ EOS
       code += <<EOS
 end
 EOS
-      puts "Writing to #{target_dir}/engine.js"
       Opal::Processor.source_map_enabled = true
       env = Opal::Environment.new
       env.append_path target_dir

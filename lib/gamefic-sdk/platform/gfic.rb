@@ -45,6 +45,7 @@ module Gamefic::Sdk
       z.mtime = Time.now
       z.write stream.string
       z.close
+      FileUtils.mkdir_p File.dirname(filename)
       file = File.new(filename, "w")
       file.write gz.string
       file.close

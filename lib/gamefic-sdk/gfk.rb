@@ -132,6 +132,8 @@ EOS
         build_rb.write <<EOS
 Build::Configuration.new do |config|
   config.import_paths << './import'
+  config.target Gfic.new
+  config.target Web.new
 end
 EOS
         build_rb.close
@@ -232,15 +234,11 @@ EOS
           exit 1
         end
         config.platforms.each_pair { |k, v|
+          puts "Building release/#{k}..." unless quiet
           platform_dir = "#{directory}/release/#{k}"
-          puts "I would build a platform release at #{platform_dir}"
-          if File.exist?(platform_dir)
-            #FileUtils.remove_entry_secure(platform_dir)
-          end
-          #Dir.mkdir platform_dir
           v.build directory, platform_dir, story
         }
-        puts "Gamefic file '#{filename}' complete." unless quiet
+        puts "Build complete." unless quiet
       end
       def help command
         shell_script = File.basename($0)
