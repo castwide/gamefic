@@ -199,7 +199,6 @@ EOS
         }
         config.import_paths.unshift directory + '/import'
         config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
-        filename = File.basename(directory) + '.gfic'
         opts = GetoptLong.new(
           [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ],
           [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
@@ -218,10 +217,6 @@ EOS
           }
         rescue Exception => e
           puts "#{e}"
-          exit 1
-        end
-        if File.exist?(filename) and !force
-          puts "The file #{filename} already exists."
           exit 1
         end
         story = Plot.new config
