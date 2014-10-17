@@ -3,10 +3,23 @@ require 'opal'
 module Gamefic::Sdk
 
   class Web < Platform
+    def defaults
+      @@defaults ||= {
+        :html_skin => 'multimedia',
+        :with_media => true
+      }
+    end
     def build source_dir, target_dir, plot
       main = source_dir + '/main.rb'
       FileUtils.remove_entry_secure target_dir if File.exist?(target_dir)
       FileUtils.mkdir_p target_dir
+      if config[:html_skin].to_s != ''
+        skin = Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/#{config[:html_skin]}"
+        if File.directory?(skin)
+          FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], target_dir)
+          FileUtils.cp_r(Dir["#{skin}/*"], target_dir)
+        end
+      end
       FileUtils.cp_r(Dir["#{source_dir}/media/*"], target_dir) if File.directory?("#{source_dir}/media")
       FileUtils.cp_r(Dir["#{source_dir}/html/*"], target_dir) if File.directory?("#{source_dir}/html")
       code = <<EOS

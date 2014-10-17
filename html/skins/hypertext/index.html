@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gamefic</title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="engine.js"></script>
+		<script type="text/javascript" src="connection.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				Gamefic.Connection.init({
+					onUpdate: function(response) {
+						$('#image').html('');
+						$('#text').html('');
+						$('#objects').html('');
+						$('#suggestions').html('');
+						$('#gamefic_command').val('');
+						$('a[rel="gamefic"]').addClass('disabled');
+						if (response.state != 'Concluded' && response.command) {
+							$('#text').append('<p><kbd class="log">' + response.prompt + ' ' + response.command + '</kbd></p>');
+						}
+						var html = $('<div>' + response.output + '</div>');
+						html.find('nav.portals a').each(function() {
+							var cp = $('#' + $(this).text());
+							if (cp.length) {
+								cp.removeClass('disabled');
+							} else {
+								$('#portals.more').append($(this));
+							}
+						});
+						html.find('nav.portals').remove();
+						html.find('nav.objects a').each(function() {
+							$('#objects').append($(this));
+						});
+						html.find('nav.objects').remove();
+						html.find('nav.incidentals a').each(function() {
+							$('#incidentals').append($(this));
+						});
+						html.find('nav.incidentals').remove();
+						html.find('nav.suggestions a').each(function() {
+							$('#suggestions').append($(this));
+						});
+						html.find('nav.suggestions').remove();
+						html.find('img').each(function() {
+							$(this).remove();
+							$('#image').html($(this));
+						});
+						$('#objects a, #incidentals a').each(function() {
+							var name = $(this).text().replace(/^(a |an |the )/i, '');
+							console.log('Object: ' + name);
+							var regexp = new RegExp(name, 'g');
+							var command = $(this).attr('data-command');
+							html.find('*').each(function() {
+								var par = $(this).closest('a');
+								if (par.length == 0) {
+									$(this).html($(this).html().replace(regexp, '<a rel="gamefic" href="#" data-command="' + command + '">' + name + '</a>'));
+								}
+							});
+						});
+						$('#portals a').not('.disabled').each(function() {
+							var name = $(this).attr('id').replace(/^(a |an |the )/i, '');
+							console.log('Object: ' + name);
+							var regexp = new RegExp(name, 'g');
+							var command = $(this).attr('data-command');
+							html.find('*').each(function() {
+								var par = $(this).closest('a');
+								if (par.length == 0) {
+									$(this).html($(this).html().replace(regexp, '<a rel="gamefic" href="#" data-command="' + command + '">' + name + '</a>'));
+								}
+							});
+						});
+						$('#text').append(html);
+					},
+					onConclude: function(response) {
+						$('a[rel="gamefic"]').addClass('disabled');
+						$('#text').append('<p><strong>' + response.prompt + '</strong></p>');
+					}
+				});
+				$('body').on('click', 'a[rel="gamefic"]', function() {
+					console.log('Command: ' + $(this).attr('data-command'));
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="gamefic_console">
+			<div id="main">
+				<div id="image"></div>
+				<div id="text"></div>
+				<div id="suggestions"></div>
+			</div>
+			<div id="aside">
+				<div id="portals">
+					<div id="compass">
+						<div><a id="northwest" rel="gamefic" href="#" data-command="nw">NW</a></div>
+						<div><a id="north" rel="gamefic" href="#" data-command="n">N</a></div>
+						<div><a id="northeast" rel="gamefic" href="#" data-command="ne">NE</a></div>
+						<div><a id="west" rel="gamefic" href="#" data-command="w">W</a></div>
+						<div id="center"></div>
+						<div><a id="east" rel="gamefic" href="#" data-command="e">E</a></div>
+						<div><a id="southwest" rel="gamefic" href="#" data-command="sw">SW</a></div>
+						<div><a id="south" rel="gamefic" href="#" data-command="s">S</a></div>
+						<div><a id="southeast" rel="gamefic" href="#" data-command="se">SE</a></div>
+					</div>
+					<div class="more"></div>
+				</div>
+				<div id="objects"></div>
+				<div id="incidentals"></div>
+			</div>
+			<form action="" method="post">
+				<label for="gamefic_command">&nbsp;</label>
+				<input id="gamefic_command" type="text" name="command" value="" autocomplete="off" />
+				<input type="submit" value="Enter" />
+			</form>
+		</div>
+	</body>
+</html>

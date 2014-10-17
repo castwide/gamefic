@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gamefic</title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="engine.js"></script>
+		<script type="text/javascript" src="connection.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				Gamefic.Connection.init();
+			});
+		</script>
+	</head>
+	<body>
+		<div id="gamefic_console">
+			<form action="" method="post">
+				<label for="gamefic_command">&nbsp;</label>
+				<input id="gamefic_command" type="text" name="command" value="" autocomplete="off" />
+				<input type="submit" value="Enter" />
+			</form>
+		</div>
+	</body>
+</html>
