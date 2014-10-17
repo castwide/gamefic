@@ -233,12 +233,16 @@ EOS
           puts "#{e}"
           exit 1
         end
-        config.platforms.each_pair { |k, v|
-          puts "Building release/#{k}..." unless quiet
-          platform_dir = "#{directory}/release/#{k}"
-          v.build directory, platform_dir, story
-        }
-        puts "Build complete." unless quiet
+        if config.platforms.length > 0
+          config.platforms.each_pair { |k, v|
+            puts "Building release/#{k}..." unless quiet
+            platform_dir = "#{directory}/release/#{k}"
+            v.build directory, platform_dir, story
+          }
+          puts "Build#{config.platforms.length > 1 ? 's' : ''} complete." unless quiet
+        else
+          puts "Build configuration does not have any target platforms."
+        end
       end
       def help command
         shell_script = File.basename($0)
