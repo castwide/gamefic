@@ -94,7 +94,7 @@ Gamefic.Connection = new function() {
 				}
 				config.prompt.html(response.prompt);
 				config.command.focus();
-				config.console.scrollTop(config.console[0].scrollHeight);
+				window.scrollTo(0, document.body.scrollHeight);
 			},
 			onConclude: function(response) {
 				config.form.hide();
