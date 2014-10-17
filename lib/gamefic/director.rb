@@ -159,12 +159,12 @@ module Gamefic
         # returns false
         result = true
         @asserts.each { |key, rule|
-          result = rule.test(@actor, @actions[0][0].command)
-          if result == false
+          this_result = rule.test(@actor, @actions[0][0].command)
+          if this_result == false
             if @actor.is?(:debugging)
               @actor.tell "[DEBUG] Asserting #{key} - defined at #{rule.caller}) - FALSE"
             end
-            break
+            result = false
           else
             if @actor.is?(:debugging)
               @actor.tell "[DEBUG] Asserting #{key} - defined at #{rule.caller}) - TRUE"
