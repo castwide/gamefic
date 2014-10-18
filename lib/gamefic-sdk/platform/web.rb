@@ -70,7 +70,7 @@ EOS
       Opal::Processor.source_map_enabled = true
       env = Opal::Environment.new
       env.append_path target_dir
-      env.append_path "/home/fred/gamefic/lib"
+      env.append_path Gamefic::Sdk::LIB_PATH
       File.open("#{target_dir}/game.rb", "w") do |out|
         out << code
       end
