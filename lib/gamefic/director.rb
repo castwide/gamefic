@@ -2,10 +2,9 @@ module Gamefic
 
 	class Director
 		def self.dispatch(actor, *args)
-      #command = args.shift
+      options = []
       if args.length > 1
         command = args.shift
-        options = Array.new
         actions = actor.plot.commands[command.to_sym]
         actions.each { |action|
           if action.queries.length == args.length
@@ -23,7 +22,11 @@ module Gamefic
             end
           end
         }
-      else
+        if options.length == 0
+          args.unshift command
+        end
+      end
+      if options.length == 0
         command = args.join(' ')
         command = command.to_s.strip
         if command.to_s == ''
@@ -35,7 +38,6 @@ module Gamefic
           puts "#{e}"
           return
         end
-        options = Array.new
         handlers.each { |handler|
           actions = actor.plot.commands[handler[0]]
           if actions != nil

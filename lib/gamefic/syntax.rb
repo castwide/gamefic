@@ -2,7 +2,7 @@ module Gamefic
 
   class Syntax
     attr_reader :token_count, :first_word, :action, :template, :command
-    @@phrase = '([a-z0-9\- ]*?)'
+    @@phrase = '([\w\W\s\S]*?)'
     def initialize plot, template, *command
       command = command.join(' ')
       words = template.split_words
@@ -46,7 +46,7 @@ module Gamefic
           result.push r
         end
       }
-      if @nil_action
+      if @action.nil?
         result.unshift nil
       else
         result[0] = @action
