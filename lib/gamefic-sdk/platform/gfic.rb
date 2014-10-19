@@ -3,14 +3,17 @@ module Gamefic::Sdk
   class Gfic < Platform
     def defaults
       @defaults ||= {
-        :filename => File.dirname(__FILE__).split('/').last + '.gfic',
+        :filename => nil,
         :with_html => true,
         :with_media => true
       }
     end
     def build source_dir, target_dir, story
-      raise "Gfic build needs a filename" if config[:filename].to_s == ''
-      filename = "#{target_dir}/#{config[:filename]}"
+      if config[:filename].to_s == ''
+        filename = target_dir + '/' + source_dir.split('/').delete_if{|i| i.to_s == ''}.last + '.gfic'
+      else
+        filename = "#{target_dir}/#{config[:filename]}"
+      end
       stream = StringIO.new("")
       Gem::Package::TarWriter.new(stream) do |tar|
         Gem::Package::TarHeader.set_mtime Time.now
