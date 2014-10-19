@@ -20,7 +20,9 @@ module Gamefic
 			@command = command
 			@queries = queries
 			@proc = proc
-      story.send :add_action, self
+      if !story.nil?
+        story.send :add_action, self
+      end
 		end
 		def specificity
 			spec = 0
