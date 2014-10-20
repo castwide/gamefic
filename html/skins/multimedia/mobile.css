@@ -1,0 +1,10 @@
+#gamefic, #image, #text-container, #controls {
+	width: 100%;
+	min-width: 0;
+	max-width: none;
+}
+#gamefic {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
