@@ -9,6 +9,7 @@ respond nil, Query::Text.new() do |actor, string|
   else
     found = []
     commandwords.each { |c|
+      next if c.include?('_')
       if c.length > words[0].length and c.start_with?(words[0])
         found.push c
       end
