@@ -8,24 +8,28 @@ respond :look, Query::Room.new(Room) do |actor, room|
   actor.tell room.description
   with_locales = []
   chars = room.children.that_are(Character) - [actor]
+  charsum = []
   chars.each { |char|
     if char.locale_description != ""
       with_locales.push char
-      chars.delete char
+    else
+      charsum.push char
     end
   }
-  if chars.length > 0
-    actor.tell "#{chars.join_and.cap_first} #{chars.length == 1 ? 'is' : 'are'} here."
+  if charsum.length > 0
+    actor.tell "#{charsum.join_and.cap_first} #{charsum.length == 1 ? 'is' : 'are'} here."
   end
   items = room.children.that_are(:itemized) - [actor] - room.children.that_are(Character)
+  itemsum = []
   items.each { |item|
     if item.locale_description != ""
       with_locales.push item
-      items.delete item
+    else
+      itemsum.push item
     end
   }
-  if items.length > 0
-    actor.tell "You see #{items.join_and}."
+  if itemsum.length > 0
+    actor.tell "You see #{itemsum.join_and}."
   end
   with_locales.each { |entity|
     actor.tell entity.locale_description
