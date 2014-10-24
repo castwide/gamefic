@@ -149,7 +149,7 @@ on_player_update do |actor|
     actor.stream '<nav class="objects">'
     actor.stream "Objects: "
     objects.each { |entity|
-      actor.stream Hypertext.link("examine #{the entity}", "#{the entity}") + " "
+      actor.stream Hypertext.link(entity.default_command, "#{the entity}") + " "
     }
     actor.stream '</nav>'
   end
