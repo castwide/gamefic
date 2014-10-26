@@ -36,6 +36,10 @@ respond :unlock, Query::Reachable.new(:lockable) do |actor, container|
   end
 end
 
+respond :unlock, Query::Reachable.new(:lockable), Query::Text.new do |actor, container, thing|
+  actor.tell "You don't have anything called '#{thing}.'"
+end
+
 respond :unlock, Query::Reachable.new(:lockable), Query::Children.new do |actor, container, key|
   if container.is?(:locked)
     if container.key == key
