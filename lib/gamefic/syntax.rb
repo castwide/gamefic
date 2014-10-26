@@ -17,20 +17,34 @@ module Gamefic
         @first_word = words[0].to_s
       end
       @command = command_words.join(' ')
-      words.each_index { |i|
-        if words[i][0] != ':'
-          #words[i][0] = Regexp.escape(words[i][0])
+      @template = words.join(' ')
+      tokens = []
+      last_token_is_reg = false
+      words.each { |w|
+        if w.match(/^:[a-z0-9_]+$/i)
+          if last_token_is_reg
+            next
+          else
+            tokens.push @@phrase
+            last_token_is_reg = true
+          end
+        else
+          tokens.push w
+          last_token_is_reg = false
         end
       }
-      @template = words.join(' ')
+      subs = []
       index = 0
-      @replace = @command
-      reg_tmp = @template.gsub(/:[a-z0-9_]+/i) { |m|
-        index += 1
-        @replace = @replace.gsub(m, "{$#{index}}")
-        @@phrase
+      command_words.each { |t|
+        if t[0] == ':'
+          index += 1
+          subs.push "{$#{index}}"
+        else
+          subs.push t
+        end
       }
-      @regexp = Regexp.new("^#{reg_tmp}$")
+      @replace = subs.join(' ')
+      @regexp = Regexp.new("^#{tokens.join(' ')}$")
       if !plot.nil?
         plot.send :add_syntax, self
       end
