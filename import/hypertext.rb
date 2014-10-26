@@ -1,3 +1,5 @@
+import 'clothing'
+
 module Hypertext
   def self.link command, text = nil
     "<a rel=\"gamefic\" href=\"#\" data-command=\"#{command}\">#{text || command}</a>"
@@ -74,6 +76,15 @@ respond :look, Query::Visible.new(Container) do |actor, container|
   end
 end
 
+respond :look, Query::Children.new(Clothing) do |actor, clothing|
+  passthru
+  if clothing.is?(:worn)
+    actor.suggest "remove #{the clothing}"
+  else
+    actor.suggest "wear #{the clothing}"
+  end
+end
+
 respond :open, Query::Visible.new(Container) do |actor, container|
   passthru
   if container.is? :open
@@ -91,14 +102,28 @@ end
 #end
 
 respond :inventory do |actor|
-  actor[:checking_inventory] = true
   passthru
+  actor[:checking_inventory] = true
 end
 
 respond :go, Query::Reachable.new(Door, :locked) do |actor, door|
   passthru
   if door.is? :locked
     actor.suggest "unlock #{the door}"
+  end
+end
+
+respond :unlock, Query::Reachable.new(:lockable) do |actor, container|
+  passthru
+  if container.is?(:closed)
+    actor.suggest "open #{the container}"
+  end
+end
+
+respond :take, Query::Reachable.new(Clothing) do |actor, clothing|
+  passthru
+  if clothing.parent == actor
+    actor.suggest "wear #{the clothing}"
   end
 end
 
@@ -109,7 +134,7 @@ on_player_update do |actor|
   if actor[:looking_at_room] != true
     actor.suggest "look around"
   end
-  if actor[:checking_inventory] != true and actor.children.length > 0
+  if actor[:checking_inventory] != true
     actor.suggest "inventory"
   end
   if actor.suggestions.length > 0
@@ -119,7 +144,7 @@ on_player_update do |actor|
     actor.stream '</nav>'
     actor.suggestions.clear
   end
-  entities = Query::Reachable.new.context_from(actor)
+  entities = Query::Siblings.new.context_from(actor)
   portals = entities.that_are(Portal)
   if portals.length > 0
     actor.stream '<nav class="portals">'
@@ -142,8 +167,8 @@ on_player_update do |actor|
     actor.stream '</nav>'
   end
   objects = entities.that_are(:itemized) - characters - [actor] - portals
-  if !actor[:checking_inventory]
-    objects -= actor.children
+  if actor[:checking_inventory] == true
+    objects += actor.children
   end
   if objects.length > 0
     actor.stream '<nav class="objects">'
