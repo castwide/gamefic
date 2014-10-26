@@ -33,7 +33,6 @@ module Gamefic
       end
     end
     mod.bind plot
-    #mod.get_binding
     mod
   end
   
@@ -79,7 +78,7 @@ module Gamefic
       @asserts[name] = Assert.new(name, &block)
     end
     def finish_action name, &block
-      @finishes[name] = block #Finish.new(name, &block)
+      @finishes[name] = block
     end
 		def post_initialize
       # TODO: Should this method be required by extended classes?
@@ -117,7 +116,6 @@ module Gamefic
 		end
 		def xlate(*args)
 			syn = Syntax.new(self, *args)
-			@syntaxes.push syn
 			syn
 		end
 		def entities
@@ -258,10 +256,13 @@ module Gamefic
 			}
 		end	
 		def add_syntax syntax
-      return if @syntaxes.include?(syntax)
 			if @commands[syntax.action] == nil
 				raise "Action \"#{syntax.action}\" does not exist"
 			end
+      # Delete duplicate syntaxes
+      @syntaxes = @syntaxes.delete_if { |existing|
+        existing == syntax
+      }
 			@syntaxes.unshift syntax
 			@syntaxes.sort! { |a, b|
 				if a.token_count == b.token_count
@@ -286,7 +287,6 @@ module Gamefic
           b.specificity <=> a.specificity
         end
 			}
-      #user_friendly = action.command.to_s.sub(/_/, ' ')
       user_friendly = action.command.to_s
       args = Array.new
       used_names = Array.new
@@ -301,7 +301,6 @@ module Gamefic
         user_friendly += " #{new_name}"
         args.push new_name
       }
-      #Syntax.new self, *[user_friendly.strip, action.command] + args
       Syntax.new self, user_friendly.strip, "#{action.command} #{args.join(' ')}"
 		end
     def rem_action(action)
