@@ -1,6 +1,13 @@
 module Gamefic
 
 	class Director
+    @@disambiguator = Action.new nil, nil, Query::Base.new do |actor, entities|
+      definites = []
+      entities.each { |entity|
+        definites.push entity.definitely
+      }
+      actor.tell "I don't know which you mean: #{definites.join_or}."
+    end
 		def self.dispatch(actor, *args)
       options = []
       if args.length > 1
@@ -47,20 +54,23 @@ module Gamefic
               end
               orders = bind_contexts_in_result(actor, handler, action)
               orders.each { |order|
+                valid = true
                 args = Array.new
                 args.push actor
+                invalid_argument = nil
                 order.arguments.each { |a|
                   if a.length > 1
-                    longnames = Array.new
-                    a.each { |b|
-                      longnames.push "#{b.definitely}"
-                    }
-                    actor.tell "I don't know which you mean: #{longnames.join_and(', ', ' or ')}."
-                    return
+                    invalid_argument = a
+                    valid = false
+                    break
                   end
                   args.push a[0]
                 }
-                options.push [order.action, args]
+                if valid
+                  options.push [order.action, args]
+                else
+                  options.push [@@disambiguator, [actor, invalid_argument]]
+                end
               }
             }
           end

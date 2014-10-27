@@ -11,16 +11,20 @@ module Gamefic
       @plot = story
       @order_key = @@order_key_seed
       @@order_key_seed += 1
+			@proc = proc
 			if (command.kind_of?(Symbol) == false and !command.nil?)
 				raise "Action commands must be symbols"
 			end
-			if (queries.length + 1 != proc.arity) and (queries.length == 0 and proc.arity != -1)
-				raise "Number of contexts is not compatible with proc arguments"
-			end
+      if !@proc.nil?
+        if (queries.length + 1 != @proc.arity) and (queries.length == 0 and @proc.arity != -1)
+          raise "Number of queries is not compatible with proc arguments"
+        end
+      end
 			@command = command
 			@queries = queries
-			@proc = proc
-      story.send :add_action, self
+      if !story.nil?
+        story.send :add_action, self
+      end
 		end
 		def specificity
 			spec = 0
