@@ -11,6 +11,12 @@ module Gamefic
       def self.get_binding
         binding
       end
+      # In the MRI, import methods in plots get pass through to method_missing
+      # without a hitch. In JRuby, it doesn't work as expected, most likely
+      # because it gets confused with Java import.
+      def self.import *args
+        @@plot.import *args
+      end
       def self.method_missing(method_name, *args, &block)
         if @@plot.respond_to?(method_name)
           if method_name == :action or method_name == :respond or method_name == :assert_action or method_name == :finish_action or method_name == :meta
