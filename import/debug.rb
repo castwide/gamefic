@@ -65,3 +65,10 @@ meta :analyze, Query::Room.new() do |actor, thing|
   }
   actor.tell "#{The thing} is #{opts.join_and}."
 end
+
+meta :syntaxes do |actor|
+  syntaxes.each { |syntax|
+    actor.stream "#{syntax.template} => #{syntax.command}\n"
+  }
+  actor.stream "\n"
+end
