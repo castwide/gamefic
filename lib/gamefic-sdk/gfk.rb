@@ -104,14 +104,17 @@ module Gamefic::Sdk
           puts "No directory specified."
           exit 1
         elsif File.exist?(directory)
-          if !File.directory?(directory)
+          if File.directory?(directory)
             files = Dir[directory + '/*']
             if files.length > 0
-              puts "'#{directory}' is not an empty directory."
-              exit 1
+              dotfiles = Dir[directory + '/\.*']
+              if dotfiles.length < files.length
+                puts "'#{directory}' is not an empty directory."
+                exit 1
+              end
             end
           else
-            puts "'#{directory}' is not an empty directory."
+            puts "'#{directory}' is a file."
             exit 1
           end
         else
