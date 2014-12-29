@@ -53,14 +53,19 @@ module Gamefic::Sdk
         main_file = path
         test_file = nil
         if File.directory?(main_file)
-          if !File.file?(path + '/main.rb')
-            raise "#{path}/main.rb does not exist"
-          end
+          ext = nil
+          ['gruby', 'rb'].each { |e|
+            if File.file?(path + '/main.' + e)
+              ext = e
+              break
+            end
+          }
+          raise "#{path}/main.gruby does not exist" if ext.nil?
           if File.file?(path + '/build.rb')
             build_file = path + '/build.rb'
           end
           if File.file?(path + '/test.rb')
-            test_file = path + '/test.rb'
+            test_file = 'test.rb'
           end
           main_file = path + '/main.rb'
           config = Build.load build_file
@@ -121,7 +126,7 @@ module Gamefic::Sdk
           Dir.mkdir(directory)
         end
         Dir.mkdir(directory + '/import')
-        main_rb = File.new(directory + '/main.rb', 'w')
+        main_rb = File.new(directory + '/main.gruby', 'w')
         main_rb.write <<EOS
 import 'standard'
 EOS
@@ -155,7 +160,7 @@ EOS
         puts "Loading game data..."
         story = Plot.new
         begin
-          story.load directory + '/main.rb', true
+          story.load directory + '/main', true
         rescue Exception => e
           puts "'#{directory}' has errors or is not a valid source directory."
           puts "#{e}"

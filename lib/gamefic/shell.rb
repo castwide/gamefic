@@ -59,7 +59,7 @@ module Gamefic
             puts "#{e}"
             exit 1
           end
-          story.load dir + '/main.rb'
+          story.load dir + '/main'
           engine = Tty::Engine.new story
           puts "\n"
           engine.run
