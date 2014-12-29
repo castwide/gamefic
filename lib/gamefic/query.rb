@@ -4,6 +4,8 @@ module Gamefic
 
   module Query
 
+    @@subquery_prepositions = ['in', 'on', 'of', 'inside', 'from']
+    
     def self.last_new
       Base.last_new
     end
@@ -178,7 +180,21 @@ module Gamefic
       possibilities = array
       at_least_one_match = false
       while keywords.length > 0
-        used.push keywords.shift
+        next_word = keywords.shift
+        if @@subquery_prepositions.include?(next_word)
+          in_matched = self.match(keywords.join(' '), array)
+          if in_matched.objects.length == 1
+            # Subset matching should only consider the intersection of the
+            # original array and the matched object's children. This ensures
+            # that it won't erroneously match a child that was excluded from
+            # the original query.
+            subset = self.match(used.join(' '), (array & in_matched.objects[0].children))
+            if subset.objects.length == 1
+              return subset
+            end
+          end
+        end
+        used.push next_word
         new_results = []
         most_matches = 0.0
         possibilities.each { |p|
