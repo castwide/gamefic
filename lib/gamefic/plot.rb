@@ -1,4 +1,6 @@
 require 'gamefic/character/state'
+# TODO: JSON support is currently experimental.
+#require 'gamefic/entityloader'
 
 module Gamefic
 
@@ -16,6 +18,9 @@ module Gamefic
       # most likely because it gets confused with Java import.
       def self.import *args
         @@plot.import *args
+      end
+      def self.load *args
+        @@plot.load *args
       end
       def self.method_missing(method_name, *args, &block)
         if @@plot.respond_to?(method_name)
@@ -78,6 +83,7 @@ module Gamefic
       @states = Hash.new
       @states[:active] = CharacterState::Active.new
       @states[:concluded] = CharacterState::Concluded.new
+      @game_directory = nil
 			post_initialize
 		end
     def assert_action name, &block
@@ -98,8 +104,8 @@ module Gamefic
 		def respond(command, *queries, &proc)
 			self.action(command, *queries, &proc)
 		end
-		def make(cls, args = {})
-			ent = cls.new(self, args)
+		def make(cls, args = {}, &block)
+			ent = cls.new(self, args, &block)
 			if ent.kind_of?(Entity) == false
 				raise "Invalid entity class"
 			end
@@ -190,8 +196,22 @@ module Gamefic
 		end
 
     def load script
-      code = File.read(script)
-      eval code, ::Gamefic.bind(self).get_binding, script, 1
+      if @game_directory.nil?
+        @game_directory = File.dirname(script)
+      else
+        script = "#{@game_directory}/#{script}"
+      end
+      ext = File.extname(script)
+      case ext
+        when ".rb"
+          code = File.read(script)
+          eval code, ::Gamefic.bind(self).get_binding, script, 1
+        # TODO: JSON support is currently experimental.
+        #when ".gjson"
+        #  EntityLoader.load File.read(script), self
+        else
+          raise "Invalid file type"
+      end
     end
     
     def import script
@@ -215,6 +235,10 @@ module Gamefic
         @import_paths.each { |path|
           if File.file?("#{path}/#{resolved}")
             base = path
+            found = true
+          elsif File.file?("#{path}/#{resolved}.gruby")
+            base = path
+            resolved = resolved + '.gruby'
             found = true
           elsif File.file?("#{path}/#{resolved}.rb")
             base = path
