@@ -37,6 +37,18 @@ describe Query::Base do
     expect(result.matching_text).to eq('primary object')
     expect(result.remainder).to eq('superfluous')
   end
+  it "checks for an exact match in a subquery for prepositional phrases" do
+    plot = Plot.new
+    table = plot.make Entity, :name => 'the table'
+    book1 = plot.make Entity, :name => 'a book', :parent => table
+    book2 = plot.make Entity, :name => 'a book'
+    query = Query::Base.new
+    result = query.execute(plot.entities, 'book')
+    expect(result.objects.length).to eq(2)
+    result = query.execute(plot.entities, 'book on table')
+    expect(result.objects.length).to eq(1)
+    expect(result.objects[0]).to eq(book1)
+  end
 end
 
 describe Query::Text do

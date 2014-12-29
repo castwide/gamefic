@@ -12,9 +12,12 @@ module Gamefic
         end
 				self.concat statement.to_s.gsub(/[^a-z0-9]/i, ' ').strip.downcase.split(' ')
 			end
-			self.delete_if { |w|
-				w.length < 2 or w == 'an' or w == 'the'
-			}
+      # TODO: This routine is stubbed to allow any combination of letters and
+      # numbers as a keyword. Since we're doing this, there's a distinct
+      # possibility that the Keywords class can be deprecated.
+			#self.delete_if { |w|
+			#	w.length < 2 or w == 'an' or w == 'the'
+			#}
 			self.uniq!
 		end
 		def found_in(other)

@@ -29,7 +29,60 @@ assert_action :clear_room_mode do |actor, action|
 end
 
 respond :look, Query::Room.new(Room) do |actor, room|
-  passthru
+  actor.tell "<strong>#{room.name.cap_first}</strong>"
+  actor.tell room.description
+  with_locales = []
+  chars = room.children.that_are(Character) - [actor]
+  charsum = []
+  chars.each { |char|
+    if char.locale_description != ""
+      with_locales.push char
+    else
+      if charsum.length == 0
+        charsum.push Hypertext.link char.default_command, char.indefinitely.cap_first
+      else
+        charsum.push Hypertext.link char.default_command, char.indefinitely
+      end
+    end
+  }
+  if charsum.length > 0
+    actor.tell "#{charsum.join_and} #{charsum.length == 1 ? 'is' : 'are'} here."
+  end
+  items = room.children.that_are(:itemized) - [actor] - room.children.that_are(Character)
+  itemsum = []
+  items.each { |item|
+    if item.locale_description != ""
+      with_locales.push item
+    else
+      itemsum.push Hypertext.link item.default_command, item.indefinitely
+    end
+  }
+  if itemsum.length > 0
+    actor.tell "You see #{itemsum.join_and}."
+  end
+  with_locales.each { |entity|
+    actor.tell entity.locale_description
+  }
+  if room.is? :explicit_with_exits
+    portals = room.children.that_are(Portal)
+    if portals.length > 0
+      if portals.length == 1
+        actor.tell "There is an exit #{Hypertext.link portals[0].default_command, portals[0].direction}."
+      else
+        dirs = []
+        portals.each { |p|
+          dirs.push Hypertext.link p.default_command, p.direction
+        }
+        actor.tell "There are exits #{dirs.join_and(', ')}."
+      end
+    end
+  end
+  if actor.is? :supported
+    actor.tell "You are on #{the actor.parent}."
+    actor.parent.children.that_are(:supported).that_are_not(actor).each { |s|
+      actor.tell "#{Hypertext.link s.default_command, s.indefinitely.cap_first} is on #{the actor.parent}."
+    }
+  end
   actor[:looking_at_room] = true
 end
 
@@ -56,7 +109,23 @@ respond :look, Query::Visible.new do |actor, thing|
 end
 
 respond :look, Query::Visible.new(Container) do |actor, container|
-  passthru
+  actor.tell container.description
+  container.children.that_are(:attached).that_are(:itemized).each { |item|
+    actor.tell "#{An item} is attached to #{the container}."
+  }
+  if container.is? :openable
+    actor.tell "#{The container} is #{container.is?(:open) ? 'open' : 'closed'}."
+  end
+  if container.is? :open
+    contents = container.children.that_are(:contained)
+    if contents.length > 0
+      array = []
+      contents.each { |entity|
+        array.push Hypertext.link entity.default_command, entity.indefinitely
+      }
+      actor.tell "You see #{array.join_and} inside #{the container}."
+    end
+  end
   if container.is?(:lockable) and container.is?(:locked)
     actor.suggest "unlock #{the container}"
   elsif container.is?(:openable) and container.is?(:closed)
@@ -102,7 +171,31 @@ end
 #end
 
 respond :inventory do |actor|
-  passthru
+  if actor.children.length > 0
+    carried = actor.children.that_are_not(:worn)
+    worn = actor.children.that_are(:worn)
+    if carried.length > 0
+      array = []
+      carried.each { |entity|
+        array << "#{Hypertext.link(entity.default_command, entity.indefinitely)}"
+      }
+      actor.tell "You are carrying #{array.join_and}."
+    end
+    if worn.length > 0
+      array = []
+      worn.each { |entity|
+        array << "#{Hypertext.link(entity.default_command, entity.indefinitely)}"
+      }
+      actor.tell "You are wearing #{array.join_and}."
+    end
+    actor.stream '<nav class="objects">'
+    actor.children.each { |object|
+      actor.tell Hypertext.link "look #{object}", object.definitely
+    }
+    actor.stream '</nav>'
+  else
+    actor.tell "You aren't carrying anything."
+  end
   actor[:checking_inventory] = true
 end
 
@@ -167,9 +260,6 @@ on_player_update do |actor|
     actor.stream '</nav>'
   end
   objects = entities.that_are(:itemized) - characters - [actor] - portals
-  if actor[:checking_inventory] == true
-    objects += actor.children
-  end
   if objects.length > 0
     actor.stream '<nav class="objects">'
     actor.stream "Objects: "
@@ -178,7 +268,7 @@ on_player_update do |actor|
     }
     actor.stream '</nav>'
   end
-  extras = entities.that_are(:not_itemized) - characters - [actor] - portals - actor.children
+  extras = entities.that_are(:not_itemized) - characters - [actor] - portals
   if extras.length > 0
     actor.stream '<nav class="incidentals">'
     actor.stream "Incidentals: "
