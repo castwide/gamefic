@@ -11,6 +11,7 @@ module Gamefic::Sdk
     end
     def build source_dir, target_dir, plot, config
       # Platforms need to build/compile the deployment here.
+      raise "The base Platform class does not have a build_source method"
     end
   end
 
