@@ -22,6 +22,7 @@ module Gamefic
       }
       @update_procs = Array.new
       @session = Hash.new
+      yield self if block_given?
       post_initialize
     end
     def options=(array)
@@ -57,8 +58,8 @@ module Gamefic
       @update_procs.push block
     end
     def parent=(node)
-      if node != nil and node.kind_of?(Entity) == false and node.kind_of?(Zone) == false
-        raise "Entity's parent must be an Entity or a Zone"
+      if node != nil and node.kind_of?(Entity) == false
+        raise "Entity's parent must be an Entity"
       end
       super
     end
