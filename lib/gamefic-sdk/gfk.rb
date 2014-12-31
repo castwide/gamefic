@@ -49,10 +49,13 @@ module Gamefic::Sdk
     private
       def test path
         puts "Loading..."
+        if !File.exist?(path)
+          raise "Invalid path: #{path}"
+        end
         build_file = nil
         main_file = path
         test_file = nil
-        if File.directory?(main_file)
+        if File.directory?(path)
           ext = nil
           ['gruby', 'rb'].each { |e|
             if File.file?(path + '/main.' + e)
@@ -67,7 +70,7 @@ module Gamefic::Sdk
           if File.file?(path + '/test.rb')
             test_file = 'test.rb'
           end
-          main_file = path + '/main.rb'
+          main_file = path + '/main.' + ext
           config = Build.load build_file
           config.import_paths.unshift path + '/import'
           config.import_paths.each_index { |i|
@@ -240,7 +243,7 @@ EOS
         story = Plot.new config
         puts "Loading game data..." unless quiet
         begin
-          story.load directory + '/main.rb'
+          story.load directory + '/main'
         rescue Exception => e
           puts "'#{directory}' has errors or is not a valid source directory."
           puts "#{e}"

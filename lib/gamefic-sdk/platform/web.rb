@@ -10,7 +10,13 @@ module Gamefic::Sdk
       }
     end
     def build source_dir, target_dir, plot
-      main = source_dir + '/main.rb'
+      main = nil
+      ['gruby','rb'].each { |e|
+        if File.file?(source_dir + '/main.' + e)
+          main = source_dir + '/main.' + e
+          break
+        end
+      }
       FileUtils.remove_entry_secure target_dir if File.exist?(target_dir)
       FileUtils.mkdir_p target_dir
       if config[:html_skin].to_s != ''

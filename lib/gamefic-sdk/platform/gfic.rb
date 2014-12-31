@@ -17,8 +17,15 @@ module Gamefic::Sdk
       stream = StringIO.new("")
       Gem::Package::TarWriter.new(stream) do |tar|
         Gem::Package::TarHeader.set_mtime Time.now
-        tar.add_file('main.rb', 0600) do |io|
-          File.open(source_dir + '/main.rb', "rb") { |f| io.write f.read }
+        main_file = nil
+        ['gruby','rb'].each { |e|
+          if File.file?(source_dir + '/main.' + e)
+            main_file = 'main.' + e
+            break
+          end
+        }
+        tar.add_file(main_file, 0600) do |io|
+          File.open(source_dir + '/' + main_file, "rb") { |f| io.write f.read }
         end
         if story.imported_scripts.length > 0
           Gem::Package::TarHeader.set_mtime Time.now
