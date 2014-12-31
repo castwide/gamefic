@@ -4,8 +4,9 @@ module Gamefic
 
   module Query
 
+    @@ignored_words = ['a', 'an', 'the']
     @@subquery_prepositions = ['in', 'on', 'of', 'inside', 'from']
-    
+
     def self.last_new
       Base.last_new
     end
@@ -195,16 +196,14 @@ module Gamefic
           end
         end
         used.push next_word
+        next if @@ignored_words.include?(next_word)
         new_results = []
         most_matches = 0.0
         possibilities.each { |p|
           words = Keywords.new(used.last)
           if words.length > 0
             matches = words.found_in(p.keywords)
-            if matches >= most_matches and matches > 0
-              if matches - most_matches > 0.5
-                new_results = []
-              end
+            if matches > 0
               new_results.push p
               most_matches = matches
             end
