@@ -36,7 +36,12 @@ require "gamefic/optionset"
 require "gamefic/keywords"
 require "gamefic/entity"
 require "gamefic/character"
-require "gamefic/character/state"
+require "gamefic/scene"
+require "gamefic/scene/active"
+require "gamefic/scene/concluded"
+require "gamefic/scene/paused"
+require "gamefic/scene/multiplechoice"
+require "gamefic/scene/yesorno"
 require "gamefic/action"
 require "gamefic/meta"
 require "gamefic/syntax"
@@ -94,15 +99,16 @@ Gamefic.Engine = new function() {
       response.output = Opal.Gamefic.$player().$state().$output();
     } else {
         Opal.Gamefic.$player().$character().$queue().$push(command);
-        while (Opal.Gamefic.$player().$character().$queue().$length() > 0) {
-          Opal.Gamefic.$player().$character().$state().$accept(Opal.Gamefic.$player().$character(), Opal.Gamefic.$player().$character().$queue().$pop());
-        }
+        //while (Opal.Gamefic.$player().$character().$queue().$length() > 0) {
+        //  Opal.Gamefic.$player().$character().$state().$accept(Opal.Gamefic.$player().$character(), Opal.Gamefic.$player().$character().$queue().$pop());
+        //}
+        Opal.Gamefic.$player().$character().$update();
         Opal.Gamefic.$plot().$update();
         response.output = Opal.Gamefic.$player().$state().$output();
     }
-    response.prompt = Opal.Gamefic.$player().$character().$state().$prompt();
+    response.prompt = Opal.Gamefic.$player().$character().$scene().$prompt();
     response.command = command;
-    response.state = Opal.Gamefic.$player().$character().$state().$class().$to_s().split('::').pop();
+    response.state = Opal.Gamefic.$player().$character().$scene().$state();
     callback(response);
   }
 }
