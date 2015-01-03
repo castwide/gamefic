@@ -47,8 +47,8 @@ module Gamefic
   end
   
 	class Plot
-		attr_reader :scene_managers, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states
-		attr_accessor :story
+		attr_reader :scene_managers, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes
+		attr_accessor :default_scene
     include OptionMap
 		def commandwords
 			words = Array.new
@@ -79,19 +79,9 @@ module Gamefic
       @players = Array.new
       @asserts = Hash.new
       @finishes = Hash.new
-      @states = Hash.new # TODO: What is this for?
-      # TODO: It might make more sense to define these scene managers
-      # somewhere in the standard import.
-      @scene_managers[:active] = SceneManager.new do |config|
-        config.state = "Active"
-        config.finish do |actor, data|
-          actor.perform data.input
-        end
-      end
-      @scene_managers[:concluded] = SceneManager.new do |config|
-        config.state = "Concluded"
-      end
-      
+      @scene_managers[:active] = ActiveSceneManager.new
+      @scene_managers[:concluded] = ConcludedSceneManager.new
+      @default_scene = :active      
       @game_directory = nil
 			post_initialize
 		end
@@ -99,7 +89,7 @@ module Gamefic
       scene = Scene.new do |config|
         config.prompt = "Paused"
         config.finish do |actor, input|
-          actor.cue :active
+          actor.cue default_scene
         end
       end
       scene.configure &block
@@ -193,7 +183,7 @@ module Gamefic
       # by the plot, which would be :active by default. We could
       # get it like player.cue nil.
       if player.scene.nil?
-        player.cue :active
+        player.cue default_scene
       end
 		end
 		def passthru
