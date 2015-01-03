@@ -11,13 +11,13 @@ module Gamefic
 		def run
       @plot.introduce @user.character
       print @user.state.output
-			while @user.character.state.kind_of?(CharacterState::Concluded) == false
+			while @user.character.scene.state != "Concluded"
         tick
         print @user.state.output
 			end
 		end
     def tick
-      @user.stream.select @user.character.state.prompt
+      @user.stream.select @user.character.scene.prompt
       @user.state.input
       @plot.update
     end
