@@ -132,15 +132,6 @@ body.loading {
 .hidden {
 	display: none;
 }
-ol.multiple-choice {
-	list-style: none;
-	margin: 1em 0 1em 0.5em;
-	padding: 0;
-}
-ol.multiple-choice li {
-	margin: 0.25em 0 0.25em 0;
-	padding: 0;
-}
 a.disabled {
 	color: gray;
 	text-decoration: none;
@@ -174,6 +165,11 @@ noscript p {
 }
 #dialog nav p a {
 	margin: 0 1em 0 1em;
+}
+ol.multiple-choice {
+	list-style: none;
+	margin: 1em 0 1em 0.5em;
+	padding: 0;
 }
 ol.multiple-choice li {
 	margin: 0.5em 0 0.5em 0;

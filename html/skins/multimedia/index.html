@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{{title}} by {{author}}</title>
+		<title>Untitled by Anonymous</title>
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<script type="text/javascript" src="jquery.js"></script>
 		<script type="text/javascript" src="engine.js"></script>
@@ -42,7 +42,7 @@
 								response.prompt = lines.pop();
 								response.output += "<ol class=\"multiple-choice\">";
 								for (i = 0; i < lines.length; i++) {
-									response.output += "<li><a rel=\"gamefic\" data=command=\"" + (i + 1) + "\">" + lines[i].substr((i + 1).toString().length + 2) + "</a></li>";
+									response.output += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"" + (i + 1) + "\">" + lines[i].substr((i + 1).toString().length + 2) + "</a></li>";
 								}
 								response.output += "</ol>";
 								$('#dialog').html(response.output);
@@ -123,7 +123,7 @@
 					} else if (lastResponse.state == 'MultipleChoice') {
 						evt.preventDefault();
 						var k = String.fromCharCode(evt.which);
-						var a = $('#dialog .multiple-choice a[rel="gamefic" data-command="' + k + '"]');
+						var a = $('#dialog .multiple-choice a[rel="gamefic"][data-command="' + k + '"]');
 						if (a.length) {
 							a.click();
 							$('#dialog').html('');
@@ -138,7 +138,7 @@
 		<div id="gamefic_console">
 			<div id="titlebar">
 				<h1>
-					<cite>{{title}}</cite> by {{author}}
+					<cite>Untitled</cite> by Anonymous
 				</h1>
 			</div>
 			<div id="image-container">
