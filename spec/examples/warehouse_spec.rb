@@ -6,6 +6,6 @@ describe "Warehouse" do
     character = plot.make Character, :name => 'player'
     plot.introduce character
     character.perform "test me"
-    expect(character.state.class).to eq(CharacterState::Concluded)
+    expect(character.scene.state).to eq("Concluded")
   end
 end
