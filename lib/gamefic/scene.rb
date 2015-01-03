@@ -22,8 +22,8 @@ module Gamefic
     def finish &block
       @finish = block
     end
-    def prepare
-      scene_class.new(self)
+    def prepare key
+      scene_class.new(self, key)
     end
     def prompt
       @prompt ||= ">"
@@ -35,13 +35,14 @@ module Gamefic
   end
   
   class Scene
-    attr_reader :data, :state, :prompt
-    def initialize(manager)
+    attr_reader :data, :state, :prompt, :key
+    def initialize(manager, key)
       @start = manager.instance_variable_get(:@start)
       @finish = manager.instance_variable_get(:@finish)
       @state = manager.state
       @prompt = manager.prompt
       @data = manager.data_class.new
+      @key = key
     end
     def start actor
       return if @start.nil?

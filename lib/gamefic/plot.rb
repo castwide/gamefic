@@ -85,15 +85,11 @@ module Gamefic
       @game_directory = nil
 			post_initialize
 		end
-    def pause name, &block
-      scene = Scene.new do |config|
-        config.prompt = "Paused"
-        config.finish do |actor, input|
-          actor.cue default_scene
-        end
+    def pause key, &block
+      manager = PausedSceneManager.new do |config|
+        config.start &block
       end
-      scene.configure &block
-      @scenes[name] = scene
+      @scene_managers[key] = manager
     end
     def conclusion key, &block
       manager = ConcludedSceneManager.new do |config|

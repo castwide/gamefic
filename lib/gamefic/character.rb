@@ -49,7 +49,7 @@ module Gamefic
       if manager.nil?
         @scene = nil
       else
-        @scene = manager.prepare
+        @scene = manager.prepare key
         @scene.start self
       end
       @scene
