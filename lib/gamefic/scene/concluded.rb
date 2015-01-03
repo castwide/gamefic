@@ -7,6 +7,9 @@ module Gamefic
     def state
       @state ||= "Concluded"
     end
+    def prompt
+      @prompt ||= "GAME OVER"
+    end
   end
   
   class ConcludedScene < Scene

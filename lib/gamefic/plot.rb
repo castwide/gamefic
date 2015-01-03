@@ -129,6 +129,14 @@ module Gamefic
     #def multiple_choice name, *args, &block
     #  @states[name] = CharacterState::MultipleChoice.new(*args, &block)
     #end
+    def multiple_choice key, *args, &block
+      @scene_managers[key] = MultipleChoiceSceneManager.new do |config|
+        config.start do |actor, data|
+          data.options = args
+        end
+        config.finish &block
+      end
+    end
     def yes_or_no key, prompt, &block
       manager = YesOrNoSceneManager.new do |config|
         config.prompt = prompt

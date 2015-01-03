@@ -1,8 +1,7 @@
 module Gamefic
 
   class SceneManager
-    attr_accessor :state
-    attr_writer :prompt
+    attr_accessor :state, :prompt
     def initialize &block
       yield self if block_given?
     end
@@ -24,9 +23,6 @@ module Gamefic
     end
     def prepare key
       scene_class.new(self, key)
-    end
-    def prompt
-      @prompt ||= ">"
     end
   end
   
