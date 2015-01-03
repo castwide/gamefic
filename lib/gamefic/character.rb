@@ -42,6 +42,9 @@ module Gamefic
 			super
 		end
     def cue key
+      if key.nil?
+        key = plot.default_scene
+      end
       manager = plot.scene_managers[key]
       if manager.nil?
         @scene = nil
