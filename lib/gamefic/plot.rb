@@ -196,13 +196,6 @@ module Gamefic
         player.cue :active
       end
 		end
-    def conclude player, key = nil
-      if key.nil?
-        player.scene = :concluded
-      else
-        player.cue key
-      end
-    end
 		def passthru
 			Director::Delegate.passthru
 		end
