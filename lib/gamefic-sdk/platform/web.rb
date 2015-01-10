@@ -19,10 +19,21 @@ module Gamefic::Sdk
       }
       FileUtils.remove_entry_secure target_dir if File.exist?(target_dir)
       FileUtils.mkdir_p target_dir
+      if File.directory?("#{source_dir}/html/core")
+        FileUtils.cp_r(Dir["#{source_dir}/html/core/*"], target_dir)
+      else
+        FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], target_dir)
+      end
       if config[:html_skin].to_s != ''
-        skin = Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/#{config[:html_skin]}"
+        skin = nil
+        if File.directory?("#{source_dir}/html/skins/#{config[:html_skin]}")
+          skin = "#{source_dir}/#{config[:html_skin]}"
+        elsif File.directory?(Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/#{config[:html_skin]}")
+          skin = Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/#{config[:html_skin]}"
+        else
+          raise "HTML skin directory '#{config[:html_skin]}' not found"
+        end
         if File.directory?(skin)
-          FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], target_dir)
           FileUtils.cp_r(Dir["#{skin}/*"], target_dir)
         end
       end
