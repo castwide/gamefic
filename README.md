@@ -1,4 +1,5 @@
 #Gamefic
+[![Code Climate](https://codeclimate.com/github/castwide/gamefic/badges/gpa.svg)](https://codeclimate.com/github/castwide/gamefic)
 
 A Ruby Interactive Fiction Framework
 

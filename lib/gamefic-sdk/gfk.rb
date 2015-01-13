@@ -144,7 +144,10 @@ EOS
 Build::Configuration.new do |config|
   config.import_paths << './import'
   config.target Gfic.new
-  config.target Web.new
+  config.target Web.new({
+    :html_skin => 'multimedia',
+    :with_media => true
+  })
 end
 EOS
         build_rb.close
