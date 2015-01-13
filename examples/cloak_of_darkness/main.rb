@@ -100,9 +100,9 @@ message = make Scenery,
 
 respond :look, Query::Siblings.new(message) do |actor, message|
   if actor.session[:disturbed] then 
-    actor.conclude :you_have_lost
+    conclude actor, :you_have_lost
   else
-    actor.conclude :you_have_won
+    conclude actor, :you_have_won
   end
 end
 

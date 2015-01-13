@@ -1,8 +1,8 @@
 module Gamefic
 
 	class Character < Entity
-		attr_reader :scene, :queue, :user, :last_command
-    attr_accessor :object_of_pronoun
+		attr_reader :queue, :user, :last_command
+    attr_accessor :object_of_pronoun, :scene
 		def initialize(plot, args = {})
 			@queue = Array.new
       super
@@ -41,29 +41,6 @@ module Gamefic
 			end
 			super
 		end
-    def cue key
-      if key.nil?
-        key = plot.default_scene
-      end
-      manager = plot.scene_managers[key]
-      if manager.nil?
-        @scene = nil
-      else
-        @scene = manager.prepare key
-        @scene.start self
-      end
-      @scene
-    end
-    # This is functionally identical to Character#cue, but it also raises an
-    # exception if the selected scene is not a Concluded state.
-    def conclude key
-      key = :concluded if key.nil?
-      manager = plot.scene_managers[key]
-      if manager.state != "Concluded"
-        raise "Selected scene '#{key}' is not a conclusion"
-      end
-      cue key
-    end
 		def update
 			super
       if (line = queue.shift)

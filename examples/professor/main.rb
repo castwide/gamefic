@@ -30,11 +30,11 @@ professor = make Character, :name => 'the professor', :synonyms => 'Sam Worthing
 
 prompt :talk_to_professor, "What do you want to ask him about?" do |actor, data|
   actor.perform "ask professor about #{data.input}" unless data.input == ""
-  actor.cue :active
+  cue actor, :active
 end
 
 respond :talk, Query::Reachable.new(professor) do |actor, professor|
-  actor.cue :talk_to_professor
+  cue actor, :talk_to_professor
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new do |actor, professor, subject|
@@ -46,7 +46,7 @@ respond :talk, Query::Reachable.new(professor), Query::Text.new("name") do |acto
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new("job", "opening", "work", "interview") do |actor, professor, subject|
-  actor.conclude :asked_about_job
+  conclude actor, :asked_about_job
 end
 
 conclusion :asked_about_job do |actor|

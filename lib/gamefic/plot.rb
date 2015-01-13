@@ -187,7 +187,7 @@ module Gamefic
       # by the plot, which would be :active by default. We could
       # get it like player.cue nil.
       if player.scene.nil?
-        player.cue default_scene
+        cue player, default_scene
       end
 		end
 		def passthru
@@ -305,6 +305,30 @@ module Gamefic
       pick description
     end
     
+    def cue actor, key
+      if key.nil?
+        key = plot.default_scene
+      end
+      manager = @scene_managers[key]
+      if manager.nil?
+        actor.scene = nil
+      else
+        actor.scene = manager.prepare key
+        actor.scene.start actor
+      end
+      @scene
+    end
+    # This is functionally identical to Character#cue, but it also raises an
+    # exception if the selected scene is not a Concluded state.
+    def conclude actor, key
+      key = :concluded if key.nil?
+      manager = @scene_managers[key]
+      if manager.state != "Concluded"
+        raise "Selected scene '#{key}' is not a conclusion"
+      end
+      cue actor, key
+    end
+
 		private
 		def rem_entity(entity)
 			@entities.delete(entity)
