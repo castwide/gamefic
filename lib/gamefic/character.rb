@@ -2,31 +2,31 @@ require "gamefic/character/state"
 
 module Gamefic
 
-	class Character < Entity
-		attr_reader :state, :state_name, :queue, :user, :last_command
+  class Character < Entity
+    attr_reader :state, :state_name, :queue, :user, :last_command
     attr_accessor :object_of_pronoun
-		def initialize(plot, args = {})
-			#set_state CharacterState::Active
-			@queue = Array.new
+    def initialize(plot, args = {})
+      #set_state CharacterState::Active
+      @queue = Array.new
       super
       self.state = :active
-		end
-		def connect(user)
-			@user = user
-		end
-		def disconnect
-			# TODO: We might need some cleanup here. Like, move the character out of the game, or set a timeout to allow dropped users to reconnect... figure it out.
-			@user = nil
-		end
-		def perform(*command)
+    end
+    def connect(user)
+      @user = user
+    end
+    def disconnect
+      # TODO: We might need some cleanup here. Like, move the character out of the game, or set a timeout to allow dropped users to reconnect... figure it out.
+      @user = nil
+    end
+    def perform(*command)
       @last_command = command
       # TODO: The :active symbol is game-specific. It doesn't belong at this level of code.
-			if @state_name == :active and !@state.kind_of?(CharacterState::Bypassed)
-				Director.dispatch(self, *command)
-			else
-				@queue.push *command
-			end
-		end
+      if @state_name == :active and !@state.kind_of?(CharacterState::Bypassed)
+        Director.dispatch(self, *command)
+      else
+        @queue.push *command
+      end
+    end
     def set_state name
       if plot.states[name].nil?
         raise "Invalid state #{name}"
@@ -49,16 +49,16 @@ module Gamefic
         @state = plot.states[name]
       end
     end
-		def tell(message)
-			if user != nil and message.to_s != ''
+    def tell(message)
+      if user != nil and message.to_s != ''
         message = "<p>#{message}</p>"
         # This method uses String#gsub instead of String#gsub! for
         # compatibility with Opal.
         message = message.gsub(/\n\n/, '</p><p>')
         message = message.gsub(/\n/, '<br/>')
-				user.stream.send message
+        user.stream.send message
       end
-		end
+    end
     def stream(message)
       if user != nil and message.to_s != ''
         user.stream.send message
@@ -70,16 +70,16 @@ module Gamefic
     #def set_state name
     #  @state = @plot.states[name]
     #end
-		def destroy
-			if @user != nil
-				@user.quit
-			end
-			super
-		end
-		def update
-			super
-			@state.update self
-		end
-	end
+    def destroy
+      if @user != nil
+        @user.quit
+      end
+      super
+    end
+    def update
+      super
+      @state.update self
+    end
+  end
 
 end
