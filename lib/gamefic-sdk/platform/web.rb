@@ -11,7 +11,7 @@ module Gamefic::Sdk
     end
     def build source_dir, target_dir, plot
       main = nil
-      ['gruby','rb'].each { |e|
+      ['plot','rb'].each { |e|
         if File.file?(source_dir + '/main.' + e)
           main = source_dir + '/main.' + e
           break

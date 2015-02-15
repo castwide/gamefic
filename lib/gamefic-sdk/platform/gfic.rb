@@ -18,7 +18,7 @@ module Gamefic::Sdk
       Gem::Package::TarWriter.new(stream) do |tar|
         Gem::Package::TarHeader.set_mtime Time.now
         main_file = nil
-        ['gruby','rb'].each { |e|
+        ['plot','rb'].each { |e|
           if File.file?(source_dir + '/main.' + e)
             main_file = 'main.' + e
             break

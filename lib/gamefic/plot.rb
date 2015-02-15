@@ -203,9 +203,9 @@ module Gamefic
       end
       ext = File.extname(script)
       if ext == "" || !File.exist?(script)
-        if File.exist?(script + ".gruby")
-          ext = ".gruby"
-          script += ".gruby"
+        if File.exist?(script + ".plot")
+          ext = ".plot"
+          script += ".plot"
         elsif File.exist?(script + ".rb")
           ext = ".rb"
           script += ".rb"
@@ -215,7 +215,7 @@ module Gamefic
         end
       end
       case ext
-        when ".gruby", ".rb"
+        when ".plot", ".rb"
           code = File.read(script)
           eval code, ::Gamefic.bind(self).get_binding, script, 1
         # TODO: JSON support is currently experimental.
@@ -248,9 +248,9 @@ module Gamefic
           if File.file?("#{path}/#{resolved}")
             base = path
             found = true
-          elsif File.file?("#{path}/#{resolved}.gruby")
+          elsif File.file?("#{path}/#{resolved}.plot")
             base = path
-            resolved = resolved + '.gruby'
+            resolved = resolved + '.plot'
             found = true
           elsif File.file?("#{path}/#{resolved}.rb")
             base = path

@@ -57,13 +57,13 @@ module Gamefic::Sdk
         test_file = nil
         if File.directory?(path)
           ext = nil
-          ['gruby', 'rb'].each { |e|
+          ['plot', 'rb'].each { |e|
             if File.file?(path + '/main.' + e)
               ext = e
               break
             end
           }
-          raise "#{path}/main.gruby does not exist" if ext.nil?
+          raise "#{path}/main.plot does not exist" if ext.nil?
           if File.file?(path + '/build.rb')
             build_file = path + '/build.rb'
           end
@@ -129,7 +129,7 @@ module Gamefic::Sdk
           Dir.mkdir(directory)
         end
         Dir.mkdir(directory + '/import')
-        main_rb = File.new(directory + '/main.gruby', 'w')
+        main_rb = File.new(directory + '/main.plot', 'w')
         main_rb.write <<EOS
 import 'standard'
 EOS
