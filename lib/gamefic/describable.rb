@@ -2,16 +2,16 @@ require "gamefic/keywords"
 
 module Gamefic
 
-	module Describable
+  module Describable
     attr_reader :name
-		attr_accessor :synonyms, :indefinite_article
+    attr_accessor :synonyms, :indefinite_article
     attr_writer :definite_article
-		def keywords
-			Keywords.new "#{name} #{synonyms}"
-		end
-		def keywords=(value)
-			@keywords = value
-		end
+    def keywords
+      Keywords.new "#{name} #{synonyms}"
+    end
+    def keywords=(value)
+      @keywords = value
+    end
     def indefinitely
       (proper_named? ? '' : "#{indefinite_article} ") + name
     end
@@ -61,19 +61,19 @@ module Gamefic
     def has_description?
       (@description.to_s != '')
     end
-		def description
-			@description.to_s != '' ? @description : default_description
-		end
+    def description
+      @description.to_s != '' ? @description : default_description
+    end
     def default_description
       "There's nothing special about #{definitely}."
     end
-		def description=(value)
-			@description = value
-		end
-		def to_s
-			indefinitely
-		end
-	end
+    def description=(value)
+      @description = value
+    end
+    def to_s
+      indefinitely
+    end
+  end
 
   def self.a(entity)
     entity.indefinitely
