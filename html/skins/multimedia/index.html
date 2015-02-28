@@ -38,8 +38,10 @@
 								});
 								break;
 							case 'MultipleChoice':
+								$('#text').append(response.output);
 								var lines = response.prompt.split("\n");
-								response.prompt = lines.pop();
+								response.prompt = lines.join('<br/>');
+								lines.pop();
 								response.output += "<ol class=\"multiple-choice\">";
 								for (i = 0; i < lines.length; i++) {
 									response.output += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"" + (i + 1) + "\">" + lines[i].substr((i + 1).toString().length + 2) + "</a></li>";
