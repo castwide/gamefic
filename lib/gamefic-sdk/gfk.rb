@@ -4,6 +4,7 @@ require 'zlib'
 require 'tmpdir'
 require 'getoptlong'
 require 'gamefic/engine/tty'
+require 'gamefic-sdk'
 require 'gamefic-sdk/build'
 include Gamefic
 
@@ -94,14 +95,18 @@ module Gamefic::Sdk
       end
       def init directory
         quiet = false
+        html = "standard"
         opts = GetoptLong.new(
-          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ]
+          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
+          [ '--with-html', GetoptLong::REQUIRED_ARGUMENT ]
         )
         begin
           opts.each { |opt, arg|
             case opt
               when '-q'
                 quiet = true
+              when '--with-html'
+                html = arg
             end
           }
         rescue Exception => e
@@ -144,12 +149,12 @@ EOS
 Build::Configuration.new do |config|
   config.import_paths << './import'
   config.target Gfic.new
-  config.target Web.new({
-    :html_skin => 'multimedia',
-    :with_media => true
-  })
+  config.target Web.new
 end
 EOS
+        Dir.mkdir(directory + '/html')
+        FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], directory + "/html")
+        FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/" + html + "/*"], directory + "/html")
         build_rb.close
         #fetch directory
         puts "Game directory '#{directory}' initialized." unless quiet
