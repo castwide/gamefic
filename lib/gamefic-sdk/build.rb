@@ -4,10 +4,33 @@ module Gamefic::Sdk
     def self.load filename = nil
       if !filename.nil?
         eval File.read(filename), nil, filename, 1
+        directory = File.dirname(filename)
+        Configuration.current.import_paths.each_index { |i|
+          if Configuration.current.import_paths[i][0,1] != '/'
+            Configuration.current.import_paths[i] = directory + '/' + Configuration.current.import_paths[i]
+          end
+        }
+        Configuration.current.import_paths.unshift directory + '/import'
       else
         Configuration.new
       end
+      Configuration.current.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
       Configuration.current
+    end
+    def self.release plot, config
+        directory = plot.game_directory
+        if config.platforms.length > 0
+          config.platforms.each_pair { |k, v|
+            v.config[:title] = config.title
+            v.config[:author] = config.author
+            puts "Building release/#{k}..." #unless quiet
+            platform_dir = "#{directory}/release/#{k}"
+            v.build directory, platform_dir, plot
+          }
+          puts "Build#{config.platforms.length > 1 ? 's' : ''} complete." #unless quiet
+        else
+          puts "Build configuration does not have any target platforms."
+        end
     end
     class Configuration
       attr_reader :import_paths, :html_paths

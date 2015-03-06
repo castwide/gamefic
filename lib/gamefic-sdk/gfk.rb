@@ -211,11 +211,6 @@ EOS
           build_file = directory + '/build.rb'
         end
         config = Build.load build_file
-        config.import_paths.each_index { |i|
-          if config.import_paths[i][0,1] != '/'
-            config.import_paths[i] = directory + '/' + config.import_paths[i]
-          end
-        }
         if !quiet
           if config.title.to_s == ''
             puts "WARNING: title is not specified in build.rb"
@@ -226,8 +221,8 @@ EOS
             config.author = 'Anonymous'
           end
         end
-        config.import_paths.unshift directory + '/import'
-        config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
+        #config.import_paths.unshift directory + '/import'
+        #config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
         opts = GetoptLong.new(
           [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ],
           [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
@@ -257,18 +252,7 @@ EOS
           puts "#{e}"
           exit 1
         end
-        if config.platforms.length > 0
-          config.platforms.each_pair { |k, v|
-            v.config[:title] = config.title
-            v.config[:author] = config.author
-            puts "Building release/#{k}..." unless quiet
-            platform_dir = "#{directory}/release/#{k}"
-            v.build directory, platform_dir, story
-          }
-          puts "Build#{config.platforms.length > 1 ? 's' : ''} complete." unless quiet
-        else
-          puts "Build configuration does not have any target platforms."
-        end
+        Build.release story, config
       end
       def help command
         shell_script = File.basename($0)
