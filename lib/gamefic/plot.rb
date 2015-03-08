@@ -47,19 +47,19 @@ module Gamefic
     mod
   end
   
-	class Plot
-		attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states, :game_directory
-		attr_accessor :story
+  class Plot
+    attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states, :game_directory
+    attr_accessor :story
     include OptionMap
-		def commandwords
-			words = Array.new
-			@syntaxes.each { |s|
+    def commandwords
+      words = Array.new
+      @syntaxes.each { |s|
         word = s.first_word
-				words.push(word) if !word.nil?
-			}
-			words.uniq
-		end
-		def initialize config = nil
+        words.push(word) if !word.nil?
+      }
+      words.uniq
+    end
+    def initialize config = nil
       if config.nil?
         @import_paths = [Gamefic::GLOBAL_IMPORT_PATH]
       elsif config.kind_of?(Array)
@@ -68,15 +68,15 @@ module Gamefic
         @import_paths = config.import_paths
       end
       
-			@scenes = Hash.new
-			@commands = Hash.new
-			@syntaxes = Array.new
-			@conclusions = Hash.new
-			@update_procs = Array.new
+      @scenes = Hash.new
+      @commands = Hash.new
+      @syntaxes = Array.new
+      @conclusions = Hash.new
+      @update_procs = Array.new
       @player_procs = Array.new
-			@imported_scripts = Array.new
+      @imported_scripts = Array.new
       @imported_identifiers = Array.new
-			@entities = Array.new
+      @entities = Array.new
       @players = Array.new
       @asserts = Hash.new
       @finishes = Hash.new
@@ -84,33 +84,33 @@ module Gamefic
       @states[:active] = CharacterState::Active.new
       @states[:concluded] = CharacterState::Concluded.new
       @game_directory = nil
-			post_initialize
-		end
+      post_initialize
+    end
     def assert_action name, &block
       @asserts[name] = Assert.new(name, &block)
     end
     def finish_action name, &block
       @finishes[name] = block
     end
-		def post_initialize
+    def post_initialize
       # TODO: Should this method be required by extended classes?
-		end
-		def meta(command, *queries, &proc)
-			act = Meta.new(self, command, *queries, &proc)
-		end
-		def action(command, *queries, &proc)
-			act = Action.new(self, command, *queries, &proc)
-		end
-		def respond(command, *queries, &proc)
-			self.action(command, *queries, &proc)
-		end
-		def make(cls, args = {}, &block)
-			ent = cls.new(self, args, &block)
-			if ent.kind_of?(Entity) == false
-				raise "Invalid entity class"
-			end
-			ent
-		end
+    end
+    def meta(command, *queries, &proc)
+      act = Meta.new(self, command, *queries, &proc)
+    end
+    def action(command, *queries, &proc)
+      act = Action.new(self, command, *queries, &proc)
+    end
+    def respond(command, *queries, &proc)
+      self.action(command, *queries, &proc)
+    end
+    def make(cls, args = {}, &block)
+      ent = cls.new(self, args, &block)
+      if ent.kind_of?(Entity) == false
+        raise "Invalid entity class"
+      end
+      ent
+    end
     def pause name, *args, &block
       @states[name] = CharacterState::Paused.new(*args, &block)
     end
@@ -123,36 +123,36 @@ module Gamefic
     def multiple_choice name, *args, &block
       @states[name] = CharacterState::MultipleChoice.new(*args, &block)
     end
-		def syntax(*args)
+    def syntax(*args)
       xlate *args
-		end
-		def xlate(*args)
-			syn = Syntax.new(self, *args)
-			syn
-		end
-		def entities
-			@entities.clone
-		end
-		def syntaxes
-			@syntaxes.clone
-		end
-		def on_update(&block)
-			@update_procs.push block
-		end
-		def introduction (&proc)
-			@introduction = proc
-		end
-		def conclusion(key, &proc)
-			@conclusions[key] = proc
-		end
-		def scene(key, &proc)
-			@scenes[key] = proc
-		end
-		def introduce(player)
+    end
+    def xlate(*args)
+      syn = Syntax.new(self, *args)
+      syn
+    end
+    def entities
+      @entities.clone
+    end
+    def syntaxes
+      @syntaxes.clone
+    end
+    def on_update(&block)
+      @update_procs.push block
+    end
+    def introduction (&proc)
+      @introduction = proc
+    end
+    def conclusion(key, &proc)
+      @conclusions[key] = proc
+    end
+    def scene(key, &proc)
+      @scenes[key] = proc
+    end
+    def introduce(player)
       @players.push player
-			if @introduction != nil
-				@introduction.call(player)
-			end
+      if @introduction != nil
+        @introduction.call(player)
+      end
       if player.parent.nil?
         rooms = entities.that_are(Room)
         if rooms.length == 0
@@ -162,38 +162,38 @@ module Gamefic
           player.parent = rooms[0]
         end
       end
-		end
-		def conclude(player, key = nil)
-			if key != nil and @conclusions[key]
-				@conclusions[key].call(player)
+    end
+    def conclude(player, key = nil)
+      if key != nil and @conclusions[key]
+        @conclusions[key].call(player)
         player.state = :concluded
-			end
-		end
-		def cue actor, scene
-			@scenes[scene].call(actor)
-		end
-		def passthru
-			Director::Delegate.passthru
-		end
-		def update
-			@update_procs.each { |p|
-				p.call
-			}
+      end
+    end
+    def cue actor, scene
+      @scenes[scene].call(actor)
+    end
+    def passthru
+      Director::Delegate.passthru
+    end
+    def update
+      @update_procs.each { |p|
+        p.call
+      }
       @entities.each { |e|
-				e.update
-			}
+        e.update
+      }
       @players.each { |player|
         @player_procs.each { |proc|
           proc.call player
         }
       }
-		end
+    end
 
-		def tell entities, message, refresh = false
-			entities.each { |entity|
-				entity.tell message, refresh
-			}
-		end
+    def tell entities, message, refresh = false
+      entities.each { |entity|
+        entity.tell message, refresh
+      }
+    end
 
     def load script
       if @game_directory.nil?
@@ -287,40 +287,40 @@ module Gamefic
       pick description
     end
     
-		private
-		def rem_entity(entity)
-			@entities.delete(entity)
-		end
-		def recursive_update(entity)
-			entity.update
-			entity.children.each { |e|
-				recursive_update e
-			}
-		end	
-		def add_syntax syntax
-			if @commands[syntax.action] == nil
-				raise "Action \"#{syntax.action}\" does not exist"
-			end
+    private
+    def rem_entity(entity)
+      @entities.delete(entity)
+    end
+    def recursive_update(entity)
+      entity.update
+      entity.children.each { |e|
+        recursive_update e
+      }
+    end  
+    def add_syntax syntax
+      if @commands[syntax.action] == nil
+        raise "Action \"#{syntax.action}\" does not exist"
+      end
       # Delete duplicate syntaxes
       @syntaxes = @syntaxes.delete_if { |existing|
         existing == syntax
       }
-			@syntaxes.unshift syntax
-			@syntaxes.sort! { |a, b|
-				if a.token_count == b.token_count
-					# For syntaxes of the same length, length of action takes precedence
-					b.first_word <=> a.first_word
-				else
-					b.token_count <=> a.token_count
-				end
-			}			
-		end
-		def add_action(action)
-			if (@commands[action.command] == nil)
-				@commands[action.command] = Array.new
-			end
-			@commands[action.command].unshift action
-			@commands[action.command].sort! { |a, b|
+      @syntaxes.unshift syntax
+      @syntaxes.sort! { |a, b|
+        if a.token_count == b.token_count
+          # For syntaxes of the same length, length of action takes precedence
+          b.first_word <=> a.first_word
+        else
+          b.token_count <=> a.token_count
+        end
+      }      
+    end
+    def add_action(action)
+      if (@commands[action.command] == nil)
+        @commands[action.command] = Array.new
+      end
+      @commands[action.command].unshift action
+      @commands[action.command].sort! { |a, b|
         if a.specificity == b.specificity
           # Newer action takes precedence
           b.order_key <=> a.order_key
@@ -328,7 +328,7 @@ module Gamefic
           # Higher specificity takes precedence
           b.specificity <=> a.specificity
         end
-			}
+      }
       user_friendly = action.command.to_s
       args = Array.new
       used_names = Array.new
@@ -344,16 +344,16 @@ module Gamefic
         args.push new_name
       }
       Syntax.new self, user_friendly.strip, "#{action.command} #{args.join(' ')}"
-		end
+    end
     def rem_action(action)
       @commands[action.command].delete(action)
     end
     def rem_syntax(syntax)
       @syntaxes.delete syntax
     end
-		def add_entity(entity)
-			@entities.push entity
-		end
+    def add_entity(entity)
+      @entities.push entity
+    end
     class Imported
       attr_reader :base, :relative
       def initialize base, relative
