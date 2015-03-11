@@ -1,4 +1,3 @@
-require 'gamefic/character/state'
 # TODO: JSON support is currently experimental.
 #require 'gamefic/entityloader'
 
@@ -48,8 +47,8 @@ module Gamefic
   end
   
   class Plot
-    attr_reader :scenes, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :states, :game_directory
-    attr_accessor :story
+    attr_reader :scene_managers, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :game_directory
+    attr_accessor :default_scene
     include OptionMap
     def commandwords
       words = Array.new
@@ -68,7 +67,7 @@ module Gamefic
         @import_paths = config.import_paths
       end
       
-      @scenes = Hash.new
+      @scene_managers = Hash.new
       @commands = Hash.new
       @syntaxes = Array.new
       @conclusions = Hash.new
@@ -80,11 +79,27 @@ module Gamefic
       @players = Array.new
       @asserts = Hash.new
       @finishes = Hash.new
-      @states = Hash.new
-      @states[:active] = CharacterState::Active.new
-      @states[:concluded] = CharacterState::Concluded.new
+      @scene_managers[:active] = ActiveSceneManager.new
+      @scene_managers[:concluded] = ConcludedSceneManager.new
+      @default_scene = :active      
       @game_directory = nil
       post_initialize
+    end
+    def pause key, &block
+      manager = PausedSceneManager.new do |config|
+        config.start &block
+      end
+      @scene_managers[key] = manager
+    end
+    def conclusion key, &block
+      manager = ConcludedSceneManager.new do |config|
+        config.start &block
+      end
+      @scene_managers[key] = manager
+    end
+    def scene key, &block
+      scene = SceneManager.new &block
+      @scene_managers[key] = scene
     end
     def assert_action name, &block
       @asserts[name] = Assert.new(name, &block)
@@ -111,17 +126,29 @@ module Gamefic
       end
       ent
     end
-    def pause name, *args, &block
-      @states[name] = CharacterState::Paused.new(*args, &block)
+    #def multiple_choice name, *args, &block
+    #  @states[name] = CharacterState::MultipleChoice.new(*args, &block)
+    #end
+    def multiple_choice key, *args, &block
+      @scene_managers[key] = MultipleChoiceSceneManager.new do |config|
+        config.start do |actor, data|
+          data.options = args
+        end
+        config.finish &block
+      end
     end
-    def prompt name, *args, &block
-      @states[name] = CharacterState::Prompted.new(*args, &block)
+    def yes_or_no key, prompt, &block
+      manager = YesOrNoSceneManager.new do |config|
+        config.prompt = prompt
+        config.finish &block
+      end
+      @scene_managers[key] = manager
     end
-    def yes_or_no name, *args, &block
-      @states[name] = CharacterState::YesOrNo.new(*args, &block)
-    end
-    def multiple_choice name, *args, &block
-      @states[name] = CharacterState::MultipleChoice.new(*args, &block)
+    def prompt key, prompt, &block
+      @scene_managers[key] = SceneManager.new do |config|
+        config.prompt = prompt
+        config.finish &block
+      end
     end
     def syntax(*args)
       xlate *args
@@ -142,12 +169,6 @@ module Gamefic
     def introduction (&proc)
       @introduction = proc
     end
-    def conclusion(key, &proc)
-      @conclusions[key] = proc
-    end
-    def scene(key, &proc)
-      @scenes[key] = proc
-    end
     def introduce(player)
       @players.push player
       if @introduction != nil
@@ -162,15 +183,12 @@ module Gamefic
           player.parent = rooms[0]
         end
       end
-    end
-    def conclude(player, key = nil)
-      if key != nil and @conclusions[key]
-        @conclusions[key].call(player)
-        player.state = :concluded
+      # TODO: There should probably be a default state specified
+      # by the plot, which would be :active by default. We could
+      # get it like player.cue nil.
+      if player.scene.nil?
+        cue player, default_scene
       end
-    end
-    def cue actor, scene
-      @scenes[scene].call(actor)
     end
     def passthru
       Director::Delegate.passthru
@@ -286,7 +304,30 @@ module Gamefic
     def _(description)
       pick description
     end
-    
+    def cue actor, key
+      if key.nil?
+        key = plot.default_scene
+      end
+      manager = @scene_managers[key]
+      if manager.nil?
+        actor.scene = nil
+      else
+        actor.scene = manager.prepare key
+        actor.scene.start actor
+      end
+      @scene
+    end
+    # This is functionally identical to Character#cue, but it also raises an
+    # exception if the selected scene is not a Concluded state.
+    def conclude actor, key
+      key = :concluded if key.nil?
+      manager = @scene_managers[key]
+      if manager.state != "Concluded"
+        raise "Selected scene '#{key}' is not a conclusion"
+      end
+      cue actor, key
+    end
+
     private
     def rem_entity(entity)
       @entities.delete(entity)

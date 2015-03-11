@@ -1,15 +1,13 @@
-require "gamefic/character/state"
-
 module Gamefic
 
   class Character < Entity
-    attr_reader :state, :state_name, :queue, :user, :last_command
-    attr_accessor :object_of_pronoun
+    attr_reader :queue, :user, :last_command
+    attr_accessor :object_of_pronoun, :scene
     def initialize(plot, args = {})
-      #set_state CharacterState::Active
       @queue = Array.new
       super
-      self.state = :active
+      # TODO: Don't handle the state in the Character class. Try letting the Plot define a default initial scene.
+      #self.state = :active
     end
     def connect(user)
       @user = user
@@ -20,34 +18,7 @@ module Gamefic
     end
     def perform(*command)
       @last_command = command
-      # TODO: The :active symbol is game-specific. It doesn't belong at this level of code.
-      if @state_name == :active and !@state.kind_of?(CharacterState::Bypassed)
-        Director.dispatch(self, *command)
-      else
-        @queue.push *command
-      end
-    end
-    def set_state name
-      if plot.states[name].nil?
-        raise "Invalid state #{name}"
-      end
-      @state_name = name
-      @state = plot.states[name]
-    end
-    def state
-      @state
-    end
-    def state=(name)
-      if name.kind_of?(CharacterState::Base)
-        @state_name = nil
-        @state = name
-      else
-        if plot.states[name].nil?
-          raise "Invalid state #{name}"
-        end
-        @state_name = name
-        @state = plot.states[name]
-      end
+      Director.dispatch(self, *command)
     end
     def tell(message)
       if user != nil and message.to_s != ''
@@ -64,12 +35,6 @@ module Gamefic
         user.stream.send message
       end
     end
-    #def send(message)
-    #  user.stream.send message
-    #end
-    #def set_state name
-    #  @state = @plot.states[name]
-    #end
     def destroy
       if @user != nil
         @user.quit
@@ -78,7 +43,9 @@ module Gamefic
     end
     def update
       super
-      @state.update self
+      if (line = queue.shift)
+        @scene.finish self, line
+      end
     end
   end
 
