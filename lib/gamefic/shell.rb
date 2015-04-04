@@ -5,19 +5,6 @@ require 'tmpdir'
 require 'getoptlong'
 require 'gamefic/engine/tty'
 
-# Crazy hack to set file mtimes in tar file
-class Gem::Package::TarHeader
-  @@mtime = Time.now
-  def self.set_mtime(time)
-    @@mtime = time
-  end
-  alias :initialize_orig :initialize
-  def initialize(vals)
-    initialize_orig(vals)
-    @mtime = @@mtime
-  end
-end
-
 module Gamefic
 
   class Shell
