@@ -1,6 +1,6 @@
 module Gamefic
 
-	class Director
+  class Director
     @@disambiguator = Action.new nil, nil, Query::Base.new do |actor, entities|
       definites = []
       entities.each { |entity|
@@ -8,7 +8,7 @@ module Gamefic
       }
       actor.tell "I don't know which you mean: #{definites.join_or}."
     end
-		def self.dispatch(actor, *args)
+    def self.dispatch(actor, *args)
       options = []
       if args.length > 1
         command = args.shift
@@ -76,11 +76,11 @@ module Gamefic
           end
         }
       end
-			del = Delegate.new(actor, options, actor.plot.asserts, actor.plot.finishes)
-			del.execute
-		end
-		private
-		def self.bind_contexts_in_result(actor, handler, action)
+      del = Delegate.new(actor, options, actor.plot.asserts, actor.plot.finishes)
+      del.execute
+    end
+    private
+    def self.bind_contexts_in_result(actor, handler, action)
       queries = action.queries.clone
       objects = self.execute_query(actor, handler[1..-1], queries, action)
       num_nil = 0
@@ -90,63 +90,63 @@ module Gamefic
         objects = self.execute_query(actor, handler[1..-1], queries, action, num_nil)
       end
       return objects
-		end
+    end
     def self.execute_query(actor, arguments, queries, action, num_nil = 0)
-			prepared = Array.new
-			objects = Array.new
-			valid = true
-			queries.clone.each { |context|
-				arg = arguments.shift
-				if arg == nil or arg == ''
-					valid = false
-					next
-				end
-				if context == String
-					prepared.push [arg]
-				elsif context.kind_of?(Query::Base)
+      prepared = Array.new
+      objects = Array.new
+      valid = true
+      queries.clone.each { |context|
+        arg = arguments.shift
+        if arg == nil or arg == ''
+          valid = false
+          next
+        end
+        if context == String
+          prepared.push [arg]
+        elsif context.kind_of?(Query::Base)
           if arg == 'it' and actor.object_of_pronoun != nil
             result = context.execute(actor, "#{actor.object_of_pronoun.name}")
           else
             result = context.execute(actor, arg)
           end
-					if result.objects.length == 0
-						valid = false
-						next
-					else
-						prepared.push result.objects
-						if result.remainder
-							arguments.push result.remainder
-						end
-					end
-				else
-					# TODO: Better message
-					raise "Invalid object"
-				end
-			}
-			if valid == true
-				prepared.each { |p|
-					p.uniq!
-				}
+          if result.objects.length == 0
+            valid = false
+            next
+          else
+            prepared.push result.objects
+            if result.remainder
+              arguments.push result.remainder
+            end
+          end
+        else
+          # TODO: Better message
+          raise "Invalid object"
+        end
+      }
+      if valid == true
+        prepared.each { |p|
+          p.uniq!
+        }
         num_nil.times do
           prepared.push [nil]
         end
-				objects.push Order.new(action, prepared)
-			end
+        objects.push Order.new(action, prepared)
+      end
       objects
     end
-	end
-	
-	class Director
-		class Delegate
+  end
+  
+  class Director
+    class Delegate
       @@assertion_stack = Array.new
-			@@delegation_stack = Array.new
-			def initialize(actor, actions, asserts, finishes)
+      @@delegation_stack = Array.new
+      def initialize(actor, actions, asserts, finishes)
         @actor = actor
-				@actions = actions
+        @actions = actions
         @asserts = asserts
         @finishes = finishes
-			end
-			def execute
+      end
+      def execute
         if @actor.is?(:debugging)
           @actor.tell "[DEBUG] Performing action"
         end
@@ -192,59 +192,59 @@ module Gamefic
         @actor.plot.finishes.each { |key, rule|
           rule.call(@actor)
         }
-			end
+      end
       def handle options
-				if options.length > 0
-					opt = options.shift
+        if options.length > 0
+          opt = options.shift
           if opt[1][0].is?(:debugging)
             opt[1][0].tell "[DEBUG] Executing #{opt[0].class}: #{opt[0].signature} - defined at #{opt[0].caller})"
           end
-					if opt[1].length == 1
-						opt[0].execute(opt[1][0])
+          if opt[1].length == 1
+            opt[0].execute(opt[1][0])
             opt[1][0].object_of_pronoun = nil
-					else
+          else
             if opt[1].length == 2 and opt[1][1].kind_of?(Entity) and opt[1][0].parent != opt[1][1]
               opt[1][0].object_of_pronoun = opt[1][1]
             elsif opt[1][0].parent == opt[1][1]
               opt[1][0].object_of_pronoun = nil
             end
-						opt[0].execute(opt[1])
-					end
-				end
+            opt[0].execute(opt[1])
+          end
+        end
       end
       def self.next_command
         return nil if @@delegation_stack.last.nil? or @@delegation_stack.last[0].length == 0
         return @@delegation_stack.last[0][0].command
       end
-			def self.passthru
-				if @@delegation_stack.last != nil
-					if @@delegation_stack.last.length > 0
-						opt = @@delegation_stack.last.shift
+      def self.passthru
+        if @@delegation_stack.last != nil
+          if @@delegation_stack.last.length > 0
+            opt = @@delegation_stack.last.shift
             if opt[1][0].is?(:debugging)
               opt[1][0].tell "[DEBUG] Executing #{opt[0].class}: #{opt[0].signature} - defined at #{opt[0].caller})"
             end
-						if opt[1].length == 1
-							opt[0].execute(opt[1][0])
+            if opt[1].length == 1
+              opt[0].execute(opt[1][0])
               opt[1][0].object_of_pronoun = nil
-						else
+            else
               if opt[1].length == 2 and opt[1][1].kind_of?(Entity) and opt[1][0].parent != opt[1][1]
                 opt[1][0].object_of_pronoun = opt[1][1]
               elsif opt[1][0].parent == opt[1][1]
                 opt[1][0].object_of_pronoun = nil
               end
-							opt[0].execute(opt[1])
-						end
-					end
-				end
-			end
-		end
-		class Order
-			attr_reader :action, :arguments
-			def initialize(action, arguments)
-				@action = action
-				@arguments = arguments
-			end
-		end
-	end
+              opt[0].execute(opt[1])
+            end
+          end
+        end
+      end
+    end
+    class Order
+      attr_reader :action, :arguments
+      def initialize(action, arguments)
+        @action = action
+        @arguments = arguments
+      end
+    end
+  end
 
 end
