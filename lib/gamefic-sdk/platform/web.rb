@@ -1,3 +1,4 @@
+require 'gamefic'
 require 'opal'
 
 module Gamefic::Sdk
@@ -65,7 +66,7 @@ require "gamefic/plot"
 require "gamefic/engine"
 require "gamefic/direction"
 module Gamefic
-  GLOBAL_IMPORT_PATH = "/home/fred/gamefic/import"
+  GLOBAL_IMPORT_PATH = '#{Gamefic::GLOBAL_IMPORT_PATH}'
   def self.plot
     @@plot ||= Gamefic::Plot.new
   end
