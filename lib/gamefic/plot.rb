@@ -87,7 +87,15 @@ module Gamefic
     end
     def pause key, &block
       manager = PausedSceneManager.new do |config|
-        config.start &block
+        config.start do |actor, data|
+          data.next_cue = :active
+          block.call actor, data
+        end
+        config.finish do |actor, data|
+          if actor.scene.key == key
+            cue actor, (data.next_cue || :active)
+          end
+        end
       end
       @scene_managers[key] = manager
     end

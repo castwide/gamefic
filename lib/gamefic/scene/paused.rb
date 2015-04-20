@@ -20,14 +20,7 @@ module Gamefic
   end
   
   class PausedScene < Scene
-    def finish actor, input
-      if !@finish.nil?
-        @finish.call actor, @data
-      end
-      if actor.scene.key != @data.next_cue
-        actor.cue data.next_cue
-      end
-    end
+  
   end
 
 end
