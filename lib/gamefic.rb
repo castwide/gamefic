@@ -1,3 +1,4 @@
+require "gamefic-constants"
 require "gamefic/core_ext/array"
 require "gamefic/core_ext/string"
 require "gamefic/optionset"
@@ -19,7 +20,3 @@ require "gamefic/director"
 require "gamefic/plot"
 require "gamefic/engine"
 require "gamefic/direction"
-
-module Gamefic
-  GLOBAL_IMPORT_PATH = File.dirname(__FILE__) + "/../import/"
-end
