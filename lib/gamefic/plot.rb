@@ -145,10 +145,21 @@ module Gamefic
         config.finish &block
       end
     end
-    def yes_or_no key, prompt, &block
+    def yes_or_no key, prompt = nil, &block
       manager = YesOrNoSceneManager.new do |config|
         config.prompt = prompt
-        config.finish &block
+        config.finish do |actor, data|
+          if data.answer.nil?
+            actor.tell "Please answer Yes or No."
+          else
+            block.call(actor, data)
+            if actor.scene.key == key
+              # TODO: Not sure the :active scene should be hardcoded here, but
+              # YesOrNoSceneData does not have a next_cue property.
+              cue actor, :active
+            end
+          end
+        end
       end
       @scene_managers[key] = manager
     end

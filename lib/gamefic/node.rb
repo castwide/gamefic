@@ -14,6 +14,30 @@ module Gamefic
 			}
 			return array
 		end
+		def parent
+			@parent
+		end
+		def parent=(node)
+			if node == self
+				raise "Entity cannot be its own parent"
+			end
+      # Do not permit circular references
+      if node != nil and node.parent == self
+        node.parent = nil
+      end
+      if node != nil and flatten.include?(node)
+        raise "Circular node reference"
+      end
+			if @parent != node
+				if @parent != nil
+					@parent.send(:rem_child, self)
+				end
+				@parent = node
+				if @parent != nil
+					@parent.send(:add_child, self)
+				end
+			end
+		end
 		protected
 		def add_child(node)
 			children
@@ -35,27 +59,6 @@ module Gamefic
 				array = array + recurse_flatten(child)
 			}
 			return array
-		end
-	end
-	
-	module Branch
-		include Node
-		def parent
-			@parent
-		end
-		def parent=(node)
-			if node == self
-				raise "Entity cannot be its own parent"
-			end
-			if @parent != node
-				if @parent != nil
-					@parent.send(:rem_child, self)
-				end
-				@parent = node
-				if @parent != nil
-					@parent.send(:add_child, self)
-				end
-			end
 		end
 	end
 

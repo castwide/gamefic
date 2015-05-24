@@ -7,9 +7,6 @@ module Gamefic
     def state
       @state ||= "Active"
     end
-    def prompt
-      @prompt ||= ">"
-    end
   end
   
   class ActiveScene < Scene

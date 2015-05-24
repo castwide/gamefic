@@ -1,7 +1,8 @@
 module Gamefic
 
   class SceneManager
-    attr_accessor :state, :prompt
+    attr_accessor :state
+    attr_writer :prompt
     def initialize &block
       yield self if block_given?
     end
@@ -24,20 +25,24 @@ module Gamefic
     def prepare key
       scene_class.new(self, key)
     end
-  end
+    def prompt
+      @prompt ||= ">"
+    end
+end
   
   class SceneData
-    attr_accessor :input
+    attr_accessor :input, :prompt
   end
   
   class Scene
-    attr_reader :data, :state, :prompt, :key
+    attr_reader :data, :state, :key
     def initialize(manager, key)
+      @manager = manager
       @start = manager.instance_variable_get(:@start)
       @finish = manager.instance_variable_get(:@finish)
       @state = manager.state
-      @prompt = manager.prompt
       @data = manager.data_class.new
+      @data.prompt = manager.prompt
       @key = key
     end
     def start actor

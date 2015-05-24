@@ -17,7 +17,7 @@ module Gamefic
       end
     end
     def tick
-      @user.stream.select @user.character.scene.prompt
+      @user.stream.select @user.character.scene.data.prompt
       @user.state.input
       @plot.update
     end
@@ -70,7 +70,7 @@ module Gamefic
       @buffer += data
     end
     def select(prompt)
-      print prompt + " "
+      print "#{prompt} "
       line = STDIN.gets
       @queue.push line.strip
     end

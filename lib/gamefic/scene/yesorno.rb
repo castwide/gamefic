@@ -32,7 +32,8 @@ module Gamefic
       if @data.answer.nil?
         # TODO: This should not raise an exception. It's just a placeholder
         # until I configure a practical proc to handle invalid input.
-        raise "Invalid selection"
+        #raise "Invalid selection"
+        actor.tell "Please enter Yes or No."
       else
         return if @finish.nil?
         @finish.call actor, data

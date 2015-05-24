@@ -5,7 +5,7 @@ require "gamefic/plot"
 module Gamefic
 
   class Entity
-    include Branch
+    include Node
     include Describable
     include OptionSettings
     attr_reader :session, :plot
