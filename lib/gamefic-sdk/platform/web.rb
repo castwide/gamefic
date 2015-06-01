@@ -120,7 +120,7 @@ Gamefic.Engine = new function() {
         Opal.Gamefic.$plot().$update();
         response.output = Opal.Gamefic.$player().$state().$output();
     }
-    response.prompt = Opal.Gamefic.$player().$character().$scene().$prompt();
+    response.prompt = Opal.Gamefic.$player().$character().$scene().$data().$prompt();
     response.command = command;
     response.state = Opal.Gamefic.$player().$character().$scene().$state();
     callback(response);

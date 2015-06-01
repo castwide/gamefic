@@ -16,10 +16,10 @@ module Gamefic
     def scene_class
       Scene
     end
-    def start &block
+    def start &block # :yields: Character, SceneData
       @start = block
     end
-    def finish &block
+    def finish &block # :yields: Character, SceneData
       @finish = block
     end
     def prepare key
