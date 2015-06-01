@@ -26,7 +26,7 @@ describe OptionMap do
     found2 = mapper.get_option_set_for(BaseUser, :blue)
     expect(found2).to eq(set2)
   end
-  it "raises an exception for less that two options" do
+  it "raises an exception for less than two options" do
     mapper = OptionMapper.new
     expect {
       mapper.options(BaseUser)
