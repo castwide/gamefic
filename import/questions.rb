@@ -12,3 +12,6 @@ xlate "why :question", "what :question"
 xlate "who :question", "what :question"
 
 xlate "what is :thing", "look :thing"
+xlate "what's :thing", "look :thing"
+xlate "who is :thing", "look :thing"
+xlate "who's :thing", "look :thing"
