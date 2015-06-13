@@ -1,6 +1,6 @@
 import 'snapshots'
 
-respond :undo do |actor|
+meta :undo do |actor|
   ss = Snapshots.history.pop
   if !ss.nil?
     Snapshots.restore(ss, self)
