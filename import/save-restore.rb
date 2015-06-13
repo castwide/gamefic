@@ -1,3 +1,4 @@
+require 'json'
 import 'snapshots'
 
 meta :save do |actor|
