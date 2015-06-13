@@ -169,6 +169,9 @@ module Gamefic
         config.finish &block
       end
     end
+    def interpret(*args)
+      xlate *args
+    end
     def syntax(*args)
       xlate *args
     end
