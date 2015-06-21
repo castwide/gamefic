@@ -1,6 +1,6 @@
 import 'standard/entities/item'
 
-class Clothing < Item
+class Gamefic::Clothing < Item
   def parent=(entity)
     super
     # Clothing should always become :not_worn when its parent changes.

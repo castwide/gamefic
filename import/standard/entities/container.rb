@@ -1,4 +1,4 @@
-class Container < Thing
+class Gamefic::Container < Thing
   attr_reader :key
   def key=(entity)
     @key = entity

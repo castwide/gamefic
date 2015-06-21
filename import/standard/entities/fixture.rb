@@ -1,4 +1,4 @@
-class Fixture < Thing
+class Gamefic::Fixture < Thing
 
 end
 

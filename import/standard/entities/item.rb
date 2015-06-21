@@ -1,3 +1,3 @@
-class Item < Thing
+class Gamefic::Item < Thing
 
 end

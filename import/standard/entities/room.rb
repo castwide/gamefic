@@ -1,4 +1,4 @@
-class Room < Entity
+class Gamefic::Room < Entity
   def connect(destination, direction, type = Portal, two_way = true)
     if direction.kind_of?(String)
       direction = Direction.find(direction)

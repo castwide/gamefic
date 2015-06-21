@@ -1,4 +1,4 @@
-module Snapshots
+module Gamefic::Snapshots
   @@identifiers = {}
   def self.history
     @@history ||= []

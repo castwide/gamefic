@@ -1,4 +1,4 @@
-class Thing < Entity
+class Gamefic::Thing < Entity
   def parent=(entity)
     super
     if parent.kind_of?(Supporter)

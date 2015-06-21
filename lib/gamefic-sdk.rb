@@ -1,3 +1,4 @@
+require 'gamefic-constants'
 require 'gamefic-sdk/gfk'
 require 'gamefic-sdk/platform'
 

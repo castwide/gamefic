@@ -1,63 +1,19 @@
 # TODO: JSON support is currently experimental.
 #require 'gamefic/entityloader'
+require 'gamefic/stage'
+require 'gamefic/tester'
+require 'gamefic/mount/scene'
+require 'gamefic/mount/command'
+require 'gamefic/mount/entity'
 
 module Gamefic
 
-  def self.bind(plot)
-    mod = Module.new do
-      include Gamefic
-      def self.bind(plot)
-        @@plot = plot
-      end
-      def self.get_binding
-        binding
-      end
-      # In the MRI, import methods in plots get passed through to
-      # method_missing without a hitch. In JRuby, it doesn't work as expected,
-      # most likely because it gets confused with Java import.
-      def self.import *args
-        @@plot.import *args
-      end
-      def self.load *args
-        @@plot.load *args
-      end
-      def self.method_missing(method_name, *args, &block)
-        if @@plot.respond_to?(method_name)
-          if method_name == :action or method_name == :respond or method_name == :assert_action or method_name == :finish_action or method_name == :meta
-            result = @@plot.send method_name, *args, &block
-            parts = caller[0].split(':')[0..-2]
-            line = parts.pop
-            file = parts.join(':').gsub(/\/+/, '/')
-            # The caller value shouldn't really be user-definable, so we're
-            # injecting it into the instance variable instead of defining a
-            # writer method in the receiver.
-            result.instance_variable_set(:@caller, "#{file}, line #{line}")
-          else
-            @@plot.send method_name, *args, &block
-          end
-        elsif Gamefic.respond_to?(method_name)
-          Gamefic.send method_name, *args, &block
-        else
-          raise "Unknown method #{method_name} in plot script"
-        end
-      end
-    end
-    mod.bind plot
-    mod
-  end
-  
   class Plot
-    attr_reader :scene_managers, :commands, :conclusions, :imported_scripts, :rules, :asserts, :finishes, :game_directory
+    attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :game_directory
     attr_accessor :default_scene
-    include OptionMap
-    def commandwords
-      words = Array.new
-      @syntaxes.each { |s|
-        word = s.first_word
-        words.push(word) if !word.nil?
-      }
-      words.uniq
-    end
+    include Stage
+    mount OptionMap, DescribableArticles, Tester, SceneMount, CommandMount, EntityMount
+    expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities, :passthru
     def initialize config = nil
       if config.nil?
         @import_paths = [Gamefic::GLOBAL_IMPORT_PATH]
@@ -67,10 +23,8 @@ module Gamefic
         @import_paths = config.import_paths
       end
       
-      @scene_managers = Hash.new
       @commands = Hash.new
       @syntaxes = Array.new
-      @conclusions = Hash.new
       @update_procs = Array.new
       @player_procs = Array.new
       @imported_scripts = Array.new
@@ -79,35 +33,9 @@ module Gamefic
       @players = Array.new
       @asserts = Hash.new
       @finishes = Hash.new
-      @scene_managers[:active] = ActiveSceneManager.new
-      @scene_managers[:concluded] = ConcludedSceneManager.new
       @default_scene = :active      
       @game_directory = nil
       post_initialize
-    end
-    def pause key, &block
-      manager = PausedSceneManager.new do |config|
-        config.start do |actor, data|
-          data.next_cue = :active
-          block.call actor, data
-        end
-        config.finish do |actor, data|
-          if actor.scene.key == key
-            cue actor, (data.next_cue || :active)
-          end
-        end
-      end
-      @scene_managers[key] = manager
-    end
-    def conclusion key, &block
-      manager = ConcludedSceneManager.new do |config|
-        config.start &block
-      end
-      @scene_managers[key] = manager
-    end
-    def scene key, &block
-      scene = SceneManager.new &block
-      @scene_managers[key] = scene
     end
     def assert_action name, &block
       @asserts[name] = Assert.new(name, &block)
@@ -117,67 +45,6 @@ module Gamefic
     end
     def post_initialize
       # TODO: Should this method be required by extended classes?
-    end
-    def meta(command, *queries, &proc)
-      act = Meta.new(self, command, *queries, &proc)
-    end
-    def action(command, *queries, &proc)
-      act = Action.new(self, command, *queries, &proc)
-    end
-    def respond(command, *queries, &proc)
-      self.action(command, *queries, &proc)
-    end
-    def make(cls, args = {}, &block)
-      ent = cls.new(self, args, &block)
-      if ent.kind_of?(Entity) == false
-        raise "Invalid entity class"
-      end
-      ent
-    end
-    #def multiple_choice name, *args, &block
-    #  @states[name] = CharacterState::MultipleChoice.new(*args, &block)
-    #end
-    def multiple_choice key, *args, &block
-      @scene_managers[key] = MultipleChoiceSceneManager.new do |config|
-        config.start do |actor, data|
-          data.options = args
-        end
-        config.finish &block
-      end
-    end
-    def yes_or_no key, prompt = nil, &block
-      manager = YesOrNoSceneManager.new do |config|
-        config.prompt = prompt
-        config.finish do |actor, data|
-          if data.answer.nil?
-            actor.tell "Please answer Yes or No."
-          else
-            block.call(actor, data)
-            if actor.scene.key == key
-              # TODO: Not sure the :active scene should be hardcoded here, but
-              # YesOrNoSceneData does not have a next_cue property.
-              cue actor, :active
-            end
-          end
-        end
-      end
-      @scene_managers[key] = manager
-    end
-    def prompt key, prompt, &block
-      @scene_managers[key] = SceneManager.new do |config|
-        config.prompt = prompt
-        config.finish &block
-      end
-    end
-    def interpret(*args)
-      xlate *args
-    end
-    def syntax(*args)
-      xlate *args
-    end
-    def xlate(*args)
-      syn = Syntax.new(self, *args)
-      syn
     end
     def entities
       @entities.clone
@@ -197,13 +64,13 @@ module Gamefic
         @introduction.call(player)
       end
       if player.parent.nil?
-        rooms = entities.that_are(Room)
-        if rooms.length == 0
-          room = make(Room, :name => 'nowhere')
-          player.parent = room
-        else
-          player.parent = rooms[0]
-        end
+        #rooms = entities.that_are(Room)
+        #if rooms.length == 0
+        #  room = make(Room, :name => 'nowhere')
+        #  player.parent = room
+        #else
+        #  player.parent = rooms[0]
+        #end
       end
       # TODO: There should probably be a default state specified
       # by the plot, which would be :active by default. We could
@@ -257,7 +124,8 @@ module Gamefic
       case ext
         when ".plot", ".rb"
           code = File.read(script)
-          eval code, ::Gamefic.bind(self).get_binding, script, 1
+          #eval code, ::Gamefic.bind(self).get_binding, script, 1
+          stage code, script
         # TODO: JSON support is currently experimental.
         #when ".gjson"
         #  EntityLoader.load File.read(script), self
@@ -303,7 +171,8 @@ module Gamefic
           if @imported_identifiers.include?(resolved) == false
             code = File.read("#{base}/#{resolved}")
             @imported_identifiers.push resolved
-            eval code, Gamefic.bind(self).get_binding, "#{base}/#{resolved}", 1
+            #eval code, Gamefic.bind(self).get_binding, "#{base}/#{resolved}", 1
+            stage code, resolved
             @imported_scripts.push Imported.new(base, resolved)
           end
         else
@@ -313,41 +182,6 @@ module Gamefic
     end
     def on_player_update &block
       @player_procs.push block
-    end
-    def pick(description)
-      result = Query.match(description, entities)
-      if result.objects.length == 0
-        raise "Unable to find entity from '#{description}'"
-      elsif result.objects.length > 1
-        raise "Ambiguous entities found from '#{description}'"
-      end
-      result.objects[0]
-    end
-    def _(description)
-      pick description
-    end
-    def cue actor, key
-      if key.nil?
-        key = plot.default_scene
-      end
-      manager = @scene_managers[key]
-      if manager.nil?
-        actor.scene = nil
-      else
-        actor.scene = manager.prepare key
-        actor.scene.start actor
-      end
-      @scene
-    end
-    # This is functionally identical to Character#cue, but it also raises an
-    # exception if the selected scene is not a Concluded state.
-    def conclude actor, key
-      key = :concluded if key.nil?
-      manager = @scene_managers[key]
-      if manager.state != "Concluded"
-        raise "Selected scene '#{key}' is not a conclusion"
-      end
-      cue actor, key
     end
 
     private

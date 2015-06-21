@@ -1,4 +1,4 @@
-class Portal < Entity
+class Gamefic::Portal < Entity
   attr_accessor :destination, :direction
   def find_reverse
     rev = direction.reverse

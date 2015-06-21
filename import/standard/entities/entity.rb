@@ -1,4 +1,4 @@
-class Entity
+class Gamefic::Entity
   attr_writer :locale_description
   def locale_description
     @locale_description ||= ""

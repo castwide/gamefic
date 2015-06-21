@@ -1,4 +1,4 @@
-class Supporter < Thing
+class Gamefic::Supporter < Thing
 
 end
 

@@ -1,6 +1,6 @@
 import 'standard/entities/portal'
 
-class Door < Portal
+class Gamefic::Door < Portal
   attr_reader :key
   def post_initialize
     super

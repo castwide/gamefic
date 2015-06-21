@@ -1,4 +1,4 @@
-class Scenery < Thing
+class Gamefic::Scenery < Thing
 
 end
 set_default_for(Scenery, :not_portable)
