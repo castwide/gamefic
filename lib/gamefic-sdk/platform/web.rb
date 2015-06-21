@@ -54,7 +54,7 @@ module Gamefic::Sdk
       end
       
       File.open(build_path + "/static.js", "w") do |file|
-        file << Opal.compile(File.read(build_path + "/static.rb"))
+        file << Opal.compile(File.read(Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src/static.rb"))
       end
 
       plot = Plot.new
