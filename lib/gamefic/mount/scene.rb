@@ -62,7 +62,12 @@ module Gamefic
       scene_managers[key] = manager
     end
     def scene key, &block
-      scene = SceneManager.new &block
+      scene = SceneManager.new do |manager|
+        manager.start do |actor, data|
+          block.call(actor, data)
+          cue actor, :active
+        end
+      end
       scene_managers[key] = scene
     end
     def cue actor, key
