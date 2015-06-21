@@ -1,4 +1,3 @@
-require "gamefic-constants"
 require "gamefic/core_ext/array"
 require "gamefic/core_ext/string"
 require "gamefic/optionset"
