@@ -32,6 +32,16 @@ module Gamefic::Sdk
           puts "Build configuration does not have any target platforms."
         end
     end
+    def self.clean directory, config
+      if config.platforms.length > 0
+        config.platforms.each_pair { |k, v|
+          puts "Cleaning release/#{k}..."
+          build_dir = "#{directory}/build/#{k}"
+          platform_dir = "#{directory}/release/#{k}"
+          v.clean build_dir, platform_dir
+        }
+      end
+    end
     class Configuration
       attr_reader :import_paths, :html_paths
       attr_accessor :title, :author

@@ -39,6 +39,8 @@ module Gamefic::Sdk
           init ARGV.shift
         when 'build'
           build ARGV.shift
+        when 'clean'
+          clean ARGV.shift
         when 'fetch'
           fetch ARGV.shift
         when 'help'
@@ -254,6 +256,14 @@ EOS
         end
         Build.release story, config
       end
+      def clean directory
+        build_file = nil
+        if File.file?(directory + '/build.rb')
+          build_file = directory + '/build.rb'
+        end
+        config = Build.load build_file
+        Build.clean directory, config
+      end
       def help command
         shell_script = File.basename($0)
         case command
@@ -283,12 +293,20 @@ EOS
 Build a distributable Gamefic file from the source directory. The default
 filename is [directory].gfic. You can change the filename with the -o option.
 EOS
+          when "clean"
+            puts <<EOS
+#{shell_script} clean [directory]
+Clean Gamefic source directories. This command will delete any intermediate
+files that are used during the build process. The next build will rebuild
+everything from source.
+EOS
           when nil, "help"
           puts <<EOS
 #{shell_script} init [dir] - initialize a Gamefic source directory
 #{shell_script} test [path] - test a Gamefic source directory or script
 #{shell_script} fetch [directory] - copy shared scripts into directory
-#{shell_script} build [directory] - build a Gamefic file
+#{shell_script} build [directory] - build games
+#{shell_script} build [directory] - clean game directories
 #{shell_script} help - display this message
 #{shell_script} help [command] - display info about command
 EOS

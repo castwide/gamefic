@@ -91,6 +91,11 @@ module Gamefic::Sdk
         file << script_code
       end
     end
+    def clean build_dir, target_dir
+      FileUtils.remove_entry_secure build_dir if File.exist?(build_dir)
+      FileUtils.mkdir_p build_dir
+      puts "#{build_dir} cleaned."
+    end
   end
 
 end
