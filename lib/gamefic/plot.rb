@@ -103,7 +103,7 @@ module Gamefic
     def load script
       ['', '.plot', '.rb'].each { |ext|
         if File.exist?(script + ext)
-          stage File.read(script + ext)
+          stage File.read(script + ext), script + ext
           return
         end
       }
