@@ -5,7 +5,7 @@ module Gamefic
     def initialize(filename, directory)
       @absolute = filename.gsub(/\/+/, '/')
       @relative = filename[directory.length..-1].gsub(/\/+/, '/')
-      @base =  (File.dirname(@relative) + File.basename(@relative, File.extname(@relative))).gsub(/\/+/, '/')
+      @base =  (File.dirname(@relative) + '/' + File.basename(@relative, File.extname(@relative))).gsub(/\/+/, '/')
     end
     def read
       File.read(@absolute)
