@@ -38,7 +38,7 @@ module Gamefic
         end
         Dir.mktmpdir 'gamefic_' do |dir|
           puts "Loading..."
-          story = Plot.new [dir + '/import']
+          story = Plot.new(Source.new(dir + '/import'))
           begin
             decompress file, dir
           rescue Exception => e
