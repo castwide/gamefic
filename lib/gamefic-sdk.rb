@@ -1,10 +1,10 @@
-require 'gamefic-constants'
+require 'gamefic'
 require 'gamefic-sdk/gfk'
 require 'gamefic-sdk/platform'
 
 module Gamefic::Sdk
   HTML_TEMPLATE_PATH = File.dirname(__FILE__) + "/../html/"
-  INIT_TEMPLATE_PATH = File.dirname(__FILE__) + "/../init/"
+  GLOBAL_IMPORT_PATH = File.dirname(__FILE__) + "/../import/"
   LIB_PATH = File.dirname(__FILE__)
 end
 

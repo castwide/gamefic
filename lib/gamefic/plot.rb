@@ -5,37 +5,35 @@ require 'gamefic/tester'
 require 'gamefic/mount/scene'
 require 'gamefic/mount/command'
 require 'gamefic/mount/entity'
+require 'gamefic/source'
+require 'gamefic/script'
 
 module Gamefic
 
   class Plot
-    attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :game_directory
+    attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source
     attr_accessor :default_scene
     include Stage
     mount OptionMap, DescribableArticles, Tester, SceneMount, CommandMount, EntityMount
     expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities, :passthru
-    def initialize config = nil
-      if config.nil?
-        @import_paths = [Gamefic::GLOBAL_IMPORT_PATH]
-      elsif config.kind_of?(Array)
-        @import_paths = config
-      else
-        @import_paths = config.import_paths
-      end
-      
+    def initialize(source = nil)
+      @source = source || Source.new
       @commands = Hash.new
       @syntaxes = Array.new
       @update_procs = Array.new
       @player_procs = Array.new
+      @working_scripts = Array.new
       @imported_scripts = Array.new
       @imported_identifiers = Array.new
       @entities = Array.new
       @players = Array.new
       @asserts = Hash.new
       @finishes = Hash.new
-      @default_scene = :active      
-      @game_directory = nil
+      @default_scene = :active
       post_initialize
+    end
+    def imported_scripts
+      @imported_scripts ||= []
     end
     def assert_action name, &block
       @asserts[name] = Assert.new(name, &block)
@@ -103,88 +101,47 @@ module Gamefic
     end
 
     def load script
-      if @game_directory.nil?
-        @game_directory = File.dirname(script)
-      else
-        script = "#{@game_directory}/#{script}"
-      end
-      ext = File.extname(script)
-      if ext == "" || !File.exist?(script)
-        if File.exist?(script + ".plot")
-          ext = ".plot"
-          script += ".plot"
-        elsif File.exist?(script + ".rb")
-          ext = ".rb"
-          script += ".rb"
-        elsif File.exist?(script + ".json")
-          ext = ".json"
-          script += ".json"
+      ['', '.plot', '.rb'].each { |ext|
+        if File.exist?(script + ext)
+          stage File.read(script + ext)
+          return
         end
-      end
-      case ext
-        when ".plot", ".rb"
-          code = File.read(script)
-          #eval code, ::Gamefic.bind(self).get_binding, script, 1
-          stage code, script
-        # TODO: JSON support is currently experimental.
-        #when ".gjson"
-        #  EntityLoader.load File.read(script), self
-        else
-          raise "Invalid file type"
-      end
+      }
+      raise "File not found: #{script}"
     end
     
     def import script
-      script.gsub!(/\/+/, '/')
-      if script[0, 1] == '/'
-        script = script[1..-1]
+      if script[-1] == "*"
+        import_directory script[0..-2]
+        return
       end
-      if script[-2, 2] == '/*'
-        # Import all matching scripts in all paths
-        directory = script[0..-3]
-        resolved = directory
-        @import_paths.each { |path|
-          Dir["#{path}/#{script}"].each { |f|
-            import f[path.length..-1]
-          }
-        }
-      else
-        resolved = script
-        base = nil
-        found = false
-        @import_paths.each { |path|
-          if File.file?("#{path}/#{resolved}")
-            base = path
-            found = true
-          elsif File.file?("#{path}/#{resolved}.plot")
-            base = path
-            resolved = resolved + '.plot'
-            found = true
-          elsif File.file?("#{path}/#{resolved}.rb")
-            base = path
-            resolved = resolved + '.rb'
-            found = true
-          end
-          break if found
-        }
-        if found
-          if @imported_identifiers.include?(resolved) == false
-            code = File.read("#{base}/#{resolved}")
-            @imported_identifiers.push resolved
-            #eval code, Gamefic.bind(self).get_binding, "#{base}/#{resolved}", 1
-            stage code, resolved
-            @imported_scripts.push Imported.new(base, resolved)
-          end
-        else
-          raise "Unavailable import: #{script}"
-        end
+      imported_script = source.export(script)
+      if imported_script.nil?
+        raise "Import not found: #{script}"
+      end
+      if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
+        @working_scripts.push imported_script
+        stage imported_script.read, imported_script.absolute
+        @working_scripts.pop
+        imported_scripts.push imported_script
       end
     end
+    
     def on_player_update &block
       @player_procs.push block
     end
 
     private
+    def import_directory directory
+      source.directories.each { |base|
+        if File.directory?(base + '/' + directory)
+          Dir[base + '/' + directory + '/' + '*'].each { |file|
+            name = File.dirname(file[(base.length)..-1]) + '/' + File.basename(file, File.extname(file))
+            import name
+          }
+        end
+      }
+    end
     def rem_entity(entity)
       @entities.delete(entity)
     end
@@ -250,16 +207,6 @@ module Gamefic
     end
     def add_entity(entity)
       @entities.push entity
-    end
-    class Imported
-      attr_reader :base, :relative
-      def initialize base, relative
-        @base = base
-        @relative = relative
-      end
-      def absolute
-        "#{base}/#{relative}".gsub(/\/+/, '/')
-      end
     end
   end
 

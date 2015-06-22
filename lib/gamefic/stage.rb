@@ -65,10 +65,14 @@ module Gamefic
         }
       end
       def exposed_methods
-        @@exposed_methods ||= {}
+        @@exposed_methods ||= from_superclass(:exposed_methods, {}).dup
       end
       def mounted_modules
-        @mounted_modules ||= {}
+        @@mounted_modules ||= from_superclass(:mounted_modules, {}).dup
+      end
+      private
+      def from_superclass(m, default = nil)
+        superclass.respond_to?(m) ? superclass.send(m) : default
       end
     end
     def self.included(base)

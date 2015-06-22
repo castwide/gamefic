@@ -71,7 +71,7 @@ module Gamefic::Sdk
             build_file = path + '/build.rb'
           end
           if File.file?(path + '/test.rb')
-            test_file = 'test.rb'
+            test_file = path + '/test.rb'
           end
           main_file = path + '/main.' + ext
           config = Build.load build_file
@@ -84,8 +84,9 @@ module Gamefic::Sdk
         else
           config = Build.load
         end
-        config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
-        plot = Plot.new config
+        plot = Plot.new
+        #plot.source.directories.concat config.import_paths
+        plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
         plot.load main_file
         if test_file != nil
           plot.load test_file
@@ -245,7 +246,7 @@ EOS
           puts "#{e}"
           exit 1
         end
-        story = Plot.new config
+        story = Plot.new
         puts "Loading game data..." unless quiet
         begin
           story.load directory + '/main'

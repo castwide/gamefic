@@ -1,8 +1,10 @@
+require 'gamefic-sdk'
+
 describe "Cloak of Darkness" do
   it "concludes with test me" do
-    plot = Plot.new
+    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.load "examples/cloak_of_darkness/main.rb"
-    plot.load "test.rb"
+    plot.load "examples/cloak_of_darkness/test.rb"
     character = plot.make Character, :name => 'player'
     plot.introduce character
     character.perform "test me"

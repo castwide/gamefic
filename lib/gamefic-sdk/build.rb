@@ -14,7 +14,7 @@ module Gamefic::Sdk
       else
         Configuration.new
       end
-      Configuration.current.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
+      Configuration.current.import_paths.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
       Configuration.current
     end
     def self.release plot, config
