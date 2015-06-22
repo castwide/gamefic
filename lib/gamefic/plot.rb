@@ -112,18 +112,20 @@ module Gamefic
     
     def import script
       if script[-1] == "*"
-        import_directory script[0..-2]
-        return
-      end
-      imported_script = source.export(script)
-      if imported_script.nil?
-        raise "Import not found: #{script}"
-      end
-      if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
-        @working_scripts.push imported_script
-        stage imported_script.read, imported_script.absolute
-        @working_scripts.pop
-        imported_scripts.push imported_script
+        source.search(script[0..-2]).each { |file|
+          import file
+        }
+      else
+        imported_script = source.export(script)
+        if imported_script.nil?
+          raise "Import not found: #{script}"
+        end
+        if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
+          @working_scripts.push imported_script
+          stage imported_script.read, imported_script.absolute
+          @working_scripts.pop
+          imported_scripts.push imported_script
+        end
       end
     end
     
@@ -132,16 +134,6 @@ module Gamefic
     end
 
     private
-    def import_directory directory
-      source.directories.each { |base|
-        if File.directory?(base + '/' + directory)
-          Dir[base + '/' + directory + '/' + '*'].each { |file|
-            name = File.dirname(file[(base.length)..-1]) + '/' + File.basename(file, File.extname(file))
-            import name
-          }
-        end
-      }
-    end
     def rem_entity(entity)
       @entities.delete(entity)
     end

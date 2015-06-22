@@ -17,6 +17,18 @@ module Gamefic
       }
       raise "Script #{name} not found"
     end
+    def search path
+      found = []
+      @directories.each { |base|
+        if File.directory?(base + '/' + path)
+          Dir[base + '/' + path + '/' + '*'].each { |file|
+            name = File.dirname(file[(base.length)..-1]) + '/' + File.basename(file, File.extname(file))
+            found.push name
+          }
+        end
+      }
+      found
+    end
   end
   
 end
