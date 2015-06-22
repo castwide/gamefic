@@ -17,8 +17,7 @@ module Gamefic::Sdk
       Configuration.current.import_paths.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
       Configuration.current
     end
-    def self.release plot, config
-        directory = plot.game_directory
+    def self.release directory, plot, config
         if config.platforms.length > 0
           config.platforms.each_pair { |k, v|
             v.config[:title] = config.title

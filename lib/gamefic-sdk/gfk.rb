@@ -172,7 +172,7 @@ EOS
           exit 1
         end
         puts "Loading game data..."
-        story = Plot.new
+        story = Plot.new(Source.new(GLOBAL_IMPORT_PATH))
         begin
           story.load directory + '/main', true
         rescue Exception => e
@@ -246,7 +246,7 @@ EOS
           puts "#{e}"
           exit 1
         end
-        story = Plot.new
+        story = Plot.new(Source.new(GLOBAL_IMPORT_PATH))
         puts "Loading game data..." unless quiet
         begin
           story.load directory + '/main'
@@ -255,7 +255,7 @@ EOS
           puts "#{e}"
           exit 1
         end
-        Build.release story, config
+        Build.release directory, story, config
       end
       def clean directory
         build_file = nil

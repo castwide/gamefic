@@ -39,7 +39,7 @@ module Gamefic::Sdk
       FileUtils.cp_r(Dir["#{source_dir}/media/*"], target_dir) if File.directory?("#{source_dir}/media")
       FileUtils.cp_r(Dir["#{source_dir}/html/*"], target_dir) if File.directory?("#{source_dir}/html")
 
-      Opal.append_path Gamefic::LIB_PATH
+      Opal.append_path Gamefic::Sdk::LIB_PATH
 
       if !File.exist?(build_path + "/opal.js")
         File.open(build_path + "/opal.js", "w") do |file|
@@ -57,7 +57,7 @@ module Gamefic::Sdk
         file << Opal.compile(File.read(Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src/static.rb"))
       end
 
-      plot = Plot.new
+      plot = Plot.new(Source.new(GLOBAL_IMPORT_PATH))
       plot.load main
 
       imported = []
