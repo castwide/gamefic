@@ -1,6 +1,6 @@
 module Gamefic
 
-  module CommandMount
+  module Plot::CommandMount
     def meta(command, *queries, &proc)
       act = Meta.new(self, command, *queries, &proc)
     end

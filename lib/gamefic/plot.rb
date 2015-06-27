@@ -2,9 +2,6 @@
 #require 'gamefic/entityloader'
 require 'gamefic/stage'
 require 'gamefic/tester'
-require 'gamefic/scene_mount'
-require 'gamefic/command_mount'
-require 'gamefic/entity_mount'
 require 'gamefic/describable_articles'
 require 'gamefic/source'
 require 'gamefic/script'
@@ -12,6 +9,9 @@ require 'gamefic/script'
 module Gamefic
 
   class Plot
+    autoload :SceneMount, 'gamefic/plot/scene_mount'
+    autoload :CommandMount, 'gamefic/plot/command_mount'
+    autoload :EntityMount, 'gamefic/plot/entity_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source
     attr_accessor :default_scene
     include Stage

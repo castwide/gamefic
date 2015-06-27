@@ -1,6 +1,6 @@
 module Gamefic
 
-  module SceneMount
+  module Plot::SceneMount
     def scene_managers
       if @scene_managers.nil?
         @scene_managers ||= {}
