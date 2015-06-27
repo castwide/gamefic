@@ -2,9 +2,10 @@
 #require 'gamefic/entityloader'
 require 'gamefic/stage'
 require 'gamefic/tester'
-require 'gamefic/mount/scene'
-require 'gamefic/mount/command'
-require 'gamefic/mount/entity'
+require 'gamefic/scene_mount'
+require 'gamefic/command_mount'
+require 'gamefic/entity_mount'
+require 'gamefic/describable_articles'
 require 'gamefic/source'
 require 'gamefic/script'
 
