@@ -11,7 +11,7 @@
 #   * Entities inside closed transparent containers
 #   * Entities that share the same room as the subject, but not the same parent.
 
-class Query::Reachable < Query::Family
+class Gamefic::Query::Reachable < Query::Family
   def context_from(subject)
     array = super
     if subject.is?(:supported) or subject.is?(:contained)

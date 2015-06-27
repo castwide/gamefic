@@ -9,7 +9,7 @@
 #   * Entities inside reachable transparent containers
 #   * Entities attached to reachable entities
 
-class Query::Visible < Query::Family
+class Gamefic::Query::Visible < Query::Family
   def base_specificity
     40
   end
