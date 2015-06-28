@@ -1,5 +1,5 @@
 assert_action :has_enough_light do |actor, action|
-  if actor.room.is? :lighted
+  if !actor.nil? or actor.room.is? :lighted
     true
   else
     if action == :go
