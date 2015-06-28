@@ -1,7 +1,7 @@
 module Gamefic
 
   class Syntax
-    attr_reader :token_count, :first_word, :action, :template, :command
+    attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
     def initialize plot, template, *command
       command = command.join(' ')
@@ -10,10 +10,10 @@ module Gamefic
       command_words = command.split_words
       if words[0][0] == ':'
         @token_count -= 1
-        @action = nil
+        @verb = nil
         @first_word = ''
       else
-        @action = command_words[0].to_sym
+        @verb = command_words[0].to_sym
         @first_word = words[0].to_s
       end
       @command = command_words.join(' ')
@@ -60,7 +60,7 @@ module Gamefic
           arguments.push r
         end
       }
-      SyntaxMatch.new @action, arguments
+      SyntaxMatch.new @verb, arguments
     end
     def signature
       [@regexp, @replace]

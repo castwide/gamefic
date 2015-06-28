@@ -2,7 +2,6 @@ module Gamefic
   class Director
   
     module Parser
-        
       @@disambiguator = Action.new nil, nil, Query::Base.new do |actor, entities|
         definites = []
         entities.each { |entity|
@@ -58,8 +57,10 @@ module Gamefic
                 args.push a[0]
               }
               if valid
+                # All command arguments are valid
                 options.push Order.new(order.actor, order.action, args)
               else
+                # One of the arguments was ambiguous (more than one matching object)
                 options.push Order.new(actor, @@disambiguator, [invalid_argument])
               end
             }
@@ -80,7 +81,8 @@ module Gamefic
         return objects
       end
       def self.execute_query(actor, arguments, queries, action, num_nil = 0)
-        arguments.shift
+        # If the action verb is nil, treat the first argument as a query
+        arguments.shift unless action.verb.nil?
         prepared = Array.new
         objects = Array.new
         valid = true
@@ -93,11 +95,7 @@ module Gamefic
           if context == String
             prepared.push [arg]
           elsif context.kind_of?(Query::Base)
-            #if arg == 'it' and actor.object_of_pronoun != nil
-            #  result = context.execute(actor, "#{actor.object_of_pronoun.name}")
-            #else
-              result = context.execute(actor, arg)
-            #end
+            result = context.execute(actor, arg)
             if result.objects.length == 0
               valid = false
               next
@@ -126,9 +124,9 @@ module Gamefic
       class Order
         attr_reader :actor, :action, :arguments
         def initialize(actor, action, arguments)
-        @actor = actor
-        @action = action
-        @arguments = arguments
+          @actor = actor
+          @action = action
+          @arguments = arguments
         end
       end
     end

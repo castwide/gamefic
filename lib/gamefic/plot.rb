@@ -146,7 +146,7 @@ module Gamefic
       }
     end  
     def add_syntax syntax
-      if @commands[syntax.action] == nil
+      if @commands[syntax.verb] == nil
         raise "Action \"#{syntax.action}\" does not exist"
       end
       # Delete duplicate syntaxes
