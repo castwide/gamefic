@@ -11,7 +11,7 @@ describe Plot do
 		plot = Plot.new
 		plot.respond :mycommand do |actor|
 		end
-		expect(plot.commands[:mycommand].length).to eq(1)
+		expect(plot.actions_with_verb(:mycommand).length).to eq(1)
 	end
 	it "adds new actions to the list of command words" do
 		plot = Plot.new

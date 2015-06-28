@@ -10,7 +10,7 @@ module Gamefic::Director::Parser
   def self.from_tokens(actor, tokens)
       options = []
       command = tokens.shift
-      actions = actor.plot.commands[command.to_sym]
+      actions = actor.plot.actions_with_verb(command.to_sym)
       actions.each { |action|
         if action.queries.length == tokens.length
           valid = true
@@ -44,7 +44,7 @@ module Gamefic::Director::Parser
       return options
     end
     handlers.each { |handler|
-      actions = actor.plot.commands[handler[0]]
+      actions = actor.plot.actions_with_verb(handler[0])
       if actions != nil
         actions.each { |action|
           if action.queries.length == 0 and handler.length > 1

@@ -12,7 +12,7 @@ module Gamefic
     autoload :SceneMount, 'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :EntityMount, 'gamefic/plot/entity_mount'
-    attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source
+    attr_reader :imported_scripts, :rules, :asserts, :finishes, :source
     attr_accessor :default_scene
     include Stage
     mount OptionMap, DescribableArticles, Tester, SceneMount, CommandMount, EntityMount
@@ -32,6 +32,9 @@ module Gamefic
       @finishes = Hash.new
       @default_scene = :active
       post_initialize
+    end
+    def actions_with_verb(verb)
+      @commands[verb].clone || []
     end
     def imported_scripts
       @imported_scripts ||= []
