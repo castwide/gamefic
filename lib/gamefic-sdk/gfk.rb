@@ -316,42 +316,6 @@ EOS
           exit 1
         end
       end
-      def decompress(tarfile, destination)
-        tar_longlink = '././@LongLink'
-        Gem::Package::TarReader.new( Zlib::GzipReader.open tarfile ) do |tar|
-          dest = nil
-          tar.each do |entry|
-            if entry.full_name == tar_longlink
-              dest = File.join destination, entry.read.strip
-              next
-            end
-            dest ||= File.join destination, entry.full_name
-            if entry.directory?
-              FileUtils.rm_rf dest unless File.directory? dest
-              FileUtils.mkdir_p dest, :mode => entry.header.mode, :verbose => false
-            elsif entry.file?
-              cur_stack = dest.split('/')
-              cur_stack.pop
-              cur_dir = ''
-              while cur_stack.length > 0
-                cur_dir += '/' + cur_stack.shift              
-                if !File.exist?(destination + cur_dir)
-                  FileUtils.mkdir_p dest, :mode => 0700, :verbose => false
-                end
-              end
-              FileUtils.mkdir_p dest, :mode => entry.header.mode, :verbose => false
-              FileUtils.rm_rf dest unless File.file? dest
-              File.open dest, "wb" do |f|
-                f.print entry.read
-              end
-              FileUtils.chmod entry.header.mode, dest, :verbose => false
-            elsif entry.header.typeflag == '2' #Symlink!
-              File.symlink entry.header.linkname, dest
-            end
-            dest = nil
-          end
-        end
-      end
   end
 
 end
