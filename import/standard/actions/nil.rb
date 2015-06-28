@@ -1,4 +1,4 @@
-respond nil, Query::Text.new() do |actor, string|
+meta nil, Query::Text.new() do |actor, string|
   words = string.split_words
   if commandwords.include?(words[0])
     if words.length > 1
