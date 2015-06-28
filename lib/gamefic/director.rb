@@ -5,15 +5,14 @@ module Gamefic
     autoload :Delegate, 'gamefic/director/delegate'
     
     def self.dispatch(actor, *args)
-      options = []
+      orders = []
       if args.length > 1
-        options = Parser.from_tokens(actor, args)
+        orders = Parser.from_tokens(actor, args)
       end
-      if options.length == 0
-        options = Parser.from_string(actor, args.join(' ').strip)
+      if orders.length == 0
+        orders = Parser.from_string(actor, args.join(' ').strip)
       end
-      #del = Delegate.new(actor, options, actor.plot.asserts, actor.plot.finishes)
-      del = Delegate.new(actor, options)
+      del = Delegate.new(actor, orders)
       del.execute
     end
   end
