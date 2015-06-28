@@ -1,12 +1,8 @@
-require 'gamefic/director/parser'
-require 'gamefic/director/delegate'
-
 module Gamefic
 
   class Director
-    # TODO: The autoload method breaks Web platform builds.
-    #autoload :Parser, 'gamefic/director/parser'
-    #autoload :Delegate, 'gamefic/director/delegate'
+    autoload :Parser, 'gamefic/director/parser'
+    autoload :Delegate, 'gamefic/director/delegate'
     
     def self.dispatch(actor, *args)
       options = []

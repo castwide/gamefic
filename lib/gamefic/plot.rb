@@ -5,17 +5,13 @@ require 'gamefic/tester'
 require 'gamefic/describable_articles'
 require 'gamefic/source'
 require 'gamefic/script'
-require 'gamefic/plot/scene_mount'
-require 'gamefic/plot/command_mount'
-require 'gamefic/plot/entity_mount'
 
 module Gamefic
 
   class Plot
-    # TODO: The autoload method breaks Web platform builds.
-    #autoload :SceneMount, 'gamefic/plot/scene_mount'
-    #autoload :CommandMount, 'gamefic/plot/command_mount'
-    #autoload :EntityMount, 'gamefic/plot/entity_mount'
+    autoload :SceneMount, 'gamefic/plot/scene_mount'
+    autoload :CommandMount, 'gamefic/plot/command_mount'
+    autoload :EntityMount, 'gamefic/plot/entity_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source
     attr_accessor :default_scene
     include Stage

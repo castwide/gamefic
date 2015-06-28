@@ -1,5 +1,5 @@
 module Gamefic
-  #class Director
+  class Director
     class Delegate
       @@assertion_stack = Array.new
       @@delegation_stack = Array.new
@@ -101,5 +101,5 @@ module Gamefic
         end
       end
     end
-  #end
+  end
 end
