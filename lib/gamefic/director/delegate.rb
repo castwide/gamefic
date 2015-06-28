@@ -8,12 +8,12 @@ module Gamefic
       def proceed
         order = @orders.shift
         return if order.nil?
-        order.actor.send(:delegate_stack).push self
-        block = order.action.block
+        @actor.send(:delegate_stack).push self
+        # The actor is always the first argument to an Action proc
         arguments = order.arguments.clone
-        arguments.unshift order.actor
-        block.call(*arguments)
-        order.actor.send(:delegate_stack).pop
+        arguments.unshift @actor
+        order.action.execute(*arguments)
+        @actor.send(:delegate_stack).pop
       end
       def execute
         return if @orders.length == 0

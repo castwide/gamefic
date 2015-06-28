@@ -2,13 +2,6 @@ module Gamefic
   class Director
   
     module Parser
-      @@disambiguator = Action.new nil, nil, Query::Base.new do |actor, entities|
-        definites = []
-        entities.each { |entity|
-          definites.push entity.definitely
-        }
-        actor.tell "I don't know which you mean: #{definites.join_or}."
-      end
       def self.from_tokens(actor, tokens)
           options = []
           command = tokens.shift
@@ -35,6 +28,16 @@ module Gamefic
           options
       end
       def self.from_string(actor, command)
+        # If we user Query::Base.new in the @disambiguator declaration, Opal
+        # passes the block to the query instead of the action.
+        base = Query::Base.new
+        @disambiguator = Meta.new nil, nil, base do |actor, entities|
+          definites = []
+          entities.each { |entity|
+            definites.push entity.definitely
+          }
+          actor.tell "I don't know which you mean: #{definites.join_or}."
+        end
         options = []
         if command.to_s == ''
           return options
@@ -58,10 +61,10 @@ module Gamefic
               }
               if valid
                 # All command arguments are valid
-                options.push Order.new(order.actor, order.action, args)
+                options.push Order.new(actor, order.action, args)
               else
                 # One of the arguments was ambiguous (more than one matching object)
-                options.push Order.new(actor, @@disambiguator, [invalid_argument])
+                options.push Order.new(actor, @disambiguator, [invalid_argument])
               end
             }
           }
