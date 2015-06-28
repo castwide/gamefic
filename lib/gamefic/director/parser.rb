@@ -37,41 +37,31 @@ module Gamefic::Director::Parser
     if command.to_s == ''
       return options
     end
-    begin
-      handlers = Syntax.match(command, actor.plot.syntaxes)
-    rescue Exception => e
-      puts "#{e}"
-      return options
-    end
-    handlers.each { |handler|
-      actions = actor.plot.actions_with_verb(handler[0])
-      if actions != nil
-        actions.each { |action|
-          if action.queries.length == 0 and handler.length > 1
-            next
-          end
-          orders = bind_contexts_in_result(actor, handler, action)
-          orders.each { |order|
-            valid = true
-            args = Array.new
-            args.push actor
-            invalid_argument = nil
-            order.arguments.each { |a|
-              if a.length > 1
-                invalid_argument = a
-                valid = false
-                break
-              end
-              args.push a[0]
-            }
-            if valid
-              options.push [order.action, args]
-            else
-              options.push [@@disambiguator, [actor, invalid_argument]]
+    matches = Syntax.match(command, actor.plot.syntaxes)
+    matches.each { |match|
+      actions = actor.plot.actions_with_verb(match.verb)
+      actions.each { |action|
+        orders = bind_contexts_in_result(actor, match.arguments, action)
+        orders.each { |order|
+          valid = true
+          args = Array.new
+          args.push actor
+          invalid_argument = nil
+          order.arguments.each { |a|
+            if a.length > 1
+              invalid_argument = a
+              valid = false
+              break
             end
+            args.push a[0]
           }
+          if valid
+            options.push [order.action, args]
+          else
+            options.push [@@disambiguator, [actor, invalid_argument]]
+          end
         }
-      end
+      }
     }
     options
   end

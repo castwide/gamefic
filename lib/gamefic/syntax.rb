@@ -52,20 +52,19 @@ module Gamefic
     def translate text
       m = text.match(@regexp)
       return nil if m.nil?
-      result = []
+      arguments = []
       @replace.split_words.each { |r|
         if r.match(/^\{\$[0-9]+\}$/)
-          result.push m[r[2..-2].to_i]
+          arguments.push m[r[2..-2].to_i]
         else
-          result.push r
+          arguments.push r
         end
       }
       if @action.nil?
-        result.unshift nil
-      else
-        result[0] = @action
+        # TODO: This shouldn't be necessary
+        arguments.unshift nil
       end
-      result
+      SyntaxMatch.new @action, arguments
     end
     def signature
       [@regexp, @replace]
@@ -80,6 +79,13 @@ module Gamefic
         matches.push(result) if !result.nil?
       }
       matches
+    end
+    class SyntaxMatch
+      attr_reader :verb, :arguments
+      def initialize verb, arguments
+        @verb = verb
+        @arguments = arguments
+      end
     end
   end
 
