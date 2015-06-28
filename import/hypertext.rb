@@ -87,12 +87,12 @@ respond :look, Query::Room.new(Room) do |actor, room|
 end
 
 respond :look, Query::Visible.new(Character) do |actor, character|
-  passthru
+  actor.proceed
   actor.suggest "talk to #{the character}"
 end
 
 respond :look, Query::Visible.new do |actor, thing|
-  passthru
+  actor.proceed
   if thing.is? :portable
     if thing.parent == actor
       actor.suggest "drop #{the thing}"
@@ -146,7 +146,7 @@ respond :look, Query::Visible.new(Container) do |actor, container|
 end
 
 respond :look, Query::Children.new(Clothing) do |actor, clothing|
-  passthru
+  actor.proceed
   if clothing.is?(:worn)
     actor.suggest "remove #{the clothing}"
   else
@@ -155,14 +155,14 @@ respond :look, Query::Children.new(Clothing) do |actor, clothing|
 end
 
 respond :open, Query::Visible.new(Container) do |actor, container|
-  passthru
+  actor.proceed
   if container.is? :open
     actor.perform :look, container
   end
 end
 
 #respond :look, Query::Visible.new(Device) do |actor, device|
-#  passthru
+#  actor.proceed
 #  if device.is? :on
 #    actor.suggest "turn on #{the device}"
 #  else
@@ -200,21 +200,21 @@ respond :inventory do |actor|
 end
 
 respond :go, Query::Reachable.new(Door, :locked) do |actor, door|
-  passthru
+  actor.proceed
   if door.is? :locked
     actor.suggest "unlock #{the door}"
   end
 end
 
 respond :unlock, Query::Reachable.new(:lockable) do |actor, container|
-  passthru
+  actor.proceed
   if container.is?(:closed)
     actor.suggest "open #{the container}"
   end
 end
 
 respond :take, Query::Reachable.new(Clothing) do |actor, clothing|
-  passthru
+  actor.proceed
   if clothing.parent == actor
     actor.suggest "wear #{the clothing}"
   end

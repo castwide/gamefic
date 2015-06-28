@@ -23,7 +23,7 @@ respond :drop_in, Query::Children.new(), Query::Reachable.new(Container) do |act
   if container.size <= thing.size
     actor.tell "#{The thing} can't fit in #{the container}."
   else
-    passthru
+    actor.proceed
   end
 end
 
@@ -31,6 +31,6 @@ respond :drop_on, Query::Children.new(), Query::Reachable.new(Supporter) do |act
   if supporter.size < thing.size
     actor.tell "#{The supporter} can't accommodate #{the thing}."
   else
-    passthru
+    actor.proceed
   end
 end

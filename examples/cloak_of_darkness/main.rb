@@ -74,7 +74,7 @@ respond :drop, Query::Children.new(cloak) do |actor, message|
   if actor.parent != cloakroom then 
       actor.tell "This isn't the best place to leave a smart cloak lying around."
   else
-    passthru
+    actor.proceed
   end
 end
 

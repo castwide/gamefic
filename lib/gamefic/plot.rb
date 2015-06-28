@@ -16,7 +16,7 @@ module Gamefic
     attr_accessor :default_scene
     include Stage
     mount OptionMap, DescribableArticles, Tester, SceneMount, CommandMount, EntityMount
-    expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities, :passthru
+    expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities
     def initialize(source = nil)
       @source = source || Source.new
       @commands = Hash.new
@@ -81,10 +81,6 @@ module Gamefic
       if player.scene.nil?
         cue player, default_scene
       end
-    end
-    def passthru
-      return if @delegate_stack.last.nil?
-      @delegate_stack.last.passthru
     end
     def update
       @update_procs.each { |p|

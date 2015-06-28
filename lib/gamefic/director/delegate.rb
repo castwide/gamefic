@@ -1,23 +1,19 @@
 module Gamefic
   class Director
     class Delegate
-      include Stage
-      expose :passthru
       def initialize(actor, orders)
         @actor = actor
         @orders = orders
       end
-      def passthru
+      def proceed
         order = @orders.shift
         return if order.nil?
-        # TODO: It might make more sense if the stack is a property of the
-        # actor instead of the plot
-        order.actor.plot.delegate_stack.push self
+        order.actor.send(:delegate_stack).push self
         block = order.action.block
         arguments = order.arguments.clone
         arguments.unshift order.actor
         block.call(*arguments)
-        order.actor.plot.delegate_stack.pop
+        order.actor.send(:delegate_stack).pop
       end
       def execute
         return if @orders.length == 0
@@ -29,7 +25,7 @@ module Gamefic
             end
           }
         end
-        passthru
+        proceed
       end
     end
   end

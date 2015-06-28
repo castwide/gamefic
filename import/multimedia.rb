@@ -28,7 +28,7 @@ assert_action :clear_last_image do |actor, action|
 end
 
 respond :look, Query::Visible.new() do |actor, subject|
-  passthru
+  actor.proceed
   if subject.has_image?
     actor.show_image subject.image
   end

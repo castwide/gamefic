@@ -17,7 +17,7 @@ end
 
 respond :take, Query::Visible.new() do |actor, thing|
   if thing.parent == actor.parent
-    passthru
+    actor.proceed
   elsif thing.parent.is?(:closed)
     actor.tell "#{The thing} is inside #{the thing.parent}, which is closed."
   end
@@ -29,7 +29,7 @@ respond :take, Query::Visible.new() do |actor, thing|
       actor.tell "You can't reach it from #{the actor.parent}."
     end
   else
-    passthru
+    actor.proceed
   end
 end
 
@@ -43,14 +43,14 @@ respond :take, Query::Reachable.new(:portable, :contained) do |actor, thing|
       if thing.parent.is?(:transparent)
         actor.tell "#{The thing} is closed."
       else
-        passthru
+        actor.proceed
       end
       break
     end
     actor.tell "You take #{the thing} from #{the thing.parent}."
     thing.parent = actor
   else
-    passthru
+    actor.proceed
   end
 end
 
@@ -91,14 +91,14 @@ respond :take_from, Query::Reachable.new(Supporter), Query::Subquery.new(:suppor
 end
 respond :take_from, Query::Reachable.new(Container, :open), Query::Visible.new do |actor, container, thing|
   if thing.parent == container
-    passthru
+    actor.proceed
   else
     actor.tell "#{The thing} isn't in #{the container}."
   end
 end
 respond :take_from, Query::Reachable.new(Supporter, :open), Query::Visible.new do |actor, supporter, thing|
   if thing.parent == supporter
-    passthru
+    actor.proceed
   else
     actor.tell "#{The thing} isn't on #{the supporter}."
   end

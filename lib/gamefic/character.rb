@@ -47,6 +47,14 @@ module Gamefic
         @scene.finish self, line
       end
     end
+    def proceed
+      return if delegate_stack.last.nil?
+      delegate_stack.last.proceed
+    end
+    private
+    def delegate_stack
+      @delegate_stack ||= []
+    end
   end
 
 end

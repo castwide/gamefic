@@ -21,7 +21,7 @@ respond :go, Query::Reachable.new(Door) do |actor, door|
       actor.perform :open, door
     end
     if door.is? :open
-      passthru
+      actor.proceed
     end
   end
 end

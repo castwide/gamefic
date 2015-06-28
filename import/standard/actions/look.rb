@@ -70,7 +70,7 @@ respond :look, Query::Text.new() do |actor, string|
 end
 
 respond :look, Query::Reachable.new(Container) do |actor, container|
-  passthru
+  actor.proceed
   if container.is? :openable
     actor.tell "#{The container} is #{container.is?(:open) ? 'open' : 'closed'}."
   end
@@ -83,7 +83,7 @@ respond :look, Query::Reachable.new(Container) do |actor, container|
 end
 
 respond :look, Query::Visible.new(Supporter) do |actor, supporter|
-  passthru
+  actor.proceed
   supported = supporter.children.that_are(:supported)
   supported.each { |thing|
     actor.tell "You see #{a thing} sitting there."
@@ -92,7 +92,7 @@ end
 
 respond :look, Query::Reachable.new(Door, :openable) do |actor, door|
   if door.has_description?
-    passthru
+    actor.proceed
   end
   actor.tell "#{The door} is " + ((door.is?(:open) and door.is?(:not_locked)) ? 'open' : 'closed') + '.'
 end
