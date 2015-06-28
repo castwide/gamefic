@@ -12,7 +12,7 @@ module Gamefic
     autoload :SceneMount, 'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :EntityMount, 'gamefic/plot/entity_mount'
-    attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source
+    attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage
     mount OptionMap, DescribableArticles, Tester, SceneMount, CommandMount, EntityMount
@@ -31,6 +31,7 @@ module Gamefic
       @asserts = Hash.new
       @finishes = Hash.new
       @default_scene = :active
+      @delegate_stack = []
       post_initialize
     end
     def actions_with_verb(verb)
@@ -82,7 +83,8 @@ module Gamefic
       end
     end
     def passthru
-      Director::Delegate.passthru
+      return if @delegate_stack.last.nil?
+      @delegate_stack.last.passthru
     end
     def update
       @update_procs.each { |p|

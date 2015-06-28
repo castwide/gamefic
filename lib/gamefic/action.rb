@@ -26,6 +26,9 @@ module Gamefic
         story.send :add_action, self
       end
 		end
+    def block
+      @proc
+    end
 		def specificity
 			spec = 0
 			magnitude = 1
@@ -39,6 +42,9 @@ module Gamefic
 			}
 			return spec
 		end
+    def verb
+      @command
+    end
     def command
       @command
     end

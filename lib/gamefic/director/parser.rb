@@ -26,7 +26,7 @@ module Gamefic
                 index += 1
               }
               if valid
-                options.push [action, [actor] + tokens]
+                options.push Order.new(actor, action, tokens)
               end
             end
           }
@@ -48,7 +48,6 @@ module Gamefic
             orders.each { |order|
               valid = true
               args = Array.new
-              args.push actor
               invalid_argument = nil
               order.arguments.each { |a|
                 if a.length > 1
@@ -59,9 +58,9 @@ module Gamefic
                 args.push a[0]
               }
               if valid
-                options.push [order.action, args]
+                options.push Order.new(order.actor, order.action, args)
               else
-                options.push [@@disambiguator, [actor, invalid_argument]]
+                options.push Order.new(actor, @@disambiguator, [invalid_argument])
               end
             }
           }
@@ -71,16 +70,17 @@ module Gamefic
       private
       def self.bind_contexts_in_result(actor, handler, action)
         queries = action.queries.clone
-        objects = self.execute_query(actor, handler[1..-1], queries, action)
+        objects = self.execute_query(actor, handler.clone, queries, action)
         num_nil = 0
         while objects.length == 0 and queries.last.optional?
           num_nil +=1
           queries.pop
-          objects = self.execute_query(actor, handler[1..-1], queries, action, num_nil)
+          objects = self.execute_query(actor, handler.clone, queries, action, num_nil)
         end
         return objects
       end
       def self.execute_query(actor, arguments, queries, action, num_nil = 0)
+        arguments.shift
         prepared = Array.new
         objects = Array.new
         valid = true
@@ -93,11 +93,11 @@ module Gamefic
           if context == String
             prepared.push [arg]
           elsif context.kind_of?(Query::Base)
-            if arg == 'it' and actor.object_of_pronoun != nil
-              result = context.execute(actor, "#{actor.object_of_pronoun.name}")
-            else
+            #if arg == 'it' and actor.object_of_pronoun != nil
+            #  result = context.execute(actor, "#{actor.object_of_pronoun.name}")
+            #else
               result = context.execute(actor, arg)
-            end
+            #end
             if result.objects.length == 0
               valid = false
               next
@@ -119,13 +119,14 @@ module Gamefic
           num_nil.times do
             prepared.push [nil]
           end
-          objects.push Order.new(action, prepared)
+          objects.push Order.new(actor, action, prepared)
         end
         objects
       end
       class Order
-        attr_reader :action, :arguments
-        def initialize(action, arguments)
+        attr_reader :actor, :action, :arguments
+        def initialize(actor, action, arguments)
+        @actor = actor
         @action = action
         @arguments = arguments
         end

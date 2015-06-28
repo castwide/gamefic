@@ -3,7 +3,11 @@ module Gamefic
   module Stage
     def stage *args, &block
       s = generate_stage
-      s.instance_eval(*args, &block)
+      if block.nil?
+        s.instance_eval(*args)
+      else
+        s.instance_exec(*args, &block)
+      end
     end
     private
     def generate_stage

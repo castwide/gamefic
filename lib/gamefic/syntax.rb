@@ -60,10 +60,6 @@ module Gamefic
           arguments.push r
         end
       }
-      if @action.nil?
-        # TODO: This shouldn't be necessary
-        arguments.unshift nil
-      end
       SyntaxMatch.new @action, arguments
     end
     def signature

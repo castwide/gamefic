@@ -71,6 +71,9 @@ module Gamefic
       scene_managers[key] = scene
     end
     def cue actor, key
+      if !actor.scene.nil? and actor.scene.state == "Concluded"
+        return
+      end
       if key.nil?
         key = plot.default_scene
       end

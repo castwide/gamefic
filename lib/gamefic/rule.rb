@@ -4,8 +4,8 @@ class Rule
     @name = name
     @block = block
   end
-  def test actor, action
-    return @block.call actor, action
+  def test actor, verb, arguments
+    return @block.call actor, verb, arguments
   end
 end
 
