@@ -1,6 +1,6 @@
 module Gamefic
 
-  module Gamefic::Plot::EntityMount
+  module Plot::EntityMount
     def make(cls, args = {}, &block)
       ent = cls.new(self, args, &block)
       if ent.kind_of?(Entity) == false
