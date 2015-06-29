@@ -22,6 +22,9 @@ module Gamefic::Snapshots
     return ss  
   end
   def self.restore(snapshot, plot)
+    if snapshot.kind_of?(String)
+      snapshot = JSON.parse(snapshot, :symbolize_names => true)
+    end
     snapshot.each { |hash|
       entity = @@identifiers.key(hash[:identifier])
       if !entity.nil?
@@ -36,8 +39,8 @@ module Gamefic::Snapshots
     hash = {}
     entity.instance_variables.each { |variable|
       symbol = variable[1..-1].to_sym
-      if respond_to?("#{symbol}=")
-        value = instance_variable_get(variable)
+      if entity.respond_to?("#{symbol}=")
+        value = entity.instance_variable_get(variable)
         if !is_blacklisted?(symbol) and is_serializable?(value)
           hash[symbol] = value
         end

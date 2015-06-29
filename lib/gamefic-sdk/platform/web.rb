@@ -44,6 +44,8 @@ module Gamefic::Sdk
       if !File.exist?(build_path + "/opal.js")
         File.open(build_path + "/opal.js", "w") do |file|
          file << Opal::Builder.build('opal')
+         file << Opal::Builder.build('json')
+         file << Opal::Builder.build('native')
         end
       end
       
