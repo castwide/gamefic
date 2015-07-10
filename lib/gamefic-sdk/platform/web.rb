@@ -59,9 +59,6 @@ module Gamefic::Sdk
         file << Opal.compile(File.read(Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src/static.rb"))
       end
 
-      plot = Plot.new(Source.new(GLOBAL_IMPORT_PATH))
-      plot.load main
-
       imported = []
       
       plot.imported_scripts.each { |script|
