@@ -81,6 +81,7 @@ module Gamefic
       if player.scene.nil?
         cue player, default_scene
       end
+      update
     end
     def update
       @update_procs.each { |p|

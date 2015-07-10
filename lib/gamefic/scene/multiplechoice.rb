@@ -32,7 +32,7 @@ module Gamefic
         list.push "#{index}. #{o}"
         index += 1
       }
-      @prompt = "#{list.join("\n")}\n#{@end_prompt}"
+      @data.prompt = "#{list.join("\n")}\n#{@end_prompt}"
     end
     def finish actor, input
       @data.input = input

@@ -1,11 +1,11 @@
-class Entity
+class Gamefic::Entity
   attr_accessor :image
   def has_image?
     (@image.to_s != '')
   end
 end
 
-class Character
+class Gamefic::Character
   attr_writer :sees_image
   def sees_image?
     (@sees_image != false)

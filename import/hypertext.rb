@@ -1,24 +1,21 @@
 import 'clothing'
 
-module Hypertext
+module Gamefic::Hypertext
   def self.link command, text = nil
     "<a rel=\"gamefic\" href=\"#\" data-command=\"#{command}\">#{text || command}</a>"
   end
 end
 
-class Entity
+class Gamefic::Entity
   attr_writer :default_command
   def default_command
     @default_command || "examine #{definitely}"
   end
 end
 
-class Character
-  def suggestions
-    @suggestions ||= []
-  end
+class Gamefic::Character
   def suggest command, text = nil
-    suggestions.push Hypertext.link(command, text)
+    stream "<nav class=\"suggestions\"><p>#{Hypertext.link(command, text)}</p></nav>"
   end
 end
 
@@ -143,6 +140,9 @@ respond :look, Query::Visible.new(Container) do |actor, container|
       actor.stream '</nav>'
     end
   end
+  if container.is?(:enterable)
+    actor.suggest "enter #{the container}"
+  end
 end
 
 respond :look, Query::Children.new(Clothing) do |actor, clothing|
@@ -221,21 +221,21 @@ respond :take, Query::Reachable.new(Clothing) do |actor, clothing|
 end
 
 on_player_update do |actor|
-  if actor.state_name != :active and actor.state.kind_of?(CharacterState::Active) == false
+  if actor.scene.key != :active and actor.scene.kind_of?(Gamefic::ActiveScene) == false
     next
+  end
+  if actor.parent != actor.room
+    if actor.parent.kind_of?(Container)
+      actor.suggest "exit", "leave #{the actor.parent}"
+    else
+      actor.suggest "exit", "get off #{the actor.parent}"
+    end
   end
   if actor[:looking_at_room] != true
     actor.suggest "look around"
   end
   if actor[:checking_inventory] != true
     actor.suggest "inventory"
-  end
-  if actor.suggestions.length > 0
-    actor.stream '<nav class="suggestions">'
-    actor.stream "Suggestions: "
-    actor.stream actor.suggestions.join(' ')
-    actor.stream '</nav>'
-    actor.suggestions.clear
   end
   entities = Query::Siblings.new.context_from(actor)
   portals = entities.that_are(Portal)
