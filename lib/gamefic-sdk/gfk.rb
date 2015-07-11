@@ -75,19 +75,12 @@ module Gamefic::Sdk
           end
           main_file = path + '/main.' + ext
           config = Build.load build_file
-          #config.import_paths.unshift path + '/import'
-          #config.import_paths.each_index { |i|
-          #  if config.import_paths[i][0,1] != '/'
-          #    config.import_paths[i] = path + '/' + config.import_paths[i]
-          #  end
-          #}
         else
           config = Build.load
         end
         plot = Plot.new
         plot.source.directories.concat config.import_paths
         plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
-        puts plot.source.directories.join(";")
         plot.load main_file
         if test_file != nil
           plot.load test_file
