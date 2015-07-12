@@ -93,9 +93,11 @@ module Gamefic::Sdk
       def init directory
         quiet = false
         html = "standard"
+        imports = []
         opts = GetoptLong.new(
           [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
-          [ '--with-html', GetoptLong::REQUIRED_ARGUMENT ]
+          [ '--with-html', GetoptLong::REQUIRED_ARGUMENT ],
+          [ '-i', '--import', GetoptLong::REQUIRED_ARGUMENT ]
         )
         begin
           opts.each { |opt, arg|
@@ -104,6 +106,8 @@ module Gamefic::Sdk
                 quiet = true
               when '--with-html'
                 html = arg
+              when '-i'
+                imports = arg.split(';')
             end
           }
         rescue Exception => e
@@ -135,6 +139,9 @@ module Gamefic::Sdk
         main_rb.write <<EOS
 import 'standard'
 EOS
+        imports.each { |i|
+          main_rb.write "import '#{i}'\n"
+        }
         main_rb.close
         test_rb = File.new(directory + '/test.rb', 'w')
         test_rb.write <<EOS
