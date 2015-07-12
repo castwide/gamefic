@@ -12,8 +12,10 @@ module Gamefic
       if orders.length == 0
         orders = Parser.from_string(actor, args.join(' ').strip)
       end
+      first_order = orders[0]
       del = Delegate.new(actor, orders)
       del.execute
+      first_order
     end
   end
 

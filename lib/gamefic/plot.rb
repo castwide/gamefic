@@ -84,6 +84,11 @@ module Gamefic
       update
     end
     def update
+      # TODO: This might not be the best way to reset
+      # player orders.
+      @players.each { |player|
+        player.instance_variable_set(:@last_order, nil)
+      }
       @update_procs.each { |p|
         p.call
       }

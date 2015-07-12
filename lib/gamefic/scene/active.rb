@@ -13,7 +13,8 @@ module Gamefic
     def finish actor, input
       @data.input = input
       if @finish.nil?
-        actor.perform data.input
+        last_order = actor.perform data.input
+        actor.instance_variable_set(:@last_order, last_order)
       else
         @finish.call actor, data
       end

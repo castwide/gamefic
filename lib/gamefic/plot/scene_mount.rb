@@ -79,7 +79,8 @@ module Gamefic
       end
       manager = scene_managers[key]
       if manager.nil?
-        actor.scene = nil
+        #actor.scene = nil
+        raise "No '#{key}' scene found"
       else
         actor.scene = manager.prepare key
         actor.scene.start actor

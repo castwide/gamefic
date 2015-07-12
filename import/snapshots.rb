@@ -79,7 +79,7 @@ on_update do
   last_snapshot = Snapshots.save(self)
 end
 on_player_update do |actor|
-  if !actor.last_command.nil? and actor.last_command.last.downcase != "undo"
+  if !actor.last_order.nil? and actor.last_order.action.verb != :undo
     Snapshots.history.push last_snapshot
   end
 end
