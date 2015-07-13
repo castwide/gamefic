@@ -40,9 +40,9 @@ module Gamefic
       @data.selection = nil
       index = input.to_i
       if @data.options[index - 1].nil?
-        # TODO: This should not raise an exception. It's just a placeholder
-        # until I configure a practical proc to handle invalid input.
-        raise "Invalid selection"
+        # TODO: Consider allowing for an error block to customize this
+        # response.
+        actor.tell "That's not a valid selection."
       else
         return if @finish.nil?
         @data.index = index - 1
