@@ -3,6 +3,7 @@ module Gamefic
   class Director
     autoload :Parser, 'gamefic/director/parser'
     autoload :Delegate, 'gamefic/director/delegate'
+    autoload :Order, 'gamefic/director/order'
     
     def self.dispatch(actor, *args)
       orders = []
