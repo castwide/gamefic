@@ -24,7 +24,7 @@ module OptionMap
     @option_map ||= Hash.new
   end
   def options cls, *args
-    os = OptionSet.new *args
+    os = OptionSet.new(*args)
     option_map[cls] ||= {}
     os.options.each { |o|
       if option_map[cls][o] != nil
