@@ -1,3 +1,6 @@
+class NotConclusionError < Exception
+end
+
 module Gamefic
 
   module Plot::SceneMount
@@ -14,7 +17,7 @@ module Gamefic
         config.start do |actor, data|
           data.options = args
         end
-        config.finish &block
+        config.finish(&block)
       end
     end
     def yes_or_no key, prompt = nil, &block
@@ -38,7 +41,7 @@ module Gamefic
     def prompt key, prompt, &block
       scene_managers[key] = SceneManager.new do |config|
         config.prompt = prompt
-        config.finish &block
+        config.finish(&block)
       end
     end  
     def pause key, &block
@@ -57,7 +60,7 @@ module Gamefic
     end
     def conclusion key, &block
       manager = ConcludedSceneManager.new do |config|
-        config.start &block
+        config.start(&block)
       end
       scene_managers[key] = manager
     end
@@ -93,7 +96,7 @@ module Gamefic
       key = :concluded if key.nil?
       manager = scene_managers[key]
       if manager.state != "Concluded"
-        raise "Selected scene '#{key}' is not a conclusion"
+        raise NotConclusionError("Cued scene '#{key}' is not a conclusion")
       end
       cue actor, key
     end
