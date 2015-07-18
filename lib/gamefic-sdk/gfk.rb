@@ -92,7 +92,7 @@ module Gamefic::Sdk
       end
       def init directory
         quiet = false
-        html = "standard"
+        html = nil
         imports = []
         opts = GetoptLong.new(
           [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
@@ -157,8 +157,10 @@ Build::Configuration.new do |config|
 end
 EOS
         Dir.mkdir(directory + '/html')
-        FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], directory + "/html")
-        FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/" + html + "/*"], directory + "/html")
+        if !html.nil?
+          FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], directory + "/html")
+          FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/" + html + "/*"], directory + "/html")
+        end
         build_rb.close
         #fetch directory
         puts "Game directory '#{directory}' initialized." unless quiet
