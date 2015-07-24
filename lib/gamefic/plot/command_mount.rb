@@ -11,10 +11,10 @@ module Gamefic
       self.action(command, *queries, &proc)
     end
     def interpret(*args)
-      xlate *args
+      xlate(*args)
     end
     def syntax(*args)
-      xlate *args
+      xlate(*args)
     end
     def xlate(*args)
       syn = Syntax.new(self, *args)

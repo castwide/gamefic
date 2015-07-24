@@ -36,7 +36,7 @@ describe Node do
     x.extend Node
     expect {
       x.parent = x
-    }.to raise_error
+    }.to raise_error CircularNodeReferenceError
   end
   it "does not permit circular references" do
     x = Object.new
@@ -53,6 +53,6 @@ describe Node do
       x.parent = y
       y.parent = z
       z.parent = x
-    }.to raise_error
+    }.to raise_error CircularNodeReferenceError
   end
 end

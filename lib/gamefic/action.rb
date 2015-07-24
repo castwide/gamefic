@@ -55,7 +55,7 @@ module Gamefic
 			@queries
 		end
     def execute *args
-      @proc.call *args
+      @proc.call(*args)
     end
     def signature
       sig = ["#{@command}"]

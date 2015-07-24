@@ -28,7 +28,7 @@ module Gamefic
           options
       end
       def self.from_string(actor, command)
-        # If we user Query::Base.new in the @disambiguator declaration, Opal
+        # If we use Query::Base.new in the @disambiguator declaration, Opal
         # passes the block to the query instead of the action.
         base = Query::Base.new
         @disambiguator = Meta.new nil, nil, base do |actor, entities|
@@ -109,8 +109,7 @@ module Gamefic
               end
             end
           else
-            # TODO: Better message
-            raise "Invalid object"
+            raise TypeError.new("Action parameters must inherit from Query::Base")
           end
         }
         if valid == true
@@ -123,14 +122,6 @@ module Gamefic
           objects.push Order.new(actor, action, prepared)
         end
         objects
-      end
-      class Order
-        attr_reader :actor, :action, :arguments
-        def initialize(actor, action, arguments)
-          @actor = actor
-          @action = action
-          @arguments = arguments
-        end
       end
     end
 
