@@ -18,6 +18,6 @@ respond :wear, Query::Reachable.new(Clothing) do |actor, clothing|
   end
 end
 
-xlate "put on :clothing", :wear, :clothing
-xlate "put :clothing on", :wear, :clothing
-xlate "don :clothing", :wear, :clothing
+xlate "put on :clothing", "wear :clothing"
+xlate "put :clothing on", "wear :clothing"
+xlate "don :clothing", "wear :clothing"
