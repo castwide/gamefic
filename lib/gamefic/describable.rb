@@ -13,10 +13,10 @@ module Gamefic
       @keywords = value
     end
     def indefinitely
-      (proper_named? ? '' : "#{indefinite_article} ") + name
+      ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name
     end
     def definitely
-      (proper_named? ? '' : "#{definite_article} ") + name
+      ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name
     end
     def definite_article
       @definite_article || "the"

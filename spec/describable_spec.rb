@@ -77,4 +77,12 @@ describe Describable do
     expect(d.definitely).to eq("the Hulk")
     expect(d.indefinitely).to eq("the Hulk")
   end
+  it "avoids extraneous spaces for blank articles" do
+    d = Described.new
+    d.name = "thing"
+    d.definite_article = ""
+    d.indefinite_article = ""
+    expect(d.definitely).to eq("thing")
+    expect(d.indefinitely).to eq("thing")
+  end
 end
