@@ -19,18 +19,18 @@ module Gamefic
       stage_class = Class.new(Object) do
         class << self
           def class_eval
-            raise "no"
+            raise NoMethodError.new("Method class_eval is not available from the stage.")
           end
 
           def instance_eval
-            raise "no"
+            raise NoMethodError.new("Method instance_eval is not available from the stage.")
           end
         end
 
         define_method(:initialize) do |instance|
           define_singleton_method(:__instance__) do
             unless caller[0].include?(__FILE__)
-              raise "no"
+              raise NoMethodError.new("Method __instance__ is not available from the stage.")
             end
             instance
           end
@@ -51,7 +51,7 @@ module Gamefic
         }
             
         define_method(:class_eval) do
-          raise "no"
+          raise NoMethodError.new("Method class_eval is not available from the stage.")
         end
       end
       @stage = stage_class.new(self)
