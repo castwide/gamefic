@@ -7,4 +7,7 @@ module Gamefic::Query
       [subject.parent]
     end
   end
+  def self.parent *args
+    Parent.new *args
+  end
 end

@@ -11,31 +11,36 @@
 #   * Entities inside closed transparent containers
 #   * Entities that share the same room as the subject, but not the same parent.
 
-class Gamefic::Query::Reachable < Query::Family
-  def context_from(subject)
-    array = super
-    if subject.is?(:supported) or subject.is?(:contained)
-      array.push subject.parent
-    end
-    if subject.parent != subject.room
-      array += subject.room.children
-    end
-    array.each { |thing|
-      if thing.kind_of?(Container)
-        if thing.is? :open
-          array += thing.children.that_are(:contained)
-        end
-      elsif thing.kind_of?(Supporter)
-        array += thing.children.that_are(:supported)
+module Gamefic::Query
+  class Reachable < Query::Family
+    def context_from(subject)
+      array = super
+      if subject.is?(:supported) or subject.is?(:contained)
+        array.push subject.parent
       end
-      thing.children.that_are(:attached).each { |att|
-        array.push att
-        if att.kind_of?(Supporter) or att.is?(:open)
-          array += att.children.that_are(:contained)
-          array += att.children.that_are(:supported)
+      if subject.parent != subject.room
+        array += subject.room.children
+      end
+      array.each { |thing|
+        if thing.kind_of?(Container)
+          if thing.is? :open
+            array += thing.children.that_are(:contained)
+          end
+        elsif thing.kind_of?(Supporter)
+          array += thing.children.that_are(:supported)
         end
+        thing.children.that_are(:attached).each { |att|
+          array.push att
+          if att.kind_of?(Supporter) or att.is?(:open)
+            array += att.children.that_are(:contained)
+            array += att.children.that_are(:supported)
+          end
+        }
       }
-    }
-    array.uniq
+      array.uniq
+    end
+  end
+  def self.reachable *args
+    Reachable.new *args
   end
 end

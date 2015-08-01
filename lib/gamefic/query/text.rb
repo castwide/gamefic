@@ -37,4 +37,7 @@ module Gamefic::Query
       end
     end
   end
+  def self.text *args
+    Text.new *args
+  end
 end
