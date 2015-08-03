@@ -1,3 +1,5 @@
+require 'gamefic/director/order'
+
 module Gamefic
   class Director
   
