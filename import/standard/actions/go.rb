@@ -34,6 +34,24 @@ respond :go, Query::Text.new() do |actor, string|
   actor.tell "You don't see any exit \"#{string}\" from here."
 end
 
+respond :go, Query.text do |actor, text|
+  # This version of the Go action identifies portals by their destinations.
+  portals = actor.room.children.that_are(Portal)
+  destinations = []
+  d_map = {}
+  portals.each { |portal|
+    next if portal.destination.nil?
+    destinations.push portal.destination
+    d_map[portal.destination] = portal
+  }
+  matches = Query::Base.new.execute(destinations, text)
+  if matches.objects.length == 1
+    actor.perform :go, d_map[matches.objects[0]]
+  else
+    actor.proceed
+  end
+end
+
 respond :go do |actor|
   actor.tell "Where do you want to go?"
 end
