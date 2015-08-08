@@ -1,6 +1,6 @@
-respond :take, Query::Text.new() do |actor, thing|
-  actor.tell "I don't see anything called '#{thing}' here."
-end
+#respond :take, Query::Text.new() do |actor, thing|
+#  actor.tell "I don't see anything called '#{thing}' here."
+#end
 
 respond :take, Query::Reachable.new(:not_portable) do |actor, thing|
   actor.tell "You can't take #{the thing}."

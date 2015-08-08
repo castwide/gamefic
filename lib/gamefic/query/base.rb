@@ -39,6 +39,14 @@ module Gamefic::Query
         objects = objects.that_are(arg)
       }
       matches = Matches.new(objects, matches.matching_text, matches.remainder)
+      if objects.length == 0 and matches.remainder == "it" and subject.respond_to?(:last_order)
+        if !subject.last_order.nil? and !subject.last_order.arguments[0].nil?
+          obj = subject.last_order.arguments[0]
+          if validate(subject, obj)
+            matches = Matches.new([obj], "it", "")
+          end
+        end
+      end
       @match_hash[subject] = matches
       matches
     end
