@@ -1,6 +1,10 @@
 require 'gamefic'
 include Gamefic
 
+module LastOrderTest
+  attr_accessor :last_order
+end
+
 describe Query::Base do
   it "finds an object by a word in its name" do
     plot = Plot.new
@@ -48,6 +52,18 @@ describe Query::Base do
     result = query.execute(plot.entities, 'book on table')
     expect(result.objects.length).to eq(1)
     expect(result.objects[0]).to eq(book1)
+  end
+  it "recognizes \"it\" as the object of the last order" do
+    plot = Plot.new
+    object1 = plot.make Entity, :name => 'object one'
+    object2 = plot.make Entity, :name => 'object two'
+    array = plot.entities
+    array.extend LastOrderTest
+    array.last_order = Gamefic::Director::Order.new(nil, nil, [object1])
+    query = Query::Base.new
+    result = query.execute(array, 'it')
+    expect(result.objects.length).to eq(1)
+    expect(result.objects[0]).to eq(object1)
   end
 end
 

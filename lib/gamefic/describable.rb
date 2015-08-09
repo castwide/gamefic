@@ -9,9 +9,6 @@ module Gamefic
     def keywords
       Keywords.new "#{name} #{synonyms}"
     end
-    def keywords=(value)
-      @keywords = value
-    end
     def indefinitely
       ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name
     end

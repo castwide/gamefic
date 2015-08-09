@@ -24,3 +24,12 @@ meta nil, Query::Text.new() do |actor, string|
     end
   end
 end
+
+meta nil, Query::Text.new("it") do |actor, string|
+  words = string.split_words
+  if commandwords.include?(words[0])
+    actor.tell "I'm not sure what you mean by \"it.\""
+  else
+    actor.proceed
+  end
+end

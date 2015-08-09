@@ -43,6 +43,7 @@ module Gamefic
         config.prompt = prompt
         config.finish(&block)
       end
+      scene_managers[key].state = "Prompted"
     end  
     def pause key, &block
       manager = PausedSceneManager.new do |config|
