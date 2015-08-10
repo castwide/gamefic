@@ -72,10 +72,11 @@ module Gamefic
         super
       end
       def size
-        if STDOUT.respond_to?(:winsize)
+        begin
           return STDOUT.winsize.reverse
+        rescue
+          return [nil,nil]
         end
-        return [nil,nil]
       end
       def flush
         data = @buffer.clone
