@@ -71,6 +71,7 @@ module Gamefic
     end
     def select(prompt)
       print "#{prompt} "
+      STDOUT.flush
       line = STDIN.gets
       @queue.push line.strip
     end

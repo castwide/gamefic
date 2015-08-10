@@ -52,6 +52,7 @@ module Gamefic::Sdk
     private
       def test path
         puts "Loading..."
+        STDOUT.flush
         if !File.exist?(path)
           raise "Invalid path: #{path}"
         end
