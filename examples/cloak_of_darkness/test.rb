@@ -1,12 +1,12 @@
 import 'standard/test'
 
-on_test :me do |actor|
-  actor.perform "s"
-  actor.perform "n"
-  actor.perform "w"
-  actor.perform "inventory"
-  actor.perform "hang cloak on hook"
-  actor.perform "e"
-  actor.perform "s"
-  actor.perform "read message"
+on_test :me do |actor, queue|
+  queue.push "s"
+  queue.push "n"
+  queue.push "w"
+  queue.push "inventory"
+  queue.push "hang cloak on hook"
+  queue.push "e"
+  queue.push "s"
+  queue.push "read message"
 end
