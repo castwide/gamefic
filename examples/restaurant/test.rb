@@ -1,14 +1,14 @@
 import 'standard/test'
 
-on_test :me do |actor|
-  actor.perform "n"
-  actor.perform "nw"
-  actor.perform "eat dinner"
-  actor.perform "se"
-  actor.perform "s"
-  actor.perform "w"
-  actor.perform "take jacket"
-  actor.perform "wear jacket"
-  actor.perform "e"
-  actor.perform "s"
+on_test :me do |actor, queue|
+  queue.push "n"
+  queue.push "nw"
+  queue.push "eat dinner"
+  queue.push "se"
+  queue.push "s"
+  queue.push "w"
+  queue.push "take jacket"
+  queue.push "wear jacket"
+  queue.push "e"
+  queue.push "s"
 end

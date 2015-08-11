@@ -1,11 +1,11 @@
 import 'standard/test'
 
-on_test :me do |actor|
-  actor.perform "look around"
-  actor.perform "look desk"
-  actor.perform "take key"
-  actor.perform "n"
-  actor.perform "unlock crate"
-  actor.perform "open crate"
-  actor.perform "take gold"
+on_test :me do |actor, queue|
+  queue.push "look around"
+  queue.push "look desk"
+  queue.push "take key"
+  queue.push "n"
+  queue.push "unlock crate"
+  queue.push "open crate"
+  queue.push "take gold"
 end
