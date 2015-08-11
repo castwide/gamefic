@@ -5,10 +5,11 @@ module Gamefic
       @test_procs ||= Hash.new
     end
     def on_test name = :me, &block
-      test_procs[name] = TestQueue.new(&block)
+      test_procs[name] = block
     end
     def run_test name, actor
-      queue = test_procs[name].prepare(actor)
+      queue = []
+      actor.plot.stage actor, queue, &test_procs[name]
       while queue.length > 0
         act = queue.shift
         if act.kind_of?(String)
@@ -22,22 +23,7 @@ module Gamefic
           update
         end
       end
-    end
-    
-    class TestQueue
-      def queue
-        @queue ||= []
-      end
-      def prepare actor
-        queue.clear
-        actor.plot.stage actor, queue, &@block
-        queue
-      end
-      def initialize &block
-        @block = block
-      end
-    end
-    
+    end    
   end
 
 end
