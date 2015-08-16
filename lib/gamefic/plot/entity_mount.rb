@@ -17,9 +17,6 @@ module Gamefic
       end
       result.objects[0]
     end
-    def _(description)
-      pick description
-    end
   end
 
 end
