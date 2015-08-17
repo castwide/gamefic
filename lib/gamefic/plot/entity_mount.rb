@@ -11,9 +11,9 @@ module Gamefic
     def pick(description)
       result = Query.match(description, entities)
       if result.objects.length == 0
-        raise "Unable to find entity from '#{description}'"
+        raise IndexError.new("Unable to find entity from '#{description}'")
       elsif result.objects.length > 1
-        raise "Ambiguous entities found from '#{description}'"
+        raise IndexError.new("Ambiguous entities found from '#{description}'")
       end
       result.objects[0]
     end
