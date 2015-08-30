@@ -8,6 +8,6 @@ module Gamefic::Query
     end
   end
   def self.children *args
-    Children *args
+    Children.new *args
   end
 end
