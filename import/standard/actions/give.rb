@@ -11,6 +11,10 @@ respond :give, Query::Reachable.new, Query::Children.new do |actor, character, g
   actor.tell "Nothing happens."
 end
 
+respond :give, Query::Reachable.new, Query::Reachable.new do |actor, character, gift|
+  actor.tell "You don't have #{the gift}."
+end
+
 respond :give, Query::Reachable.new(Character), Query::Children.new do |actor, character, gift|
   actor.tell "#{The character} doesn't want #{the gift}."
 end
