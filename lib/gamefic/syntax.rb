@@ -19,9 +19,11 @@ module Gamefic
       @command = command_words.join(' ')
       @template = words.join(' ')
       tokens = []
+      variable_tokens = []
       last_token_is_reg = false
       words.each { |w|
         if w.match(/^:[a-z0-9_]+$/i)
+          variable_tokens.push w
           if last_token_is_reg
             next
           else
@@ -37,7 +39,7 @@ module Gamefic
       index = 0
       command_words.each { |t|
         if t[0] == ':'
-          index += 1
+          index = variable_tokens.index(t) + 1
           subs.push "{$#{index}}"
         else
           subs.push t
@@ -72,7 +74,10 @@ module Gamefic
       matches = []
       syntaxes.each { |syntax|
         result = syntax.translate text
-        matches.push(result) if !result.nil?
+        #matches.push(result) if !result.nil?
+        if !result.nil?
+          matches.push(result)
+        end
       }
       matches
     end
