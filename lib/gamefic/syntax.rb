@@ -1,6 +1,7 @@
 module Gamefic
 
   class Syntax
+    autoload :Match, 'gamefic/syntax/match'
     attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
     def initialize plot, template, *command
@@ -62,7 +63,7 @@ module Gamefic
           arguments.push r
         end
       }
-      SyntaxMatch.new @verb, arguments
+      Syntax::Match.new @verb, arguments
     end
     def signature
       [@regexp, @replace]
@@ -74,19 +75,9 @@ module Gamefic
       matches = []
       syntaxes.each { |syntax|
         result = syntax.translate text
-        #matches.push(result) if !result.nil?
-        if !result.nil?
-          matches.push(result)
-        end
+        matches.push(result) if !result.nil?
       }
       matches
-    end
-    class SyntaxMatch
-      attr_reader :verb, :arguments
-      def initialize verb, arguments
-        @verb = verb
-        @arguments = arguments
-      end
     end
   end
 
