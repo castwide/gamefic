@@ -91,9 +91,10 @@ module Gamefic
         prepared = Array.new
         objects = Array.new
         valid = true
+        last_remainder = nil
         queries.clone.each { |context|
-          arg = arguments.shift
-          if arg == nil or arg == ''
+          arg = arguments.shift || last_remainder
+          if arg.nil? or arg == ''
             valid = false
             next
           end
@@ -106,9 +107,7 @@ module Gamefic
               next
             else
               prepared.push result.objects
-              if result.remainder
-                arguments.push result.remainder
-              end
+              last_remainder = result.remainder
             end
           else
             raise TypeError.new("Action parameters must inherit from Query::Base")
