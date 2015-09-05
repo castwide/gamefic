@@ -1,6 +1,7 @@
 class Gamefic::Portal < Entity
   attr_accessor :destination, :direction
   def find_reverse
+    return nil if destination.nil?
     rev = direction.reverse
     if rev != nil
       destination.children.that_are(Portal).each { |c|
