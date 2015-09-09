@@ -46,7 +46,7 @@ module Gamefic::Sdk
         when 'help'
           help ARGV.shift
         else
-          help
+          help nil
       end
     end
     private
@@ -309,7 +309,7 @@ everything from source.
 EOS
           when nil, "help"
           puts <<EOS
-#{shell_script} init [dir] - initialize a Gamefic source directory
+#{shell_script} init [directory] - initialize a Gamefic source directory
 #{shell_script} test [path] - test a Gamefic source directory or script
 #{shell_script} fetch [directory] - copy shared scripts into directory
 #{shell_script} build [directory] - build games
