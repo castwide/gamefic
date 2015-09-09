@@ -71,8 +71,8 @@ module Gamefic::Sdk
           if File.file?(path + '/build.rb')
             build_file = path + '/build.rb'
           end
-          if File.file?(path + '/test.rb')
-            test_file = path + '/test.rb'
+          if File.file?(path + '/test.plot')
+            test_file = path + '/test.plot'
           end
           main_file = path + '/main.' + ext
           config = Build.load build_file
@@ -144,7 +144,7 @@ EOS
           main_rb.write "import '#{i}'\n"
         }
         main_rb.close
-        test_rb = File.new(directory + '/test.rb', 'w')
+        test_rb = File.new(directory + '/test.plot', 'w')
         test_rb.write <<EOS
 import 'standard/test'
 EOS
