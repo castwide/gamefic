@@ -14,5 +14,6 @@ Gem::Specification.new do |s|
 	s.homepage    = 'http://gamefic.com'
 	s.license     = 'MIT'
 	s.required_ruby_version = '>= 1.9.3'
+	s.add_runtime_dependency 'rubyzip'
 	s.add_development_dependency 'rspec'
 end
