@@ -1,5 +1,8 @@
 module Gamefic::Query
   class Base
+    # Include is necessary here due to a strange namespace
+    # resolution bug when interpreting gfic files
+    include Gamefic
     @@last_new = nil
     attr_accessor :arguments
     def self.last_new
