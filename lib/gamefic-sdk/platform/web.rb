@@ -22,8 +22,8 @@ module Gamefic::Sdk
         end
       }
       FileUtils.mkdir_p build_dir if !File.exist?(build_dir)
-      FileUtils.remove_entry_secure target_dir if File.exist?(target_dir)
-      FileUtils.mkdir_p target_dir
+      FileUtils.rm_r Dir.glob("#{target_dir}/*") if File.exist?(target_dir)
+      FileUtils.mkdir_p target_dir if !File.exist?(target_dir)
       FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], target_dir)
       if config[:html_skin].to_s != ''
         skin = nil
