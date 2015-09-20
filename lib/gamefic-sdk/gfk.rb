@@ -4,6 +4,7 @@ require 'getoptlong'
 require 'gamefic/engine/tty'
 require 'gamefic-sdk'
 require 'gamefic-sdk/build'
+require 'securerandom'
 include Gamefic
 
 module Gamefic::Sdk
@@ -148,7 +149,8 @@ EOS
           FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/" + html + "/*"], directory + "/html")
         end
         build_rb.close
-        #fetch directory
+        uuid = SecureRandom.uuid
+        File.open("#{directory}/.uuid", "w") { |f| f.write uuid }
         puts "Game directory '#{directory}' initialized." unless quiet
       end
       def fetch directory
