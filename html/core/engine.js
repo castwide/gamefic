@@ -21,11 +21,11 @@ Gamefic.Engine = new function() {
 	this.save = function() {
 		var hash = Opal.Gamefic.Snapshots.$save(Opal.Gamefic.$static_plot()).$to_n();
 		var json = JSON.stringify(hash);
-		Cookies.set('snapshot', json, { expires: 1000, path: '' });
-		Opal.Gamefic.$static_player().$character().$tell('Game saved to cookies.');
+		localStorage.setItem('snapshot', json);
+		Opal.Gamefic.$static_player().$character().$tell('Game saved to local storage.');
 	}
 	this.restore = function() {
-		var json = Cookies.get('snapshot');
+		var json = localStorage.getItem('snapshot');
 		if (json) {
 			Opal.Gamefic.Snapshots.$restore(json, Opal.Gamefic.$static_plot());
 			Opal.Gamefic.$static_player().$character().$tell('Saved game restored.');

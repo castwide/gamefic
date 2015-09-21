@@ -1,17 +1,24 @@
 module Gamefic::Snapshots
+  def self.make_identifier entity
+      identifier = "ENTITY<" + entity.name
+      up = entity.parent
+      while !up.nil?
+        identifier += "|#{up.name}"
+        up = up.parent
+      end
+      identifier += ">"
+      identifier
+  end
+  def self.is_identifier? value
+    value.kind_of?(String) and value.start_with?("ENTITY<") and value.end_with?(">")
+  end
   @@identifiers = {}
   def self.history
     @@history ||= []
   end
   def self.initialize(plot)
     plot.entities.each { |entity|
-      identifier = entity.name
-      up = entity.parent
-      while !up.nil?
-        identifier += "|#{up.name}"
-        up = up.parent
-      end
-      @@identifiers[entity] = identifier
+      @@identifiers[entity] = make_identifier(entity)
     }
   end
   def self.save(plot)
@@ -25,11 +32,12 @@ module Gamefic::Snapshots
     if snapshot.kind_of?(String)
       snapshot = JSON.parse(snapshot, :symbolize_names => true)
     end
+    lookup = @@identifiers.invert
     snapshot.each { |hash|
-      entity = @@identifiers.key(hash[:identifier])
+      entity = lookup[hash[:identifier]]
       if !entity.nil?
         unserialize(hash, entity)
-        entity.parent = @@identifiers.key(hash[:parent])
+        #entity.parent = lookup[hash[:parent]]
       else
         raise "Unable to find entity named #{hash[:name]} with identifier #{hash[:identifier]}"
       end
@@ -42,7 +50,11 @@ module Gamefic::Snapshots
       if entity.respond_to?("#{symbol}=")
         value = entity.instance_variable_get(variable)
         if !is_blacklisted?(symbol) and is_serializable?(value)
-          hash[symbol] = value
+          if value.kind_of?(Entity)
+            hash[symbol] = @@identifiers[value]
+          else
+            hash[symbol] = value
+          end
         end
       end
       hash[:identifier] = @@identifiers[entity]
@@ -51,18 +63,23 @@ module Gamefic::Snapshots
     hash
   end
   def self.unserialize(hash, entity)
+    lookup = @@identifiers.invert
     hash.each { |k, v|
       if !is_blacklisted?(k)
-        entity.send("#{k}=", v)
+        if is_identifier?(v)
+          entity.send("#{k}=", lookup[v])
+        else
+          entity.send("#{k}=", v)
+        end
       end
     }
   end
   private
   def self.is_blacklisted?(symbol)
-    [:parent, :children, :session, :identifier].include?(symbol)
+    [:children, :session, :identifier].include?(symbol)
   end
   def self.is_serializable?(value)
-    return (value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(Entity))
+    return (value.kind_of?(String) or value.kind_of?(Numeric) or value.kind_of?(Entity) or value.kind_of?(Symbol))
   end
 end
 
