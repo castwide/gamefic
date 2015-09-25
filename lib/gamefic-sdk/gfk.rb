@@ -11,7 +11,7 @@ module Gamefic::Sdk
   class Gfk
     attr_accessor :argv
     def initialize
-    
+        
     end
     def execute
       if ARGV.length == 0

@@ -63,6 +63,14 @@ respond :take, Query::Children.new() do |actor, thing|
   actor.tell "You're already carrying #{the thing}."
 end
 
+respond :take, Query.reachable(Rubble) do |actor, rubble|
+  actor.tell "You don't have any use for #{the rubble}."
+end
+
+respond :take, Query.text do |actor, text|
+  actor.tell "You don't see any \"#{text}\" here."
+end
+
 xlate "get :thing", "take :thing"
 xlate "pick up :thing", "take :thing"
 xlate "pick :thing up", "take :thing"
@@ -74,6 +82,7 @@ xlate "pick :thing up", "take :thing"
 #   * take red key
 #   * take key from room
 #   * take key from box
+# TODO: This might not be necessary anymore, since queries can recurse through children.
 respond :take_from, Query::Room.new(), Query::Siblings.new() do |actor, container, thing|
   actor.perform :take, thing
 end

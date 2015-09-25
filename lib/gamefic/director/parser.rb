@@ -66,7 +66,8 @@ module Gamefic
                 options.push Order.new(actor, order.action, args)
               else
                 # One of the arguments was ambiguous (more than one matching object)
-                options.push Order.new(actor, @disambiguator, [invalid_argument])
+                # HACK The disambiguator always takes precedence over other actions
+                options.unshift Order.new(actor, @disambiguator, [invalid_argument])
               end
             }
           }

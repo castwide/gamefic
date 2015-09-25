@@ -9,12 +9,12 @@ module Gamefic
       words = template.split_words
       @token_count = words.length
       command_words = command.split_words
+      @verb = nil
       if words[0][0] == ':'
         @token_count -= 1
-        @verb = nil
         @first_word = ''
       else
-        @verb = command_words[0].to_sym
+        @verb = command_words[0].to_sym if !command_words[0].nil?
         @first_word = words[0].to_s
       end
       @command = command_words.join(' ')
@@ -56,7 +56,7 @@ module Gamefic
       m = text.match(@regexp)
       return nil if m.nil?
       arguments = []
-      @replace.split_words.each { |r|
+      @replace.to_s.split_words.each { |r|
         if r.match(/^\{\$[0-9]+\}$/)
           arguments.push m[r[2..-2].to_i]
         else
