@@ -7,7 +7,7 @@ respond :look, Query::Room.new(Room) do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description
   with_locales = []
-  chars = room.children.that_are(Character) - [actor]
+  chars = room.children.that_are(Character).that_are(:itemized) - [actor]
   charsum = []
   chars.each { |char|
     if char.locale_description != ""
@@ -85,9 +85,9 @@ end
 respond :look, Query::Visible.new(Supporter) do |actor, supporter|
   actor.proceed
   supported = supporter.children.that_are(:supported)
-  supported.each { |thing|
-    actor.tell "You see #{a thing} sitting there."
-  }
+  if supported.length > 0
+    actor.tell "You see #{supported.join_and} sitting there."
+  end
 end
 
 respond :look, Query::Reachable.new(Door, :openable) do |actor, door|

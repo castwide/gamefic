@@ -17,10 +17,10 @@ meta nil, Query::Text.new() do |actor, string|
     if found.length == 1
       words[0] = found[0]
       actor.perform words.join(' ')
-    elsif found.length > 1
+    elsif found.length > 1 and words[0].length > 2
       actor.tell "I'm not sure if #{words[0]} means #{found.join_and(', ', ' or ')}."
     else
-      actor.tell "I don't know what you mean by '#{string}.'"
+      actor.tell "I don't recognize '#{words[0]}' as a verb."
     end
   end
 end
