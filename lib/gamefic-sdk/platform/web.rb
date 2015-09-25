@@ -6,7 +6,7 @@ module Gamefic::Sdk
 
   class Web < Platform
     def defaults
-      @@defaults ||= {
+      @defaults ||= {
         :html_skin => 'multimedia',
         :with_media => true
       }
