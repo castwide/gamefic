@@ -178,7 +178,7 @@ module Gamefic
           b.specificity <=> a.specificity
         end
       }
-      user_friendly = action.command.to_s
+      user_friendly = action.command.to_s.gsub(/_/, ' ')
       args = Array.new
       used_names = Array.new
       action.queries.each { |c|
