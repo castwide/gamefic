@@ -59,7 +59,7 @@ module Gamefic
       (@description.to_s != '')
     end
     def description
-      @description || (Describable.default_description % self.definitely)
+      @description || (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
     end
     def description=(value)
       @description = value
@@ -68,7 +68,7 @@ module Gamefic
       @default_description = text
     end
     def self.default_description
-      @default_description || "There's nothing special about %s."
+      @default_description || "There's nothing special about %{name}."
     end
     def to_s
       indefinitely
