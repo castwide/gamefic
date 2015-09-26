@@ -10,7 +10,6 @@ module ExplicitExits
     @default
   end
   def self.default=(bool)
-    puts "Default is now #{bool}"
     @default = bool
   end
 end
