@@ -1,5 +1,5 @@
 class Gamefic::Scenery < Gamefic::Thing
   def pre_initialize
-    itemized = false
+    self.itemized = false
   end
 end

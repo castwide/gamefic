@@ -19,7 +19,7 @@ respond :look, Query::Room.new(Room) do |actor, room|
   if charsum.length > 0
     actor.tell "#{charsum.join_and.cap_first} #{charsum.length == 1 ? 'is' : 'are'} here."
   end
-  items = room.children.that_are(:itemized?) - [actor] - room.children.that_are(Character)
+  items = room.children.that_are(:itemized?) - [actor] - room.children.that_are(Character) - room.children.that_are(Portal)
   itemsum = []
   items.each { |item|
     if item.locale_description != ""
