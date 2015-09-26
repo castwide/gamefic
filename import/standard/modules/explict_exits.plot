@@ -1,6 +1,16 @@
 module ExplicitExits
   attr_writer :explicit_exits
   def explicit_exits?
-    @explicit_exits ||= true
+    @explicit_exits ||= ExplicitExits.default
+  end
+  def self.default
+    if @default.nil?
+      @default = true
+    end
+    @default
+  end
+  def self.default=(bool)
+    puts "Default is now #{bool}"
+    @default = bool
   end
 end

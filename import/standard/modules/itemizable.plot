@@ -1,6 +1,9 @@
 module Itemizable
   attr_writer :itemized
   def itemized?
-    @itemized ||= true
+    if @itemized.nil?
+      @itemized = true
+    end
+    @itemized
   end
 end
