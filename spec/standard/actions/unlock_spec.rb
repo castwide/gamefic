@@ -1,4 +1,4 @@
-describe "Lockable Container" do
+describe "Lock Action" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     @plot.import 'standard'
@@ -8,21 +8,10 @@ describe "Lockable Container" do
     @character = @plot.make Character, :name => 'a character', :parent => @room
     @key.parent = @character
   end
-  it "starts closed" do
+  it "unlocks a locked container" do
+    @box.locked = true
+    @character.perform :unlock, @box
     expect(@box.open?).to be(false)
-  end
-  it "starts unlocked" do
     expect(@box.locked?).to be(false)
-  end
-  it "closes a locked box" do
-    @box.open = true
-    @box.locked = true
-    expect(@box.open?).to be(false)
-    expect(@box.locked?).to be(true)
-  end
-  it "cannot be opened when locked" do
-    @box.locked = true
-    @character.perform :open, @box
-    expect(@box.locked?).to be(true)
   end
 end
