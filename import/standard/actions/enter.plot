@@ -1,8 +1,8 @@
-respond :enter, Query::Siblings.new(Supporter, :enterable) do |actor, supporter|
+respond :enter, Query::Siblings.new(Supporter, :enterable?) do |actor, supporter|
   actor.parent = supporter
   actor.tell "You get on #{the supporter}."
 end
-respond :enter, Query::Siblings.new(Container, :enterable) do |actor, container|
+respond :enter, Query::Siblings.new(Container, :enterable?) do |actor, container|
   actor.parent = container
   actor.tell "You get in #{the container}."
 end

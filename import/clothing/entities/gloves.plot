@@ -1,5 +1,5 @@
 import 'clothing/entities/clothing'
 
-class Gamefic::Gloves < Clothing
+class Gamefic::Gloves < Gamefic::Clothing
 
 end

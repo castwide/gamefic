@@ -1,5 +1,3 @@
-class Gamefic::Fixture < Thing
+class Gamefic::Fixture < Gamefic::Thing
 
 end
-
-set_default_for(Fixture, :not_portable)

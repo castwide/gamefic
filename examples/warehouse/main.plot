@@ -12,7 +12,7 @@ desk = make Supporter, :name => 'a desk', :description => 'A plain wooden desk.'
 
 chair = make Supporter, :name => 'a chair', :description => 'A straight-backed wooden chair.', :parent => office
 # Make the chair enterable so the player can use it.
-chair.is :enterable
+chair.enterable = true
 
 key = make Item, :name => 'a key', :description => 'A small key for a padlock.', :parent => desk
 
@@ -21,8 +21,8 @@ stacks.connect office, 'south'
 
 # Containers have a key property that indicates which entity unlocks it.
 # Setting the key property automatically selects the :lockable option.
-crate = make Container, :name => 'a crate', :description => 'A large wooden crate. According to the label, it was shipped from Fort Knox, Kentucky.', :parent => stacks, :key => key
-crate.is :locked
+crate = make Container, :name => 'a crate', :description => 'A large wooden crate. According to the label, it was shipped from Fort Knox, Kentucky.', :parent => stacks, :lock_key => key
+crate.locked = true
 
 gold = make Item, :name => 'a gold brick', :description => 'A shiny gold brick.', :parent => crate
 

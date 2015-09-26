@@ -7,7 +7,4 @@ module Gamefic::Query
       subject.children
     end
   end
-  def self.children *args
-    Children.new *args
-  end
 end

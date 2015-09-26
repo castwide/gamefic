@@ -1,6 +1,3 @@
-class Gamefic::Supporter < Thing
-
+class Gamefic::Supporter < Gamefic::Thing
+  include Enterable
 end
-
-options(Supporter, :not_enterable, :enterable)
-set_default_for(Supporter, :not_portable)

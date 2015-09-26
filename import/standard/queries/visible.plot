@@ -10,7 +10,7 @@
 #   * Entities attached to reachable entities
 
 module Gamefic::Query
-  class Visible < Query::Family
+  class Visible < Family
     def base_specificity
       40
     end
@@ -20,23 +20,25 @@ module Gamefic::Query
       array.uniq!
       array.each { |thing|
         if thing.kind_of?(Container)
-          if thing.is? :open or thing.is? :transparent
-            array += thing.children.that_are(:contained)
+          if thing.open? or thing.transparent?
+            array += thing.children.that_are_not(:attached?)
           end
         elsif thing.kind_of?(Supporter)
-          array += thing.children.that_are(:supported)
+          array += thing.children.that_are_not(:attached?)
         end
-        thing.children.that_are(:attached).each { |att|
+        thing.children.that_are(:attached?).each { |att|
           array.push att
-          if att.kind_of?(Supporter) or att.is?(:open)
-            array += att.children.that_are(:contained)
-            array += att.children.that_are(:supported)
+          if att.kind_of?(Supporter) or (att.kind_of?(Container) and (att.open? or att.transparent?))
+            array += att.children.that_are_not(:attached)
           end
         }
       }
-      array
+      array - [subject]
     end
   end
+end
+
+module Query
   def self.visible *args
     Visible.new *args
   end

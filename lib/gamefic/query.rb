@@ -34,7 +34,8 @@ module Gamefic
       while keywords.length > 0
         next_word = keywords.shift
         if @@subquery_prepositions.include?(next_word)
-          in_matched = self.match(keywords.join(' '), array)
+          so_far = keywords.join(' ')
+          in_matched = self.match(so_far, array)
           if in_matched.objects.length == 1
             # Subset matching should only consider the intersection of the
             # original array and the matched object's children. This ensures

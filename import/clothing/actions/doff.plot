@@ -1,8 +1,8 @@
 respond :doff, Query::Children.new(Clothing) do |actor, clothing|
-  if clothing.is?(:not_worn)
+  if !clothing.attached?
     actor.tell "You're not wearing #{the clothing}."
   else
-    clothing.is :not_worn
+    clothing.attached = false
     actor.tell "You take off #{the clothing}."
   end
 end

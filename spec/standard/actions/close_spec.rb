@@ -4,10 +4,9 @@ describe "Close Action" do
     plot.import 'standard'
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
-    container.is :openable, :open
+    container.open = true
     character = plot.make Character, :name => 'character', :parent => room
     character.perform "close container"
-    expect(container.is?(:closed)).to eq(true)
-    expect(container.is?(:open)).to eq(false)
+    expect(container.open?).to eq(false)
   end
 end

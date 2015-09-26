@@ -1,5 +1,5 @@
-class Gamefic::Scenery < Thing
-
+class Gamefic::Scenery < Gamefic::Thing
+  def pre_initialize
+    itemized = false
+  end
 end
-set_default_for(Scenery, :not_portable)
-set_default_for(Scenery, :not_itemized)

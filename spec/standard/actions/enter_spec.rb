@@ -8,22 +8,22 @@ describe "Enter Action" do
     @container = @plot.make Container, :name => 'container', :parent => @room
   end
   it "enters an enterable supporter" do
-    @supporter.is :enterable
+    @supporter.enterable = true
     @character.perform "enter supporter"
     expect(@character.parent).to eq(@supporter)
   end
   it "enters an enterable container" do
-    @container.is :enterable
+    @container.enterable = true
     @character.perform "enter container"
     expect(@character.parent).to eq(@container)
   end
-  it "does not enter a not_enterable supporter" do
-    @supporter.is :not_enterable
+  it "does not enter a not-enterable supporter" do
+    @supporter.enterable = false
     @character.perform "enter supporter"
     expect(@character.parent).not_to eq(@supporter)
   end
-  it "does not enter a not_enterable container" do
-    @supporter.is :not_enterable
+  it "does not enter a not-enterable container" do
+    @supporter.enterable = false
     @character.perform "enter supporter"
     expect(@character.parent).not_to eq(@supporter)  
   end

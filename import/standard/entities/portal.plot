@@ -1,4 +1,4 @@
-class Gamefic::Portal < Entity
+class Gamefic::Portal < Gamefic::Entity
   attr_accessor :destination, :direction
   def find_reverse
     return nil if destination.nil?

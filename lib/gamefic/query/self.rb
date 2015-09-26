@@ -7,7 +7,4 @@ module Gamefic::Query
       [subject]
     end
   end
-  def self.itself *args
-    Self.new *args
-  end
 end

@@ -13,7 +13,6 @@ end
 
 respond :drop_on, Query::Children.new(), Query::Reachable.new(Supporter) do |actor, thing, supporter|
   thing.parent = supporter
-  thing.is :supported
   actor.tell "You put #{the thing} on #{the supporter}."
 end
 

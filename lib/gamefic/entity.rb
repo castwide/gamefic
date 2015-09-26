@@ -7,7 +7,6 @@ module Gamefic
   class Entity
     include Node
     include Describable
-    include OptionSettings
     attr_reader :session, :plot
     def initialize(plot, args = {})
       if (plot.kind_of?(Plot) == false)

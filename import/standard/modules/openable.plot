@@ -1,14 +1,9 @@
 module Openable
-  def open
-    @closed = false
-  end
-  def close
-    @closed = true
-  end
+  attr_writer :open
   def open?
-    !@closed
+    @open ||= false
   end
   def closed?
-    @closed ||= true
+    !open?
   end
 end

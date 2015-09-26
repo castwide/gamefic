@@ -6,11 +6,11 @@ respond :close, Query::Reachable.new() do |actor, thing|
   actor.tell "You can't close #{the thing}."
 end
 
-respond :close, Query::Reachable.new(:openable) do |actor, container|
-  if container.is? :closed or container.is? :locked
+respond :close, Query::Reachable.new(Openable) do |actor, container|
+  if !container.open?
     actor.tell "It's already closed."
   else
     actor.tell "You close #{the container}."
-    container.is :closed
+    container.open = false
   end
 end

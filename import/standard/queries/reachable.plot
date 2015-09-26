@@ -12,10 +12,10 @@
 #   * Entities that share the same room as the subject, but not the same parent.
 
 module Gamefic::Query
-  class Reachable < Query::Family
+  class Reachable < Family
     def context_from(subject)
       array = super
-      if subject.is?(:supported) or subject.is?(:contained)
+      if subject.parent.kind_of?(Container) || subject.parent.kind_of?(Supporter)
         array.push subject.parent
       end
       if subject.parent != subject.room
@@ -23,24 +23,26 @@ module Gamefic::Query
       end
       array.each { |thing|
         if thing.kind_of?(Container)
-          if thing.is? :open
-            array += thing.children.that_are(:contained)
+          if thing.open?
+            array += thing.children.that_are_not(:attached?)
           end
-        elsif thing.kind_of?(Supporter)
-          array += thing.children.that_are(:supported)
+        elsif thing.kind_of?(Supporter) or thing == subject
+          array += thing.children.that_are_not(:attached?)
         end
-        thing.children.that_are(:attached).each { |att|
+        thing.children.that_are(:attached?).each { |att|
           array.push att
-          if att.kind_of?(Supporter) or att.is?(:open)
-            array += att.children.that_are(:contained)
-            array += att.children.that_are(:supported)
+          if att.kind_of?(Supporter) or (att.kind_of?(Container) and att.open?)
+            array += att.children
           end
         }
       }
-      array.uniq
+      array.uniq - [subject]
     end
   end
+end
+
+module Query
   def self.reachable *args
-    Reachable.new *args
-  end
+    Gamefic::Query::Reachable.new *args
+  end  
 end

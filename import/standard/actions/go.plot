@@ -26,7 +26,7 @@ respond :go, Query::Reachable.new(Door) do |actor, door|
   end
 end
 
-respond :go, Query::Reachable.new(Door, :closed, :not_automatic) do |actor, door|
+respond :go, Query::Reachable.new(Door, :closed?) do |actor, door|
   actor.tell "#{The door} is closed."
 end
 

@@ -85,7 +85,7 @@ end
 bar = make Room, 
   :name => "Foyer Bar", 
   :description => "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty. There seems to be some sort of message scrawled in the sawdust on the floor."
-bar.is :dark
+bar.dark = true
 foyer.connect bar, "south"
 
 
@@ -112,11 +112,11 @@ xlate "read :message", "look :message"
 
 assert_action :has_enough_light do |actor, action|
   if cloak.parent == actor
-    bar.is :dark
+    bar.dark = true
   else
-    bar.is :lighted
+    bar.dark = false
   end
-  if actor.room.is? :dark
+  if actor.room.dark?
     if action == :go
       true
     elsif action == :look

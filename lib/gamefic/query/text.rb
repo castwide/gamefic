@@ -36,8 +36,8 @@ module Gamefic::Query
         return Matches.new([], '', description)
       end
     end
-  end
-  def self.text *args
-    Text.new *args
+    def test_arguments arguments
+      # No test for text
+    end
   end
 end

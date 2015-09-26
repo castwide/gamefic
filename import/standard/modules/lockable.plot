@@ -1,12 +1,23 @@
+import 'standard/modules/openable'
+
 module Lockable
   include Openable
   attr_reader :lock_key
-  def lockable=(bool)
-    @lockable = bool
-    openable = true if @lockable
+  def locked=(bool)
+    @locked = bool
+    if @locked == true
+      self.open = false
+    end
   end
-  def lockable?
-    @lockable ||= false
+  def open=(bool)
+    @open = bool
+    @locked = false if @open == true
+  end
+  def locked?
+    @locked ||= false
+  end
+  def has_lock_key?
+    !@lock_key.nil?
   end
   def lock_key=(entity)
     lockable = true

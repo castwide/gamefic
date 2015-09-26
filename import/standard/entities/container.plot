@@ -1,17 +1,6 @@
-class Gamefic::Container < Thing
-  attr_reader :key
-  def key=(entity)
-    @key = entity
-    if !@key.nil?
-      is :openable, :lockable
-    end
-  end
+class Gamefic::Container < Gamefic::Entity
+  include Enterable
+  include Openable
+  include Lockable
+  include Transparent
 end
-
-options(Container, :not_enterable, :enterable)
-options(Container, :opaque, :transparent)
-options(Container, :open, :closed, :locked)
-options(Container, :not_openable, :openable)
-options(Container, :not_lockable, :lockable)
-options(Container, :auto_lockable, :not_auto_lockable)
-set_default_for(Container, :not_portable)

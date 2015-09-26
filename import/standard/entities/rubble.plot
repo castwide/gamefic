@@ -6,6 +6,6 @@ import 'standard/entities/scenery'
 # like a table or the sky; and Rubble is something that might
 # be portable but is otherwise useless, like trash or debris.
 
-class Gamefic::Rubble < Scenery
+class Gamefic::Rubble < Gamefic::Scenery
   
 end

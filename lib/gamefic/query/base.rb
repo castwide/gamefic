@@ -9,6 +9,7 @@ module Gamefic::Query
       @@last_new
     end
     def initialize *arguments
+      test_arguments arguments
       @optional = false
       if arguments.include?(:optional)
         @optional = true
@@ -81,6 +82,29 @@ module Gamefic::Query
     end
     def signature
       return "#{self.class}(#{@arguments.join(',')})"
+    end
+    def test_arguments arguments
+      cur_class = Gamefic::Entity
+      cur_object = nil
+      arguments.each { |a|
+        if a.kind_of?(Class) or a.kind_of?(Module)
+          cur_class = a
+        elsif a.kind_of?(cur_class)
+          cur_object = a
+        elsif a.kind_of?(Symbol)
+          if !cur_object.nil?
+            if !cur_object.respond_to?(a)
+              raise ArgumentError.new("Query signature target does not respond to #{a}")
+            end
+          else
+            if !cur_class.instance_methods.include?(a)
+              raise ArgumentError.new("Query signature target methods do not include #{a}")
+            end
+          end
+        else
+          raise ArgumentError.new("What the heck is this?")
+        end
+      }
     end
   end
 end

@@ -1,6 +1,8 @@
 import 'standard/entities/portal'
 
-class Gamefic::Door < Portal
+class Gamefic::Door < Gamefic::Portal
+  include Openable
+  include Lockable
   attr_reader :key
   def post_initialize
     super
@@ -10,27 +12,18 @@ class Gamefic::Door < Portal
       self.name = "the #{@direction.adjective} door"
     end
   end
-  def key=(entity)
-    @key = entity
-    if !@key.nil?
-      is :openable, :lockable
-    end
-    if !find_reverse.nil?
-      find_reverse.instance_variable_set(:@key, entity)
+  def open=(bool)
+    super
+    rev = find_reverse
+    if !rev.nil? and rev.open? != bool
+      rev.open = bool
     end
   end
-  def is(*opts)
+  def locked=(bool)
     super
-    if !self.find_reverse.nil?
-      opts.each { |opt|
-        find_reverse.option_select opt
-      }
+    rev = find_reverse
+    if !rev.nil? and rev.locked? != bool
+      rev.locked = bool
     end
   end
 end
-
-options Door, :automatic, :not_automatic
-options Door, :open, :closed, :locked
-options Door, :openable, :not_openable
-options Door, :not_lockable, :lockable
-options Door, :auto_lockable, :not_auto_lockable

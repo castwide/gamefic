@@ -28,10 +28,10 @@ corner.connect dining, "southeast"
 table = make Supporter, :name => 'table', :description => 'A cozy booth.', :parent => corner
 
 chicken = make Item, :name => 'a chicken dinner', :description => 'A succulent roast chicken breast with a vegetable medley.', :parent => table
-chicken.is :edible
+chicken.edible = true
 
 seat = make Supporter, :name => 'seat', :description => 'The seat.', :parent => corner
-seat.is :enterable
+seat.enterable = true
 
 door = make Portal, :name => 'south', :parent => lobby, :proper_named => true
 
@@ -41,7 +41,7 @@ respond :go, Query::Siblings.new(door) do |actor, door|
     actor.tell "You can't leave the restaurant yet. You're still hungry!"
   # Just for extra fun, we'll require the player to put on the jacket before
   # leaving.
-  elsif jacket.parent == actor and jacket.is?(:worn)
+  elsif jacket.parent == actor and jacket.attached?
     conclude actor, :finished
   else
     actor.tell "Hmm... it looks a little cold out there. You're not dressed for it right now."

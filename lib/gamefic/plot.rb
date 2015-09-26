@@ -5,6 +5,7 @@ require 'gamefic/tester'
 require 'gamefic/describable_articles'
 require 'gamefic/source'
 require 'gamefic/script'
+require 'gamefic/query'
 
 module Gamefic
 
@@ -12,10 +13,11 @@ module Gamefic
     autoload :SceneMount, 'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :EntityMount, 'gamefic/plot/entity_mount'
+    autoload :QueryMount, 'gamefic/plot/query_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage
-    mount OptionMap, DescribableArticles, Tester, SceneMount, CommandMount, EntityMount
+    mount DescribableArticles, Tester, SceneMount, CommandMount, EntityMount, QueryMount
     expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities
     def initialize(source = nil)
       @source = source || Source.new

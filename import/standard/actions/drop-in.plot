@@ -12,11 +12,10 @@ respond :drop_in, Query::Visible.new(), Query::Reachable.new(Container) do |acto
 end
 
 respond :drop_in, Query::Children.new(), Query::Reachable.new(Container) do |actor, thing, container|
-  if container.is? :closed
+  if !container.open?
     actor.tell "#{The container} is closed."
   else
     thing.parent = container
-    thing.is :contained
     actor.tell "You put #{the thing} in #{the container}."
   end
 end

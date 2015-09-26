@@ -17,7 +17,4 @@ module Gamefic::Query
       last.objects[0].children
     end
   end
-  def self.subquery *args
-    Subquery.new *args
-  end
 end

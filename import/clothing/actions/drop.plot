@@ -1,6 +1,8 @@
-respond :drop, Query::Children.new(Clothing, :worn) do |actor, clothing|
-  actor.perform :doff, clothing
-  if !clothing.is?(:worn)
+respond :drop, Query::Children.new(Clothing) do |actor, clothing|
+  if clothing.attached?
+    actor.perform :doff, clothing
+  end
+  if !clothing.attached?
     actor.proceed
   end
 end

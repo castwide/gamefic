@@ -1,7 +1,7 @@
 module Gamefic
 
   class Action
-    attr_reader :order_key, :caller
+    attr_reader :order_key, :caller, :queries
     @@order_key_seed = 0
     def initialize(story, command, *queries, &proc)
       if !command.kind_of?(Symbol)
@@ -50,9 +50,6 @@ module Gamefic
     end
     def key
       @key
-    end
-    def queries
-      @queries
     end
     def execute *args
       @proc.call(*args)

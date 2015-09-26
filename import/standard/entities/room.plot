@@ -1,4 +1,6 @@
-class Gamefic::Room < Entity
+class Gamefic::Room < Gamefic::Entity
+  include Darkenable
+  include ExplicitExits
   def connect(destination, direction, type = Portal, two_way = true)
     if direction.kind_of?(String)
       direction = Direction.find(direction)
@@ -33,7 +35,3 @@ class Gamefic::Room < Entity
     portals[0]
   end
 end
-
-options(Room, :lighted, :dark)
-options(Room, :enterable, :not_enterable)
-options(Room, :explicit_with_exits, :not_explicit_with_exits)
