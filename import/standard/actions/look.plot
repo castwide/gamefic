@@ -70,15 +70,16 @@ respond :look, Query.text do |actor, string|
 end
 
 respond :look, Query::Reachable.new(Container) do |actor, container|
-  actor.proceed
-  if container.open?
-    actor.tell "#{The container} is #{container.open? ? 'open' : 'closed'}."
+  if container.description != ""
+    actor.tell container.description
   end
   if container.open?
     contents = container.children.that_are_not(:attached?)
     if contents.length > 0
       actor.tell "You see #{contents.join_and} inside #{the container}."
     end
+  else
+    actor.tell "#{The container} is closed."
   end
 end
 

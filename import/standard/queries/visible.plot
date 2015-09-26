@@ -29,7 +29,7 @@ module Gamefic::Query
         thing.children.that_are(:attached?).each { |att|
           array.push att
           if att.kind_of?(Supporter) or (att.kind_of?(Container) and (att.open? or att.transparent?))
-            array += att.children.that_are_not(:attached)
+            array += att.children.that_are_not(:attached?)
           end
         }
       }

@@ -59,13 +59,16 @@ module Gamefic
       (@description.to_s != '')
     end
     def description
-      @description.to_s != '' ? @description : default_description
-    end
-    def default_description
-      "There's nothing special about #{definitely}."
+      @description || (Describable.default_description % self.definitely)
     end
     def description=(value)
       @description = value
+    end
+    def self.default_description=(text)
+      @default_description = text
+    end
+    def self.default_description
+      @default_description || "There's nothing special about %s."
     end
     def to_s
       indefinitely

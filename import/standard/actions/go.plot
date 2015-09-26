@@ -13,21 +13,19 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
   end
 end
 
-respond :go, Query::Reachable.new(Door) do |actor, door|
-  if door.is? :locked
-    actor.tell "It's locked."
-  else
-    if door.is? :closed and door.is? :automatic
-      actor.perform :open, door
-    end
-    if door.is? :open
-      actor.proceed
-    end
-  end
+respond :go, Query::Reachable.new(Door, :locked?) do |actor, door|
+  actor.tell "#{The door} is locked."
 end
 
 respond :go, Query::Reachable.new(Door, :closed?) do |actor, door|
-  actor.tell "#{The door} is closed."
+  if door.automatic?
+    actor.perform :open, door
+    if door.open?
+      actor.proceed
+    end
+  else
+    actor.tell "#{The door} is closed."
+  end
 end
 
 respond :go, Query::Text.new() do |actor, string|
