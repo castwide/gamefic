@@ -14,7 +14,6 @@ module Gamefic
       end
       pre_initialize
       @plot = plot
-      @option_mapper = @plot
       @plot.send :add_entity, self
       args.each { |key, value|
         send "#{key}=", value
@@ -23,11 +22,6 @@ module Gamefic
       @session = Hash.new
       yield self if block_given?
       post_initialize
-    end
-    def options=(array)
-      array.each { |option|
-        is option
-      }
     end
     def uid
       if @uid == nil
