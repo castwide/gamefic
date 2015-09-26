@@ -26,11 +26,6 @@ describe "Lockable Container" do
     expect(@box.open?).to be(false)
     expect(@box.locked?).to be(false)
   end
-  it "can be locked" do
-    @box.locked = false
-    @character.perform :lock, @box
-    expect(@box.locked?).to be(true)
-  end
   it "cannot be opened when locked" do
     @box.locked = true
     @character.perform :open, @box
