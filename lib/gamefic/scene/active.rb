@@ -14,6 +14,7 @@ module Gamefic
       @data.input = input
       if @finish.nil?
         last_order = actor.perform data.input
+        # HACK Set the last_order here so inline performs don't set it
         actor.instance_variable_set(:@last_order, last_order)
       else
         @finish.call actor, data

@@ -4,9 +4,9 @@ module Gamefic
     def stage *args, &block
       s = generate_stage
       if block.nil?
-        s.instance_eval(*args)
+        s.module_eval(*args)
       else
-        s.instance_exec(*args, &block)
+        s.module_exec(*args, &block)
       end
     end
     private
@@ -15,46 +15,34 @@ module Gamefic
       
       exposed = self.class.exposed_methods.keys
       mounted = self.class.mounted_modules.keys
+      instance = self
       
-      stage_class = Class.new(Object) do
-        class << self
-          def class_eval
-            raise NoMethodError.new("Method class_eval is not available from the stage.")
+      @stage = stage_module = Module.new do
+        include Gamefic
+        define_singleton_method(:__instance__) do
+          unless caller.length == 0 or caller[0].include?(__FILE__)
+            raise NoMethodError.new("Method __instance__ is not available from the stage.")
           end
-
-          def instance_eval
-            raise NoMethodError.new("Method instance_eval is not available from the stage.")
-          end
+          instance
         end
-
-        define_method(:initialize) do |instance|
-          define_singleton_method(:__instance__) do
-            unless caller[0].include?(__FILE__)
-              raise NoMethodError.new("Method __instance__ is not available from the stage.")
-            end
-            instance
-          end
-        end
-
         exposed.each do |exposed_method|
-          define_method(exposed_method) do |*args, &block|
+          define_singleton_method(exposed_method) do |*args, &block|
             __instance__.public_send(exposed_method, *args, &block)
           end
         end
-
         mounted.each { |dsl|
           dsl.public_instance_methods.each { |method|
-            define_method(method) do |*args, &block|
-              __instance__.public_send(method, *args, &block)
+            define_singleton_method(method) do |*args, &block|
+              #puts "Calling a mounted method"
+              result = __instance__.public_send(method, *args, &block)
+              #puts "Done"
+              result
             end
           }
         }
-            
-        define_method(:class_eval) do
-          raise NoMethodError.new("Method class_eval is not available from the stage.")
-        end
       end
-      @stage = stage_class.new(self)
+      
+      return @stage 
     end
     module ClassMethods
       def mount *args

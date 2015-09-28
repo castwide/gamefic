@@ -1,4 +1,4 @@
-module Arrangement
+module Gamefic::Arrangement
   LOCATED = :located
   ATTACHED = :attached
   attr_writer :arrangement

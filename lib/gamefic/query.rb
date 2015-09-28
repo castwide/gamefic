@@ -82,5 +82,6 @@ module Gamefic
       end
     end
   end
-
+  module Use
+  end
 end

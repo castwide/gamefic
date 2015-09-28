@@ -17,6 +17,7 @@ module Gamefic
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage
+    include Gamefic
     mount DescribableArticles, Tester, SceneMount, CommandMount, EntityMount, QueryMount
     expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities
     def initialize(source = nil)
@@ -93,9 +94,7 @@ module Gamefic
         e.update
       }
       @players.each { |player|
-        @player_procs.each { |proc|
-          proc.call player
-        }
+        update_player player
       }
     end
 
@@ -139,6 +138,20 @@ module Gamefic
     end
 
     private
+    def update_player player
+      #player.scene.start player
+      line = player.queue.shift
+      if !line.nil?
+        player.scene.finish player, line
+      end
+      last_scene = player.scene
+      @player_procs.each { |proc|
+        proc.call player
+      }
+      if last_scene != player.scene and player[:testing] == true
+        cue player, :test
+      end
+    end
     def rem_entity(entity)
       @entities.delete(entity)
     end

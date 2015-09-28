@@ -1,4 +1,4 @@
-import 'standard/query'
+import 'standard/use'
 import 'standard/modules/*'
 import 'standard/entities/entity'
 import 'standard/entities/thing'

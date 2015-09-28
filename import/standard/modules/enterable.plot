@@ -1,4 +1,4 @@
-module Enterable
+module Gamefic::Enterable
   attr_writer :enterable
   def enterable?
     @enterable ||= false

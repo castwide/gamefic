@@ -1,4 +1,4 @@
-module ParentRoom
+module Gamefic::ParentRoom
   def room
     p = parent
     while !p.kind_of?(Room) and !p.nil?

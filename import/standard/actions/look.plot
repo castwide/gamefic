@@ -1,4 +1,4 @@
-respond :look, Query.parent(Supporter) do |actor, supporter|
+respond :look, Use.parent(Supporter) do |actor, supporter|
   actor.tell supporter.description
   actor.tell "You are currently on #{the supporter}."
 end
@@ -55,8 +55,8 @@ respond :look, Query::Room.new(Room) do |actor, room|
     }
   end
 end
-xlate "look", :look, "around"
-xlate "l", :look, "around"
+xlate "look", "look around"
+xlate "l", "look around"
 
 respond :look, Query::Visible.new() do |actor, thing|
   actor.tell thing.description
@@ -65,7 +65,7 @@ respond :look, Query::Visible.new() do |actor, thing|
   }
 end
 
-respond :look, Query.text do |actor, string|
+respond :look, Use.text do |actor, string|
   actor.tell "You don't see any \"#{string}\" here."
 end
 

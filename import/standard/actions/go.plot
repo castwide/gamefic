@@ -32,7 +32,7 @@ respond :go, Query::Text.new() do |actor, string|
   actor.tell "You don't see any exit \"#{string}\" from here."
 end
 
-respond :go, Query.text do |actor, text|
+respond :go, Use.text do |actor, text|
   # This version of the Go action identifies portals by their destinations.
   portals = actor.room.children.that_are(Portal)
   destinations = []

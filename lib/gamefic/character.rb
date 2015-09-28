@@ -40,15 +40,19 @@ module Gamefic
       end
       super
     end
-    def update
-      super
-      if (line = queue.shift)
-        @scene.finish self, line
-      end
-    end
+    #def update
+    #  puts "Character update"
+    #  super
+    #  if (line = queue.shift)
+    #    @scene.finish self, line
+    #  end
+    #end
     def proceed
       return if delegate_stack.last.nil?
       delegate_stack.last.proceed
+    end
+    def on_turn
+      
     end
     private
     def delegate_stack

@@ -1,4 +1,4 @@
-module Attachable
+module Gamefic::Attachable
   attr_writer :attached
   def parent=(p)
     @attached = false

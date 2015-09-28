@@ -38,7 +38,7 @@ module Gamefic::Query
   end
 end
 
-module Query
+module Gamefic::Use
   def self.visible *args
     Visible.new *args
   end

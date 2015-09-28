@@ -2,7 +2,7 @@
 #  actor.tell "I don't see anything called '#{thing}' here."
 #end
 
-respond :take, Query.reachable do |actor, thing|
+respond :take, Use.reachable do |actor, thing|
   actor.tell "You can't take #{the thing}."
 end
 
@@ -27,7 +27,7 @@ respond :take, Query::Visible.new() do |actor, thing|
   end
 end
 
-respond :take, Query::Reachable.new(Arrangement, :attached?) do |actor, thing|
+respond :take, Query::Reachable.new(:attached?) do |actor, thing|
   actor.tell "#{The thing} is attached to #{the thing.parent}."
 end
 
@@ -61,14 +61,14 @@ respond :take, Gamefic::Query::Children.new() do |actor, thing|
   actor.tell "You're already carrying #{the thing}."
 end
 
-respond :take, Query.reachable(Rubble) do |actor, rubble|
+respond :take, Use.reachable(Gamefic::Rubble) do |actor, rubble|
   actor.tell "You don't have any use for #{the rubble}."
 end
 
-#respond :take, Query.text do |actor, text|
+#respond :take, Use.text do |actor, text|
 #  actor.tell "You don't see any \"#{text}\" here."
 #end
 
-xlate "get :thing", "take :thing"
-xlate "pick up :thing", "take :thing"
-xlate "pick :thing up", "take :thing"
+#xlate "get :thing", "take :thing"
+#xlate "pick up :thing", "take :thing"
+#xlate "pick :thing up", "take :thing"

@@ -41,7 +41,7 @@ module Gamefic::Query
   end
 end
 
-module Query
+module Gamefic::Use
   def self.reachable *args
     Gamefic::Query::Reachable.new *args
   end  

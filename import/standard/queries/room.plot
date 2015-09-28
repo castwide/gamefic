@@ -2,13 +2,16 @@
 # useful for making sure you target the room instead of a container or a
 # supporter.
 
-module Query
-  class Room < Gamefic::Query::Parent
+module Gamefic::Query
+  class Room < Parent
     def context_from(subject)
       [subject.room]
     end
   end
+end
+
+module Gamefic::Use
   def self.room *args
-    Room.new *args
-  end
+    Gamefic::Query::Room.new *args
+  end  
 end

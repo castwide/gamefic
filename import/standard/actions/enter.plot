@@ -9,13 +9,13 @@ end
 respond :enter, Query::Siblings.new(Thing) do |actor, thing|
   actor.tell "#{The thing} can't accommodate you."
 end
-respond :enter, Query.parent do |actor, container|
+respond :enter, Use.parent do |actor, container|
   actor.tell "You're already in #{the container}."
 end
-respond :enter, Query.parent(Supporter) do |actor, supporter|
+respond :enter, Use.parent(Supporter) do |actor, supporter|
   actor.tell "You're already on #{the supporter}."
 end
-respond :enter, Query.text do |actor, text|
+respond :enter, Use.text do |actor, text|
   actor.tell "You don't see any \"#{text}\" here."
 end
 # Sit is a shortcut for entering an enterable supporter.

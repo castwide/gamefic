@@ -1,6 +1,6 @@
 import 'standard/modules/openable'
 
-module Lockable
+module Gamefic::Lockable
   include Openable
   attr_reader :lock_key
   def locked=(bool)
@@ -20,7 +20,6 @@ module Lockable
     !@lock_key.nil?
   end
   def lock_key=(entity)
-    lockable = true
     @lock_key = entity
   end
 end

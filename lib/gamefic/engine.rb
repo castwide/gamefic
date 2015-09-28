@@ -13,13 +13,23 @@ module Gamefic
       print @user.state.output
       while @user.character.scene.state != "Concluded"
         tick
-        print @user.state.output
       end
     end
     def tick
-      @user.stream.select @user.character.scene.data.prompt
-      @user.state.input
+      @user.character.scene.start @user.character
+      print @user.state.output
+      # HACK Exception for test scenes
+      if @user.character.scene.key != :test
+        if @user.character.scene.state != "Concluded"
+          @user.stream.select @user.character.scene.data.prompt
+          @user.state.input
+        end
+      end
       @plot.update
+      print @user.state.output
+      #if @user.character.scene.key == :test
+      #  @user.character.scene.start @user.character       
+      #end
     end
   end
 

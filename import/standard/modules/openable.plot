@@ -1,4 +1,4 @@
-module Openable
+module Gamefic::Openable
   attr_writer :open
   def open?
     @open ||= false

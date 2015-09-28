@@ -11,6 +11,9 @@ module Gamefic
     def data_class
       SceneData
     end
+    def state
+      @state ||= 'Passive'
+    end
     # Define a kind of Scene that the SceneManager uses to prepare a scene for
     # the plot.
     def scene_class
@@ -31,7 +34,7 @@ module Gamefic
 end
   
   class SceneData
-    attr_accessor :input, :prompt
+    attr_accessor :input, :prompt, :next_cue
   end
   
   class Scene
@@ -51,6 +54,7 @@ end
       @start.call actor, @data
     end
     def finish actor, input
+      @data.next_cue ||= :active
       return if @finish.nil?
       @data.input = input
       @finish.call actor, @data

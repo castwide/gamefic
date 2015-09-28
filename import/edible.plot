@@ -9,11 +9,11 @@ class Gamefic::Entity
   include Edibility
 end
 
-respond :eat, Query.reachable do |actor, item|
+respond :eat, Use.reachable do |actor, item|
   actor.tell "You can't eat #{the item}."
 end
 
-respond :eat, Query.reachable(:edible?) do |actor, item|
+respond :eat, Use.reachable(:edible?) do |actor, item|
   actor.tell "You eat #{the item}."
   item.destroy
 end

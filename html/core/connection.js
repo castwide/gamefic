@@ -70,6 +70,18 @@ var Gamefic = Gamefic || {};
 Gamefic.Connection = new function() {
 	var config = {};
 	var begun = false;
+	var pollId;
+	var startPolling = function() {
+		var busy = false;
+		pollId = setInterval(function() {
+			if (!busy) {
+				
+			}
+		});
+	}
+	var endPolling = function() {
+		clearInterval(pollId);
+	}
 	this.init = function(options) {
 		var defaultOptions = {
 			console: $('#gamefic_console'),

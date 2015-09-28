@@ -41,7 +41,11 @@ module Gamefic
     def prompt key, prompt, &block
       scene_managers[key] = SceneManager.new do |config|
         config.prompt = prompt
-        config.finish(&block)
+        config.finish do |actor, data|
+          data.next_cue ||= :active
+          block.call actor, data
+          cue actor, data.next_cue
+        end
       end
       scene_managers[key].state = "Prompted"
     end  
@@ -69,7 +73,10 @@ module Gamefic
       scene = SceneManager.new do |manager|
         manager.start do |actor, data|
           block.call(actor, data)
-          cue actor, :active
+          data.next_cue = :active
+        end
+        manager.finish do |actor, data|
+          cue actor, data.next_cue
         end
       end
       scene_managers[key] = scene
@@ -79,7 +86,7 @@ module Gamefic
         return
       end
       if key.nil?
-        key = plot.default_scene
+        raise "Cueing scene with nil key"
       end
       manager = scene_managers[key]
       if manager.nil?
@@ -87,7 +94,12 @@ module Gamefic
         raise "No '#{key}' scene found"
       else
         actor.scene = manager.prepare key
-        actor.scene.start actor
+        if actor.scene.state == 'Passive'
+          actor.scene.start actor
+          actor.scene.finish actor, nil
+        end
+        # TODO The plot might be responsible for executing scenes in Plot#update
+        #actor.scene.NOT_A_start actor
       end
       @scene
     end

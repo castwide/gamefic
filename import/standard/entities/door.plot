@@ -32,8 +32,13 @@ class Gamefic::Door < Gamefic::Portal
       rev.automatic = bool
     end
   end
+  # HACK Even though Door includes Lockable, we need
+  # to add the lock_key definitions here for Opal.
+  def lock_key
+    @lock_key
+  end
   def lock_key=(entity)
-    super
+    @lock_key = entity
     rev = find_reverse
     if !rev.nil? and rev.lock_key != entity
       rev.lock_key = entity
