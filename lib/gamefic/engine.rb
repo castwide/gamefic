@@ -16,7 +16,7 @@ module Gamefic
       end
     end
     def tick
-      @user.character.scene.start @user.character
+      #@user.character.scene.start @user.character
       print @user.state.output
       # HACK Exception for test scenes
       if @user.character.scene.key != :test

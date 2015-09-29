@@ -87,6 +87,9 @@ module Gamefic
       update
     end
     def update
+      @players.each { |p|
+        p.scene.start p
+      }
       @update_procs.each { |p|
         p.call
       }
@@ -163,7 +166,7 @@ module Gamefic
     end  
     def add_syntax syntax
       if @commands[syntax.verb] == nil
-        raise "Action \"#{syntax.action}\" does not exist"
+        raise "Action \"#{syntax.verb}\" does not exist"
       end
       # Delete duplicate syntaxes
       @syntaxes = @syntaxes.delete_if { |existing|
