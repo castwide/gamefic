@@ -75,7 +75,7 @@ module Gamefic
           skipped.push used.pop
         end
       end
-      if at_least_one_match
+      if at_least_one_match and (used - ['a', 'an', 'the', 'to']).length > 0
         return Matches.new(possibilities, used.join(' '), skipped.join(' '))
       else
         return Matches.new([], '', description)

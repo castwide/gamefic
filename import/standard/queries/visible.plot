@@ -40,6 +40,6 @@ end
 
 module Gamefic::Use
   def self.visible *args
-    Visible.new *args
+    Gamefic::Query::Visible.new *args
   end
 end

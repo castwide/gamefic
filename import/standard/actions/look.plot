@@ -3,6 +3,10 @@ respond :look, Use.parent(Supporter) do |actor, supporter|
   actor.tell "You are currently on #{the supporter}."
 end
 
+respond :look, Query::Self.new do |actor, _|
+  actor.tell actor.description
+end
+
 respond :look, Query::Room.new(Room) do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description
@@ -70,7 +74,7 @@ respond :look, Use.text do |actor, string|
 end
 
 respond :look, Query::Reachable.new(Container) do |actor, container|
-  if container.description != ""
+  if container.has_description?
     actor.tell container.description
   end
   if container.open?

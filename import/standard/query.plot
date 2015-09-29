@@ -1,4 +1,4 @@
-module Query
+module Gamefic::Use
   include Gamefic::Query
   def self.children *args
     Gamefic::Query::Children.new *args
