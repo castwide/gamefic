@@ -12,11 +12,11 @@ module Gamefic
       @plot.introduce @user.character
       print @user.state.output
       while @user.character.scene.state != "Concluded"
-        tick
+        turn
       end
     end
-    def tick
-      #@user.character.scene.start @user.character
+    def turn
+      @plot.ready
       print @user.state.output
       # HACK Exception for test scenes
       if @user.character.scene.key != :test
@@ -27,9 +27,6 @@ module Gamefic
       end
       @plot.update
       print @user.state.output
-      #if @user.character.scene.key == :test
-      #  @user.character.scene.start @user.character       
-      #end
     end
   end
 

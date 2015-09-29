@@ -86,18 +86,25 @@ module Gamefic
       end
       update
     end
-    def update
+    def ready
+      # Prepare player scenes for the update.
       @players.each { |p|
         p.scene.start p
       }
-      @update_procs.each { |p|
-        p.call
+    end
+    def update
+      # Update the plot.
+      @players.each { |player|
+        process_input player
       }
       @entities.each { |e|
         e.update
       }
       @players.each { |player|
         update_player player
+      }
+      @update_procs.each { |p|
+        p.call
       }
     end
 
@@ -141,17 +148,18 @@ module Gamefic
     end
 
     private
-    def update_player player
-      #player.scene.start player
+    def process_input player
       line = player.queue.shift
       if !line.nil?
         player.scene.finish player, line
       end
-      last_scene = player.scene
+    end
+    def update_player player
       @player_procs.each { |proc|
         proc.call player
       }
-      if last_scene != player.scene and player[:testing] == true
+      # HACK Exception for running tests
+      if player[:testing] == true
         cue player, :test
       end
     end

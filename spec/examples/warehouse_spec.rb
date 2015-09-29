@@ -9,6 +9,7 @@ describe "Warehouse" do
     plot.introduce character
     character.perform "test me"
     100.times do
+      plot.ready
       plot.update
     end
     expect(character.scene.state).to eq("Concluded")

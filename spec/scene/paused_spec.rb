@@ -11,6 +11,7 @@ describe PausedScene do
     plot.cue character, :pause
     expect(character.scene.key).to eq(:pause)
     character.queue.push ""
+    plot.ready
     plot.update
     expect(character.scene.key).to eq(:active)
     expect(character[:has_paused]).to eq(true)
