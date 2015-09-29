@@ -5,13 +5,13 @@ describe PausedScene do
     character = plot.make Character, :name => 'character', :parent => room
     character[:has_paused] = false
     plot.pause :pause do |actor|
-      character[:has_paused] = true
+      actor[:has_paused] = true
     end
     plot.introduce character
     plot.cue character, :pause
     expect(character.scene.key).to eq(:pause)
     character.queue.push ""
-    character.update
+    plot.update
     expect(character.scene.key).to eq(:active)
     expect(character[:has_paused]).to eq(true)
   end

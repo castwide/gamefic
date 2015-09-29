@@ -10,7 +10,7 @@ describe "Quit Action" do
     @character.update
     expect(@character.scene.key).to eq(:confirm_quit)
     @character.queue.push "yes"
-    @character.update
+    @plot.update
     expect(@character.scene.key).to eq(:concluded)
   end
   it "cancels quit on no" do
@@ -18,7 +18,7 @@ describe "Quit Action" do
     @character.update
     expect(@character.scene.key).to eq(:confirm_quit)
     @character.queue.push "no"
-    @character.update
+    @plot.update
     expect(@character.scene.key).to eq(:active)
   end
 end

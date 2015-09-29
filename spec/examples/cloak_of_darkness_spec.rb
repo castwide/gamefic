@@ -8,6 +8,9 @@ describe "Cloak of Darkness" do
     character = plot.make Character, :name => 'player'
     plot.introduce character
     character.perform "test me"
+    100.times do
+      plot.update
+    end
     expect(character.scene.state).to eq("Concluded")
   end
 end

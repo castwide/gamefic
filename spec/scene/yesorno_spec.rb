@@ -12,7 +12,7 @@ describe YesOrNoScene do
     ['yes', 'Yes', 'YES', 'yeah', 'y'].each { |answer|
       @plot.cue @character, :yes_or_no
       @character.queue.push answer
-      @character.update
+      @plot.update
       expect(@character[:answered]).to eq("yes")
       expect(@character.scene.key).to eq(:active)
     }
@@ -21,7 +21,7 @@ describe YesOrNoScene do
     ['no', 'No', 'NO', 'nope', 'n'].each { |answer|
       @plot.cue @character, :yes_or_no
       @character.queue.push answer
-      @character.update
+      @plot.update
       expect(@character[:answered]).to eq("no")
       expect(@character.scene.key).to eq(:active)
     }
@@ -29,7 +29,7 @@ describe YesOrNoScene do
   it "detects invalid answer and stays in current scene" do
     @plot.cue @character, :yes_or_no
     @character.queue.push "undecided"
-    @character.update
+    @plot.update
     expect(@character[:answered]).to eq(nil)
     expect(@character.scene.key).to eq(:yes_or_no)
   end
