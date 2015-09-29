@@ -1,11 +1,12 @@
 import 'snapshots'
 
 meta :undo do |actor|
-  ss = Snapshots.history.pop
-  if !ss.nil?
-    Snapshots.restore(ss, self)
-    actor.tell "Previous turn undone."
+  puts "Current history: #{@snapshots.history.length} snapshots"
+  last = @snapshots.history.pop
+  if last.nil?
+    actor.tell "No previous turns are available."
   else
-    actor.tell "Previous turn is not available."
+    @snapshots.restore last
+    actor.tell "Previous turn undone."
   end
 end

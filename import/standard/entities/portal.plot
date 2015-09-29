@@ -1,5 +1,7 @@
 class Gamefic::Portal < Gamefic::Entity
   attr_accessor :destination, :direction
+  serialize :destination, :direction
+  
   def find_reverse
     return nil if destination.nil?
     rev = direction.reverse

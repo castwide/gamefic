@@ -3,6 +3,9 @@ import 'standard/entities/portal'
 class Gamefic::Door < Gamefic::Portal
   include Openable
   include Lockable
+  
+  serialize :open?, :locked?, :lock_key, :automatic?
+  
   def post_initialize
     super
     if @name.nil? and !@direction.nil?

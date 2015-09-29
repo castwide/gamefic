@@ -23,6 +23,7 @@ module Gamefic
       @parent
     end
     def parent=(node)
+      return if node == @parent 
       if node == self
         raise CircularNodeReferenceError.new("Node cannot be its own parent")
       end

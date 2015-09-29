@@ -3,4 +3,7 @@ class Gamefic::Container < Gamefic::Entity
   include Openable
   include Lockable
   include Transparent
+  
+  serialize :enterable?, :open?, :locked?, :lock_key, :transparent?
+  
 end

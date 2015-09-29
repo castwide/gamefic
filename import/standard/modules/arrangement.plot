@@ -1,6 +1,6 @@
 module Gamefic::Arrangement
-  LOCATED = :located
-  ATTACHED = :attached
+  LOCATED = 0
+  ATTACHED = 1
   attr_writer :arrangement
   def arrangement
     @arrangement ||= LOCATED

@@ -18,19 +18,11 @@ Gamefic.Engine = new function() {
 		response.state = Opal.Gamefic.$static_player().$character().$scene().$state();
 		callback(response);
 	}
-	this.save = function() {
-		var hash = Opal.Gamefic.Snapshots.$save(Opal.Gamefic.$static_plot()).$to_n();
-		var json = JSON.stringify(hash);
-		localStorage.setItem('snapshot', json);
+	this.save = function(filename, data) {
+		localStorage.setItem(filename, data);
 		Opal.Gamefic.$static_player().$character().$tell('Game saved to local storage.');
 	}
-	this.restore = function() {
-		var json = localStorage.getItem('snapshot');
-		if (json) {
-			Opal.Gamefic.Snapshots.$restore(json, Opal.Gamefic.$static_plot());
-			Opal.Gamefic.$static_player().$character().$tell('Saved game restored.');
-		} else {
-			Opal.Gamefic.$static_player().$character().$tell('No saved game available.');
-		}
+	this.restore = function(filename) {
+		return localStorage.getItem(filename);
 	}
 }

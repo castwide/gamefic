@@ -31,9 +31,8 @@ module Gamefic
       def ansi
         @stream.ansi
       end
-      def save filename = nil
-        ss = Snapshots.save(@plot)
-        if ss.nil?
+      def save filename, json
+        if json.nil?
           @character.tell "Nothing to save."
         end
         if filename.nil?
@@ -41,26 +40,22 @@ module Gamefic
           filename = stream.queue.pop
         end
         if filename != ''
-          json = JSON.generate(ss)
           File.open(filename, 'w') do |f|
             f.write json
           end
           @character.tell "Game saved."
         end
       end
-      def restore filename = nil
+      def restore filename
         if filename.nil?
           stream.select "Enter the filename to restore:"
           filename = stream.queue.pop
         end
         if filename != ''
           if File.exists?(filename)
-            json = File.read(filename)
-            data = JSON.parse(json, :symbolize_names => true)
-            Snapshots.restore(data, @plot)
-            @character.tell "Game restored."
+            return File.read(filename)
           else
-            @character.tell "File '#{filename} not found."
+            @character.tell "File \"#{filename}\" not found."
           end
         end
       end

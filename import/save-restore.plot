@@ -1,18 +1,21 @@
-require 'json'
 import 'snapshots'
 
 meta :save do |actor|
-  actor.user.save "game.sav"
+  actor.perform :save, "game.sav"
 end
 
 meta :save, Query::Text.new() do |actor, filename|
-  actor.user.save filename
+  actor.user.save filename, @snapshots.save(entities)
 end
 
 meta :restore do |actor|
-  actor.user.restore "game.sav"
+  actor.perform :restore, "game.sav"
 end
 
 meta :restore, Query::Text.new() do |actor, filename|
-  actor.user.restore filename
+  data = actor.user.restore(filename)
+  if !data.nil?
+    @snapshots.restore data
+    actor.tell "Game restored."
+  end
 end

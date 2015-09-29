@@ -7,7 +7,11 @@ module Gamefic
   class Entity
     include Node
     include Describable
+    include Serialized
+    
     attr_reader :session, :plot
+    serialize :name, :parent, :description
+    
     def initialize(plot, args = {})
       if (plot.kind_of?(Plot) == false)
         raise "First argument must be a Plot"

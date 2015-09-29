@@ -1,4 +1,5 @@
 respond :go, Query::Reachable.new(Portal) do |actor, portal|
+  actor.tell "(#{portal})"
   if actor.parent != actor.room
     actor.perform :leave
   end

@@ -43,6 +43,7 @@ scene_managers[:test] = TestSceneManager.new do |config|
       actor[:testing] = false
       actor.tell "(#{actor[:test_queue_length]} commands tested.)"
       actor.scene = actor[:test_queue_scene]
+      actor[:test_queue_scene] = nil
       #actor.scene.start actor
     else
       actor.queue.push data.input

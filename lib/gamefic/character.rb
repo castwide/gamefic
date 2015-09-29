@@ -3,6 +3,7 @@ module Gamefic
   class Character < Entity
     attr_reader :queue, :user, :last_order
     attr_accessor :object_of_pronoun, :scene
+    
     def initialize(plot, args = {})
       @queue = Array.new
       super

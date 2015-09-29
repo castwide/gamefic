@@ -29,11 +29,12 @@ class Module
 end
 
 class WebUser < Gamefic::User
-  def save
-    `Gamefic.Engine.save();`
+  def save filename, data
+    `Gamefic.Engine.save(filename, data);`
   end
-  def restore
-    `Gamefic.Engine.restore();`
+  def restore filename
+    data = `Gamefic.Engine.restore(filename);`
+    return data
   end
 end
 
