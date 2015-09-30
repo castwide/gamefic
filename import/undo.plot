@@ -1,7 +1,6 @@
 import 'snapshots'
 
 meta :undo do |actor|
-  puts "Current history: #{@snapshots.history.length} snapshots"
   last = @snapshots.history.pop
   if last.nil?
     actor.tell "No previous turns are available."
