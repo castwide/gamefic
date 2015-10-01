@@ -68,7 +68,6 @@ module Gamefic::Sdk
           FileUtils.mkdir_p(build_dir + "/import/" + File.dirname(script.relative))
           File.open(build_dir + "/" + import_js, "w") do |file|
             #file << Opal.compile("$gamefic_static_plot.stage do;puts '#{import_js}';#{File.read(script.absolute).gsub(/import [^\n]*/, '')} ;end\n")
-            file << "puts '#{import_js}'\n"
             file << File.read(script.absolute).gsub(/import [^\n]*/, '')
             file << "\n"
           end
