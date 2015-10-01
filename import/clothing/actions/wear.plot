@@ -1,8 +1,5 @@
 respond :wear, Query::Reachable.new(Clothing) do |actor, clothing|
-  if clothing.parent != actor
-    actor.perform "take #{clothing}"
-  end
-  if clothing.parent == actor
+  if actor.auto_takes?(clothing)
     if clothing.attached?
       actor.tell "You're already wearing #{the clothing}."
     else
