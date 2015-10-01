@@ -72,3 +72,4 @@ end
 interpret "get :thing", "take :thing"
 interpret "pick up :thing", "take :thing"
 interpret "pick :thing up", "take :thing"
+interpret "carry :thing", "take :thing"
