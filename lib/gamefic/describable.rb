@@ -62,7 +62,11 @@ module Gamefic
       @description || (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
     end
     def description=(value)
-      @description = value
+      if value == Describable.default_description
+        @description = nil
+      else
+        @description = value
+      end
     end
     def self.default_description=(text)
       @default_description = text

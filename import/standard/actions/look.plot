@@ -81,6 +81,8 @@ respond :look, Query::Reachable.new(Container) do |actor, container|
     contents = container.children.that_are_not(:attached?)
     if contents.length > 0
       actor.tell "You see #{contents.join_and} inside #{the container}."
+    else
+      actor.tell "#{The container} is empty."
     end
   else
     actor.tell "#{The container} is closed."
