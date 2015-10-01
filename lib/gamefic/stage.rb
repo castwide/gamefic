@@ -3,6 +3,7 @@ module Gamefic
   module Stage
     def stage *args, &block
       s = generate_stage
+      
       if block.nil?
         s.module_eval(*args)
       else
@@ -18,7 +19,6 @@ module Gamefic
       instance = self
       
       @stage = stage_module = Module.new do
-        include Gamefic
         define_singleton_method(:__instance__) do
           unless caller.length == 0 or caller[0].include?(__FILE__)
             raise NoMethodError.new("Method __instance__ is not available from the stage.")
