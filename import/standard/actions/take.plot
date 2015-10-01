@@ -65,10 +65,10 @@ respond :take, Use.reachable(Gamefic::Rubble) do |actor, rubble|
   actor.tell "You don't have any use for #{the rubble}."
 end
 
-#respond :take, Use.text do |actor, text|
-#  actor.tell "You don't see any \"#{text}\" here."
-#end
+respond :take, Use.text do |actor, text|
+  actor.tell "You don't see any \"#{text}\" here."
+end
 
-#xlate "get :thing", "take :thing"
-#xlate "pick up :thing", "take :thing"
-#xlate "pick :thing up", "take :thing"
+interpret "get :thing", "take :thing"
+interpret "pick up :thing", "take :thing"
+interpret "pick :thing up", "take :thing"
