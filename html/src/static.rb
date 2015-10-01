@@ -2,7 +2,6 @@ include Gamefic
 
 class WebPlot < Gamefic::Plot
   def stage *args, &block
-    puts "Using the WebPlot stage"
     if block.nil?
       instance_eval(*args)
     else
