@@ -1,8 +1,8 @@
 class Gamefic::Character
   include ParentRoom
-  include Arrangement
+  include Attachable
   include Itemizable
   
-  serialize :arrangement, :itemized?
+  serialize :attached?, :itemized?
   
 end
