@@ -8,7 +8,7 @@ respond :wear, Query::Reachable.new(Clothing) do |actor, clothing|
     else
       already = actor.children.that_are(clothing.class).that_are(:attached?)
       if already.length == 0
-        clothing.arrangement = Arrangement::ATTACHED
+        clothing.attached = true
         actor.tell "You put on #{the clothing}."
       else
         actor.tell "You're already wearing #{an already[0]}."
