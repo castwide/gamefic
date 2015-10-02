@@ -4,6 +4,6 @@ class Gamefic::Character
   include Itemizable
   include AutoTakes
   
-  serialize :attached?, :itemized?, :auto_takes?
+  serialize :attached?, :itemized?
   
 end
