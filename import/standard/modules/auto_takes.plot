@@ -10,7 +10,7 @@ module AutoTakes
         self.tell buffer
         false
       else
-        if AutoTakes.untaken_message.to_s != ""
+        if AutoTakes.taken_message.to_s != ""
           self.tell (AutoTakes.taken_message % {:name => entity.definitely, :Name => entity.definitely.cap_first})
         end
         true
