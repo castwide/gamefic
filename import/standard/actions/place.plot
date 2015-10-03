@@ -7,7 +7,7 @@ respond :place, Use.visible, Use.reachable(Supporter) do |actor, thing, supporte
     actor.perform :take, thing
   end
   if thing.parent == actor
-    actor.perform :drop_on, thing
+    actor.perform :place, thing
   end
 end
 
