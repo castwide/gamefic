@@ -33,7 +33,7 @@ module Gamefic::Grammar
       def generate_third_singular
         if @infinitive.end_with?('o')
           @infinitive + "es"
-        elsif @infinitive.end_with?('y')
+        elsif @infinitive.end_with?('ry')
           @infinitive[0..-2] + "ies"
         else
           @infinitive + "s"
