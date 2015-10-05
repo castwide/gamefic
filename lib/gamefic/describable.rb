@@ -3,6 +3,7 @@ require "gamefic/keywords"
 module Gamefic
 
   module Describable
+    include Grammar::Person, Grammar::Plural
     attr_reader :name
     attr_accessor :synonyms, :indefinite_article
     attr_writer :definite_article

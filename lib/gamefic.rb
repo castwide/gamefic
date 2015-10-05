@@ -1,9 +1,14 @@
-require "gamefic/core_ext/array"
-require "gamefic/core_ext/string"
-require "gamefic/keywords"
-require "gamefic/serialized"
-require "gamefic/entity"
-require "gamefic/character"
+require 'gamefic/core_ext/array'
+require 'gamefic/core_ext/string'
+
+module Gamefic
+  autoload :Grammar, 'gamefic/grammar'
+  autoload :Keywords, 'gamefic/keywords'
+  autoload :Serialized, 'gamefic/serialized'
+  autoload :Entity, 'gamefic/entity'
+  autoload :Character, 'gamefic/character'
+end
+
 require "gamefic/scene"
 require "gamefic/scene/active"
 require "gamefic/scene/concluded"
