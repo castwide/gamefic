@@ -2,7 +2,7 @@
 #require 'gamefic/entityloader'
 require 'gamefic/stage'
 require 'gamefic/tester'
-require 'gamefic/describable_articles'
+#require 'gamefic/describable_articles'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
@@ -14,11 +14,12 @@ module Gamefic
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :EntityMount, 'gamefic/plot/entity_mount'
     autoload :QueryMount, 'gamefic/plot/query_mount'
+    autoload :ArticleMount, 'gamefic/plot/article_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage
     include Gamefic
-    mount DescribableArticles, Tester, SceneMount, CommandMount, EntityMount, QueryMount
+    mount Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount
     expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities
     def initialize(source = nil)
       @source = source || Source.new
@@ -174,7 +175,7 @@ module Gamefic
     end  
     def add_syntax syntax
       if @commands[syntax.verb] == nil
-        raise "Action \"#{syntax.verb}\" does not exist"
+        raise "Action \"#{syntax.verb}\" does not exist."
       end
       # Delete duplicate syntaxes
       @syntaxes = @syntaxes.delete_if { |existing|
