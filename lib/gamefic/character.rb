@@ -7,8 +7,7 @@ module Gamefic
     def initialize(plot, args = {})
       @queue = Array.new
       super
-      # TODO: Don't handle the state in the Character class. Try letting the Plot define a default initial scene.
-      #self.state = :active
+      buffering = false
     end
     def connect(user)
       @user = user
@@ -20,20 +19,33 @@ module Gamefic
     def perform(*command)
       Director.dispatch(self, *command)
     end
+    def quietly(*command)
+      if user.nil?
+        perform *command
+      else
+        buffer = ""
+        buffering = true
+        perform *command
+        buffering = false
+        buffer
+      end
+    end
     def tell(message)
       if user != nil and message.to_s != ''
-        message = "<p>#{message}</p>"
-        # This method uses String#gsub instead of String#gsub! for
-        # compatibility with Opal.
-        message = message.gsub(/\n\n/, '</p><p>')
-        message = message.gsub(/\n/, '<br/>')
-        user.stream.send message
+        if buffering
+          buffer += message
+        else
+          message = "<p>#{message}</p>"
+          # This method uses String#gsub instead of String#gsub! for
+          # compatibility with Opal.
+          message = message.gsub(/\n\n/, '</p><p>')
+          message = message.gsub(/\n/, '<br/>')
+          user.stream.send message
+        end
       end
     end
     def stream(message)
-      if user != nil and message.to_s != ''
-        user.stream.send message
-      end
+      user.stream.send message
     end
     def destroy
       if @user != nil
@@ -56,6 +68,7 @@ module Gamefic
       
     end
     private
+    attr_accessor :buffering, :buffer
     def delegate_stack
       @delegate_stack ||= []
     end
