@@ -9,11 +9,13 @@ module Gamefic
       include Grammar::Plural
       include Grammar::WordAdapter
     end
+    # @return [YouGrammarSet]
     def you
       if @you.nil?
         @you = YouGrammarSet.new
         @you.person = 2
       end
+      @you
     end
   end
   

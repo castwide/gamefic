@@ -15,11 +15,12 @@ module Gamefic
     autoload :EntityMount, 'gamefic/plot/entity_mount'
     autoload :QueryMount, 'gamefic/plot/query_mount'
     autoload :ArticleMount, 'gamefic/plot/article_mount'
+    autoload :YouMount, 'gamefic/plot/you_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage
     include Gamefic
-    mount Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount
+    mount Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities
     def initialize(source = nil)
       @source = source || Source.new
