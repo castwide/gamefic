@@ -2,9 +2,11 @@ require 'gamefic/grammar'
 
 module Gamefic::Grammar
   module WordAdapter
+    # @return [Gamefic::Grammar::Pronouns]
     def pronoun
       @pronoun ||= Grammar::Pronouns.new(self)
     end
+    # @return [Gamefic::Grammar::Verbs]
     def verb
       @verb ||= Grammar::Verbs.new(self)
     end

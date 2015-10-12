@@ -1,3 +1,4 @@
+require 'gamefic'
 require 'gamefic/grammar'
 
 module Gamefic::Grammar
@@ -19,6 +20,15 @@ module Gamefic::Grammar
       @subj = set[0]
       @obj = set[1]
       @poss = set[2]
+    end
+    def Subj
+      subj.cap_first
+    end
+    def Obj
+      obj.cap_first
+    end
+    def Poss
+      obj.cap_first
     end
     # TODO Consider implementing method_missing to determine correct pronoun
     # from example, e.g., "he" would change to "she" for female entities
