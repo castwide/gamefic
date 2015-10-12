@@ -1,5 +1,6 @@
 module Gamefic
   module Grammar
+    autoload :Tense, 'gamefic/grammar/tense'
     autoload :Pronouns, 'gamefic/grammar/pronouns'
     autoload :Conjugator, 'gamefic/grammar/conjugator'
     autoload :Verbs, 'gamefic/grammar/verbs'
