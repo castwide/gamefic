@@ -4,9 +4,11 @@ class String
 	def capitalize_first
 		"#{self[0,1].upcase}#{self[1,self.length]}"
 	end
+	# @return [String]
 	def cap_first
 		self.capitalize_first
 	end
+	# @return [Array]
 	def split_words
 		self.gsub(/ +/, ' ').strip.split
 	end
