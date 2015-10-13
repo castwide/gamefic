@@ -1,4 +1,4 @@
-describe "Lockable Container" do
+describe "Container" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     @plot.import 'standard'
