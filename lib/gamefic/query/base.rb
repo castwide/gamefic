@@ -19,6 +19,9 @@ module Gamefic::Query
       @@last_new = self
       @match_hash = Hash.new
     end
+    def allow_many?
+      false
+    end
     def last_match_for(subject)
       @match_hash[subject]
     end
@@ -39,13 +42,10 @@ module Gamefic::Query
       array = context_from(subject)
       matches = Query.match(description, array)
       objects = matches.objects
-      @arguments.each { |arg|
-        objects = objects.that_are(arg)
-      }
       matches = Matches.new(objects, matches.matching_text, matches.remainder)
-      if objects.length == 0 and matches.remainder == "it" and subject.respond_to?(:last_order)
-        if !subject.last_order.nil? and !subject.last_order.arguments[0].nil?
-          obj = subject.last_order.arguments[0]
+      if objects.length == 0 and matches.remainder == "it" and subject.respond_to?(:last_object)
+        if !subject.last_object.nil?
+          obj = subject.last_object
           if validate(subject, obj)
             matches = Matches.new([obj], "it", "")
           end

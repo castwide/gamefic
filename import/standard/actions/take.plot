@@ -48,7 +48,7 @@ end
 #  end
 #end
 
-respond :take, Query::Reachable.new(:portable?) do |actor, thing|
+respond :take, Query::Reachable.new(Entity, :portable?) do |actor, thing|
   if actor.parent != thing.parent
     actor.tell "You take #{the thing} from #{the thing.parent}."
     thing.parent = actor

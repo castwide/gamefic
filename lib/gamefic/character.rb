@@ -3,6 +3,8 @@ module Gamefic
     attr_reader :queue, :user
     # @return [Gamefic::Director::Order]
     attr_reader :last_order
+    # @return [Entity,nil]
+    attr_reader :last_object
     attr_accessor :object_of_pronoun, :scene
     
     def initialize(plot, args = {})
@@ -72,6 +74,12 @@ module Gamefic
     attr_accessor :buffering, :buffer
     def delegate_stack
       @delegate_stack ||= []
+    end
+    def last_order=(order)
+      @last_order = order
+      if !order.action.kind_of?(Meta) and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
+        @last_object = order.arguments[0][0]
+      end
     end
   end
 

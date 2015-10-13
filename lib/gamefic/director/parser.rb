@@ -20,7 +20,11 @@ module Gamefic
                 index += 1
               }
               if valid
-                options.push Order.new(actor, action, tokens)
+                arguments = []
+                tokens.each { |token|
+                    arguments.push [token]
+                }
+                options.push Order.new(actor, action, arguments)
               end
             end
           }
@@ -32,14 +36,14 @@ module Gamefic
       def self.from_string(actor, command)
         # If we use Query::Base.new in the @disambiguator declaration, Opal
         # passes the block to the query instead of the action.
-        base = Query::Base.new
-        @disambiguator = Meta.new nil, nil, base do |actor, entities|
-          definites = []
-          entities.each { |entity|
-            definites.push entity.definitely
-          }
-          actor.tell "I don't know which you mean: #{definites.join_or}."
-        end
+        #base = Query::Base.new
+        #@disambiguator = Meta.new nil, nil, base do |actor, entities|
+        #  definites = []
+        #  entities.each { |entity|
+        #    definites.push entity.definitely
+        #  }
+        #  actor.tell "I don't know which you mean: #{definites.join_or}."
+        #end
         options = []
         if command.to_s == ''
           return options
@@ -48,28 +52,7 @@ module Gamefic
         matches.each { |match|
           actions = actor.plot.actions_with_verb(match.verb)
           actions.each { |action|
-            orders = bind_contexts_in_result(actor, match.arguments, action)
-            orders.each { |order|
-              valid = true
-              args = Array.new
-              invalid_argument = nil
-              order.arguments.each { |a|
-                if a.length > 1
-                  invalid_argument = a
-                  valid = false
-                  break
-                end
-                args.push a[0]
-              }
-              if valid
-                # All command arguments are valid
-                options.push Order.new(actor, order.action, args)
-              else
-                # One of the arguments was ambiguous (more than one matching object)
-                # HACK The disambiguator always takes precedence over other actions
-                options.unshift Order.new(actor, @disambiguator, [invalid_argument])
-              end
-            }
+            options.concat bind_contexts_in_result(actor, match.arguments, action)
           }
         }
         options

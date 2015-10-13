@@ -1,8 +1,8 @@
 require 'gamefic'
 include Gamefic
 
-module LastOrderTest
-  attr_accessor :last_order
+module LastObjectTest
+  attr_accessor :last_object
 end
 
 describe Query::Base do
@@ -53,13 +53,13 @@ describe Query::Base do
     expect(result.objects.length).to eq(1)
     expect(result.objects[0]).to eq(book1)
   end
-  it "recognizes \"it\" as the object of the last order" do
+  it "recognizes \"it\" as the last object of the caller" do
     plot = Plot.new
     object1 = plot.make Entity, :name => 'object one'
     object2 = plot.make Entity, :name => 'object two'
     array = plot.entities
-    array.extend LastOrderTest
-    array.last_order = Gamefic::Director::Order.new(nil, nil, [object1])
+    array.extend LastObjectTest
+    array.last_object = object1
     query = Query::Base.new
     result = query.execute(array, 'it')
     expect(result.objects.length).to eq(1)

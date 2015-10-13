@@ -15,6 +15,9 @@ module Gamefic::Grammar
     def method_missing infinitive, *args, &block
       VerbSet.new(infinitive, nil, *args).conjugate(@pronoun)
     end
+    def [] infinitive
+      VerbSet.new(infinitive, nil, *args).conjugate(@pronoun)
+    end
     conjugate :be,   :present, :am,   :are,  :is,  :are
     conjugate :have, :present, :have, :have, :has, :have
   end
