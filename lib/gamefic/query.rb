@@ -97,6 +97,10 @@ module Gamefic
           keywords = []
         else
           skipped.push used.pop
+          # The first unignored word must have at least one match
+          if !at_least_one_match
+            return Matches.new([], '', description)
+          end
         end
       end
       if at_least_one_match and (used - @@ignored_words).length > 0

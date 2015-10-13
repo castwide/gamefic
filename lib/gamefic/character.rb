@@ -26,17 +26,17 @@ module Gamefic
       if user.nil?
         perform *command
       else
-        buffer = ""
-        buffering = true
-        perform *command
-        buffering = false
-        buffer
+        self.buffer = ""
+        self.buffering = true
+        self.perform *command
+        self.buffering = false
+        self.buffer
       end
     end
     def tell(message)
       if user != nil and message.to_s != ''
-        if buffering
-          buffer += message
+        if self.buffering
+          self.buffer += message
         else
           message = "<p>#{message}</p>"
           # This method uses String#gsub instead of String#gsub! for
@@ -70,8 +70,20 @@ module Gamefic
     def on_turn
       
     end
+    protected
+    def buffering
+      @buffering ||= false
+    end
+    def buffering=(boolean)
+      @buffering = boolean
+    end
+    def buffer
+      @buffer || ""
+    end
+    def buffer=(text)
+      @buffer = text
+    end
     private
-    attr_accessor :buffering, :buffer
     def delegate_stack
       @delegate_stack ||= []
     end

@@ -47,8 +47,8 @@ module Gamefic
               return
             end
             final_arguments.push valid[0]
-            arg_i += 1
           end
+          arg_i += 1
         }
         # The actor is always the first argument to an Action proc
         final_arguments.unshift @actor

@@ -1,14 +1,5 @@
-#respond :take, Query::Text.new() do |actor, thing|
-#  actor.tell "I don't see anything called '#{thing}' here."
-#end
-
 respond :take, Use.reachable do |actor, thing|
   actor.tell "You can't take #{the thing}."
-end
-
-respond :take, Query::Reachable.new(Entity, :portable?) do |actor, thing|
-  thing.parent = actor
-  actor.tell "You take #{the thing}."
 end
 
 respond :take, Query::Visible.new() do |actor, thing|
@@ -31,34 +22,17 @@ respond :take, Query::Reachable.new(:attached?) do |actor, thing|
   actor.tell "#{The thing} is attached to #{the thing.parent}."
 end
 
-#respond :take, Query::Reachable.new(Portable, :portable?) do |actor, thing|
-#  if thing.parent != actor.parent
-#    if thing.parent.kind_of?(Container) and !thing.parent.open?
-#      if thing.parent.transparent?
-#        actor.tell "#{The thing} is closed."
-#      else
-#        actor.proceed
-#      end
-#      break
-#    end
-#    actor.tell "You take #{the thing} from #{the thing.parent}."
-#    thing.parent = actor
-#  else
-#    actor.proceed
-#  end
-#end
-
-respond :take, Query::Reachable.new(Entity, :portable?) do |actor, thing|
-  if actor.parent != thing.parent
-    actor.tell "You take #{the thing} from #{the thing.parent}."
-    thing.parent = actor
+respond :take, Use.reachable(Entity, :portable?) do |actor, thing|
+  if thing.parent == actor
+    actor.tell "You're already carrying #{the thing}."
   else
-    actor.proceed
+    if actor.parent != thing.parent
+      actor.tell "You take #{the thing} from #{the thing.parent}."
+    else
+      actor.tell "You take #{the thing}."
+    end
+    thing.parent = actor
   end
-end
-
-respond :take, Gamefic::Query::Children.new() do |actor, thing|
-  actor.tell "You're already carrying #{the thing}."
 end
 
 respond :take, Use.reachable(Gamefic::Rubble) do |actor, rubble|
