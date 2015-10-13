@@ -4,7 +4,7 @@ module Gamefic::Grammar
   module Gender
     attr_writer :gender
     def gender
-      # Supported values are "male", "female", "neutral", and "none"
+      # Supported values are "male", "female", "other", and "neutral"
       @gender ||= "neutral"
     end
   end
