@@ -28,7 +28,7 @@ module Gamefic
 				else
 					other.each { |other_word|
 						if my_word.length < other_word.length
-							if other_word[0, my_word.length] == my_word
+							if other_word[0, my_word.length] == my_word and my_word.length > 2
 								matches = matches + (my_word.length.to_f / other_word.length.to_f)
 							end
 						end
