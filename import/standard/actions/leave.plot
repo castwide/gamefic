@@ -2,10 +2,20 @@ respond :leave, Query::Parent.new(Supporter) do |actor, supporter|
   actor.parent = supporter.parent
   actor.tell "You get off #{the supporter}."
 end
-respond :leave, Query::Parent.new(Container) do |actor, supporter|
-  actor.parent = supporter.parent
-  actor.tell "You get out of #{the supporter}."
+
+respond :leave, Query::Parent.new(Receptacle) do |actor, receptacle|
+  actor.parent = receptacle.parent
+  actor.tell "You get out of #{the receptacle}."
 end
+
+respond :leave, Use.parent(Container) do |actor, container|
+  if container.open?
+    actor.proceed
+  else
+    actor.tell "#{The container} is closed."
+  end
+end
+
 respond :leave, Query::Parent.new(Room) do |actor, room|
   portals = room.children.that_are(Portal)
   if portals.length == 0
@@ -13,12 +23,14 @@ respond :leave, Query::Parent.new(Room) do |actor, room|
   elsif portals.length == 1
     actor.perform :go, portals[0]
   else
-    actor.tell "I don't know which way you want to go: #{portals.join_and(', ', ' or ')}."
+    actor.tell "I don't know which way you want to go: #{portals.join_or}."
   end
 end
+
 respond :leave do |actor|
   actor.perform :leave, actor.parent
 end
+
 xlate "exit", "leave"
 xlate "exit :supporter", "leave :supporter"
 xlate "get off :supporter", "leave :supporter"
