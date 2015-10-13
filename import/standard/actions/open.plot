@@ -19,7 +19,15 @@ respond :open, Query::Reachable.new(Openable) do |actor, container|
   elsif !container.open?
     actor.tell "You open #{the container}."
     container.open = true
+    actor.perform :search, container
   else
     actor.tell "It's already open."
+  end
+end
+
+respond :open, Query::Reachable.new(Container) do |actor, container|
+  actor.proceed
+  if container.open?
+    actor.perform :search, container
   end
 end

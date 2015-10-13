@@ -73,20 +73,11 @@ respond :look, Use.text do |actor, string|
   actor.tell "You don't see any \"#{string}\" here."
 end
 
-respond :look, Query::Reachable.new(Container) do |actor, container|
-  if container.has_description?
-    actor.tell container.description
+respond :look, Use.reachable(Receptacle) do |actor, receptacle|
+  if receptacle.has_description?
+    actor.tell receptacle.description
   end
-  if container.open?
-    contents = container.children.that_are_not(:attached?)
-    if contents.length > 0
-      actor.tell "You see #{contents.join_and} inside #{the container}."
-    else
-      actor.tell "#{The container} is empty."
-    end
-  else
-    actor.tell "#{The container} is closed."
-  end
+  actor.perform :search, receptacle
 end
 
 respond :look, Query::Visible.new(Supporter) do |actor, supporter|
@@ -104,8 +95,7 @@ respond :look, Query::Reachable.new(Door) do |actor, door|
   actor.tell "#{The door} is " + (door.open? ? 'open' : 'closed') + '.'
 end
 
-xlate "look at :thing", "look :thing"
-xlate "l :thing", "look :thing"
-xlate "examine :thing", "look :thing"
-xlate "x :thing", "look :thing"
-xlate "search :thing", "look :thing"
+interpret "look at :thing", "look :thing"
+interpret "l :thing", "look :thing"
+interpret "examine :thing", "look :thing"
+interpret "x :thing", "look :thing"

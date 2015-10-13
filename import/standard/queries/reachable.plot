@@ -26,7 +26,7 @@ module Gamefic::Query
           if thing.open?
             array += thing.children.that_are_not(:attached?)
           end
-        elsif thing.kind_of?(Supporter) or thing == subject
+        elsif thing.kind_of?(Supporter) or thing.kind_of?(Receptacle) or thing == subject
           array += thing.children.that_are_not(:attached?)
         end
         thing.children.that_are(:attached?).each { |att|

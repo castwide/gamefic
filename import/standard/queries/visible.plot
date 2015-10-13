@@ -23,7 +23,7 @@ module Gamefic::Query
           if thing.open? or thing.transparent?
             array += thing.children.that_are_not(:attached?)
           end
-        elsif thing.kind_of?(Supporter)
+        elsif thing.kind_of?(Supporter) or thing.kind_of?(Receptacle)
           array += thing.children.that_are_not(:attached?)
         end
         thing.children.that_are(:attached?).each { |att|

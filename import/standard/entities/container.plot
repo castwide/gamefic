@@ -1,4 +1,6 @@
-class Gamefic::Container < Gamefic::Entity
+import 'standard/entities/receptacle'
+
+class Gamefic::Container < Gamefic::Receptacle
   include Enterable
   include Openable
   include Lockable
