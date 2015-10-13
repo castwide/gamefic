@@ -14,4 +14,7 @@ module Gamefic::Use
   def self.text *args
     Gamefic::Query::Text.new *args
   end
+  def self.many_children *args
+    Gamefic::Query::ManyChildren.new *args
+  end
 end

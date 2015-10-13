@@ -6,7 +6,7 @@ respond :take, Use.reachable do |actor, thing|
   actor.tell "You can't take #{the thing}."
 end
 
-respond :take, Query::Reachable.new(:portable?) do |actor, thing|
+respond :take, Query::Reachable.new(Entity, :portable?) do |actor, thing|
   thing.parent = actor
   actor.tell "You take #{the thing}."
 end
@@ -67,6 +67,12 @@ end
 
 respond :take, Use.text do |actor, text|
   actor.tell "You don't see any \"#{text}\" here."
+end
+
+respond :take, Use.many_visible do |actor, things|
+  things.each { |thing|
+    actor.perform :take, thing
+  }
 end
 
 interpret "get :thing", "take :thing"

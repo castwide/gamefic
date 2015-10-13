@@ -33,13 +33,22 @@ module Gamefic
               valid.push match
             end
           }
-          if valid.length == 0
-            proceed
-            @actor.send(:delegate_stack).pop
-            return
+          if order.action.queries[arg_i].allow_many?
+            if valid.length == 1
+              proceed
+              @actor.send(:delegate_stack).pop
+              return
+            end
+            final_arguments.push valid
+          else
+            if valid.length == 0
+              proceed
+              @actor.send(:delegate_stack).pop
+              return
+            end
+            final_arguments.push valid[0]
+            arg_i += 1
           end
-          final_arguments.push valid[0]
-          arg_i += 1
         }
         # The actor is always the first argument to an Action proc
         final_arguments.unshift @actor

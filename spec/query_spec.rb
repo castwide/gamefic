@@ -65,6 +65,23 @@ describe Query::Base do
     expect(result.objects.length).to eq(1)
     expect(result.objects[0]).to eq(object1)
   end
+  it "uses conjunctions to add more entities to matches" do
+    plot = Plot.new
+    object1 = plot.make Entity, :name => 'object one'
+    object2 = plot.make Entity, :name => 'object two'
+    array = plot.entities
+    query = Query::Base.new
+    result = query.execute(array, 'one')
+    expect(result.objects.length).to eq(1)
+    result = query.execute(array, 'two')
+    expect(result.objects.length).to eq(1)
+    result = query.execute(array, 'one two')
+    expect(result.objects.length).to eq(1)
+    result = query.execute(array, 'one and two')
+    expect(result.objects.length).to eq(2)
+    result = query.execute(array, 'one, two')
+    expect(result.objects.length).to eq(2)
+  end
 end
 
 describe Query::Text do

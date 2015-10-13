@@ -38,7 +38,11 @@ module Gamefic::Query
       }
       return array.include?(object)
     end
+    # @return [Array]
     def execute(subject, description)
+      if allow_many? and !description.include?(',') and !description.include?(' and ')
+        return Matches.new([], '', description)
+      end
       array = context_from(subject)
       matches = Query.match(description, array)
       objects = matches.objects
@@ -62,21 +66,25 @@ module Gamefic::Query
         @specificity = base_specificity
         magnitude = 1
         @arguments.each { |item|
-        if item.kind_of?(Entity)
-          @specificity += (magnitude * 10)
-          item = item.class
-        end
-        if item.kind_of?(Class)
-          s = item
-          while s != nil
-          @specificity += magnitude
-          s = s.superclass
+          if item.kind_of?(Entity)
+            @specificity += (magnitude * 10)
+            item = item.class
           end
-        else
-          @specificity += magnitude
-        end
-        #magnitude = magnitude * 10
+          if item.kind_of?(Class)
+            s = item
+            while s != nil
+            @specificity += magnitude
+            s = s.superclass
+            end
+          else
+            @specificity += magnitude
+          end
         }
+        if allow_many?
+          # HACK Ridiculously high magic number to force queries that return
+          # arrays to take precedence over everything
+          @specificity = @specificity * 100000
+        end
       end
       @specificity
     end

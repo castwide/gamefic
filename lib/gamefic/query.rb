@@ -8,6 +8,7 @@ module Gamefic
     autoload :Self, 'gamefic/query/self'
     autoload :Parent, 'gamefic/query/parent'
     autoload :Children, 'gamefic/query/children'
+    autoload :ManyChildren, 'gamefic/query/many_children'
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Family, 'gamefic/query/family'
     autoload :Subquery, 'gamefic/query/subquery'
@@ -15,13 +16,28 @@ module Gamefic
     
     @@ignored_words = ['a', 'an', 'the']
     @@subquery_prepositions = ['in', 'on', 'of', 'inside', 'from']
-
+    @@conjunctions = ['and', ',']
+    
     def self.last_new
       Base.last_new
     end
 
     def self.match(description, array)
-      keywords = description.split_words
+      keywords = []
+      tmp = description.split_words
+      tmp.each { |t|
+        parts = t.split(',', -1)
+        first = parts.shift
+        if first != ""
+          keywords.push first
+        end
+        parts.each { |p|
+          keywords.push(',')
+          if p.strip != ''
+            keywords.push p.strip
+          end
+        }
+      }
       array.each { |e|
         if e.uid == keywords[0]
           return Matches.new([e], keywords.shift, keywords.join(' '))
@@ -71,6 +87,14 @@ module Gamefic
             skipped.clear
             possibilities = intersection
           end
+        elsif @@conjunctions.include?(next_word)
+          so_far = keywords.join(' ')
+          recursed = self.match(so_far, array)
+          possibilities += recursed.objects
+          possibilities.uniq!
+          used = recursed.matching_text.split_words
+          skipped = recursed.remainder.split_words
+          keywords = []
         else
           skipped.push used.pop
         end

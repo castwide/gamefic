@@ -16,13 +16,13 @@ describe "Take Action" do
     character.perform 'take item'
     expect(item.parent).to be(character)
   end
-  it "does not take a not_portable sibling" do
+  it "does not take a not-portable sibling" do
     room = @plot.make Room, :name => 'room'
     character = @plot.make MetaCharacter, :name => 'character', :parent => room
     # Entity is not portable by default
     entity = @plot.make Entity, :name => 'entity', :parent => room
     character.perform 'take entity'
-    expect(entity.parent).to_not be(character)
+    expect(entity.parent).not_to be(character)
     # Make an item that is not portable
     item = @plot.make Item, :name => 'item', :parent => room, :portable => false
     character.perform 'take item'
@@ -52,5 +52,14 @@ describe "Take Action" do
     item = @plot.make Item, :name => 'item', :parent => container
     character.perform 'take item from container'
     expect(item.parent).to be(character)
+  end
+  it "takes multiple items" do
+    room = @plot.make Room, :name => 'room'
+    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    item1 = @plot.make Item, :name => 'one', :parent => room
+    item2 = @plot.make Item, :name => 'two', :parent => room
+    character.perform 'take one and two'
+    expect(item1.parent).to be(character)
+    expect(item2.parent).to be(character)
   end
 end
