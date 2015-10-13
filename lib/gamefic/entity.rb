@@ -8,6 +8,7 @@ module Gamefic
     include Node
     include Describable
     include Serialized
+    include Grammar::WordAdapter
     
     attr_reader :session, :plot
     serialize :name, :parent, :description
