@@ -1,6 +1,6 @@
 module Gamefic
 
-  class Director
+  module Director
     autoload :Parser, 'gamefic/director/parser'
     autoload :Delegate, 'gamefic/director/delegate'
     autoload :Order, 'gamefic/director/order'

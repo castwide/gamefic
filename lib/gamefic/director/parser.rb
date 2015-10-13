@@ -1,7 +1,7 @@
 require 'gamefic/director/order'
 
 module Gamefic
-  class Director
+  module Director
   
     module Parser
       def self.from_tokens(actor, tokens)

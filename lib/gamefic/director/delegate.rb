@@ -1,5 +1,5 @@
 module Gamefic
-  class Director
+  module Director
     class Delegate
       def initialize(actor, orders)
         @actor = actor
