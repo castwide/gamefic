@@ -47,7 +47,7 @@ module Gamefic
         end
       }
       @replace = subs.join(' ')
-      @regexp = Regexp.new("^#{tokens.join(' ')}$")
+      @regexp = Regexp.new("^#{tokens.join(' ')}$", Regexp::IGNORECASE)
       if !plot.nil?
         plot.send :add_syntax, self
       end

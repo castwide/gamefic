@@ -43,4 +43,17 @@ describe Syntax do
     character.perform "combine foo bar"
     expect(item).to eq([foo, bar])
   end
+  it "does case-insensitive matches" do
+    plot = Plot.new
+    done = false
+    plot.respond :foobar do |actor|
+      done = true
+    end
+    character = plot.make Character, :name => 'character'
+    character.perform "foobar"
+    expect(done).to eq(true)
+    done = false
+    character.perform "FOOBAR"
+    expect(done).to eq(true)
+  end
 end

@@ -82,6 +82,22 @@ describe Query::Base do
     result = query.execute(array, 'one, two')
     expect(result.objects.length).to eq(2)
   end
+  it "requires at least three characters for a partial match" do
+    plot = Plot.new
+    entity = plot.make Entity, :name => 'dictionary'
+    matches = Query.match('di', [entity])
+    expect(matches.objects.length).to eq(0)
+    matches = Query.match('dic', [entity])
+    expect(matches.objects.length).to eq(1)    
+  end
+  it "does case-insensitive matching" do
+    plot = Plot.new
+    entity = plot.make Entity, :name => 'dictionary'
+    matches = Query.match('dictionary', [entity])
+    expect(matches.objects.length).to eq(1)
+    matches = Query.match('DICTIONARY', [entity])
+    expect(matches.objects.length).to eq(1)        
+  end
 end
 
 describe Query::Text do
