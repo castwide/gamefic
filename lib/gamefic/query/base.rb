@@ -40,7 +40,7 @@ module Gamefic::Query
     end
     # @return [Array]
     def execute(subject, description)
-      if allow_many? and !description.include?(',') and !description.include?(' and ')
+      if allow_many? and !description.include?(',') and !description.downcase.include?(' and ')
         return Matches.new([], '', description)
       end
       array = context_from(subject)

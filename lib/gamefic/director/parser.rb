@@ -34,16 +34,6 @@ module Gamefic
           options
       end
       def self.from_string(actor, command)
-        # If we use Query::Base.new in the @disambiguator declaration, Opal
-        # passes the block to the query instead of the action.
-        #base = Query::Base.new
-        #@disambiguator = Meta.new nil, nil, base do |actor, entities|
-        #  definites = []
-        #  entities.each { |entity|
-        #    definites.push entity.definitely
-        #  }
-        #  actor.tell "I don't know which you mean: #{definites.join_or}."
-        #end
         options = []
         if command.to_s == ''
           return options

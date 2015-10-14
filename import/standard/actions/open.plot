@@ -6,7 +6,7 @@ respond :open, Query::Reachable.new() do |actor, thing|
   actor.tell "You can't open #{the thing}."
 end
 
-respond :open, Query::Reachable.new(Openable) do |actor, container|
+respond :open, Query::Reachable.new(Portable, Openable) do |actor, container|
   # Portable containers need to be picked up before they are opened.
   if container.portable? and container.parent != actor
     actor.perform :take, container

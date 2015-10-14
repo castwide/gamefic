@@ -1,6 +1,16 @@
 module Gamefic
   module Director
     class Delegate
+      # If we use Query::Base.new in the @disambiguator declaration, Opal
+      # passes the block to the query instead of the action.
+      base = Query::Base.new
+      @@disambiguator = Meta.new nil, nil, base do |actor, entities|
+        definites = []
+        entities.each { |entity|
+          definites.push entity.definitely
+        }
+        actor.tell "I don't know which you mean: #{definites.join_or}."
+      end
       def initialize(actor, orders)
         @actor = actor
         @orders = orders
@@ -16,38 +26,59 @@ module Gamefic
           final_arguments = []
           order.arguments.each { |argument|
             if argument.length > 1 and !order.action.queries[arg_i].allow_many?
-              # If we use Query::Base.new in the @disambiguator declaration, Opal
-              # passes the block to the query instead of the action.
-              base = Query::Base.new
-              disambiguator = Meta.new nil, nil, base do |actor, entities|
-                definites = []
-                entities.each { |entity|
-                  definites.push entity.definitely
-                }
-                actor.tell "I don't know which you mean: #{definites.join_or}."
+              if argument[0].kind_of?(Array)
+                # This thing refers to multiple items. Just keep going.
+                final_arguments = nil
+                break
+              else
+                ambiguous = argument
               end
-              order = Order.new(@actor, disambiguator, [])
-              final_arguments = [argument]
+              order = Order.new(@actor, @@disambiguator, [])
+              final_arguments = [ambiguous]
               break
             end
             valid = []
             argument.each { |match|
-              if order.action.queries[arg_i].validate(@actor, match)
-                valid.push match
+              if order.action.queries[arg_i].allow_many?
+                if match.kind_of?(Array)
+                  arg_array = []
+                  if match.length > 1
+                    order = Order.new(@actor, @@disambiguator, [])
+                    final_arguments = [match]
+                    break
+                  elsif order.action.queries[arg_i].validate(@actor, match[0])
+                    arg_array.push match[0]
+                  else
+                    final_arguments = nil
+                    break
+                  end
+                  if order.action == @@disambiguator or final_arguments.nil?
+                    break
+                  end
+                  valid.push arg_array
+                else
+                  final_arguments = nil
+                  break
+                end
+              else
+                if order.action.queries[arg_i].validate(@actor, match)
+                  valid.push match
+                else
+                  final_arguments = nil
+                  break
+                end
               end
             }
+            if order.action == @@disambiguator or final_arguments.nil?
+              break
+            end
             if order.action.queries[arg_i].allow_many?
-              if valid.length == 1
-                final_arguments = nil
-                break
-              end
               final_arguments.push valid
-            else
-              if valid.length == 0
-                final_arguments = nil
-                break
-              end
+            elsif valid.length == 1
               final_arguments.push valid[0]
+            else
+              final_arguments = nil
+              break
             end
             arg_i += 1
           }

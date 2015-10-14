@@ -22,7 +22,22 @@ module Gamefic
     end
 
     def self.match(description, array)
-      keywords = description.split_words
+      if description.include?(',')
+        tmp = description.split(',', -1)
+        keywords = []
+        first = tmp.shift
+        if first.strip != ''
+          keywords.push first.strip
+        end
+        tmp.each { |t|
+          keywords.push ','
+          if t.strip != ''
+            keywords += t.strip.split_words
+          end
+        }
+      else
+        keywords = description.split_words
+      end
       array.each { |e|
         if e.uid == keywords[0]
           return Matches.new([e], keywords.shift, keywords.join(' '))
@@ -72,21 +87,25 @@ module Gamefic
             skipped.clear
             possibilities = intersection
           end
-          if next_word.end_with?(',')
-            so_far = keywords.join(' ')
-            recursed = self.match(so_far, array)
-            possibilities += recursed.objects
-            possibilities.uniq!
-            used = recursed.matching_text.split_words
-            skipped = recursed.remainder.split_words
-            keywords = []
+        elsif next_word.downcase == 'and' or next_word == ','
+          while keywords.first == ',' or keywords.first.downcase == 'and'
+            used.push keywords.shift
           end
-        elsif next_word == 'and'
           so_far = keywords.join(' ')
           recursed = self.match(so_far, array)
-          possibilities += recursed.objects
-          possibilities.uniq!
-          used = recursed.matching_text.split_words
+          possibilities = [possibilities]
+          objects = recursed.objects.clone
+          while objects.length > 0
+            obj = objects.shift
+            if obj.kind_of?(Array)
+              possibilities.push obj
+            else
+              combined = [obj] + objects
+              possibilities.push combined
+              break
+            end
+          end
+          used += recursed.matching_text.split_words
           skipped = recursed.remainder.split_words
           keywords = []
         else
@@ -98,7 +117,8 @@ module Gamefic
         end
       end
       if at_least_one_match and (used - @@ignored_words).length > 0
-        return Matches.new(possibilities, used.join(' '), skipped.join(' '))
+        r = Matches.new(possibilities, used.join(' '), skipped.join(' '))
+        return r
       else
         return Matches.new([], '', description)
       end

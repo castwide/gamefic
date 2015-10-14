@@ -62,4 +62,15 @@ describe "Take Action" do
     expect(item1.parent).to be(character)
     expect(item2.parent).to be(character)
   end
+  it "detects ambiguous matches in multiple items" do
+    room = @plot.make Room, :name => 'room'
+    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    item1 = @plot.make Item, :name => 'one item', :parent => room
+    item2 = @plot.make Item, :name => 'two item', :parent => room
+    item3 = @plot.make Item, :name => 'three item', :parent => room
+    character.perform 'take item, item, and item'
+    expect(item1.parent).not_to be(character)
+    expect(item2.parent).not_to be(character) 
+    expect(item3.parent).not_to be(character)
+  end
 end
