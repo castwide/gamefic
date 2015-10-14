@@ -10,7 +10,8 @@ module Gamefic
     def initialize(plot, args = {})
       @queue = Array.new
       super
-      buffering = false
+      @buffer_stack = 0
+      @buffer = ""
     end
     def connect(user)
       @user = user
@@ -23,20 +24,18 @@ module Gamefic
       Director.dispatch(self, *command)
     end
     def quietly(*command)
-      if user.nil?
-        perform *command
-      else
-        self.buffer = ""
-        self.buffering = true
-        self.perform *command
-        self.buffering = false
-        self.buffer
+      if @buffer_stack == 0
+        @buffer = ""
       end
+      @buffer_stack += 1
+      self.perform *command
+      @buffer_stack -= 1
+      @buffer
     end
     def tell(message)
       if user != nil and message.to_s != ''
-        if self.buffering
-          self.buffer += message
+        if @buffer_stack > 0
+          @buffer += message
         else
           message = "<p>#{message}</p>"
           # This method uses String#gsub instead of String#gsub! for
@@ -69,19 +68,6 @@ module Gamefic
     end
     def on_turn
       
-    end
-    protected
-    def buffering
-      @buffering ||= false
-    end
-    def buffering=(boolean)
-      @buffering = boolean
-    end
-    def buffer
-      @buffer || ""
-    end
-    def buffer=(text)
-      @buffer = text
     end
     private
     def delegate_stack

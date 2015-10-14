@@ -16,28 +16,13 @@ module Gamefic
     
     @@ignored_words = ['a', 'an', 'the']
     @@subquery_prepositions = ['in', 'on', 'of', 'inside', 'from']
-    @@conjunctions = ['and', ',']
     
     def self.last_new
       Base.last_new
     end
 
     def self.match(description, array)
-      keywords = []
-      tmp = description.split_words
-      tmp.each { |t|
-        parts = t.split(',', -1)
-        first = parts.shift
-        if first != ""
-          keywords.push first
-        end
-        parts.each { |p|
-          keywords.push(',')
-          if p.strip != ''
-            keywords.push p.strip
-          end
-        }
-      }
+      keywords = description.split_words
       array.each { |e|
         if e.uid == keywords[0]
           return Matches.new([e], keywords.shift, keywords.join(' '))
@@ -87,7 +72,16 @@ module Gamefic
             skipped.clear
             possibilities = intersection
           end
-        elsif @@conjunctions.include?(next_word)
+          if next_word.end_with?(',')
+            so_far = keywords.join(' ')
+            recursed = self.match(so_far, array)
+            possibilities += recursed.objects
+            possibilities.uniq!
+            used = recursed.matching_text.split_words
+            skipped = recursed.remainder.split_words
+            keywords = []
+          end
+        elsif next_word == 'and'
           so_far = keywords.join(' ')
           recursed = self.match(so_far, array)
           possibilities += recursed.objects

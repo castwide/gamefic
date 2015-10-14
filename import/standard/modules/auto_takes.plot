@@ -5,9 +5,9 @@ module AutoTakes
       if AutoTakes.taking_message.to_s != ""
         self.tell (AutoTakes.taking_message % {:name => entity.definitely, :Name => entity.definitely.cap_first})
       end
-      buffer = self.quietly :take, entity
+      buff = self.quietly :take, entity
       if entity.parent != self
-        self.tell buffer
+        self.tell buff
         false
       else
         if AutoTakes.taken_message.to_s != ""

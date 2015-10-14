@@ -2,14 +2,10 @@ respond :insert, Use.visible, Use.reachable do |actor, thing, target|
   actor.tell "You can't put #{the thing} inside #{the target}."
 end
 
-respond :insert, Use.children, Use.reachable(Receptacle) do |actor, thing, receptacle|
-  thing.parent = receptacle
-  actor.tell "You put #{the thing} in #{the receptacle}."  
-end
-
-respond :insert, Use.visible, Use.reachable(Receptacle) do |actor, thing, container|
+respond :insert, Use.visible, Use.reachable(Receptacle) do |actor, thing, receptacle|
   if actor.auto_takes?(thing)
-    actor.perform :insert, thing, container
+    actor.tell "You put #{the thing} in #{the receptacle}."
+    thing.parent = receptacle
   end
 end
 

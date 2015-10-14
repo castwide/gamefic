@@ -11,20 +11,20 @@ describe "Insert Action" do
   end
   it "inserts an item into a receptacle" do
     @character.perform 'insert item in receptacle'
-    expect(@item.parent).to eq(@receptacle)
+    expect(@item.parent).to be(@receptacle)
   end
   it "inserts an item into an open container" do
     @container.open = true
     @character.perform 'insert item in container'
-    expect(@item.parent).to eq(@container)
+    expect(@item.parent).to be(@container)
   end
   it "does not insert an item into a closed container" do
     @container.open = false
     @character.perform 'insert item in container'
-    expect(@item.parent).to eq(@character)
+    expect(@item.parent).to be(@character)
   end
   it "does not insert an item into a generic entity" do
     @character.perform 'insert item in entity'
-    expect(@item.parent).to eq(@character)
+    expect(@item.parent).to be(@character)
   end
 end

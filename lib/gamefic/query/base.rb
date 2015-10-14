@@ -32,11 +32,11 @@ module Gamefic::Query
       subject
     end
     def validate(subject, object)
-      array = context_from(subject)
+      arr = context_from(subject)
       @arguments.each { |arg|
-        array = array.that_are(arg)
+        arr = arr.that_are(arg)
       }
-      return array.include?(object)
+      return arr.include?(object)
     end
     # @return [Array]
     def execute(subject, description)

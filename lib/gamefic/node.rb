@@ -7,7 +7,7 @@ module Gamefic
 
   module Node
     def children
-      if @children == nil
+      if @children.nil?
         @children = Array.new
       end
       @children.clone
