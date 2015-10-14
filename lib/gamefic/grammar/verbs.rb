@@ -8,7 +8,7 @@ module Gamefic::Grammar
       @pronoun = obj
       self.class.conjugated_verbs.each_pair { |infinitive, verbset|
         define_singleton_method infinitive do
-          verbset.conjugate @pronoun
+          verbset[:present].conjugate @pronoun
         end
       }
     end

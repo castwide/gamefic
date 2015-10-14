@@ -2,6 +2,9 @@ require 'gamefic/grammar'
 
 module Gamefic::Grammar
   module WordAdapter
+    include Gender
+    include Person
+    include Plural
     # @return [Gamefic::Grammar::Pronouns]
     def pronoun
       @pronoun ||= Grammar::Pronouns.new(self)

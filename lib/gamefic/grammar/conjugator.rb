@@ -6,8 +6,8 @@ module Gamefic::Grammar
     module ClassMethods
       @@conjugated_verbs = {}
       def conjugate infinitive, tense, *forms
-        @@conjugated_verbs[tense] ||= {}
-        @@conjugated_verbs[tense][infinitive] = VerbSet.new(infinitive, *forms)
+        @@conjugated_verbs[infinitive] ||= {}
+        @@conjugated_verbs[infinitive][tense] = VerbSet.new(infinitive, *forms)
       end
       def conjugated_verbs
         @@conjugated_verbs
