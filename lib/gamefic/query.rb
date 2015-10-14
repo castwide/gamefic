@@ -52,14 +52,19 @@ module Gamefic
         if @@subquery_prepositions.include?(next_word)
           so_far = keywords.join(' ')
           in_matched = self.match(so_far, array)
-          if in_matched.objects.length == 1
+          if in_matched.objects.length > 0 and (in_matched.objects.length == 1 or in_matched.objects[0].kind_of?(Array))
             # Subset matching should only consider the intersection of the
             # original array and the matched object's children. This ensures
             # that it won't erroneously match a child that was excluded from
             # the original query.
-            subset = self.match(used.join(' '), (array & in_matched.objects[0].children))
+            parent = in_matched.objects.shift
+            subset = self.match(used.join(' '), (array & (parent.kind_of?(Array) ? parent[0].children : parent.children)))
             if subset.objects.length == 1
-              return subset
+              if in_matched.objects.length == 0
+                return subset
+              else
+                return Matches.new([subset.objects] + in_matched.objects, subset.matching_text, subset.remainder)
+              end
             end
           end
         end

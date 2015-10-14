@@ -98,6 +98,18 @@ describe Query::Base do
     matches = Query.match('DICTIONARY', [entity])
     expect(matches.objects.length).to eq(1)        
   end
+  it "matches a set of many that includes a child reference" do
+    plot = Plot.new
+    item1 = plot.make Entity, :name => 'item one'
+    item2 = plot.make Entity, :name => 'item two'
+    parent = plot.make Entity, :name => 'parent'
+    item3 = plot.make Entity, :name => 'item three', :parent => parent
+    matches = Query.match("one, item in parent and two", plot.entities)
+    flat = matches.objects.flatten
+    expect(flat.include?(item1)).to eq(true)
+    expect(flat.include?(item2)).to eq(true)
+    expect(flat.include?(item3)).to eq(true)
+  end
 end
 
 describe Query::Text do
