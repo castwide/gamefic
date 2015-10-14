@@ -19,4 +19,15 @@ describe "Drop Action" do
     expect(item1.parent).to eq(room)
     expect(item2.parent).to eq(room)
   end
+  it "drops all from the character's inventory" do
+    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.import 'standard'
+    room = plot.make Room, :name => 'room'
+    character = plot.make Character, :name => 'character', :parent => room
+    item1 = plot.make Item, :name => 'one', :parent => character
+    item2 = plot.make Item, :name => 'two', :parent => character
+    character.perform 'drop all'
+    expect(item1.parent).to eq(room)
+    expect(item2.parent).to eq(room)    
+  end
 end

@@ -73,4 +73,16 @@ describe "Take Action" do
     expect(item2.parent).not_to be(character) 
     expect(item3.parent).not_to be(character)
   end
+  it "takes all obvious items" do
+    room = @plot.make Room, :name => 'room'
+    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    item1 = @plot.make Item, :name => 'one item', :parent => room
+    item2 = @plot.make Item, :name => 'two item', :parent => room
+    container = @plot.make Container, :name => 'container', :parent => room
+    item3 = @plot.make Item, :name => 'three item', :parent => container
+    character.perform 'take all'
+    expect(item1.parent).to be(character)
+    expect(item2.parent).to be(character) 
+    expect(item3.parent).not_to be(character)    
+  end
 end

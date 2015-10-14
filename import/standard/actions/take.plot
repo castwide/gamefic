@@ -49,6 +49,29 @@ respond :take, Use.many_visible do |actor, things|
   }
 end
 
+respond :take, Use.text("all", "everything") do |actor, text|
+  children = actor.parent.children.that_are_not(:attached?).that_are(:portable?)
+  if actor.parent != actor.room and actor.parent.kind_of?(Supporter)
+    children += actor.room.children.that_are_not(:attached?).that_are(:portable?)
+  end
+  if children.length == 0
+    actor.tell "There's nothing obvious to take."
+  else
+    taken = []
+    children.each { |child|
+      buffer = actor.quietly :take, child
+      if child.parent == actor
+        taken.push child
+      else
+        actor.tell buffer
+      end
+      if taken.length > 0
+        actor.tell "You take #{taken.join_and}."
+      end
+    }
+  end
+end
+
 interpret "get :thing", "take :thing"
 interpret "pick up :thing", "take :thing"
 interpret "pick :thing up", "take :thing"
