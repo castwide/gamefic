@@ -1,7 +1,7 @@
 module Gamefic
 
   class Action
-    attr_reader :order_key, :caller, :queries
+    attr_reader :order_key, :queries
     @@order_key_seed = 0
     def initialize(story, command, *queries, &proc)
       if !command.kind_of?(Symbol)
