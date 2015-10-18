@@ -4,13 +4,14 @@ module Gamefic
       # If we use Query::Base.new in the @disambiguator declaration, Opal
       # passes the block to the query instead of the action.
       base = Query::Base.new
-      @@disambiguator = Meta.new nil, nil, base do |actor, entities|
+      @@disambiguator = Action.new nil, nil, base do |actor, entities|
         definites = []
         entities.each { |entity|
           definites.push entity.definitely
         }
         actor.tell "I don't know which you mean: #{definites.join_or}."
       end
+      @@disambiguator.meta = true
       def initialize(actor, orders)
         @actor = actor
         @orders = orders
@@ -38,16 +39,16 @@ module Gamefic
               break
             end
             valid = []
-            argument.each { |match|
+            argument.each { |m|
               if order.action.queries[arg_i].allow_many?
-                if match.kind_of?(Array)
+                if m.kind_of?(Array)
                   arg_array = []
-                  if match.length > 1
+                  if m.length > 1
                     order = Order.new(@actor, @@disambiguator, [])
-                    final_arguments = [match]
+                    final_arguments = [m]
                     break
-                  elsif order.action.queries[arg_i].validate(@actor, match[0])
-                    arg_array.push match[0]
+                  elsif order.action.queries[arg_i].validate(@actor, m[0])
+                    arg_array.push m[0]
                   else
                     final_arguments = nil
                     break
@@ -61,8 +62,8 @@ module Gamefic
                   break
                 end
               else
-                if order.action.queries[arg_i].validate(@actor, match)
-                  valid.push match
+                if order.action.queries[arg_i].validate(@actor, m)
+                  valid.push m
                 else
                   final_arguments = nil
                   break
@@ -93,7 +94,7 @@ module Gamefic
       end
       def execute
         return if @orders.length == 0
-        if !@orders[0].action.kind_of?(Meta)
+        if !@orders[0].action.meta?
           @actor.plot.asserts.each_pair { |name, rule|
             result = rule.test(@actor, @orders[0].action.verb, @orders[0].arguments)
             if result == false

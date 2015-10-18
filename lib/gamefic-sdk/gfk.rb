@@ -5,6 +5,8 @@ require 'gamefic/engine/tty'
 require 'gamefic-sdk'
 require 'gamefic-sdk/build'
 require 'securerandom'
+require 'gamefic-sdk/debug'
+
 include Gamefic
 
 module Gamefic::Sdk
@@ -65,7 +67,7 @@ module Gamefic::Sdk
         else
           config = Build.load
         end
-        plot = Plot.new
+        plot = Gamefic::Sdk::Debug::Plot.new
         plot.source.directories.concat config.import_paths
         plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
         plot.load main_file

@@ -2,10 +2,12 @@ module Gamefic
 
   module Plot::CommandMount
     def meta(command, *queries, &proc)
-      act = Meta.new(self, command, *queries, &proc)
+      act = self.action(command, *queries, &proc)
+      act.meta = true
+      act
     end
     def action(command, *queries, &proc)
-      act = Action.new(self, command, *queries, &proc)
+      Action.new(self, command, *queries, &proc)
     end
     def respond(command, *queries, &proc)
       self.action(command, *queries, &proc)

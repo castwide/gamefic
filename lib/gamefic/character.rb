@@ -76,7 +76,7 @@ module Gamefic
     def last_order=(order)
       return if order.nil?
       @last_order = order
-      if !order.action.kind_of?(Meta) and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
+      if !order.action.meta? and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
         @last_object = order.arguments[0][0]
       end
     end
