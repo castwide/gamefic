@@ -6,7 +6,8 @@ require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
-
+require 'gamefic/plot/article_mount'
+require 'gamefic/plot/you_mount'
 module Gamefic
 
   class Plot
@@ -14,8 +15,8 @@ module Gamefic
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :EntityMount, 'gamefic/plot/entity_mount'
     autoload :QueryMount, 'gamefic/plot/query_mount'
-    autoload :ArticleMount, 'gamefic/plot/article_mount'
-    autoload :YouMount, 'gamefic/plot/you_mount'
+    #autoload :ArticleMount, 'gamefic/plot/article_mount'
+    #autoload :YouMount, 'gamefic/plot/you_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage

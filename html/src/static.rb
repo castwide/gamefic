@@ -1,3 +1,4 @@
+require 'gamefic'
 include Gamefic
 
 class WebPlot < Gamefic::Plot

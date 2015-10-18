@@ -1,6 +1,6 @@
 require "gamefic/node"
 require "gamefic/describable"
-require "gamefic/plot"
+#require "gamefic/plot"
 
 module Gamefic
 
@@ -8,6 +8,7 @@ module Gamefic
     include Node
     include Describable
     include Serialized
+    extend Serialized::ClassMethods
     include Grammar::WordAdapter
     
     attr_reader :session, :plot
