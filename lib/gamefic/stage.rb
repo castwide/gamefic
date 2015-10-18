@@ -18,7 +18,7 @@ module Gamefic
       mounted = self.class.mounted_modules.keys
       instance = self
       
-      @stage = stage_module = Module.new do
+      @stage = Module.new do
         define_singleton_method(:__instance__) do
           unless caller.length == 0 or caller[0].include?(__FILE__)
             raise NoMethodError.new("Method __instance__ is not available from the stage.")
