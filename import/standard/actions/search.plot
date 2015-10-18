@@ -19,3 +19,6 @@ end
 respond :search, Use.reachable do |actor, thing|
   actor.perform :look, thing
 end
+
+interpret "look in :thing", "search :thing"
+interpret "look inside :thing", "search :thing"
