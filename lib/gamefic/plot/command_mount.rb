@@ -1,3 +1,5 @@
+require 'gamefic/action'
+
 module Gamefic
 
   module Plot::CommandMount

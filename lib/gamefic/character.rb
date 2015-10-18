@@ -1,3 +1,5 @@
+require 'gamefic/director'
+
 module Gamefic
   class Character < Entity
     attr_reader :queue, :user

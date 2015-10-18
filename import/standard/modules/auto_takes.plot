@@ -1,4 +1,4 @@
-module AutoTakes
+module Gamefic::AutoTakes
   def auto_takes?(entity)
     return true if entity.parent == self
     if AutoTakes.enabled?

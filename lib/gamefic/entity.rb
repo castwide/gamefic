@@ -1,6 +1,6 @@
 require "gamefic/node"
 require "gamefic/describable"
-#require "gamefic/plot"
+require "gamefic/serialized"
 
 module Gamefic
 
