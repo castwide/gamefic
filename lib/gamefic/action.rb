@@ -2,6 +2,7 @@ module Gamefic
 
   class Action
     attr_reader :order_key, :queries
+    attr_writer :meta
     @@order_key_seed = 0
     def initialize(story, command, *queries, &proc)
       if !command.kind_of?(Symbol)
@@ -60,6 +61,9 @@ module Gamefic
         sig.push q.signature
       }
       sig.join(', ').gsub(/Gamefic::/, '')
+    end
+    def meta?
+      @meta ||= false
     end
     private
       def self.explode(entity)

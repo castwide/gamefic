@@ -18,7 +18,7 @@ module Gamefic
       end
     end
     def self.included(base)
-      base.extend(ClassMethods)
+      base.extend(Gamefic::Serialized::ClassMethods)
     end
   end
 end

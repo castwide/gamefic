@@ -39,6 +39,9 @@ module Gamefic
       @delegate_stack = []
       post_initialize
     end
+    def actions
+      @commands.values.flatten
+    end
     def actions_with_verb(verb)
       @commands[verb].clone || []
     end
