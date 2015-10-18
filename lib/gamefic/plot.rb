@@ -2,12 +2,12 @@
 #require 'gamefic/entityloader'
 require 'gamefic/stage'
 require 'gamefic/tester'
-#require 'gamefic/describable_articles'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
 require 'gamefic/plot/article_mount'
 require 'gamefic/plot/you_mount'
+
 module Gamefic
 
   class Plot
