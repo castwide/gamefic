@@ -1,173 +1,179 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		<title>Untitled by Anonymous</title>
-		<link rel="stylesheet" type="text/css" href="style.css" />
-		<script type="text/javascript" src="opal.js"></script>
-		<script type="text/javascript" src="gamefic.js"></script>
-		<script type="text/javascript" src="static.js"></script>
-		<script type="text/javascript" src="game.js"></script>
-		<script type="text/javascript" src="engine.js"></script>
-		<script type="text/javascript" src="connection.js"></script>
-		<script type="text/javascript" src="jquery.js"></script>
-		<link rel="stylesheet" type="text/css" href="jquery.modal.css" />
-		<script type="text/javascript" src="jquery.modal.js"></script>
-		<script type="text/javascript" src="js.cookie.js"></script>
-		<script type="text/javascript">
-			$(function() {
-				var lastResponse = null;
-				Gamefic.Connection.init({
-					onUpdate: function(response) {
-						if (lastResponse != null && lastResponse.state != 'Paused') {
-							$('#text').append('<p><kbd class="log">' + lastResponse.prompt + ' ' + response.command + '</kbd></p>');
-						}
-						lastResponse = response;
-						$('#prompt').html('');
-						$('#controls').hide();
-						$('a[rel="gamefic"]').addClass('disabled');
-						switch (response.state) {
-							case 'YesOrNo':
-								$('#dialog').html(response.output + '<p>' + response.prompt + '</p>' + '<nav><p><a class="yes" href="#" rel="gamefic" data-command="yes">Yes</a><a class="no" rel="gamefic" data-command="no" href="#">No</a></p></nav>');
-								$('#dialog a').click(function(evt) {
-									evt.preventDefault();
-									Gamefic.Connection.run($(this).attr('data-command'));
-									$('#dialog').html('');
-									$.modal.close();
-								});
-								$('#dialog').modal({
-									opacity: 0.25,
-									zIndex: 9999,
-									escapeClose: false,
-									clickClose: false,
-									showClose: false
-								});
-								break;
-							case 'MultipleChoice':
-								$('#text').append(response.output);
-								var lines = response.prompt.split("\n");
-								response.prompt = lines.join('<br/>');
-								lines.pop();
-								response.output += "<ol class=\"multiple-choice\">";
-								for (i = 0; i < lines.length; i++) {
-									response.output += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"" + (i + 1) + "\">" + lines[i].substr((i + 1).toString().length + 2) + "</a></li>";
-								}
-								response.output += "</ol>";
-								$('#dialog').html(response.output);
-								$('#dialog').modal({
-									opacity: 0.25,
-									zIndex: 9999,
-									escapeClose: false,
-									clickClose: false,
-									showClose: false
-								});
-								break;
-							case 'Prompted':
-								$('#dialog').html(response.output).append('<p>' + response.prompt + '</p>').append(
-									'<form id="dialogform"><div id="dialogline-container"><input id="dialogline" type="text" name="command" autocomplete="off" /></div><input id="dialogenter" type="submit" value="Enter" /></form>'
-								);
-								$('#dialog form').submit(function(evt) {
-									evt.preventDefault();
-									Gamefic.Connection.run($('#dialogline').val());
-									$('#dialog').html('');
-									$.modal.close();
-								});
-								$('#dialog').modal({
-									opacity: 0.25,
-									zIndex: 9999,
-									escapeClose: false,
-									clickClose: false,
-									showClose: false
-								});
-								$('#dialogline').focus();
-								break;
-							case 'Paused':
-								$('#text').append(response.output);
-								$('#text').append('<p><a rel="gamefic" href="#" data-command="[enter]">' + response.prompt + '</a></p>');
-								break;
-							case 'Active':
-								$('#controls').show();
-								$('#gamefic_command').focus();
-							default:
-								$.modal.close();
-								$('#text').append(response.output);
-								$('#prompt').html(response.prompt == '>' ? 'What do you do?' : response.prompt);
-						}
-						$(window).resize();
-					},
-					onConclude: function(response) {
-						$('#text').append('<p><strong>' + response.prompt + '</strong></p>');
-						$('#controls').hide();
-						$(window).resize();
-					}
-				});
-				$(window).resize(function(evt) {
-					var available = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-					var reserved = $('#titlebar').outerHeight() + ($('#image-container').is(':visible') ? $('#image-container').outerHeight() : 0) + ($('#controls').is(':visible') ? $('#controls').outerHeight() : 0);
-					var textHeight = (available - reserved) + 'px';
-					if ($('#text-container')[0].scrollHeight < available - reserved) {
-						textHeight = 'auto';
-					}
-					$('#text-container').css({height: textHeight});
-					$('#text-container').scrollTop($('#text-container')[0].scrollHeight);
-				});
-				$(window).keydown(function(evt) {
-					if (lastResponse.state == 'Paused' && evt.which == 13) {
-						evt.preventDefault();
-						Gamefic.Connection.run('');
-					} else if (lastResponse.state == 'YesOrNo') {
-						evt.preventDefault();
-						if (evt.which == 89) {
-							evt.preventDefault();
-							$('#dialog a.yes').click();
-							$('#dialog').html('');
-							$.modal.close();
-						} else if (evt.which == 78) {
-							evt.preventDefault();
-							$('#dialog a.no').click();
-							$('#dialog').html('');
-							$.modal.close();				
-						}
-					} else if (lastResponse.state == 'MultipleChoice') {
-						evt.preventDefault();
-						var k = String.fromCharCode(evt.which);
-						var a = $('#dialog .multiple-choice a[rel="gamefic"][data-command="' + k + '"]');
-						if (a.length) {
-							a.click();
-							$('#dialog').html('');
-							$.modal.close();					
-						}
-					}
-				});
-			});
-		</script>
-	</head>
-	<body>
-		<div id="gamefic_console">
-			<div id="titlebar">
-				<h1>
-					<cite>Untitled</cite> by Anonymous
-				</h1>
-			</div>
-			<div id="image-container">
-				<div id="image"></div>
-			</div>
-			<div id="text-container">
-				<div id="text">
-				</div>
-			</div>
-			<div id="controls">
-				<p id="prompt"></p>
-				<form id="commandform" action="" method="post">
-					<input type="hidden" name="sessionid" value="@{session->id}@" />
-					<div id="commandline-container">
-						<input id="gamefic_command" type="text" name="command" autocomplete="off" />
-					</div>
-					<input id="commandenter" type="submit" value="Enter" />
-				</form>
-			</div>
-		</div>
-		<div id="dialog" style="display: none;">
-		</div>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Second Story</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="opal.js"></script>
+    <script type="text/javascript" src="gamefic.js"></script>
+    <script type="text/javascript" src="static.js"></script>
+    <script type="text/javascript" src="game.js"></script>
+    <script type="text/javascript" src="engine.js"></script>
+    <script type="text/javascript" src="connection.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="jquery.modal.css" />
+    <script type="text/javascript" src="jquery.modal.js"></script>
+    <script type="text/javascript" src="js.cookie.js"></script>
+    <script type="text/javascript">
+      var appendOutput = function(output) {
+        $('#text').append('<div class="output">' + output + '</div>');
+      }
+      var modalSettings = {
+        opacity: 0.25,
+        zIndex: 9999,
+        escapeClose: false,
+        clickClose: false,
+        showClose: false
+      }
+      $(function() {
+        var lastResponse = null;
+        Gamefic.Connection.init({
+          onUpdate: function(response) {
+            if (lastResponse != null && lastResponse.state != 'Paused') {
+              if (response.command != null) {
+                appendOutput('<p><kbd class="log">' + lastResponse.prompt + ' ' + response.command + '</kbd></p>');
+              }
+            }
+            lastResponse = response;
+            $('#prompt').html('');
+            $('#controls').addClass('disabled');
+            $('#controls').find('input').attr('readonly', null);
+            $('a[rel="gamefic"]').addClass('disabled');
+            $('.output').addClass('history');
+            window.focus();
+            switch (response.state) {
+              case 'YesOrNo':
+                $('#dialog').html(response.output + '<p>' + response.prompt + '</p>' + '<nav><p><a class="yes" href="#" rel="gamefic" data-command="yes">Yes</a><a class="no" rel="gamefic" data-command="no" href="#">No</a></p></nav>');
+                $('#dialog a').click(function(evt) {
+                  evt.preventDefault();
+                  Gamefic.Connection.run($(this).attr('data-command'));
+                  $('#dialog').html('');
+                  $.modal.close();
+                });
+                $('#dialog').modal(modalSettings);
+                $('#dialog').focus();
+                break;
+              case 'MultipleChoice':
+                appendOutput(response.output);
+                var lines = response.prompt.split("\n");
+                response.prompt = lines.join('<br/>');
+                lines.pop();
+                response.output += "<ol class=\"multiple-choice\">";
+                for (i = 0; i < lines.length; i++) {
+                  response.output += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"" + (i + 1) + "\">" + lines[i].substr((i + 1).toString().length + 2) + "</a></li>";
+                }
+                response.output += "</ol>";
+                $('#dialog').html(response.output);
+                $('#dialog').modal(modalSettings);
+                $('#dialog').focus();
+                break;
+              case 'Prompted':
+                $('#dialog').html(response.output).append('<p>' + response.prompt + '</p>').append(
+                  '<form id="dialogform"><div id="dialogline-container"><input id="dialogline" type="text" name="command" autocomplete="off" /></div><input id="dialogenter" type="submit" value="Enter" /></form>'
+                );
+                $('#dialog form').submit(function(evt) {
+                  evt.preventDefault();
+                  Gamefic.Connection.run($('#dialogline').val());
+                  $('#dialog').html('');
+                  $.modal.close();
+                });
+                $('#dialog').modal(modalSettings);
+                $('#dialogline').focus();
+                break;
+              case 'Paused':
+                $.modal.close();
+                appendOutput(response.output + '<p><a rel="gamefic" href="#" data-command="[enter]">' + response.prompt + '</a></p>');
+                break;
+              case 'Active':
+                $('#controls').removeClass('disabled');
+                $('#controls').find('input').attr('readonly', null);
+                $('#gamefic_command').focus();
+              default:
+                $.modal.close();
+                $.modal.close();
+                appendOutput(response.output);
+                $('#prompt').html(response.prompt == '>' ? 'What do you do?' : response.prompt);
+                if (response.state == 'Testing') {
+                  $('#controls').addClass('disabled');
+                  $('#controls').find('input').attr('disabled', 'disabled');
+                  Gamefic.Connection.run(null);
+                } else {
+                  $('#controls').find('input').attr('disabled', null);
+                }
+            }
+            $(window).resize();
+          },
+          onConclude: function(response) {
+            appendOutput('<p><strong>' + response.prompt + '</strong></p><p><a href="#" onclick="location.reload()">Play Again?</a></p>');
+            $('#controls').hide();
+            $(window).resize();
+          }
+        });
+        $(window).resize(function(evt) {
+          var available = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+          var reserved = $('#titlebar').outerHeight() + ($('#image-container').is(':visible') ? $('#image-container').outerHeight() : 0) + ($('#controls').is(':visible') ? $('#controls').outerHeight() : 0) + $('#footer').outerHeight();
+          var textHeight = (available - reserved) + 'px';
+          if ($('#text-container')[0].scrollHeight < available - reserved) {
+            textHeight = 'auto';
+          }
+          $('#text-container').css({height: textHeight});
+          $('#text-container').scrollTop($('#text-container')[0].scrollHeight);
+        });
+        $(window).keydown(function(evt) {
+          if (lastResponse.state == 'Paused' && evt.which == 13) {
+            evt.preventDefault();
+            Gamefic.Connection.run('');
+          } else if (lastResponse.state == 'YesOrNo') {
+            evt.preventDefault();
+            if (evt.which == 89) {
+              evt.preventDefault();
+              $('#dialog a.yes').click();
+              $('#dialog').html('');
+              $.modal.close();
+            } else if (evt.which == 78) {
+              evt.preventDefault();
+              $('#dialog a.no').click();
+              $('#dialog').html('');
+              $.modal.close();        
+            }
+          } else if (lastResponse.state == 'MultipleChoice') {
+            evt.preventDefault();
+            var k = String.fromCharCode(evt.which);
+            var a = $('#dialog .multiple-choice a[rel="gamefic"][data-command="' + k + '"]');
+            if (a.length) {
+              a.click();
+              $('#dialog').html('');
+              $.modal.close();          
+            }
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="gamefic_console">
+      <div id="image-container">
+        <div id="image"></div>
+      </div>
+      <div id="text-container">
+        <div id="text">
+        </div>
+      </div>
+      <div id="controls">
+        <p id="prompt"></p>
+        <form id="commandform" action="" method="post">
+          <input type="hidden" name="sessionid" value="@{session->id}@" />
+          <div id="commandline-container">
+            <input id="gamefic_command" type="text" name="command" autocomplete="off" />
+          </div>
+          <input id="commandenter" type="submit" value="Enter" />
+        </form>
+      </div>
+      <div id="footer">
+      
+      </div>
+    </div>
+    <div id="dialog" style="display: none;">
+    </div>
+  </body>
 </html>

@@ -70,17 +70,28 @@ var Gamefic = Gamefic || {};
 Gamefic.Connection = new function() {
 	var config = {};
 	var begun = false;
+	var updateCallback;
+	var inputQueue = []
 	var pollId;
-	var startPolling = function() {
-		var busy = false;
+	var busy = false;
+	var poll = function() {
 		pollId = setInterval(function() {
 			if (!busy) {
-				
+				busy = true;
+				if (inputQueue.length > 0) {
+					$('#controls').addClass('working');
+					var cmd = inputQueue.shift();
+					config.engine.run(cmd, updateCallback);
+					var resetId = setInterval(function() {
+						if (!busy) {
+							$('#controls').removeClass('working');
+							clearInterval(resetId);
+						}
+					}, 200);
+				}
+				busy = false;
 			}
-		});
-	}
-	var endPolling = function() {
-		clearInterval(pollId);
+		}, 100);
 	}
 	this.init = function(options) {
 		var defaultOptions = {
@@ -133,18 +144,20 @@ Gamefic.Connection = new function() {
 				$.post($(this).attr('action'), params, _update);
 			} else {
 				// Submit to local engine
-				config.engine.run(config.command.val(), _update);
+				//config.engine.run(config.command.val(), _update);
+				inputQueue.push(config.command.val());
 			}
 			config.command.val('');
+			$('#gamefic_command').attr('readonly', 'readonly');
 		});
 		var _update = function(response) {
-			console.log(response.state);
 			config.onUpdate(response);
 			if (!begun) {
 				begun = true;
 				config.onBegin(response);
 			}
 			if (response.state == 'Concluded') {
+				clearInterval(pollId);
 				config.onConclude(response);
 			}
 		}
@@ -155,10 +168,16 @@ Gamefic.Connection = new function() {
 				config.form.before(data);
 			}
 		}
-		this.run('');
+		updateCallback = _update;
+		inputQueue.push(null);
+		poll();
 	}
 	this.run = function(command) {
-		config.command.val(command);
-		config.form.submit();
+		if (command == null) {
+			inputQueue.push(command);
+		} else {
+			config.command.val(command);
+			config.form.submit();
+		}
 	}
 }
