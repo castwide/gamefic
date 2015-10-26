@@ -1,4 +1,4 @@
-import 'standard/test'
+require 'standard/test'
 
 on_test :me do |actor, queue|
   queue.push "look around"

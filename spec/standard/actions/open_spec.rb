@@ -1,7 +1,7 @@
 describe "Open Action" do
   it "opens a closed container" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
     container.open = false
@@ -11,7 +11,7 @@ describe "Open Action" do
   end
   it "does not open a locked container" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
     container.open = false

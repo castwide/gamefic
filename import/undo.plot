@@ -1,4 +1,4 @@
-import 'snapshots'
+require 'snapshots'
 
 meta :undo do |actor|
   last = @snapshots.history.pop

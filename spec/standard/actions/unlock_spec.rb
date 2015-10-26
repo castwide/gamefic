@@ -1,7 +1,7 @@
 describe "Lock Action" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.import 'standard'
+    @plot.require 'standard'
     @room = @plot.make Room, :name => 'a room'
     @key = @plot.make Item, :name => 'a key', :parent => @room
     @box = @plot.make Container, :name => 'a box', :parent => @room, :lock_key => @key

@@ -1,4 +1,5 @@
-import 'standard/queries/visible'
+require 'standard/queries/visible'
+
 class Gamefic::Query::ManyVisible < Gamefic::Query::Visible
   def allow_many?
     true

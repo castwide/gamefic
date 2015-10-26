@@ -1,5 +1,7 @@
 require 'gamefic'
-include Gamefic
+# HACK Explicit requires to fix Opal's failure to resolve autoloads
+require 'gamefic/query/matches'
+require 'gamefic/grammar/verb_set'
 
 class WebPlot < Gamefic::Plot
   def stage *args, &block
@@ -7,23 +9,6 @@ class WebPlot < Gamefic::Plot
       instance_eval(*args)
     else
       instance_exec(*args, &block)
-    end
-  end
-end
-
-class Module
-  # HACK Fix name resolution issues in Opal
-  alias_method :orig_const_missing, :const_missing
-  def const_missing(sym)
-    begin
-      orig_const_missing sym
-    rescue Exception => e
-      if WebPlot.constants(false).include?(sym)
-        return WebPlot.const_get(sym, false)
-      elsif Gamefic.constants(false).include?(sym)
-        return Gamefic.const_get(sym, false)
-      end
-      raise e
     end
   end
 end
@@ -43,6 +28,22 @@ module GameficOpal
     @@static_plot ||= WebPlot.new
   end
   def self.static_player
-    @@static_player ||= WebUser.new(GameficOpal.static_plot)
+    @@static_player ||= WebUser.new(Gamefic::GameficOpal.static_plot)
   end
 end
+
+def method_missing(symbol, *args, &block)
+  if GameficOpal.static_plot.respond_to?(symbol)
+    GameficOpal.static_plot.send(symbol, *args, &block)
+  else
+    raise NameError.new("Unrecognized method #{symbol}")
+  end
+end
+
+#class Module
+#  def const_missing(symbol)
+#    puts "oops #{symbol}"
+#  end
+#end
+
+require 'main'

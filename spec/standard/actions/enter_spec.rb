@@ -1,7 +1,7 @@
 describe "Enter Action" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.import 'standard'
+    @plot.require 'standard'
     @room = @plot.make Room, :name => 'room'
     @character = @plot.make Character, :name => 'character', :parent => @room
     @supporter = @plot.make Supporter, :name => 'supporter', :parent => @room

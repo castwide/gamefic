@@ -1,4 +1,4 @@
-import 'standard/entities/item'
+require 'standard/entities/item'
 
 class Gamefic::Clothing < Gamefic::Item
   def worn?

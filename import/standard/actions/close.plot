@@ -6,7 +6,7 @@ respond :close, Query::Reachable.new() do |actor, thing|
   actor.tell "You can't close #{the thing}."
 end
 
-respond :close, Query::Reachable.new(Openable) do |actor, container|
+respond :close, Query::Reachable.new(Gamefic::Openable) do |actor, container|
   if !container.open?
     actor.tell "It's already closed."
   else

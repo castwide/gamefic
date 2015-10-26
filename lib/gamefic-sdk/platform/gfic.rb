@@ -11,6 +11,7 @@ module Gamefic::Sdk
       }
     end
     def build source_dir, target_dir, story
+      return
       if config[:filename].to_s == ''
         filename = target_dir + '/' + source_dir.split('/').delete_if{|i| i.to_s == ''}.last + '.gfic'
       else

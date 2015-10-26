@@ -1,4 +1,4 @@
-import 'clothing/entities/clothing'
+require 'clothing/entities/clothing'
 
 class Gamefic::Shirt < Gamefic::Clothing
 

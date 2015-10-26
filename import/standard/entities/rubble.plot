@@ -1,4 +1,4 @@
-import 'standard/entities/scenery'
+require 'standard/entities/scenery'
 
 # Rubble is Scenery with slightly modified action responses.
 # Intended for things that might be portable but are useless.

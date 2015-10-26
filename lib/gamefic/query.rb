@@ -1,4 +1,4 @@
-require "gamefic/keywords"
+require 'gamefic/keywords'
 
 module Gamefic
 

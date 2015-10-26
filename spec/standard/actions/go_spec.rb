@@ -1,7 +1,7 @@
 describe "Go Action" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.import 'standard'
+    @plot.require 'standard'
   end
   it "moves the character between rooms" do
     room1 = @plot.make Room, :name => 'room one'

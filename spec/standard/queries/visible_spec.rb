@@ -1,7 +1,7 @@
 describe "Visible Query" do
   it "does not include the subject" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     query = Query::Visible.new
@@ -10,7 +10,7 @@ describe "Visible Query" do
   end
   it "includes all siblings" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item = plot.make Item, :name => 'item', :parent => room
@@ -21,7 +21,7 @@ describe "Visible Query" do
   end
   it "includes children of open containers" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     container = plot.make Container, :name => 'container', :parent => room
@@ -33,7 +33,7 @@ describe "Visible Query" do
   end
   it "does not include children of closed containers" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     container = plot.make Container, :name => 'container', :parent => room
@@ -44,7 +44,7 @@ describe "Visible Query" do
   end
   it "does not include children of closed transparent containers" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     container = plot.make Container, :name => 'container', :parent => room, :transparent => true
@@ -55,7 +55,7 @@ describe "Visible Query" do
   end
   it "includes children of supporters" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     supporter = plot.make Supporter, :name => 'supporter', :parent => room

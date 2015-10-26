@@ -1,4 +1,4 @@
-import 'standard/entities/room'
+require 'standard/entities/room'
 
 class Gamefic::Exterior < Gamefic::Room
   

@@ -1,7 +1,7 @@
 describe "Drop Action" do
   it "drops an item in the character's inventory" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item = plot.make Item, :name => 'item', :parent => character
@@ -10,7 +10,7 @@ describe "Drop Action" do
   end
   it "drops multiple items in the character's inventory" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'one', :parent => character
@@ -21,7 +21,7 @@ describe "Drop Action" do
   end
   it "drops all from the character's inventory" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'one', :parent => character

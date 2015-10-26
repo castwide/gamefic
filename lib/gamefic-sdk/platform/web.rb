@@ -55,20 +55,20 @@ module Gamefic::Sdk
         end
       end
       
-      File.open(build_path + "/static.js", "w") do |file|
-        file << Opal.compile(File.read(Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src/static.rb"))
-      end
+      Opal.append_path Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src"
+      
+      #File.open(build_path + "/static.js", "w") do |file|
+      #  file << Opal::Builder.build('static')
+      #end
 
       imported = []
       
       plot.imported_scripts.each { |script|
-        puts script.absolute
-        import_js = "import/" + File.dirname(script.relative) + File.basename(script.relative, File.extname(script.relative)) + ".js"
+        import_js = "import/" + File.dirname(script.relative) + "/" + File.basename(script.relative, File.extname(script.relative)) + ".rb"
         if !File.exist?(build_dir + "/" + import_js) or File.mtime(build_dir + "/" + import_js) < File.mtime(script.absolute)
           FileUtils.mkdir_p(build_dir + "/import/" + File.dirname(script.relative))
           File.open(build_dir + "/" + import_js, "w") do |file|
-            #file << Opal.compile("$gamefic_static_plot.stage do;puts '#{import_js}';#{File.read(script.absolute).gsub(/import [^\n]*/, '')} ;end\n")
-            file << File.read(script.absolute).gsub(/import [^\n]*/, '')
+            file << "require 'gamefic';module Gamefic;"  + File.read(script.absolute) + ";end"
             file << "\n"
           end
         end
@@ -76,25 +76,23 @@ module Gamefic::Sdk
       }
       
       if !File.exist?(build_dir + "/main.js") or File.mtime(build_dir + "/main.js") < File.mtime(main)
-        File.open(build_dir + "/main.js", "w") do |file|
-          #file << Opal.compile("$gamefic_static_plot.stage do; #{File.read(main).gsub(/import [^\n]*/, '')} ;end\n")
-          file << File.read(main).gsub(/import [^\n]*/, '')
+        File.open(build_dir + "/main.rb", "w") do |file|
+          file << "require 'gamefic';module Gamefic;" + File.read(main) + ";end"
+          file << "\n"
         end
       end
       imported.push "main.js"
       
+      Opal.append_path build_dir
+      Opal.append_path build_dir + "/import"
+      
+      File.open(build_path + "/static.js", "w") do |file|
+        file << Opal::Builder.build('static')
+      end
+      
       FileUtils.cp build_path + "/opal.js", target_dir + "/opal.js"
       FileUtils.cp build_path + "/gamefic.js", target_dir + "/gamefic.js"
       FileUtils.cp build_path + "/static.js", target_dir + "/static.js"
-      script_code = ""
-      imported.each { |file|
-        # Opal seems to have problems with class instance variables, so we're
-        # converting them to global variables.
-        script_code += File.read(build_path + "/" + file) #.gsub(/@/, '$gamefic_').gsub(/Gamefic::/, 'Object::Gamefic::')
-      }
-      File.open(target_dir + "/game.js", "w") do |file|
-        file << Opal.compile("GameficOpal.static_plot.stage do\n#{script_code}\nend\n")
-      end
     end
     def clean build_dir, target_dir
       FileUtils.remove_entry_secure build_dir if File.exist?(build_dir)

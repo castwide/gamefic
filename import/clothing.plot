@@ -1,2 +1,2 @@
-import 'clothing/entities/*'
-import 'clothing/actions/*'
+require 'clothing/entities'
+require 'clothing/actions'

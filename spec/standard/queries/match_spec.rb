@@ -3,7 +3,7 @@
 describe "Match" do
   it "matches a reachable item" do
     plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.import 'standard'
+    plot.require 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     container = plot.make Container, :name => 'container', :parent => room

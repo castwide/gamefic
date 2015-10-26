@@ -1,4 +1,6 @@
-respond :enter, Use.siblings(Supporter, :enterable?) do |actor, supporter|
+include Gamefic
+
+respond :enter, Use.siblings(Gamefic::Supporter, :enterable?) do |actor, supporter|
   actor.parent = supporter
   actor.tell "You get on #{the supporter}."
 end

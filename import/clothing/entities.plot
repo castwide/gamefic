@@ -1,0 +1,7 @@
+require 'clothing/entities/clothing'
+require 'clothing/entities/coat'
+require 'clothing/entities/gloves'
+require 'clothing/entities/hat'
+require 'clothing/entities/pants'
+require 'clothing/entities/shirt'
+require 'clothing/entities/shoes'

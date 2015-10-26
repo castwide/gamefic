@@ -20,9 +20,8 @@ module Gamefic
     attr_reader :commands, :imported_scripts, :rules, :asserts, :finishes, :source, :delegate_stack
     attr_accessor :default_scene
     include Stage
-    include Gamefic
-    mount Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    expose :import, :introduction, :assert_action, :on_update, :on_player_update, :entities
+    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
+    expose :require, :introduction, :assert_action, :on_update, :on_player_update, :entities
     def initialize(source = nil)
       @source = source || Source.new
       @commands = Hash.new
@@ -130,7 +129,7 @@ module Gamefic
       raise "File not found: #{script}"
     end
     
-    def import script
+    def require script
       if script[-1] == "*"
         source.search(script[0..-2]).each { |file|
           import file

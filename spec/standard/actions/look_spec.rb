@@ -1,7 +1,7 @@
 describe "Look Action" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.import 'standard'
+    @plot.require 'standard'
   end
   it "responds to looking at siblings" do
     room = @plot.make Room, :name => 'room'

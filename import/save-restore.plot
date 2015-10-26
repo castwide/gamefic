@@ -1,4 +1,4 @@
-import 'snapshots'
+require 'snapshots'
 
 meta :save do |actor|
   actor.perform :save, "game.sav"

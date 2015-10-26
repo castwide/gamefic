@@ -4,7 +4,7 @@
 # Examples of various types of containers and supporters, including lockable
 # containers.
 
-import 'standard'
+require 'standard'
 
 office = make Room, :name => 'the manager\'s office', :description => 'A small office in the back of the warehouse.'
 
