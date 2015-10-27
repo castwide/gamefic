@@ -139,20 +139,31 @@ EOS
 import 'standard/test'
 EOS
         test_rb.close
-        build_rb = File.new(directory + '/build.rb', 'w')
+        build_rb = File.new(directory + '/build.yaml', 'w')
         build_rb.write <<EOS
-Build::Configuration.new do |config|
-  config.import_paths << './import'
-  config.target Gfic.new
-  config.target Web.new
-end
+web:
+  platform: Web
+gfic:
+  platform: Gfic
 EOS
+        build_rb.close
+        config_rb = File.new(directory + '/config.yaml', 'w')
+        config_rb.write <<EOS
+title: Untitled
+author: Anonymous
+
+sources:
+  import_paths:
+    - ./import
+  asset_paths:
+    - ./assets
+EOS
+        config_rb.close
         Dir.mkdir(directory + '/html')
         if !html.nil?
           FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], directory + "/html")
           FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/" + html + "/*"], directory + "/html")
         end
-        build_rb.close
         uuid = SecureRandom.uuid
         File.open("#{directory}/.uuid", "w") { |f| f.write uuid }
         puts "Game directory '#{directory}' initialized." unless quiet
@@ -193,9 +204,6 @@ EOS
         end
       end
       def build directory
-        #build = YAML.load("#{directory}/build.yaml")
-        #build['metadata']['uuid'] = File.read("#{directory}/.uuid")
-        # TODO Do we really need to load the plot here?
         Build.release directory
       end
       def clean directory
