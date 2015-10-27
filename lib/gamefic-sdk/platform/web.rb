@@ -4,14 +4,17 @@ require 'opal'
 
 module Gamefic::Sdk
 
-  class Web < Platform
+  class Platform::Web < Platform::Base
     def defaults
       @defaults ||= {
         :html_skin => 'multimedia',
         :with_media => true
       }
     end
-    def build source_dir, target_dir, plot
+    def build
+      source_dir = plot.main_dir
+      target_dir = config['target_dir']
+      # TODO Configurable build folder?
       build_dir = source_dir + "/build/web"
       build_path = build_dir
       main = nil

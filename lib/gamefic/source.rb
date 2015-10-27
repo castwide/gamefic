@@ -4,7 +4,7 @@ module Gamefic
     @@extensions = ['', '.plot', '.rb']
     attr_reader :directories
     def initialize(*args)
-      @directories = args
+      @directories = args || []
     end
     def export name
       @directories.each { |directory|

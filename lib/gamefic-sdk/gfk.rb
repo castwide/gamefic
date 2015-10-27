@@ -67,6 +67,8 @@ module Gamefic::Sdk
         else
           config = Build.load
         end
+        if !File.file?(path + '/build.yaml')
+        end
         plot = Gamefic::Sdk::Debug::Plot.new
         plot.source.directories.concat config.import_paths
         plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
@@ -191,66 +193,10 @@ EOS
         end
       end
       def build directory
-        quiet = false
-        force = false
-        if directory.to_s == ''
-          puts "No source directory was specified."
-          exit 1
-        end
-        if !File.directory?(directory)
-          puts "#{directory} is not a directory."
-          exit 1
-        end
-        config = nil
-        build_file = nil
-        if File.file?(directory + '/build.rb')
-          build_file = directory + '/build.rb'
-        end
-        config = Build.load build_file
-        if !quiet
-          if config.title.to_s == ''
-            puts "WARNING: title is not specified in build.rb"
-            config.title = 'Untitled'
-          end
-          if config.author.to_s == ''
-            puts "WARNING: author is not specified in build.rb"
-            config.author = 'Anonymous'
-          end
-        end
-        #config.import_paths.unshift directory + '/import'
-        #config.import_paths.push Gamefic::GLOBAL_IMPORT_PATH
-        opts = GetoptLong.new(
-          [ '-o', '--output', GetoptLong::REQUIRED_ARGUMENT ],
-          [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
-          [ '-f', '--force', GetoptLong::NO_ARGUMENT ]
-        )
-        begin
-          opts.each { |opt, arg|
-            case opt
-              when '-o'
-                filename = arg
-              when '-q'
-                quiet = true
-              when '-f'
-                force = true
-            end
-          }
-        rescue Exception => e
-          puts "#{e}"
-          exit 1
-        end
-        story = Plot.new
-        story.source.directories.concat config.import_paths
-        story.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
-        puts "Loading game data..." unless quiet
-        begin
-          story.load directory + '/main'
-        rescue Exception => e
-          puts "'#{directory}' has errors or is not a valid source directory."
-          puts "#{e}"
-          exit 1
-        end
-        Build.release directory, story, config
+        #build = YAML.load("#{directory}/build.yaml")
+        #build['metadata']['uuid'] = File.read("#{directory}/.uuid")
+        # TODO Do we really need to load the plot here?
+        Build.release directory
       end
       def clean directory
         build_file = nil
