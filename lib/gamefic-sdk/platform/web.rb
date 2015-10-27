@@ -15,7 +15,7 @@ module Gamefic::Sdk
       source_dir = plot.main_dir
       target_dir = config['target_dir']
       # TODO Configurable build folder?
-      build_dir = source_dir + "/build/web"
+      build_dir = config['build_dir']
       build_path = build_dir
       main = nil
       ['plot','rb'].each { |e|
@@ -60,10 +60,6 @@ module Gamefic::Sdk
       
       Opal.append_path Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src"
       
-      #File.open(build_path + "/static.js", "w") do |file|
-      #  file << Opal::Builder.build('static')
-      #end
-
       imported = []
       
       plot.imported_scripts.each { |script|
