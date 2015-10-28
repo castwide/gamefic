@@ -74,7 +74,7 @@ module Gamefic
               break
             end
             if order.action.queries[arg_i].allow_many?
-              final_arguments.push valid
+              final_arguments.push valid.flatten
             elsif valid.length == 1
               final_arguments.push valid[0]
             else

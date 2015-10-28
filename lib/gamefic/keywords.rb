@@ -18,7 +18,8 @@ module Gamefic
 			#self.delete_if { |w|
 			#	w.length < 2 or w == 'an' or w == 'the'
 			#}
-			self.uniq!
+			#self.uniq!
+			self
 		end
 		def found_in(other)
 			matches = 0.0

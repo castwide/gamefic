@@ -65,10 +65,62 @@ respond :take, Use.text("all", "everything") do |actor, text|
       else
         actor.tell buffer
       end
-      if taken.length > 0
-        actor.tell "You take #{taken.join_and}."
+    }
+    if taken.length > 0
+      actor.tell "You take #{taken.join_and}."
+    end
+  end
+end
+
+respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.visible do |actor, text1, text2, exception|
+  children = actor.parent.children.that_are_not(:attached?).that_are(:portable?)
+  if actor.parent != actor.room and actor.parent.kind_of?(Supporter)
+    children += actor.room.children.that_are_not(:attached?).that_are(:portable?)
+  end
+  if children.length == 0
+    actor.tell "There's nothing obvious to take."
+  else
+    taken = []
+    children.each { |child|
+      next if exception == child
+      buffer = actor.quietly :take, child
+      if child.parent == actor
+        taken.push child
+      else
+        actor.tell buffer
       end
     }
+    if taken.length > 0
+      actor.tell "You take #{taken.join_and}."
+    end
+  end
+end
+
+respond :take, Use.text("all", "everything"), Use.text do |actor, text1, text2|
+  actor.tell "I understand that you want to take #{text1} but not what you mean by \"#{text2}.\""
+end
+
+respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.many_visible do |actor, text1, text2, exceptions|
+  children = actor.parent.children.that_are_not(:attached?).that_are(:portable?)
+  if actor.parent != actor.room and actor.parent.kind_of?(Supporter)
+    children += actor.room.children.that_are_not(:attached?).that_are(:portable?)
+  end
+  if children.length == 0
+    actor.tell "There's nothing obvious to take."
+  else
+    taken = []
+    children.each { |child|
+      next if exceptions.include?(child)
+      buffer = actor.quietly :take, child
+      if child.parent == actor
+        taken.push child
+      else
+        actor.tell buffer
+      end
+    }
+    if taken.length > 0
+      actor.tell "You take #{taken.join_and}."
+    end
   end
 end
 
