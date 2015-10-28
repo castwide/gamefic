@@ -125,7 +125,7 @@ module Gamefic::Sdk
         Dir.mkdir(directory + '/import')
         main_rb = File.new(directory + '/main.plot', 'w')
         main_rb.write <<EOS
-import 'standard'
+require 'standard'
 EOS
         imports.each { |i|
           main_rb.write "import '#{i}'\n"
@@ -133,7 +133,7 @@ EOS
         main_rb.close
         test_rb = File.new(directory + '/test.plot', 'w')
         test_rb.write <<EOS
-import 'standard/test'
+require 'standard/test'
 EOS
         test_rb.close
         build_rb = File.new(directory + '/build.yaml', 'w')
