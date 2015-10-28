@@ -100,6 +100,12 @@ respond :take, Use.text("all", "everything"), Use.text do |actor, text1, text2|
   actor.tell "I understand that you want to take #{text1} but not what you mean by \"#{text2}.\""
 end
 
+respond :take, Use.text("all", "everything", "every", "any", "each"), Use.ambiguous_visible do |actor, text, things|
+  things.each { |thing|
+    actor.perform :take, thing
+  }  
+end
+
 respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.many_visible do |actor, text1, text2, exceptions|
   children = actor.parent.children.that_are_not(:attached?).that_are(:portable?)
   if actor.parent != actor.room and actor.parent.kind_of?(Supporter)

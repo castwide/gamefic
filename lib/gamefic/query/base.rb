@@ -19,6 +19,9 @@ module Gamefic::Query
       @@last_new = self
       @match_hash = Hash.new
     end
+    def allow_ambiguous?
+      false
+    end
     def allow_many?
       false
     end
@@ -40,11 +43,13 @@ module Gamefic::Query
     end
     # @return [Array]
     def execute(subject, description)
-      if allow_many? and !description.include?(',') and !description.downcase.include?(' and ')
-        return Matches.new([], '', description)
+      if !allow_ambiguous?
+        if allow_many? and !description.include?(',') and !description.downcase.include?(' and ')
+          return Matches.new([], '', description)
+        end
       end
       array = context_from(subject)
-      matches = Query.match(description, array)
+      matches = Query.match(description, array, allow_ambiguous?)
       objects = matches.objects
       matches = Matches.new(objects, matches.matching_text, matches.remainder)
       if objects.length == 0 and matches.remainder == "it" and subject.respond_to?(:last_object)

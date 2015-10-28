@@ -21,7 +21,7 @@ module Gamefic
       Base.last_new
     end
 
-    def self.match(description, array)
+    def self.match(description, array, check_plurals = false)
       if description.include?(',')
         tmp = description.split(',', -1)
         keywords = []
@@ -75,7 +75,7 @@ module Gamefic
         possibilities.each { |p|
           words = Keywords.new(used.last)
           if words.length > 0
-            matches = words.found_in(p.keywords)
+            matches = words.found_in(p.keywords, check_plurals)
             if matches > 0
               new_results.push p
               most_matches = matches
