@@ -44,9 +44,18 @@ respond :take, Use.text do |actor, text|
 end
 
 respond :take, Use.many_visible do |actor, things|
+  taken = []
   things.each { |thing|
-    actor.perform :take, thing
+    buffer = actor.quietly :take, thing
+    if thing.parent != actor
+      actor.tell buffer
+    else
+      taken.push thing
+    end
   }
+  if taken.length > 0
+    actor.tell "You take #{taken.join_and}."
+  end
 end
 
 respond :take, Use.text("all", "everything") do |actor, text|
@@ -100,10 +109,19 @@ respond :take, Use.text("all", "everything"), Use.text do |actor, text1, text2|
   actor.tell "I understand that you want to take #{text1} but not what you mean by \"#{text2}.\""
 end
 
-respond :take, Use.text("all", "everything", "every", "any", "each"), Use.ambiguous_visible do |actor, text, things|
+respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible do |actor, text, things|
+  taken = []
   things.each { |thing|
-    actor.perform :take, thing
-  }  
+    buffer = actor.quietly :take, thing
+    if thing.parent != actor
+      actor.tell buffer
+    else
+      taken.push thing
+    end
+  }
+  if taken.length > 0
+    actor.tell "You take #{taken.join_and}."
+  end
 end
 
 respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.many_visible do |actor, text1, text2, exceptions|
