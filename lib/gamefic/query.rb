@@ -87,7 +87,6 @@ module Gamefic
           intersection = possibilities & new_results
           if intersection.length == 0
             skipped.push used.pop
-            #return Matches.new(possibilities, used.join(' '), skipped.join(' '))
           else
             skipped.clear
             possibilities = intersection
@@ -114,10 +113,14 @@ module Gamefic
           skipped = recursed.remainder.split_words
           keywords = []
         else
-          skipped.push used.pop
           # The first unignored word must have at least one match
-          if !at_least_one_match
-            return Matches.new([], '', description)
+          if at_least_one_match
+            keywords.unshift used.pop
+            return Matches.new(possibilities, used.join(' '), keywords.join(' '))
+          else
+            if !@@ignored_words.include?(used.last)
+              return Matches.new([], '', description)
+            end
           end
         end
       end

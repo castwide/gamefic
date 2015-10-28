@@ -148,6 +148,23 @@ respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.man
   end
 end
 
+respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.visible do |actor, text1, things, text2, exception|
+  actor.perform :take, things - [exception]
+end
+
+respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.ambiguous_visible do |actor, text1, things, text2, exceptions|
+  actor.perform :take, things - exceptions
+end
+
+respond :take, Use.text("all", "everything"), Use.text("except", "but"), Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible do |actor, _, _, _, exceptions|
+  things = Use.visible.context_from(actor)
+  actor.perform :take, things - exceptions
+end
+
+respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible do |actor, _, things, _, _, exceptions|
+  actor.perform :take, things - exceptions
+end
+
 interpret "get :thing", "take :thing"
 interpret "pick up :thing", "take :thing"
 interpret "pick :thing up", "take :thing"

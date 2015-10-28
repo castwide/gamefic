@@ -92,5 +92,13 @@ respond :drop, Use.text("all", "everything", "anything", "any", "every", "each")
   end
 end
 
+respond :drop, Use.text("all", "everything", "anything", "any", "every", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.ambiguous_visible do |actor, _, things, _, exceptions|
+  actor.perform :drop, things - exceptions
+end
+
+#respond :drop, Use.text("all", "everything", "anything", "any", "every", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.text do |actor, _, things, _, exceptions|
+#  actor.tell "I don't see anything \"#{exceptions}\" to exclude here."
+#end
+
 interpret "put down :thing", "drop :thing"
 interpret "put :thing down", "drop :thing"
