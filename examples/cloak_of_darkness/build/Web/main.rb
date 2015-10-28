@@ -1,5 +1,4 @@
-require 'standard'
-require 'test'
+require 'gamefic';module Gamefic;require 'standard'
 
 # Cloak of Darkness for Gamefic. 
 # Gamefic implementation by Peter Orme. 
@@ -154,3 +153,4 @@ conclusion :you_have_lost do |actor|
   actor.tell "The message has been carelessly trampled, making it difficult to read. You can just distinguish the words..."
   actor.tell "*** You have lost ***"
 end
+;end

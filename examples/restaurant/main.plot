@@ -6,6 +6,7 @@
 require 'standard'
 require 'clothing'
 require 'edible'
+require 'test'
 
 lobby = make Room, :name => 'the lobby', :description => 'An alcove that opens into the dining area to the north. The exit is south.'
 

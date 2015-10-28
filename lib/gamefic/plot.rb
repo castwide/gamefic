@@ -122,6 +122,7 @@ module Gamefic
     def load script
       ['', '.plot', '.rb'].each { |ext|
         if File.exist?(script + ext)
+          source.main_dir = File.dirname(script)
           stage File.read(script + ext), script + ext
           return
         end

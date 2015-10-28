@@ -5,6 +5,7 @@
 # responses to questions about his name or the job opening.
 
 require 'standard'
+require 'test'
 
 office = make Room, :name => 'the professor\'s office', :description => 'A cozy room with thick carpet, rich mahogany woodwork, and lots of books.'
 

@@ -5,6 +5,7 @@
 # containers.
 
 require 'standard'
+require 'test'
 
 office = make Room, :name => 'the manager\'s office', :description => 'A small office in the back of the warehouse.'
 
