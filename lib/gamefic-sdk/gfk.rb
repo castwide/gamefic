@@ -56,27 +56,24 @@ module Gamefic::Sdk
             end
           }
           raise "#{path}/main.plot does not exist" if ext.nil?
-          if File.file?(path + '/build.rb')
-            build_file = path + '/build.rb'
-          end
           if File.file?(path + '/test.plot')
             test_file = path + '/test.plot'
           end
           main_file = path + '/main.' + ext
-          config = Build.load build_file
+          config = YAML.load(File.read("#{path}/config.yaml"))
         else
           config = Build.load
         end
         if !File.file?(path + '/build.yaml')
         end
         plot = Gamefic::Sdk::Debug::Plot.new
-        plot.source.directories.concat config.import_paths
+        plot.source.directories.concat config['sources']['import_paths']
         plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
         plot.load main_file
         if test_file != nil
           plot.load test_file
         end
-        plot.import 'debug'
+        plot.require 'debug'
         engine = Tty::Engine.new plot
         puts "\n"
         engine.run
