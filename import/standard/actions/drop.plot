@@ -33,27 +33,6 @@ respond :drop, Use.text("all", "everything") do |actor, text|
   end
 end
 
-respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.visible do |actor, text1, text2, exception|
-  children = actor.children.that_are_not(:attached?)
-  if children.length == 0
-    actor.tell "You don't have anything to drop."
-  else
-    dropped = []
-    children.each { |child|
-      next if child == exception
-      buffer = actor.quietly :drop, child
-      if child.parent != actor
-        dropped.push child
-      else
-        actor.tell buffer
-      end
-    }
-    if dropped.length > 0
-      actor.tell "You drop #{dropped.join_and}."
-    end
-  end
-end
-
 respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.many_visible do |actor, text1, text2, exceptions|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
@@ -73,6 +52,12 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.man
       actor.tell "You drop #{dropped.join_and}."
     end
   end
+end
+
+respond :drop, Use.text("all", "everything", "any", "every", "each"), Use.ambiguous_visible do |actor, text1, things|
+  things.each { |thing|
+    actor.perform :drop, thing
+  }
 end
 
 interpret "put down :thing", "drop :thing"
