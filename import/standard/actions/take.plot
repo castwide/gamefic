@@ -110,17 +110,23 @@ respond :take, Use.text("all", "everything"), Use.text do |actor, text1, text2|
 end
 
 respond :take, Use.any_expression, Use.ambiguous_visible do |actor, text, things|
-  taken = []
-  things.each { |thing|
-    buffer = actor.quietly :take, thing
-    if thing.parent != actor
-      actor.tell buffer
-    else
-      taken.push thing
+  filtered = things.clone
+  filtered.delete_if{|t| t.parent == actor}
+  if filtered.length == 0
+    actor.tell "There's nothing to take that matches your terms. (You're already carrying #{things.join_and}.)"
+  else
+    taken = []
+    filtered.each { |thing|
+      buffer = actor.quietly :take, thing
+      if thing.parent != actor
+        actor.tell buffer
+      else
+        taken.push thing
+      end
+    }
+    if taken.length > 0
+      actor.tell "You take #{taken.join_and}."
     end
-  }
-  if taken.length > 0
-    actor.tell "You take #{taken.join_and}."
   end
 end
 

@@ -75,20 +75,26 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.man
   end
 end
 
-respond :drop, Use.text("all", "everything", "anything", "any", "every", "each"), Use.ambiguous_visible do |actor, text1, things|
-  dropped = []
-  things.each { |thing|
-    if thing.parent == actor
-      buffer = actor.quietly :drop, thing
+respond :drop, Use.any_expression, Use.ambiguous_visible do |actor, text1, things|
+  filtered = things.clone
+  filtered.delete_if{|t| t.parent != actor}
+  if filtered.length == 0
+    actor.tell "You're not carrying anything that matches your terms."
+  else
+    dropped = []
+    things.each { |thing|
       if thing.parent == actor
-        actor.tell buffer
-      else
-        dropped.push thing
+        buffer = actor.quietly :drop, thing
+        if thing.parent == actor
+          actor.tell buffer
+        else
+          dropped.push thing
+        end
       end
+    }
+    if dropped.length > 0
+      actor.tell "You drop #{dropped.join_and}."
     end
-  }
-  if dropped.length > 0
-    actor.tell "You drop #{dropped.join_and}."
   end
 end
 
