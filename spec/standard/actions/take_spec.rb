@@ -85,4 +85,36 @@ describe "Take Action" do
     expect(item2.parent).to be(character) 
     expect(item3.parent).not_to be(character)    
   end
+  it "takes ambiguous items" do
+    room = @plot.make Room, :name => 'room'
+    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    item1 = @plot.make Item, :name => 'red item', :parent => room
+    item2 = @plot.make Item, :name => 'red entity', :parent => room
+    item3 = @plot.make Item, :name => 'blue item', :parent => room
+    character.perform 'take red things'
+    expect(item1.parent).to be(character)
+    expect(item2.parent).to be(character) 
+    expect(item3.parent).not_to be(character)
+    character.perform 'drop all'
+    character.perform 'take things that are red'
+    expect(item1.parent).to be(character)
+    expect(item2.parent).to be(character) 
+    expect(item3.parent).not_to be(character)
+  end
+  it "understands exceptions" do
+    room = @plot.make Room, :name => 'room'
+    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    item1 = @plot.make Item, :name => 'red item', :parent => room
+    item2 = @plot.make Item, :name => 'red entity', :parent => room
+    item3 = @plot.make Item, :name => 'blue item', :parent => room
+    character.perform 'take everything except the blue item'
+    expect(item1.parent).to be(character)
+    expect(item2.parent).to be(character) 
+    expect(item3.parent).not_to be(character)
+    character.perform 'drop all'
+    character.perform 'take things that are not blue'
+    expect(item1.parent).to be(character)
+    expect(item2.parent).to be(character) 
+    expect(item3.parent).not_to be(character)
+  end
 end

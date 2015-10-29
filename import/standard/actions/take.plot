@@ -44,17 +44,23 @@ respond :take, Use.text do |actor, text|
 end
 
 respond :take, Use.many_visible do |actor, things|
-  taken = []
-  things.each { |thing|
-    buffer = actor.quietly :take, thing
-    if thing.parent != actor
-      actor.tell buffer
-    else
-      taken.push thing
+  filtered = things.clone
+  filtered.delete_if{ |t| t.parent == actor }
+  if filtered.length == 0
+    actor.tell "There's nothing to take that matches your terms. (You're already carrying #{things.join_and}.)"
+  else
+    taken = []
+    filtered.each { |thing|
+      buffer = actor.quietly :take, thing
+      if thing.parent != actor
+        actor.tell buffer
+      else
+        taken.push thing
+      end
+    }
+    if taken.length > 0
+      actor.tell "You take #{taken.join_and}."
     end
-  }
-  if taken.length > 0
-    actor.tell "You take #{taken.join_and}."
   end
 end
 
@@ -181,6 +187,15 @@ end
 
 respond :take, Use.ambiguous_visible, Use.text("things", "items", "stuff") do |actor, things, _|
   actor.perform "take #{things.join(' and ')}"
+end
+
+respond :take, Use.plural_visible do |actor, things|
+  actor.perform "take #{things.join(' and ')}"
+end
+
+respond :take, Use.not_expression, Use.ambiguous_visible do |actor, _, exceptions|
+  visible = Use.visible.context_from(actor)
+  actor.perform "take #{(visible - exceptions).join_and}"
 end
 
 interpret "get :thing", "take :thing"

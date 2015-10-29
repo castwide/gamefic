@@ -10,6 +10,8 @@ module Gamefic
     autoload :Parent, 'gamefic/query/parent'
     autoload :Children, 'gamefic/query/children'
     autoload :ManyChildren, 'gamefic/query/many_children'
+    autoload :AmbiguousChildren, 'gamefic/query/ambiguous_children'
+    autoload :PluralChildren, 'gamefic/query/plural_children'
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Family, 'gamefic/query/family'
     autoload :Subquery, 'gamefic/query/subquery'
