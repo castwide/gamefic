@@ -109,7 +109,7 @@ respond :take, Use.text("all", "everything"), Use.text do |actor, text1, text2|
   actor.tell "I understand that you want to take #{text1} but not what you mean by \"#{text2}.\""
 end
 
-respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible do |actor, text, things|
+respond :take, Use.any_expression, Use.ambiguous_visible do |actor, text, things|
   taken = []
   things.each { |thing|
     buffer = actor.quietly :take, thing
@@ -122,6 +122,10 @@ respond :take, Use.text("all", "everything", "every", "anything", "any", "each")
   if taken.length > 0
     actor.tell "You take #{taken.join_and}."
   end
+end
+
+respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "but"), Use.any_expression, Use.ambiguous_visible do |actor, _, things, _, _, exceptions|
+  actor.perform :take, things - exceptions
 end
 
 respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.many_visible do |actor, text1, text2, exceptions|
@@ -148,21 +152,29 @@ respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.man
   end
 end
 
-respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.visible do |actor, text1, things, text2, exception|
+respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.text do |actor, _, _, exceptions|
+  actor.tell "I don't see what you're trying to exclude with \"#{exceptions}.\""
+end
+
+respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "but"), Use.visible do |actor, text1, things, text2, exception|
   actor.perform :take, things - [exception]
 end
 
-respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.ambiguous_visible do |actor, text1, things, text2, exceptions|
+respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "but"), Use.ambiguous_visible do |actor, text1, things, text2, exceptions|
   actor.perform :take, things - exceptions
 end
 
-respond :take, Use.text("all", "everything"), Use.text("except", "but"), Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible do |actor, _, _, _, exceptions|
+respond :take, Use.text("all", "everything"), Use.text("except", "but"), Use.any_expression, Use.ambiguous_visible do |actor, _, _, _, exceptions|
   things = Use.visible.context_from(actor)
   actor.perform :take, things - exceptions
 end
 
-respond :take, Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.text("all", "everything", "every", "anything", "any", "each"), Use.ambiguous_visible do |actor, _, things, _, _, exceptions|
+respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "but"), Use.any_expression, Use.ambiguous_visible do |actor, _, things, _, _, exceptions|
   actor.perform :take, things - exceptions
+end
+
+respond :take, Use.ambiguous_visible, Use.text("things", "items", "stuff") do |actor, things, _|
+  actor.perform "take #{things.join(' and ')}"
 end
 
 interpret "get :thing", "take :thing"

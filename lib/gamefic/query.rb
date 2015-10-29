@@ -5,6 +5,7 @@ module Gamefic
   module Query
     autoload :Base, 'gamefic/query/base'
     autoload :Text, 'gamefic/query/text'
+    autoload :Expression, 'gamefic/query/expression'
     autoload :Self, 'gamefic/query/self'
     autoload :Parent, 'gamefic/query/parent'
     autoload :Children, 'gamefic/query/children'
@@ -35,6 +36,7 @@ module Gamefic
             keywords += t.strip.split_words
           end
         }
+        keywords = keywords.join(' ').split_words
       else
         keywords = description.split_words
       end
