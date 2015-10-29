@@ -22,7 +22,7 @@ module Gamefic
       Base.last_new
     end
 
-    def self.match(description, array, check_plurals = false)
+    def self.match(description, array, ambiguous = false)
       if description.include?(',')
         tmp = description.split(',', -1)
         keywords = []
@@ -77,7 +77,7 @@ module Gamefic
         possibilities.each { |p|
           words = Keywords.new(used.last)
           if words.length > 0
-            matches = words.found_in(p.keywords, check_plurals)
+            matches = words.found_in(p.keywords, ambiguous)
             if matches > 0
               new_results.push p
               most_matches = matches
@@ -93,7 +93,7 @@ module Gamefic
             skipped.clear
             possibilities = intersection
           end
-        elsif !check_plurals and (next_word.downcase == 'and' or next_word == ',')
+        elsif !ambiguous and (next_word.downcase == 'and' or next_word == ',')
           while keywords.first == ',' or keywords.first.downcase == 'and'
             used.push keywords.shift
           end

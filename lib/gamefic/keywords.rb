@@ -21,7 +21,7 @@ module Gamefic
       #self.uniq!
       self
     end
-    def found_in(other, both_ways = false)
+    def found_in(other, fuzzy = false)
       matches = 0.0
       self.each { |my_word|
         if other.include?(my_word)
@@ -32,9 +32,19 @@ module Gamefic
               if other_word[0, my_word.length] == my_word and my_word.length > 2
                 matches = matches + (my_word.length.to_f / other_word.length.to_f)
               end
-            elsif both_ways
-              if my_word[0, other_word.length] == other_word and other_word.length > 2
-                  matches = matches + (my_word.length.to_f / other_word.length.to_f)
+            elsif fuzzy
+              fuzzy_word = my_word
+              if fuzzy_word.end_with?('ies')
+                fuzzy_word = fuzzy_word[0..-4]
+              elsif fuzzy_word.end_with?('ae')
+                fuzzy_word = fuzzy_word[0..-3]
+              elsif fuzzy_word.end_with?('s') or fuzzy_word.end_with?('i')
+                fuzzy_word = fuzzy_word[0..-2]
+              end
+              if other_word[0, fuzzy_word.length] == fuzzy_word and fuzzy_word.length > 2
+                matches = matches + (fuzzy_word.length.to_f / other_word.length.to_f)
+              elsif fuzzy_word[0, other_word.length] == other_word and other_word.length > 2
+                matches = matches + (fuzzy_word.length.to_f / other_word.length.to_f)
               end
             end
           }
