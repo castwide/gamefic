@@ -15,7 +15,7 @@ module Gamefic
     autoload :Subquery, 'gamefic/query/subquery'
     autoload :Matches, 'gamefic/query/matches'
     
-    @@ignored_words = ['a', 'an', 'the']
+    @@ignored_words = ['a', 'an', 'the', 'and', ',']
     @@subquery_prepositions = ['in', 'on', 'of', 'inside', 'from']
     
     def self.last_new
@@ -71,7 +71,7 @@ module Gamefic
           end
         end
         used.push next_word
-        next if @@ignored_words.include?(next_word)
+        #next if @@ignored_words.include?(next_word)
         new_results = []
         most_matches = 0.0
         possibilities.each { |p|
@@ -93,7 +93,7 @@ module Gamefic
             skipped.clear
             possibilities = intersection
           end
-        elsif next_word.downcase == 'and' or next_word == ','
+        elsif !check_plurals and (next_word.downcase == 'and' or next_word == ',')
           while keywords.first == ',' or keywords.first.downcase == 'and'
             used.push keywords.shift
           end
@@ -116,7 +116,7 @@ module Gamefic
           keywords = []
         else
           # The first unignored word must have at least one match
-          if at_least_one_match
+          if at_least_one_match and !@@ignored_words.include?(used.last)
             keywords.unshift used.pop
             return Matches.new(possibilities, used.join(' '), keywords.join(' '))
           else
