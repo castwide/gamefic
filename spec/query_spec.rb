@@ -85,17 +85,19 @@ describe Query::Base do
   it "requires at least three characters for a partial match" do
     plot = Plot.new
     entity = plot.make Entity, :name => 'dictionary'
-    matches = Query.match('di', [entity])
+    query = Query::Base.new
+    matches = query.match('di', [entity])
     expect(matches.objects.length).to eq(0)
-    matches = Query.match('dic', [entity])
+    matches = query.match('dic', [entity])
     expect(matches.objects.length).to eq(1)    
   end
   it "does case-insensitive matching" do
     plot = Plot.new
     entity = plot.make Entity, :name => 'dictionary'
-    matches = Query.match('dictionary', [entity])
+    query = Query::Base.new
+    matches = query.match('dictionary', [entity])
     expect(matches.objects.length).to eq(1)
-    matches = Query.match('DICTIONARY', [entity])
+    matches = query.match('DICTIONARY', [entity])
     expect(matches.objects.length).to eq(1)        
   end
   it "matches a set of many that includes a child reference" do
@@ -104,7 +106,8 @@ describe Query::Base do
     item2 = plot.make Entity, :name => 'item two'
     parent = plot.make Entity, :name => 'parent'
     item3 = plot.make Entity, :name => 'item three', :parent => parent
-    matches = Query.match("one, item in parent and two", plot.entities)
+    query = Query::Base.new
+    matches = query.match("one, item in parent and two", plot.entities)
     flat = matches.objects.flatten
     expect(flat.include?(item1)).to eq(true)
     expect(flat.include?(item2)).to eq(true)

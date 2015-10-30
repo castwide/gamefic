@@ -12,7 +12,7 @@ describe "Match" do
     query = Query::Reachable.new
     objects = query.context_from(character)
     expect(objects).to eq([container, item])
-    matches = Query.match("item", objects)
+    matches = query.match("item", objects)
     expect(matches.objects).to eq([item])
   end
 end
