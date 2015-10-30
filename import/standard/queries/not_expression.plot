@@ -4,6 +4,9 @@ class Gamefic::Query::NotExpression < Gamefic::Query::Expression
       /^(all|everything|every|anything|any|each|things|stuff)( (that|which) (is|are))? not$/
     )
   end
+  def signature
+    "#{self.class}"
+  end
 end
 
 module Gamefic::Use

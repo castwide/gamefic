@@ -102,7 +102,7 @@ module Gamefic::Query
       @specificity
     end
     def signature
-      return "#{self.class}(#{@arguments.join(',')})"
+      "#{self.class}(#{@arguments.join(',')})"
     end
     def test_arguments arguments
       cur_class = Gamefic::Entity

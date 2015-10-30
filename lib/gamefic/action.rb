@@ -60,7 +60,7 @@ module Gamefic
       @queries.each { |q|
         sig.push q.signature
       }
-      sig.join(', ').gsub(/Gamefic::/, '')
+      sig.join(', ').gsub(/Gamefic::(Query::)?/, '')
     end
     def meta?
       @meta ||= false

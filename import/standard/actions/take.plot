@@ -2,7 +2,7 @@ respond :take, Use.reachable do |actor, thing|
   actor.tell "You can't take #{the thing}."
 end
 
-respond :take, Query::Visible.new() do |actor, thing|
+respond :take, Use.visible do |actor, thing|
   if thing.parent == actor.parent
     actor.proceed
   elsif thing.parent.kind_of?(Container) and !thing.parent.open?
@@ -10,7 +10,7 @@ respond :take, Query::Visible.new() do |actor, thing|
   end
 end
 
-respond :take, Query::Visible.new() do |actor, thing|
+respond :take, Use.visible do |actor, thing|
   if actor.parent.kind_of?(Supporter) and actor.parent != thing.parent and actor.parent != thing.parent.parent
     actor.tell "You can't reach it from #{the actor.parent}."
   else
@@ -18,7 +18,7 @@ respond :take, Query::Visible.new() do |actor, thing|
   end
 end
 
-respond :take, Query::Reachable.new(:attached?) do |actor, thing|
+respond :take, Use.reachable(:attached?) do |actor, thing|
   actor.tell "#{The thing} is attached to #{the thing.parent}."
 end
 
