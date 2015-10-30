@@ -93,6 +93,11 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.plu
   actor.perform :drop, children - exceptions
 end
 
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.any_expression, Use.ambiguous_children do |actor, text1, text2, text3, exceptions|
+  children = actor.children.that_are_not(:attached?)
+  actor.perform :drop, children - exceptions
+end
+
 respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, things|
   filtered = things.clone
   filtered.delete_if{|t| t.parent != actor}
@@ -116,7 +121,7 @@ respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, thin
   end
 end
 
-respond :drop, Use.any_expression, Use.ambiguous_children, Use.text("except", "but"), Use.ambiguous_children do |actor, _, things, _, exceptions|
+respond :drop, Use.any_expression, Use.ambiguous_children, Use.text("except", "but"), Use.any_expression, Use.ambiguous_children do |actor, _, things, _, exceptions|
   actor.perform :drop, things - exceptions
 end
 

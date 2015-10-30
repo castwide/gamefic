@@ -85,7 +85,7 @@ describe "Take Action" do
     expect(item2.parent).to be(character) 
     expect(item3.parent).not_to be(character)    
   end
-  it "takes ambiguous items" do
+  it "takes ambiguous items for an adjectival phrase" do
     room = @plot.make Room, :name => 'room'
     character = @plot.make MetaCharacter, :name => 'character', :parent => room
     item1 = @plot.make Item, :name => 'red item', :parent => room
@@ -100,6 +100,15 @@ describe "Take Action" do
     expect(item1.parent).to be(character)
     expect(item2.parent).to be(character) 
     expect(item3.parent).not_to be(character)
+  end
+  it "does not take ambiguous items for a singular direct object" do
+    room = @plot.make Room, :name => 'room'
+    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    item = @plot.make Item, :name => 'ambiguous item', :parent => room
+    entity = @plot.make Item, :name => 'ambiguous entity', :parent => room    
+    character.perform "take ambiguous"
+    expect(item.parent).not_to eq(character)
+    expect(entity.parent).not_to eq(character)
   end
   it "understands exceptions" do
     room = @plot.make Room, :name => 'room'

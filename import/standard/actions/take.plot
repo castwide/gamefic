@@ -152,7 +152,7 @@ respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.any
 end
 
 respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.text do |actor, _, _, exceptions|
-  actor.tell "I don't see what you're trying to exclude with \"#{exceptions}.\""
+  actor.tell "I don't understand what you're trying to exclude with \"#{exceptions}.\""
 end
 
 respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.plural_visible do |actor, _, _, exceptions|

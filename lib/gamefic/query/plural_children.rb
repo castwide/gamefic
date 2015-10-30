@@ -1,6 +1,6 @@
 class Gamefic::Query::PluralChildren < Gamefic::Query::AmbiguousChildren
   def execute(subject, description)
-    if !description.end_with?("s") and !description.end_with?("i") and !description.end_with?("ae")
+    if (!description.end_with?("s") and !description.end_with?("i") and !description.end_with?("ae")) or (description.end_with?("ous") or description.end_with?("ess"))
       return Gamefic::Query::Matches.new([], '', description)
     end
     super
