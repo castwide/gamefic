@@ -19,10 +19,6 @@ module Gamefic
     @@ignored_words = ['a', 'an', 'the', 'and', ',']
     @@subquery_prepositions = ['in', 'on', 'of', 'inside', 'from']
     
-    def self.last_new
-      Base.last_new
-    end
-
     def self.match(description, array, ambiguous = false)
       if description.include?(',')
         tmp = description.split(',', -1)

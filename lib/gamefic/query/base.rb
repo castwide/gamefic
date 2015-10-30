@@ -3,11 +3,7 @@ module Gamefic::Query
     # Include is necessary here due to a strange namespace
     # resolution bug when interpreting gfic files
     include Gamefic
-    @@last_new = nil
     attr_accessor :arguments
-    def self.last_new
-      @@last_new
-    end
     def initialize *arguments
       test_arguments arguments
       @optional = false
@@ -16,7 +12,6 @@ module Gamefic::Query
         arguments.delete :optional
       end
       @arguments = arguments
-      @@last_new = self
       @match_hash = Hash.new
     end
     def allow_ambiguous?
