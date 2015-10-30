@@ -14,7 +14,6 @@ module Gamefic
     autoload :PluralChildren, 'gamefic/query/plural_children'
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Family, 'gamefic/query/family'
-    autoload :Subquery, 'gamefic/query/subquery'
     autoload :Matches, 'gamefic/query/matches'
     
     @@ignored_words = ['a', 'an', 'the', 'and', ',']
@@ -101,7 +100,12 @@ module Gamefic
           end
           so_far = keywords.join(' ')
           recursed = self.match(so_far, array)
-          possibilities = [possibilities]
+          if possibilities.length == 1
+            possibilities = [possibilities]
+          else
+            # Force lists of things to be uniquely identifying
+            return Matches.new([], '', description)
+          end
           objects = recursed.objects.clone
           while objects.length > 0
             obj = objects.shift
