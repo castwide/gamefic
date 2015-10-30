@@ -15,6 +15,16 @@ module Gamefic
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Family, 'gamefic/query/family'
     autoload :Matches, 'gamefic/query/matches'
+    
+    def self.allow_plurals?
+      if @allow_plurals.nil?
+        @allow_plurals = true
+      end
+      @allow_plurals
+    end
+    def self.allow_plurals= boolean
+      @allow_plurals = boolean
+    end
   end
 
 end

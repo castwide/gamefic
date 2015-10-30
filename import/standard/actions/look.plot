@@ -5,6 +5,7 @@ end
 
 respond :look, Query::Self.new do |actor, _|
   actor.tell actor.description
+  actor.perform :inventory
 end
 
 respond :look, Query::Room.new(Room) do |actor, room|

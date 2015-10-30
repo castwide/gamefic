@@ -63,6 +63,10 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.chi
   end
 end
 
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.text do |actor, text1, text2, text3|
+  actor.tell "I understand you want to drop #{text1} but don't know what you're trying to exclude with \"#{text3}.\""
+end
+
 respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.many_children do |actor, text1, text2, exceptions|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
@@ -82,6 +86,11 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.man
       actor.tell "You drop #{dropped.join_and}."
     end
   end
+end
+
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.plural_children do |actor, text1, text2, exceptions|
+  children = actor.children.that_are_not(:attached?)
+  actor.perform :drop, children - exceptions
 end
 
 respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, things|

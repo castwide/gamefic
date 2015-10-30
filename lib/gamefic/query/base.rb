@@ -48,6 +48,9 @@ module Gamefic::Query
     end
     # @return [Array]
     def execute(subject, description)
+      if (allow_many? or allow_ambiguous?) and !Query.allow_plurals?
+        return Matches.new([], '', description)
+      end
       if !allow_ambiguous?
         if allow_many? and !description.include?(',') and !description.downcase.include?(' and ')
           return Matches.new([], '', description)

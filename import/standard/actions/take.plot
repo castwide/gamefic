@@ -47,7 +47,8 @@ respond :take, Use.many_visible do |actor, things|
   filtered = things.clone
   filtered.delete_if{ |t| t.parent == actor }
   if filtered.length == 0
-    actor.tell "There's nothing to take that matches your terms. (You're already carrying #{things.join_and}.)"
+    output = "There's nothing to take that matches your terms." + (things.length > 0 ? "(You're already carrying #{things.join_and}.)" : '')
+    actor.tell output
   else
     taken = []
     filtered.each { |thing|
@@ -145,8 +146,18 @@ respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.man
   actor.perform :take, visible - exceptions
 end
 
+respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.any_expression, Use.ambiguous_visible do |actor, _, _, _, exceptions|
+  visible = Use.many_visible.context_from(actor)
+  actor.perform :take, visible - exceptions
+end
+
 respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.text do |actor, _, _, exceptions|
   actor.tell "I don't see what you're trying to exclude with \"#{exceptions}.\""
+end
+
+respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.plural_visible do |actor, _, _, exceptions|
+  visible = Use.visible.context_from(actor)
+  actor.perform :take, visible - exceptions
 end
 
 respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "but"), Use.visible do |actor, text1, things, text2, exception|
@@ -157,8 +168,7 @@ respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "bu
   actor.perform :take, things - exceptions
 end
 
-respond :take, Use.text("all", "everything"), Use.text("except", "but"), Use.any_expression, Use.ambiguous_visible do |actor, _, _, _, exceptions|
-  things = Use.visible.context_from(actor)
+respond :take, Use.any_expression, Use.ambiguous_visible, Use.text("except", "but"), Use.plural_visible do |actor, text1, things, text2, exceptions|
   actor.perform :take, things - exceptions
 end
 
