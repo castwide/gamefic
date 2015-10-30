@@ -9,7 +9,8 @@ module Gamefic
       ent
     end
     def pick(description)
-      result = Query.match(description, entities)
+      query = Gamefic::Query::Base.new
+      result = query.match(description, entities)
       if result.objects.length == 0
         raise IndexError.new("Unable to find entity from '#{description}'")
       elsif result.objects.length > 1

@@ -7,10 +7,19 @@ respond :drop, Query::Children.new() do |actor, thing|
   actor.tell "You drop #{the thing}."
 end
 
-respond :drop, Use.many_visible do |actor, things|
+respond :drop, Use.many_children do |actor, things|
+  dropped = []
   things.each { |thing|
-    actor.perform :drop, thing
+    buffer = actor.quietly :drop, thing
+    if thing.parent == actor
+      actor.tell buffer
+    else
+      dropped.push thing
+    end
   }
+  if dropped.length > 0
+    actor.tell "You drop #{dropped.join_and}."
+  end
 end
 
 respond :drop, Use.text("all", "everything") do |actor, text|
@@ -54,7 +63,11 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.chi
   end
 end
 
-respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.many_visible do |actor, text1, text2, exceptions|
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.text do |actor, text1, text2, text3|
+  actor.tell "I understand you want to drop #{text1} but don't know what you're trying to exclude with \"#{text3}.\""
+end
+
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.many_children do |actor, text1, text2, exceptions|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
     actor.tell "You don't have anything to drop."
@@ -75,30 +88,51 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.man
   end
 end
 
-respond :drop, Use.text("all", "everything", "anything", "any", "every", "each"), Use.ambiguous_visible do |actor, text1, things|
-  dropped = []
-  things.each { |thing|
-    if thing.parent == actor
-      buffer = actor.quietly :drop, thing
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.plural_children do |actor, text1, text2, exceptions|
+  children = actor.children.that_are_not(:attached?)
+  actor.perform :drop, children - exceptions
+end
+
+respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.any_expression, Use.ambiguous_children do |actor, text1, text2, text3, exceptions|
+  children = actor.children.that_are_not(:attached?)
+  actor.perform :drop, children - exceptions
+end
+
+respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, things|
+  filtered = things.clone
+  filtered.delete_if{|t| t.parent != actor}
+  if filtered.length == 0
+    actor.tell "You're not carrying anything that matches your terms."
+  else
+    dropped = []
+    things.each { |thing|
       if thing.parent == actor
-        actor.tell buffer
-      else
-        dropped.push thing
+        buffer = actor.quietly :drop, thing
+        if thing.parent == actor
+          actor.tell buffer
+        else
+          dropped.push thing
+        end
       end
+    }
+    if dropped.length > 0
+      actor.tell "You drop #{dropped.join_and}."
     end
-  }
-  if dropped.length > 0
-    actor.tell "You drop #{dropped.join_and}."
   end
 end
 
-respond :drop, Use.text("all", "everything", "anything", "any", "every", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.ambiguous_visible do |actor, _, things, _, exceptions|
+respond :drop, Use.any_expression, Use.ambiguous_children, Use.text("except", "but"), Use.any_expression, Use.ambiguous_children do |actor, _, things, _, exceptions|
   actor.perform :drop, things - exceptions
 end
 
-#respond :drop, Use.text("all", "everything", "anything", "any", "every", "each"), Use.ambiguous_visible, Use.text("except", "but"), Use.text do |actor, _, things, _, exceptions|
-#  actor.tell "I don't see anything \"#{exceptions}\" to exclude here."
-#end
+respond :drop, Use.not_expression, Use.ambiguous_children do |actor, _, exceptions|
+  children = actor.children
+  actor.perform :drop, children - exceptions
+end
+
+respond :drop, Use.plural_children do |actor, things|
+  actor.perform "drop #{things.join(' and ')}"
+end
 
 interpret "put down :thing", "drop :thing"
 interpret "put :thing down", "drop :thing"

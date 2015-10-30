@@ -43,34 +43,11 @@ module Gamefic
               valid = argument.flatten
             else
               argument.each { |m|
-                if order.action.queries[arg_i].allow_many?
-                  if m.kind_of?(Array)
-                    arg_array = []
-                    if m.length > 1
-                      order = Order.new(@actor, @@disambiguator, [])
-                      final_arguments = [m]
-                      break
-                    elsif order.action.queries[arg_i].validate(@actor, m[0])
-                      arg_array.push m[0]
-                    else
-                      final_arguments = nil
-                      break
-                    end
-                    if order.action == @@disambiguator or final_arguments.nil?
-                      break
-                    end
-                    valid.push arg_array
-                  else
-                    final_arguments = nil
-                    break
-                  end
+                if order.action.queries[arg_i].validate(@actor, m)
+                  valid.push m
                 else
-                  if order.action.queries[arg_i].validate(@actor, m)
-                    valid.push m
-                  else
-                    final_arguments = nil
-                    break
-                  end
+                  final_arguments = nil
+                  break
                 end
               }
             end

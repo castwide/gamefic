@@ -21,13 +21,14 @@ module Gamefic
     attr_accessor :default_scene
     include Stage
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    expose :require, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready
+    expose :require, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready
     def initialize(source = nil)
       @source = source || Source.new
       @commands = Hash.new
       @syntaxes = Array.new
       @ready_procs = Array.new
       @update_procs = Array.new
+      @player_ready = Array.new
       @player_procs = Array.new
       @working_scripts = Array.new
       @imported_scripts = Array.new
@@ -100,8 +101,11 @@ module Gamefic
         p.call
       }
       # Prepare player scenes for the update.
-      @players.each { |p|
-        p.scene.start p
+      @players.each { |player|
+        @player_ready.each { |block|
+          block.call player
+        }
+        player.scene.start player
       }
     end
     def update
@@ -154,6 +158,10 @@ module Gamefic
           imported_scripts.push imported_script
         end
       end
+    end
+    
+    def on_player_ready &block
+      @player_ready.push block
     end
     
     def on_player_update &block

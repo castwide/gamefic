@@ -1,5 +1,5 @@
 module Gamefic::Query
-  class Text < Base
+  class Expression < Base
     def base_specificity
       10
     end
@@ -20,18 +20,22 @@ module Gamefic::Query
         return Matches.new([description], description, '')
       end
       keywords = Keywords.new(description)
-      args = Keywords.new(@arguments)
-      found = Array.new
-      remainder = keywords.clone
-      while remainder.length > 0
-        if args.include?(remainder.first)
-          found.push remainder.shift
-        else
-          break
+      possible = []
+      @arguments.each { |regexp|
+        remainder = keywords.clone
+        used = []
+        while remainder.length > 0
+          used.push remainder.shift
+          if used.join(' ').match(regexp)
+            possible.push Matches.new([used.join(' ')], used.join(' '), remainder.join(' '))
+          end        
         end
-      end
-      if found.length > 0
-        return Matches.new(found, found.join(' '), remainder.join(' '))
+      }
+      if possible.length > 0
+        possible.sort! { |a, b|
+         b.matching_text.length <=> a.matching_text.length
+        }
+        return possible[0]
       else
         return Matches.new([], '', description)
       end

@@ -88,13 +88,22 @@ module Gamefic
           end
         }
         if valid == true
-          prepared.each { |p|
-            p.uniq!
-          }
-          num_nil.times do
-            prepared.push [nil]
+          if last_remainder.nil? or last_remainder.empty?
+            prepared.each { |p|
+              p.uniq!
+            }
+            num_nil.times do
+              prepared.push [nil]
+            end
+            objects.push Order.new(actor, action, prepared)
+          else
+            if !action.queries.last.allow_many? or action.queries.last.allow_ambiguous?
+              misunderstood = Action.new nil, nil, Query::Text.new do |actor, text|
+                actor.tell "I understand the first part of your command but not \"#{text}.\""
+              end
+              objects.push Order.new(actor, misunderstood, [[last_remainder]])
+            end
           end
-          objects.push Order.new(actor, action, prepared)
         end
         objects
       end
