@@ -113,14 +113,16 @@ respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.vis
 end
 
 respond :take, Use.text("all", "everything"), Use.text do |actor, text1, text2|
-  actor.tell "I understand that you want to take #{text1} but not what you mean by \"#{text2}.\""
+  actor.tell "I understand that you want to take #{text1} but did not understand \"#{text2}.\""
 end
 
-respond :take, Use.any_expression, Use.ambiguous_visible do |actor, text, things|
+respond :take, Use.any_expression, Use.ambiguous_visible(:portable?) do |actor, text, things|
   filtered = things.clone
   filtered.delete_if{|t| t.parent == actor}
   if filtered.length == 0
     actor.tell "There's nothing to take that matches your terms. (You're already carrying #{things.join_and}.)"
+  #elsif filtered.length == 1
+  #  actor.proceed
   else
     taken = []
     filtered.each { |thing|
@@ -187,6 +189,35 @@ end
 respond :take, Use.not_expression, Use.ambiguous_visible do |actor, _, exceptions|
   visible = Use.visible.context_from(actor)
   actor.perform :take, visible - exceptions
+end
+
+respond :take, Use.text("all", "everything"), Use.from_expression, Use.reachable(Receptacle) do |actor, _, _, receptacle|
+  children = receptacle.children.that_are_not(:attached?)
+  if children.length == 0
+    actor.tell "There's nothing inside #{the receptacle}."
+  else
+    taken = []
+    children.each { |child|
+      buffer = actor.quietly :take, child
+      if child.parent != actor
+        actor.tell buffer
+      else
+        taken.push child
+      end
+    }
+    if taken.length > 0
+      actor.tell "You take #{taken.join_and} from #{the receptacle}."
+    end
+  end
+end
+
+respond :take, Use.text("all","everything"), Use.reachable(Container) do |actor, text, container|
+  actor.tell "Here"
+  if container.open?
+    actor.proceed
+  else
+    actor.tell "#{The container} is closed."
+  end  
 end
 
 interpret "get :thing", "take :thing"

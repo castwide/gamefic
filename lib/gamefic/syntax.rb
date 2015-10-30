@@ -77,6 +77,20 @@ module Gamefic
         result = syntax.translate text
         matches.push(result) if !result.nil?
       }
+      # Sort matches having the most populated arguments first
+      matches.sort! { |a, b|
+        ca = 0
+        cb = 0
+        a.arguments.each { |t|
+          break if t.nil?
+          ca += 1
+        }
+        b.arguments.each { |t|
+          break if t.nil?
+          cb += 1
+        }
+        cb <=> ca
+      }
       matches
     end
   end

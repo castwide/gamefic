@@ -67,7 +67,10 @@ module Gamefic
         valid = true
         last_remainder = nil
         queries.clone.each { |context|
-          arg = arguments.shift || last_remainder
+          arg = arguments.shift.to_s
+          if last_remainder.to_s > ''
+            arg = (last_remainder + " " + arg).strip
+          end
           if arg.nil? or arg == ''
             valid = false
             next
@@ -101,6 +104,7 @@ module Gamefic
               misunderstood = Action.new nil, nil, Query::Text.new do |actor, text|
                 actor.tell "I understand the first part of your command but not \"#{text}.\""
               end
+              misunderstood.meta = true
               objects.push Order.new(actor, misunderstood, [[last_remainder]])
             end
           end

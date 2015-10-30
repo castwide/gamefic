@@ -32,6 +32,9 @@ module Gamefic
     end
     def specificity
       spec = 0
+      if verb.nil?
+        spec = -100
+      end
       magnitude = 1
       @queries.each { |q|
         if q.kind_of?(Query::Base)
@@ -60,7 +63,7 @@ module Gamefic
       @queries.each { |q|
         sig.push q.signature
       }
-      sig.join(', ').gsub(/Gamefic::(Query::)?/, '')
+      "#{sig.join(', ').gsub(/Gamefic::(Query::)?/, '')}(#{specificity})"
     end
     def meta?
       @meta ||= false

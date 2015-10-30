@@ -86,8 +86,8 @@ module Gamefic::Query
           if item.kind_of?(Class)
             s = item
             while s != nil
-            @specificity += magnitude
-            s = s.superclass
+              @specificity += magnitude
+              s = s.superclass
             end
           else
             @specificity += magnitude
@@ -96,7 +96,7 @@ module Gamefic::Query
         if allow_many?
           # HACK Ridiculously high magic number to force queries that return
           # arrays to take precedence over everything
-          @specificity = @specificity * 100000
+          @specificity = @specificity * 10
         end
       end
       @specificity
@@ -157,6 +157,9 @@ module Gamefic::Query
       while keywords.length > 0
         next_word = keywords.shift
         if @@subquery_prepositions.include?(next_word)
+          if !at_least_one_match
+            return Matches.new([], '', description)
+          end
           so_far = keywords.join(' ')
           in_matched = self.match(so_far, array)
           if in_matched.objects.length > 0 and (in_matched.objects.length == 1 or in_matched.objects[0].kind_of?(Array))
@@ -201,6 +204,11 @@ module Gamefic::Query
         elsif (next_word.downcase == 'and' or next_word == ',')
           while keywords.first == ',' or keywords.first.downcase == 'and'
             used.push keywords.shift
+          end
+          if allow_ambiguous?
+            # Ambiguous queries filter based on all keywords instead of
+            # building an array of specified entities
+            next
           end
           so_far = keywords.join(' ')
           recursed = self.match(so_far, array)

@@ -1,12 +1,12 @@
-respond :open, Query::Text.new() do |actor, string|
+respond :open, Use.text do |actor, string|
   actor.tell "You don't see any \"#{string}\" here."
 end
 
-respond :open, Query::Reachable.new() do |actor, thing|
+respond :open, Use.reachable() do |actor, thing|
   actor.tell "You can't open #{the thing}."
 end
 
-respond :open, Query::Reachable.new(Portable, Openable) do |actor, container|
+respond :open, Use.reachable(Openable) do |actor, container|
   # Portable containers need to be picked up before they are opened.
   if container.portable? and container.parent != actor
     actor.perform :take, container
@@ -14,20 +14,21 @@ respond :open, Query::Reachable.new(Portable, Openable) do |actor, container|
       break
     end
   end
-  if container.locked?
-    actor.tell "#{The container} is locked."
-  elsif !container.open?
+  if !container.open?
     actor.tell "You open #{the container}."
     container.open = true
-    actor.perform :search, container
+    if container.children.that_are_not(:attached?).length > 0
+      actor.perform :search, container
+    end
   else
     actor.tell "It's already open."
   end
 end
 
-respond :open, Query::Reachable.new(Container) do |actor, container|
-  actor.proceed
-  if container.open?
-    actor.perform :search, container
+respond :open, Use.reachable(Openable, Lockable) do |actor, container|
+  if container.locked?
+    actor.tell "#{The container} is locked."
+  else
+    actor.proceed
   end
 end

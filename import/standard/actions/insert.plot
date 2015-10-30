@@ -1,3 +1,5 @@
+require 'standard'
+
 respond :insert, Use.visible, Use.reachable do |actor, thing, target|
   actor.tell "You can't put #{the thing} inside #{the target}."
 end
@@ -27,6 +29,53 @@ end
 
 respond :insert, Use.text, Use.text do |actor, thing, container|
   actor.tell "I don't know what you mean by \"#{thing}\" or \"#{container}.\""
+end
+
+respond :insert, Use.text("all", "everything"), Use.reachable(Receptacle) do |actor, text, receptacle|
+  children = actor.children.that_are_not(:attached?)
+  if children.length == 0
+    actor.tell "You're not carrying anything to put in #{the receptacle}."
+  else
+    inserted = []
+    children.each { |child|
+      buffer = actor.quietly :insert, child, receptacle
+      if child.parent != receptacle
+        actor.tell buffer
+      else
+        inserted.push child
+      end
+    }
+    if inserted.length > 0
+      actor.tell "You put #{inserted.join_and} in #{the receptacle}."
+    end
+  end
+end
+
+respond :insert, Use.many_children, Use.reachable(Receptacle) do |actor, children, receptacle|
+  inserted = []
+  children.each { |child|
+    buffer = actor.quietly :insert, child, receptacle
+    if child.parent != receptacle
+      actor.tell buffer
+    else
+      inserted.push child
+    end
+  }
+  if inserted.length > 0
+    actor.tell "You put #{inserted.join_and} in #{the receptacle}."
+  end
+end
+
+respond :insert, Use.many_children, Use.reachable(Container) do |actor, children, container|
+  if container.open?
+    actor.proceed
+  else
+    actor.tell "#{The container} is closed."
+  end
+end
+
+respond :insert, Use.any_expression, Use.ambiguous_children, Use.text("in", "inside", "into"), Use.reachable(Receptacle) do |actor, _, children, _, receptacle|
+  actor.perform :insert, children, receptacle
 end
 
 interpret "drop :item in :container", "insert :item :container"
