@@ -43,7 +43,7 @@ module Gamefic
               valid = argument.flatten
             else
               argument.each { |m|
-                if order.action.queries[arg_i].allow_many?
+                if order.action.queries[arg_i].allow_many? and false
                   if m.kind_of?(Array)
                     arg_array = []
                     if m.length > 1
@@ -59,6 +59,7 @@ module Gamefic
                     if order.action == @@disambiguator or final_arguments.nil?
                       break
                     end
+                    puts "#{m.class} valid for many #{order.action.queries[arg_i]}"
                     valid.push arg_array
                   else
                     final_arguments = nil

@@ -111,6 +111,11 @@ respond :drop, Use.any_expression, Use.ambiguous_children, Use.text("except", "b
   actor.perform :drop, things - exceptions
 end
 
+respond :drop, Use.not_expression, Use.ambiguous_children do |actor, _, exceptions|
+  children = actor.children
+  actor.perform :drop, children - exceptions
+end
+
 respond :drop, Use.plural_children do |actor, things|
   actor.perform "drop #{things.join(' and ')}"
 end

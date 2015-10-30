@@ -87,7 +87,7 @@ module Gamefic
             raise TypeError.new("Action parameters must inherit from Query::Base")
           end
         }
-        if valid == true
+        if valid == true and (last_remainder.nil? or last_remainder.empty?)
           prepared.each { |p|
             p.uniq!
           }

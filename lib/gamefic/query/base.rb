@@ -39,7 +39,15 @@ module Gamefic::Query
       @arguments.each { |arg|
         arr = arr.that_are(arg)
       }
-      return arr.include?(object)
+      if (allow_many? or allow_ambiguous?)
+        if object.kind_of?(Array)
+          return (object & arr) == object
+        end
+        return false
+      elsif !object.kind_of?(Array)
+        return arr.include?(object)
+      end
+      return false
     end
     # @return [Array]
     def execute(subject, description)
