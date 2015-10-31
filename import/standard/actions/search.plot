@@ -24,5 +24,16 @@ respond :search, Use.room do |actor, room|
   actor.perform :look, room
 end
 
+respond :search, Use.reachable do |actor, entity|
+  attached = entity.children.that_are(:attached?).that_are(Container)
+  if attached.length > 1
+    actor.tell "You can search #{attached.join_or}"
+  elsif attached.length == 1
+    actor.perform :search, attached[0]
+  else
+    actor.proceed
+  end
+end
+
 interpret "look in :thing", "search :thing"
 interpret "look inside :thing", "search :thing"
