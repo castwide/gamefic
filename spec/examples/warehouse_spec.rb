@@ -2,7 +2,7 @@ require 'gamefic-sdk'
 
 describe "Warehouse" do
   it "concludes with test me" do
-    plot = Plot.new(Source.new('./import', Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Plot.new(Source.new('./scripts', Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.load "examples/warehouse/main.plot"
     character = plot.make Character, :name => 'player'
     plot.introduce character
