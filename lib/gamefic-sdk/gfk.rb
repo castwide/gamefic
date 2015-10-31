@@ -204,11 +204,12 @@ EOS
         Build.release directory
       end
       def clean directory
-        build_file = nil
-        if File.file?(directory + '/build.rb')
-          build_file = directory + '/build.rb'
-        end
-        config = Build.load build_file
+        #build_file = nil
+        #if File.file?(directory + '/build.rb')
+        #  build_file = directory + '/build.rb'
+        #end
+        #config = Build.load build_file
+        config = YAML.load(File.read(directory + '/build.yaml'))
         Build.clean directory, config
       end
       def help command

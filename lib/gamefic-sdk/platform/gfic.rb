@@ -12,7 +12,6 @@ module Gamefic::Sdk
     end
     def build
       target_dir = config['target_dir']
-      source_dir = plot.main_dir
       if config['filename'].to_s == ''
         filename = target_dir + '/' + source_dir.split('/').delete_if{|i| i.to_s == ''}.last + '.gfic'
       else

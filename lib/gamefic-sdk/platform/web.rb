@@ -12,7 +12,6 @@ module Gamefic::Sdk
       }
     end
     def build
-      source_dir = plot.main_dir
       target_dir = config['target_dir']
       # TODO Configurable build folder?
       build_dir = config['build_dir']
@@ -93,10 +92,10 @@ module Gamefic::Sdk
       FileUtils.cp build_path + "/gamefic.js", target_dir + "/gamefic.js"
       FileUtils.cp build_path + "/static.js", target_dir + "/static.js"
     end
-    def clean build_dir, target_dir
-      FileUtils.remove_entry_secure build_dir if File.exist?(build_dir)
-      FileUtils.mkdir_p build_dir
-      puts "#{build_dir} cleaned."
+    def clean
+      FileUtils.remove_entry_secure config['build_dir'] if File.exist?(config['build_dir'])
+      FileUtils.mkdir_p config['build_dir']
+      puts "#{config['build_dir']} cleaned."
     end
   end
 
