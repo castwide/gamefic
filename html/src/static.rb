@@ -1,5 +1,6 @@
 require 'gamefic'
 # HACK Explicit requires to fix Opal's failure to resolve autoloads
+require 'gamefic/query/expression'
 require 'gamefic/query/matches'
 require 'gamefic/grammar/verb_set'
 
