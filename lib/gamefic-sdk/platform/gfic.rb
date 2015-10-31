@@ -32,7 +32,7 @@ module Gamefic::Sdk
         zipfile.add(File.basename(main_file), source_dir + "/" + main_file)
         if plot.imported_scripts.length > 0
           plot.imported_scripts.each { |script|
-            zipfile.add "import#{script.relative}", script.absolute
+            zipfile.add "scripts#{script.relative}", script.absolute
           }
         end
       end

@@ -4,7 +4,9 @@ require 'gamefic-sdk/platform'
 
 module Gamefic::Sdk
   HTML_TEMPLATE_PATH = File.dirname(__FILE__) + "/../html/"
-  GLOBAL_IMPORT_PATH = File.dirname(__FILE__) + "/../import/"
+  GLOBAL_SCRIPT_PATH = File.dirname(__FILE__) + "/../scripts/"
+  # @deprecated
+  GLOBAL_IMPORT_PATH = GLOBAL_SCRIPT_PATH
   LIB_PATH = File.dirname(__FILE__)
 end
 

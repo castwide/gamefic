@@ -67,8 +67,8 @@ module Gamefic::Sdk
         if !File.file?(path + '/build.yaml')
         end
         plot = Gamefic::Sdk::Debug::Plot.new
-        plot.source.directories.concat config['sources']['import_paths']
-        plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
+        plot.source.directories.concat config['sources']['script_paths']
+        plot.source.directories.push Gamefic::Sdk::GLOBAL_SCRIPT_PATH
         plot.load main_file
         if test_file != nil
           plot.load test_file
@@ -122,13 +122,13 @@ module Gamefic::Sdk
         else
           Dir.mkdir(directory)
         end
-        Dir.mkdir(directory + '/import')
+        Dir.mkdir(directory + '/scripts')
         main_rb = File.new(directory + '/main.plot', 'w')
         main_rb.write <<EOS
 require 'standard'
 EOS
         imports.each { |i|
-          main_rb.write "import '#{i}'\n"
+          main_rb.write "require '#{i}'\n"
         }
         main_rb.close
         test_rb = File.new(directory + '/test.plot', 'w')
@@ -150,8 +150,8 @@ title: Untitled
 author: Anonymous
 
 sources:
-  import_paths:
-    - ./import
+  script_paths:
+    - ./scripts
   asset_paths:
     - ./assets
 EOS
@@ -175,7 +175,7 @@ EOS
           exit 1
         end
         puts "Loading game data..."
-        story = Plot.new(Source.new(GLOBAL_IMPORT_PATH))
+        story = Plot.new(Source.new(GLOBAL_SCRIPT_PATH))
         begin
           story.load directory + '/main', true
         rescue Exception => e
@@ -187,10 +187,10 @@ EOS
         fetched = 0
         story.imported_scripts.each { |script|
           if !script.filename.start_with?(directory)
-            base = script.filename[(script.filename.rindex('import/') + 7)..-1]
+            base = script.filename[(script.filename.rindex('scripts/') + 7)..-1]
             puts "Fetching #{base}"
-            FileUtils.mkdir_p directory + '/import/' + File.dirname(base)
-            FileUtils.copy script.filename, directory + '/import/' + base
+            FileUtils.mkdir_p directory + '/scripts/' + File.dirname(base)
+            FileUtils.copy script.filename, directory + '/scripts/' + base
             fetched += 1
           end
         }
@@ -231,7 +231,7 @@ EOS
 Copy shared scripts to the source directory.
 If the specified game directory imports external scripts, such as the ones
 that are distributed with the Gamefic gem, this command will copy them into
-the game's import directory. Fetching can be useful if you want to customize
+the game's script directory. Fetching can be useful if you want to customize
 common features.
 EOS
           when "build"

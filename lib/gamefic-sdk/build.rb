@@ -9,7 +9,7 @@ module Gamefic::Sdk
         config['uuid'] = File.read("#{directory}/.uuid").strip
       end
       plot = Gamefic::Sdk::Debug::Plot.new
-      plot.source.directories.concat config['sources']['import_paths']
+      plot.source.directories.concat config['sources']['script_paths']
       plot.source.directories.push Gamefic::Sdk::GLOBAL_IMPORT_PATH
       plot.load "#{directory}/main.plot"
       platforms = YAML.load(File.read("#{directory}/build.yaml"))

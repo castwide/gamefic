@@ -63,9 +63,9 @@ module Gamefic::Sdk
       imported = []
       
       plot.imported_scripts.each { |script|
-        import_js = "import/" + File.dirname(script.relative) + "/" + File.basename(script.relative, File.extname(script.relative)) + ".rb"
+        import_js = "scripts/" + File.dirname(script.relative) + "/" + File.basename(script.relative, File.extname(script.relative)) + ".rb"
         if !File.exist?(build_dir + "/" + import_js) or File.mtime(build_dir + "/" + import_js) < File.mtime(script.absolute)
-          FileUtils.mkdir_p(build_dir + "/import/" + File.dirname(script.relative))
+          FileUtils.mkdir_p(build_dir + "/scripts/" + File.dirname(script.relative))
           File.open(build_dir + "/" + import_js, "w") do |file|
             file << "require 'gamefic';module Gamefic;"  + File.read(script.absolute) + ";end"
             file << "\n"
@@ -83,7 +83,7 @@ module Gamefic::Sdk
       imported.push "main.js"
       
       Opal.append_path build_dir
-      Opal.append_path build_dir + "/import"
+      Opal.append_path build_dir + "/scripts"
       
       File.open(build_path + "/static.js", "w") do |file|
         file << Opal::Builder.build('static')
