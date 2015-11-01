@@ -21,7 +21,7 @@ module Gamefic
     attr_accessor :default_scene
     include Stage
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    expose :require, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready
+    expose :require, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players
     def initialize(source = nil)
       @source = source || Source.new
       @commands = Hash.new
@@ -65,6 +65,9 @@ module Gamefic
     def syntaxes
       @syntaxes.clone
     end
+    def players
+      @players.clone
+    end
     def on_ready(&block)
       @ready_procs.push block
     end
@@ -94,6 +97,7 @@ module Gamefic
       if player.scene.nil?
         cue player, default_scene
       end
+      ready
       update
     end
     def ready
