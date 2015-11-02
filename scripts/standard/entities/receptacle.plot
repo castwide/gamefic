@@ -1,4 +1,4 @@
 class Gamefic::Receptacle < Gamefic::Entity
   include Enterable
-  serialize :enterable?
+  serialize :enterable?, :enter_verb, :leave_verb, :inside_verb
 end
