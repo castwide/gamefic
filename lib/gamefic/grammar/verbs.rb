@@ -16,7 +16,8 @@ module Gamefic::Grammar
       Gamefic::Grammar::VerbSet.new(infinitive, nil, *args).conjugate(@pronoun)
     end
     def [] infinitive
-      Gamefic::Grammar::VerbSet.new(infinitive, nil, *args).conjugate(@pronoun)
+      words = infinitive.split_words
+      Gamefic::Grammar::VerbSet.new(words[0], nil).conjugate(@pronoun) + (words.length > 1 ? ' ' + words[1..-1].join(' ') : '')
     end
     conjugate :be,   :present, :am,   :are,  :is,  :are
     conjugate :have, :present, :have, :have, :has, :have
