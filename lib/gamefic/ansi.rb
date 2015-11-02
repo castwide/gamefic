@@ -42,6 +42,7 @@ module Gamefic
         UPPERCASE = Nonstandard.new("uppercase")
         COMMAND = Nonstandard.new("command")
         IGNORED = Nonstandard.new("ignored")
+        LINE = Nonstandard.new("line")
       end
     end  
     def self.graphics_mode(*settings)

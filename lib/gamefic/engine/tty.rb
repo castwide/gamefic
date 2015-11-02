@@ -111,6 +111,7 @@ module Gamefic
       private
       
       def format_recursively(top, stack = nil)
+        ol_index = 1
         stack ||= [Attribute::NORMAL]
         top.elements.each { |element|
           formats = [Attribute::NORMAL]
@@ -130,9 +131,17 @@ module Gamefic
               else
                 formats.push [Attribute::UNDERSCORE, Extra::HREF]
               end
+            when 'li'
+              if top.name == 'ol'
+                element.text = "#{ol_index}. #{element.text}"
+                ol_index += 1
+              else
+                element.text = "* #{element.text}"
+              end
+              formats.push [Extra::LINE]
             when 'img'
               formats.push [Extra::IGNORED]
-            when 'p'
+            when 'p', 'ol', 'ul'
               formats.push Extra::BLOCK
             when 'nav'
               formats.push Extra::BLOCK
@@ -168,6 +177,10 @@ module Gamefic
           end
           if has_code?(stack.last, Extra::BLOCK)
             element.add_text("\n\n")
+          elsif has_code?(stack.last, Extra::LINE)
+            if !has_code?(stack[-2], Extra::BLOCK) || element != top.elements.to_a.last
+              element.add_text("\n")
+            end
           end
           if has_code?(stack.last, Extra::HREF)
             if element.attribute('href').to_s != "#"
