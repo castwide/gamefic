@@ -105,25 +105,36 @@ module Gamefic::Query
       "#{self.class}(#{@arguments.join(',')})"
     end
     def test_arguments arguments
-      cur_class = Gamefic::Entity
-      cur_object = nil
+      my_classes = [Gamefic::Entity]
+      my_objects = []
       arguments.each { |a|
         if a.kind_of?(Class) or a.kind_of?(Module)
-          cur_class = a
-        elsif a.kind_of?(cur_class)
-          cur_object = a
+          my_classes.push a
+        elsif a.kind_of?(Entity)
+          my_objects.push a
         elsif a.kind_of?(Symbol)
-          if !cur_object.nil?
-            if !cur_object.respond_to?(a)
-              raise ArgumentError.new("Query signature target does not respond to #{a}")
-            end
-          else
-            if !cur_class.instance_methods.include?(a)
-              raise ArgumentError.new("Query signature target methods do not include #{a}")
+          if my_classes.length == 0 and my_objects.length == 0
+            raise ArgumentError.new("Query signature requires at least one class, module, or object to accept a method symbol")
+          end
+          if my_classes.length > 0
+            responds = false
+            my_classes.each { |c|
+              if c.instance_methods.include?(a)
+                responds = true
+                break
+              end
+            }
+            if !responds
+              raise ArgumentError.new("Query signature does not have a target that responds to #{a}")
             end
           end
+          my_objects.each { |o|
+            if !o.respond_to?(a)
+              raise ArgumentError.new("Query signature contains object '#{o}' that does not respond to '#{a}'")
+            end
+          }
         else
-          raise ArgumentError.new("What the heck is this?")
+          raise ArgumentError.new("Invalid argument '#{a}' in query signature")
         end
       }
     end
@@ -179,7 +190,6 @@ module Gamefic::Query
           end
         end
         used.push next_word
-        #next if @@ignored_words.include?(next_word)
         new_results = []
         most_matches = 0.0
         possibilities.each { |p|
