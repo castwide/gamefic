@@ -81,6 +81,11 @@ module Gamefic
       end
       scene_managers[key] = scene
     end
+    def branch key, options
+      multiple_choice key, *options.keys do |actor, data|
+        cue actor, options[data.selection]
+      end
+    end
     def cue actor, key
       if !actor.scene.nil? and actor.scene.state == "Concluded"
         return

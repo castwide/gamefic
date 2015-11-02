@@ -10,6 +10,9 @@ module Gamefic
     def state
       @state ||= "MultipleChoice"
     end
+    def prompt
+      @prompt ||= "Enter a choice:"
+    end
   end
   
   class MultipleChoiceSceneData < SceneData
@@ -22,32 +25,46 @@ module Gamefic
   class MultipleChoiceScene < Scene
     def initialize manager, key
       super
-      @end_prompt = @prompt || "Enter a choice:"
+      @prompt ||= "Enter a choice:"
     end
     def start actor
       super
-      list = []
-      index = 1
+      list = '<ol class="multiple_choice">'
       @data.options.each { |o|
-        list.push "#{index}. #{o}"
-        index += 1
+        list += "<li>#{o}</li>"
       }
-      @data.prompt = "#{list.join("\n")}\n#{@end_prompt}"
+      list += "</ol>"
+      actor.tell list
+      @data.prompt ||= @prompt
     end
     def finish actor, input
       @data.input = input
       @data.index = nil
       @data.selection = nil
-      index = input.to_i
-      if @data.options[index - 1].nil?
+      if @data.input.strip =~ /[0-9]+/
+        @data.index = input.to_i - 1
+        @data.selection = @data.options[@data.index]
+        @data.index = nil if @data.selection.nil?
+      else
+        i = 0
+        @data.options.each { |o|
+          if o.casecmp(@data.input).zero?
+            @data.index = i
+            @data.selection = o
+            break
+          end
+          i += 1
+        }
+      end
+      if @data.selection.nil?
         # TODO: Consider allowing for an error block to customize this
         # response.
         actor.tell "That's not a valid selection."
       else
-        return if @finish.nil?
-        @data.index = index - 1
-        @data.selection = @data.options[index - 1]
-        @finish.call actor, data
+        data.next_cue ||= :active
+        if !@finish.nil?
+          @finish.call actor, data
+        end
       end
     end
   end
