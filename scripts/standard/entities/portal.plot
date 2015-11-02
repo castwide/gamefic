@@ -17,12 +17,12 @@ class Gamefic::Portal < Gamefic::Entity
   # Portals have distinct direction and name properties so games can display a
   # bare compass direction for exits, e.g., "south" vs. "the southern door."
   def direction
-    @direction ||= Direction.new(:name => @name)
+    @direction
   end
   def name
     @name || direction.name
   end
   def synonyms
-    "#{super} #{@direction} #{direction.synonyms}"
+    "#{super} #{@direction} #{!direction.nil? ? direction.synonyms : ''}"
   end
 end

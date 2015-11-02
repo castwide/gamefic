@@ -7,7 +7,7 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
       actor.tell "That portal leads nowhere."
     else
       actor.parent = portal.destination
-      actor.tell "You go #{portal.direction}."
+      actor.tell "You go #{portal.direction.nil? ? 'to ' + portal.destination.definitely : portal.direction}."
       actor.perform :look, actor.room
     end
   end
