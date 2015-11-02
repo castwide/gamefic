@@ -25,11 +25,6 @@ Gamefic.Engine = new function() {
 			callback(response);
 		} catch(e) {
 			console.log("Error in Gamefic.Engine: " + e.message);
-			// Make sure the interface isn't rendered unusable by engine errors
-			$.modal.close();
-			$('#controls').removeClass('disabled');
-            $('#controls').find('input').attr('readonly', null);
-			$('#gamefic_command').focus();
 		}
 	}
 	this.save = function(filename, data) {

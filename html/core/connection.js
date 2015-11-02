@@ -148,7 +148,6 @@ Gamefic.Connection = new function() {
 				inputQueue.push(config.command.val());
 			}
 			config.command.val('');
-			$('#gamefic_command').attr('readonly', 'readonly');
 		});
 		var _update = function(response) {
 			config.onUpdate(response);
