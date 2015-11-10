@@ -1,19 +1,18 @@
-respond :leave, Query::Parent.new(Supporter) do |actor, supporter|
-  actor.parent = supporter.parent
-  actor.tell "You get off #{the supporter}."
-end
-
-respond :leave, Query::Parent.new(Receptacle) do |actor, receptacle|
-  actor.parent = receptacle.parent
-  actor.tell "You get out of #{the receptacle}."
-end
-
-respond :leave, Use.parent(Container) do |actor, container|
+respond :leave, Use.parent(Container, :enterable?) do |actor, container|
   if container.open?
     actor.proceed
   else
     actor.tell "#{The container} is closed."
   end
+end
+
+respond :leave, Use.parent do |actor, thing|
+  actor.tell "There's no way out of #{the thing}."
+end
+
+respond :leave, Use.parent(Enterable, :enterable?) do |actor, thing|
+  actor.tell "#{you.pronoun.Subj} #{you.verb[thing.leave_verb]} #{the thing}."
+  actor.parent = thing.parent
 end
 
 respond :leave, Query::Parent.new(Room) do |actor, room|

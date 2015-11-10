@@ -4,9 +4,9 @@ describe "Leave Action" do
     @plot.require 'standard'
     @room = @plot.make Room, :name => 'room'
     @character = @plot.make Character, :name => 'character', :parent => @room
-    @supporter = @plot.make Supporter, :name => 'supporter', :parent => @room
-    @receptacle = @plot.make Receptacle, :name => 'receptacle', :parent => @room
-    @container = @plot.make Container, :name => 'container', :parent => @room
+    @supporter = @plot.make Supporter, :name => 'supporter', :parent => @room, :enterable => true
+    @receptacle = @plot.make Receptacle, :name => 'receptacle', :parent => @room, :enterable => true
+    @container = @plot.make Container, :name => 'container', :parent => @room, :enterable => true
     @entity = @plot.make Entity, :name => 'entity', :parent => @room
   end
   it "leaves a supporter" do

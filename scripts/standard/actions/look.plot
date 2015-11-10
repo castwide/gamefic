@@ -8,7 +8,7 @@ respond :look, Query::Self.new do |actor, _|
   actor.perform :inventory
 end
 
-respond :look, Query::Room.new(Room) do |actor, room|
+respond :look, Use.room do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description
   with_locales = []
