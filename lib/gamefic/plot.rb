@@ -59,6 +59,7 @@ module Gamefic
     def post_initialize
       # TODO: Should this method be required by extended classes?
     end
+    # @return [Array]
     def entities
       @entities.clone
     end

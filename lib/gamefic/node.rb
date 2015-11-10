@@ -6,10 +6,9 @@ end
 module Gamefic
 
   module Node
+    # @return [Array]
     def children
-      if @children.nil?
-        @children = Array.new
-      end
+      @children ||= []
       @children.clone
     end
     def flatten
