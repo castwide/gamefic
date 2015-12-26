@@ -12,11 +12,11 @@ respond :enter, Use.siblings(Enterable, Openable, :enterable?) do |actor, contai
 end
 
 respond :enter, Use.siblings do |actor, thing|
-  actor.tell "#{The thing} can't accommodate #{you.pronoun.obj}."
+  actor.tell "#{The thing} #{you.contract "can not"} accommodate #{you.pronoun.obj}."
 end
 
 respond :enter, Use.parent do |actor, container|
-  actor.tell "You're already in #{the container}."
+  actor.tell "#{you.contract(you.pronoun.subj + ' ' + you.verb.be).cap_first} already in #{the container}."
 end
 
 respond :enter, Use.parent(Supporter) do |actor, supporter|
@@ -24,7 +24,7 @@ respond :enter, Use.parent(Supporter) do |actor, supporter|
 end
 
 respond :enter, Use.text do |actor, text|
-  actor.tell "You don't see any \"#{text}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see any \"#{text}\" here."
 end
 
 interpret "get on :thing", "enter :thing"
