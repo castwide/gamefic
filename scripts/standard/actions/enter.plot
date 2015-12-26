@@ -12,7 +12,7 @@ respond :enter, Use.siblings(Enterable, Openable, :enterable?) do |actor, contai
 end
 
 respond :enter, Use.siblings do |actor, thing|
-  actor.tell "#{The thing} can't accommodate you."
+  actor.tell "#{The thing} can't accommodate #{you.pronoun.obj}."
 end
 
 respond :enter, Use.parent do |actor, container|

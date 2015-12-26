@@ -7,7 +7,7 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
       actor.tell "That portal leads nowhere."
     else
       actor.parent = portal.destination
-      actor.tell "You go #{portal.direction.nil? ? 'to ' + portal.destination.definitely : portal.direction}."
+      actor.tell "#{you.pronoun.Obj} go #{portal.direction.nil? ? 'to ' + portal.destination.definitely : portal.direction}."
       actor.perform :look, actor.room
     end
   end
@@ -29,7 +29,7 @@ respond :go, Query::Reachable.new(Door, :closed?) do |actor, door|
 end
 
 respond :go, Query::Text.new() do |actor, string|
-  actor.tell "You don't see any exit \"#{string}\" from here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see any exit \"#{string}\" from here."
 end
 
 respond :go, Use.text do |actor, text|

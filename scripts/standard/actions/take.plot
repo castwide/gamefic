@@ -12,7 +12,7 @@ end
 
 respond :take, Use.visible do |actor, thing|
   if actor.parent.kind_of?(Supporter) and actor.parent != thing.parent and actor.parent != thing.parent.parent
-    actor.tell "You can't reach it from #{the actor.parent}."
+    actor.tell "#{you.pronoun.Subj} can't reach it from #{the actor.parent}."
   else
     actor.proceed
   end
@@ -24,23 +24,23 @@ end
 
 respond :take, Use.reachable(Entity, :portable?) do |actor, thing|
   if thing.parent == actor
-    actor.tell "You're already carrying #{the thing}."
+    actor.tell "#{you.contract(you.pronoun.subj + ' are').cap_first} already carrying #{the thing}."
   else
     if actor.parent != thing.parent
-      actor.tell "You take #{the thing} from #{the thing.parent}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{the thing} from #{the thing.parent}."
     else
-      actor.tell "You take #{the thing}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{the thing}."
     end
     thing.parent = actor
   end
 end
 
 respond :take, Use.reachable(Gamefic::Rubble) do |actor, rubble|
-  actor.tell "You don't have any use for #{the rubble}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} have any use for #{the rubble}."
 end
 
 respond :take, Use.text do |actor, text|
-  actor.tell "You don't see any \"#{text}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see any \"#{text}\" here."
 end
 
 respond :take, Use.many_visible do |actor, things|

@@ -29,8 +29,8 @@ module Gamefic::Grammar
         "do not" => "don't",
         "does not" => "doesn't"
       }
-      src = pronoun.subj + " " + verb.send(words)
-      @contractions[src] || src
+      #src = verb.send(words)
+      @contractions[words] || src
     end
   end
 end
