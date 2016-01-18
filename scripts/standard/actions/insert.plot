@@ -1,12 +1,12 @@
 require 'standard'
 
 respond :insert, Use.visible, Use.reachable do |actor, thing, target|
-  actor.tell "You can't put #{the thing} inside #{the target}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} put #{the thing} inside #{the target}."
 end
 
 respond :insert, Use.visible, Use.reachable(Receptacle) do |actor, thing, receptacle|
   if actor.auto_takes?(thing)
-    actor.tell "You put #{the thing} in #{the receptacle}."
+    actor.tell "#{you.pronoun.Subj} put #{the thing} in #{the receptacle}."
     thing.parent = receptacle
   end
 end
@@ -20,11 +20,11 @@ respond :insert, Use.visible, Use.reachable(Container) do |actor, thing, contain
 end
 
 respond :insert, Use.visible, Use.text do |actor, thing, container|
-  actor.tell "You don't see anything called \"#{container}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see anything called \"#{container}\" here."
 end
 
 respond :insert, Use.text, Use.visible do |actor, thing, container|
-  actor.tell "You don't see anything called \"#{thing}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see anything called \"#{thing}\" here."
 end
 
 respond :insert, Use.text, Use.text do |actor, thing, container|
@@ -34,7 +34,7 @@ end
 respond :insert, Use.text("all", "everything"), Use.reachable(Receptacle) do |actor, text, receptacle|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
-    actor.tell "You're not carrying anything to put in #{the receptacle}."
+    actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.be + ' not'} carrying anything to put in #{the receptacle}."
   else
     inserted = []
     children.each { |child|
@@ -46,7 +46,7 @@ respond :insert, Use.text("all", "everything"), Use.reachable(Receptacle) do |ac
       end
     }
     if inserted.length > 0
-      actor.tell "You put #{inserted.join_and} in #{the receptacle}."
+      actor.tell "#{you.pronoun.Subj} put #{inserted.join_and} in #{the receptacle}."
     end
   end
 end
@@ -62,7 +62,7 @@ respond :insert, Use.many_children, Use.reachable(Receptacle) do |actor, childre
     end
   }
   if inserted.length > 0
-    actor.tell "You put #{inserted.join_and} in #{the receptacle}."
+    actor.tell "#{you.pronoun.Subj} put #{inserted.join_and} in #{the receptacle}."
   end
 end
 

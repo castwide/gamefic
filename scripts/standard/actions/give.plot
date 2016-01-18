@@ -12,7 +12,7 @@ respond :give, Query::Reachable.new, Query::Children.new do |actor, character, g
 end
 
 respond :give, Query::Reachable.new, Query::Reachable.new do |actor, character, gift|
-  actor.tell "You don't have #{the gift}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} have #{the gift}."
 end
 
 respond :give, Query::Reachable.new(Character), Query::Children.new do |actor, character, gift|
@@ -20,7 +20,7 @@ respond :give, Query::Reachable.new(Character), Query::Children.new do |actor, c
 end
 
 respond :give, Query::Text.new, Query::Children.new do |actor, character, gift|
-  actor.tell "You don't see any \"#{character}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see any \"#{character}\" here."
 end
 
 xlate "give :gift to :character", "give :character :gift"

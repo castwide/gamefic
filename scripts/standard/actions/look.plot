@@ -1,6 +1,6 @@
 respond :look, Use.parent(Supporter) do |actor, supporter|
   actor.tell supporter.description
-  actor.tell "You are currently on #{the supporter}."
+  actor.tell "#{you.pronoun.Subj} are currently on #{the supporter}."
 end
 
 respond :look, Query::Self.new do |actor, _|
@@ -34,7 +34,7 @@ respond :look, Use.room do |actor, room|
     end
   }
   if itemsum.length > 0
-    actor.tell "You see #{itemsum.join_and}."
+    actor.tell "#{you.pronoun.Subj} #{you.verb.see} #{itemsum.join_and}."
   end
   with_locales.each { |entity|
     actor.tell entity.locale_description
@@ -54,7 +54,7 @@ respond :look, Use.room do |actor, room|
     end
   end
   if actor.parent.kind_of?(Supporter)
-    actor.tell "You are on #{the actor.parent}."
+    actor.tell "#{you.pronoun.Subj} #{you.verb.be} on #{the actor.parent}."
     actor.parent.children.that_are_not(actor).each { |s|
       actor.tell "#{A s} is on #{the actor.parent}."
     }

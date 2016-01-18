@@ -1,10 +1,10 @@
 respond :drop, Query::Visible.new() do |actor, thing|
-  actor.tell "You're not carrying #{the thing}."
+  actor.tell "#{you.contract you.pronoun.Subj + ' ' + you.verb.be} not carrying #{the thing}."
 end
 
 respond :drop, Query::Children.new() do |actor, thing|
   thing.parent = actor.parent
-  actor.tell "You drop #{the thing}."
+  actor.tell "#{you.pronoun.Subj} drop #{the thing}."
 end
 
 respond :drop, Use.many_children do |actor, things|
@@ -18,14 +18,14 @@ respond :drop, Use.many_children do |actor, things|
     end
   }
   if dropped.length > 0
-    actor.tell "You drop #{dropped.join_and}."
+    actor.tell "#{you.pronoun.Subj} drop #{dropped.join_and}."
   end
 end
 
 respond :drop, Use.text("all", "everything") do |actor, text|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
-    actor.tell "You don't have anything to drop."
+    actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} have anything to drop."
   else
     dropped = []
     children.each { |child|
@@ -37,7 +37,7 @@ respond :drop, Use.text("all", "everything") do |actor, text|
       end
     }
     if dropped.length > 0
-      actor.tell "You drop #{dropped.join_and}."
+      actor.tell "#{you.pronoun.Subj} drop #{dropped.join_and}."
     end
   end
 end
@@ -45,7 +45,7 @@ end
 respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.children do |actor, text1, text2, exception|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
-    actor.tell "You don't have anything to drop."
+    actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} have anything to drop."
   else
     dropped = []
     children.each { |child|
@@ -58,7 +58,7 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.chi
       end
     }
     if dropped.length > 0
-      actor.tell "You drop #{dropped.join_and}."
+      actor.tell "#{you.pronoun.Subj} drop #{dropped.join_and}."
     end
   end
 end
@@ -70,7 +70,7 @@ end
 respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.many_children do |actor, text1, text2, exceptions|
   children = actor.children.that_are_not(:attached?)
   if children.length == 0
-    actor.tell "You don't have anything to drop."
+    actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} have anything to drop."
   else
     dropped = []
     children.each { |child|
@@ -83,7 +83,7 @@ respond :drop, Use.text("all", "everything"), Use.text("but", "except"), Use.man
       end
     }
     if dropped.length > 0
-      actor.tell "You drop #{dropped.join_and}."
+      actor.tell "#{you.pronoun.Subj} drop #{dropped.join_and}."
     end
   end
 end

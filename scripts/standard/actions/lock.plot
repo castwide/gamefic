@@ -1,9 +1,9 @@
 respond :lock, Query::Text.new() do |actor, string|
-  actor.tell "You don't see any \"#{string}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any \"#{string}\" here."
 end
 
 respond :lock, Query::Reachable.new() do |actor, thing|
-  actor.tell "You can't lock #{the thing}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} lock #{the thing}."
 end
 
 respond :lock, Query::Reachable.new(Lockable, :has_lock_key?) do |actor, container|
@@ -25,9 +25,9 @@ respond :lock, Query::Reachable.new(Lockable, :has_lock_key?) do |actor, contain
         end
       end
       if key.nil?
-        actor.tell "You don't have any way to lock #{the container}."
+        actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} have any way to lock #{the container}."
       else
-        actor.tell "You lock #{the container} with #{the key}."
+        actor.tell "#{you.pronoun.Subj} #{you.verb.lock} #{the container} with #{the key}."
         container.locked = true
       end
     #else
@@ -46,10 +46,10 @@ respond :lock, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children.n
       #else
       #  actor.perform :lock, container
       #end
-      actor.tell "You lock #{the container} with #{the key}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.lock} #{the container} with #{the key}."
       container.locked = true
     else
-      actor.tell "You can't lock #{the container} with #{the key}."
+      actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} lock #{the container} with #{the key}."
     end
   else
     actor.tell "It's already locked."
