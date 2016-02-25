@@ -1,5 +1,5 @@
 respond :use, Query::Reachable.new do |actor, tool|
-  actor.tell "I don't know how. (A more specific command might work.)"
+  actor.tell "I don't know how to use #{the tool}. (A more specific command might work.)"
 end
 
 respond :use, Gamefic::Query::Text.new do |actor, thing|
@@ -19,7 +19,7 @@ respond :use, Query::Text.new, Query::Reachable.new do |actor, tool, object|
 end
 
 respond :use, Query::Children.new, Query::Reachable.new do |actor, tool, object|
-  actor.tell "I don't know how. (A more specific command might work.)"
+  actor.tell "I don't know how to use #{the tool} on #{the object}. (A more specific command might work.)"
 end
 
 xlate "use :tool on :object", "use :tool :object"

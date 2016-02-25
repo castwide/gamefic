@@ -1,9 +1,9 @@
 respond :unlock, Query::Text.new() do |actor, string|
-  actor.tell "You don't see any \"#{string}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any \"#{string}\" here."
 end
 
 respond :unlock, Query::Reachable.new() do |actor, thing|
-  actor.tell "You can't unlock #{the thing}."
+  actor.tell "#{you.pronoun.Subj} can't unlock #{the thing}."
 end
 
 respond :unlock, Query::Reachable.new(Lockable) do |actor, container|
@@ -25,9 +25,9 @@ respond :unlock, Query::Reachable.new(Lockable) do |actor, container|
         end
       end
       if key.nil?
-        actor.tell "You don't have any way to unlock #{the container}."
+        actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} have any way to unlock #{the container}."
       else
-        actor.tell "You unlock #{the container} with #{the key}."
+        actor.tell "#{you.pronoun.Subj} #{you.verb.unlock} #{the container} with #{the key}."
         container.locked = false
       end
     #takeelse
@@ -37,7 +37,7 @@ respond :unlock, Query::Reachable.new(Lockable) do |actor, container|
 end
 
 respond :unlock, Query::Reachable.new(Lockable), Query::Text.new do |actor, container, thing|
-  actor.tell "You don't have anything called '#{thing}.'"
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} have anything called '#{thing}.'"
 end
 
 respond :unlock, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
@@ -51,7 +51,7 @@ respond :unlock, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children
         actor.perform :unlock, container
       #end
     else
-      actor.tell "You can't unlock #{the container} with #{the key}."
+      actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} unlock #{the container} with #{the key}."
     end
   else
     actor.tell "#{The container} isn't locked."

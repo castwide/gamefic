@@ -1,5 +1,5 @@
 respond :talk do |actor|
-  actor.tell "You talk to yourself."
+  actor.tell "#{you.pronoun.Subj} #{you.verb.talk} to #{you.pronoun.reflex}."
 end
 
 respond :talk, Query::Self.new do |actor, yourself|

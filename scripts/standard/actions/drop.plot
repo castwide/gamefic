@@ -102,7 +102,7 @@ respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, thin
   filtered = things.clone
   filtered.delete_if{|t| t.parent != actor}
   if filtered.length == 0
-    actor.tell "You're not carrying anything that matches your terms."
+    actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.be + ' not')} carrying anything that matches your terms."
   else
     dropped = []
     things.each { |thing|
@@ -116,7 +116,7 @@ respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, thin
       end
     }
     if dropped.length > 0
-      actor.tell "You drop #{dropped.join_and}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.drop} #{dropped.join_and}."
     end
   end
 end

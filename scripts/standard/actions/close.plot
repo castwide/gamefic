@@ -1,11 +1,9 @@
-require 'standard'
-
 respond :close, Query::Text.new() do |actor, string|
-  actor.tell "#{you.pronoun.Subj} don't see any \"#{string}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any \"#{string}\" here."
 end
 
 respond :close, Query::Reachable.new() do |actor, thing|
-  actor.tell "#{you.pronoun.Subj} can't close #{the thing}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} close #{the thing}."
 end
 
 respond :close, Query::Reachable.new(Gamefic::Openable) do |actor, container|
