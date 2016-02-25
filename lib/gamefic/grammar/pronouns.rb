@@ -15,6 +15,9 @@ module Gamefic::Grammar
     def poss
       Pronouns.get_pronoun_set(@object)[2]
     end
+    def reflex
+      Pronouns.get_pronoun_set(@object)[3]
+    end
     def Subj
       subj.cap_first
     end
@@ -23,6 +26,9 @@ module Gamefic::Grammar
     end
     def Poss
       obj.cap_first
+    end
+    def Reflex
+      reflex.cap_first
     end
     def self.get_pronoun_set(obj)
       set = Pronouns.sets["#{obj.person}"]
@@ -42,17 +48,17 @@ module Gamefic::Grammar
     def self.sets
       if @sets.nil?
         @sets = {}
-        @sets["1:singular"] = ["I", "me", "my"]
-        @sets["2"] = ["you", "you", "your"]
-        @sets["3:singular:male"] = ["he", "him", "his"]
-        @sets["3:singular:female"] = ["she", "her", "her"]
+        @sets["1:singular"] = ["I", "me", "my", "myself"]
+        @sets["2"] = ["you", "you", "your", "yourself"]
+        @sets["3:singular:male"] = ["he", "him", "his", "himself"]
+        @sets["3:singular:female"] = ["she", "her", "her", "herself"]
         # "other" refers to a person or living being that is neither
         # male or female or for whom gender is unspecified. It's
         # typically used to avoid referring to a person as "it."
-        @sets["3:singular:other"] = ["they", "them", "their"]
-        @sets["3:singular:neutral"] = ["it", "it", "its"]
-        @sets["1:plural"] = ["we", "us", "our"]
-        @sets["3:plural"] = ["they", "them", "their"]
+        @sets["3:singular:other"] = ["they", "them", "their", "themselves"]
+        @sets["3:singular:neutral"] = ["it", "it", "its", "itself"]
+        @sets["1:plural"] = ["we", "us", "our", "ourselves"]
+        @sets["3:plural"] = ["they", "them", "their", "themselves"]
       end
       @sets
     end
