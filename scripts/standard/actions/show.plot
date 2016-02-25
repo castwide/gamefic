@@ -7,7 +7,7 @@ respond :show, Use.reachable, Use.children do |actor, witness, thing|
 end
 
 respond :show, Use.children, Use.text do |actor, thing, text|
-  actor.tell "You don't see any \"#{text}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any \"#{text}\" here."
 end
 
 interpret "show :thing to :character", "show :character :thing"

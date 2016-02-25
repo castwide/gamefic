@@ -1,5 +1,5 @@
 respond :take, Use.reachable do |actor, thing|
-  actor.tell "You can't take #{the thing}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} take #{the thing}."
 end
 
 respond :take, Use.visible do |actor, thing|
@@ -60,7 +60,7 @@ respond :take, Use.many_visible do |actor, things|
       end
     }
     if taken.length > 0
-      actor.tell "You take #{taken.join_and}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{taken.join_and}."
     end
   end
 end
@@ -83,7 +83,7 @@ respond :take, Use.text("all", "everything") do |actor, text|
       end
     }
     if taken.length > 0
-      actor.tell "You take #{taken.join_and}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{taken.join_and}."
     end
   end
 end
@@ -107,7 +107,7 @@ respond :take, Use.text("all", "everything"), Use.text("but", "except"), Use.vis
       end
     }
     if taken.length > 0
-      actor.tell "You take #{taken.join_and}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{taken.join_and}."
     end
   end
 end
@@ -120,7 +120,7 @@ respond :take, Use.any_expression, Use.ambiguous_visible(:portable?) do |actor, 
   filtered = things.clone
   filtered.delete_if{|t| t.parent == actor}
   if filtered.length == 0
-    actor.tell "There's nothing to take that matches your terms. (You're already carrying #{things.join_and}.)"
+    actor.tell "There's nothing to take that matches your terms. (#{you.contract you.pronoun.Subj + ' are'} already carrying #{things.join_and}.)"
   #elsif filtered.length == 1
   #  actor.proceed
   else
@@ -134,7 +134,7 @@ respond :take, Use.any_expression, Use.ambiguous_visible(:portable?) do |actor, 
       end
     }
     if taken.length > 0
-      actor.tell "You take #{taken.join_and}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{taken.join_and}."
     end
   end
 end
@@ -206,13 +206,12 @@ respond :take, Use.text("all", "everything"), Use.from_expression, Use.reachable
       end
     }
     if taken.length > 0
-      actor.tell "You take #{taken.join_and} from #{the receptacle}."
+      actor.tell "#{you.pronoun.Subj} #{you.verb.take} #{taken.join_and} from #{the receptacle}."
     end
   end
 end
 
 respond :take, Use.text("all","everything"), Use.reachable(Container) do |actor, text, container|
-  actor.tell "Here"
   if container.open?
     actor.proceed
   else

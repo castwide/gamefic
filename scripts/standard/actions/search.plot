@@ -27,7 +27,7 @@ end
 respond :search, Use.reachable do |actor, entity|
   attached = entity.children.that_are(:attached?).that_are(Container)
   if attached.length > 1
-    actor.tell "You can search #{attached.join_or}"
+    actor.tell "#{you.pronoun.Subj} #{you.verb.can} search #{attached.join_or}"
   elsif attached.length == 1
     actor.perform :search, attached[0]
   else
