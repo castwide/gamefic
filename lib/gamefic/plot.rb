@@ -159,9 +159,9 @@ module Gamefic
       # get it like player.cue nil.
       if player.scene.nil?
         cue player, default_scene
+        ready
+        update
       end
-      ready
-      update
     end
     
     # Prepare the Plot for the next turn of gameplay.
