@@ -75,3 +75,5 @@ xlate "nw", "go northwest"
 xlate "ne", "go northeast"
 xlate "sw", "go southwest"
 xlate "se", "go southeast"
+
+interpret "go to :place", "go :place"
