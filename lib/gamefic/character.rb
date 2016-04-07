@@ -112,7 +112,7 @@ module Gamefic
     #     # This version will be executed first because it was implemented last
     #     actor.tell "You eat something."
     #     actor[:has_eaten] # Will be false on the first run
-    #     actor.proceed # Drop down to the previous
+    #     actor.proceed # Execute the previous implementation
     #     actor[:has_eaten] #=> true
     #   end
     #
