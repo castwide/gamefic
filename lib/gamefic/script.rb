@@ -1,5 +1,8 @@
 module Gamefic
 
+  # Script objects encapsulate data about files that have been evaluated
+  # via Plot#require.
+  #
   class Script
     attr_reader :absolute, :relative, :base, :read
     def initialize(filename, directory)
