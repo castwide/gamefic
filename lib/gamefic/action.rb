@@ -1,9 +1,12 @@
 module Gamefic
 
+  # Actions manage the execution of commands that Characters can perform.
+  # 
   class Action
     attr_reader :order_key, :queries
     attr_writer :meta
     @@order_key_seed = 0
+    
     def initialize(story, command, *queries, &proc)
       if !command.kind_of?(Symbol)
         command = command.to_s
@@ -27,9 +30,19 @@ module Gamefic
         story.send :add_action, self
       end
     end
+    
     def block
       @proc
     end
+    
+    # Get the specificity of the Action.
+    # Specificity indicates how narrowly the Action's queries filter matches.
+    # Actions with higher specificity are given higher priority when searching
+    # for the Action that matches a character command. For example, an Action
+    # with a Query that filters for a specific class of Entity has a higher
+    # specificity than an Action with a Query that accepts arbitrary text.
+    #
+    # @return [Fixnum]
     def specificity
       spec = 0
       if verb.nil?
@@ -46,18 +59,27 @@ module Gamefic
       }
       return spec
     end
+    
+    # Get the verb associated with this Action.
+    # The verb is represented by a Symbol in the imperative form, such as
+    # :take or :look_under.
+    #
+    # @return [Symbol] The Symbol representing the verb.
     def verb
       @command
     end
+    
+    # @deprecated Use {#verb} instead.
     def command
       @command
     end
-    def key
-      @key
-    end
+    
+    # Execute this Action. This method is typically called by the Plot when
+    # a Character performs a command.
     def execute *args
       @proc.call(*args)
     end
+    
     def signature
       sig = ["#{@command}"]
       @queries.each { |q|
@@ -65,21 +87,19 @@ module Gamefic
       }
       "#{sig.join(', ').gsub(/Gamefic::(Query::)?/, '')}(#{specificity})"
     end
+    
+    # Is this a meta Action?
+    # If an Action is flagged meta, it usually means that it provides
+    # information about the game or manages some aspect of the user interface.
+    # It shouldn't represent an Action that the player's character performs in
+    # the game world. Examples include Actions to display credits or
+    # instructions.
+    #
+    # @return [Boolean]
     def meta?
       @meta ||= false
     end
-    private
-      def self.explode(entity)
-        arr = Array.new
-        arr.push entity
-        cls = entity.class
-        while cls != Object
-          arr.push cls
-          cls = cls.superclass
-        end
-        arr.push String
-        arr.push nil
-      end
+    
   end
 
 end
