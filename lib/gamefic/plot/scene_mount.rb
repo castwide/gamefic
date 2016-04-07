@@ -180,6 +180,9 @@ module Gamefic
     
     # This is functionally identical to #cue, but it also raises an
     # exception if the selected scene is not a Concluded state.
+    #
+    # @param actor [Character] The character being cued
+    # @param key [Symbol] The name of the scene
     def conclude actor, key
       key = :concluded if key.nil?
       manager = scene_managers[key]
