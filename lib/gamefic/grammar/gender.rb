@@ -5,7 +5,7 @@ module Gamefic::Grammar
     attr_writer :gender
     def gender
       # Supported values are "male", "female", "other", and "neutral"
-      @gender ||= "neutral"
+      @gender ||= (self.kind_of?(Character) ? "other" : "neutral")
     end
   end
 end
