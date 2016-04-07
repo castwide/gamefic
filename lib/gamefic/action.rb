@@ -31,10 +31,6 @@ module Gamefic
       end
     end
     
-    def block
-      @proc
-    end
-    
     # Get the specificity of the Action.
     # Specificity indicates how narrowly the Action's queries filter matches.
     # Actions with higher specificity are given higher priority when searching
