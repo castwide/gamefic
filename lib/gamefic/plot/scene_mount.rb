@@ -20,6 +20,8 @@ module Gamefic
         config.finish(&block)
       end
     end
+    # @yieldparam [Character]
+    # @yieldparam [YesOrNoSceneData]
     def yes_or_no key, prompt = nil, &block
       manager = YesOrNoSceneManager.new do |config|
         config.prompt = prompt
@@ -63,6 +65,7 @@ module Gamefic
       end
       scene_managers[key] = manager
     end
+    # @yieldparam [Character]
     def conclusion key, &block
       manager = ConcludedSceneManager.new do |config|
         config.start(&block)
