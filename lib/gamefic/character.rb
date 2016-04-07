@@ -15,16 +15,43 @@ module Gamefic
       @buffer_stack = 0
       @buffer = ""
     end
+    
+    # Connect a User.
+    #
+    # @param user [User]
     def connect(user)
       @user = user
     end
+    
+    # Disconnect the current User.
+    #
     def disconnect
       # TODO: We might need some cleanup here. Like, move the character out of the game, or set a timeout to allow dropped users to reconnect... figure it out.
       @user = nil
     end
+    
+    # Perform a command.
+    # The command can be specified as a String or a set of tokens. Either form
+    # should yield the same result, but using tokens can yield better
+    # performance since it doesn't need to parse the command first.
+    #
+    # The command will be executed immediately regardless of game state.
+    #
+    # @example Send a command as a string
+    #   character.perform "take the key"
+    #
+    # @example Send a command as a set of tokens
+    #   character.perform :take, @key
+    #
     def perform(*command)
       Director.dispatch(self, *command)
     end
+    
+    # Quietly perform a command.
+    # This method executes the command exactly as #perform does, except it
+    # buffers the resulting output instead of sending it to the user.
+    #
+    # @return [String] The output that resulted from performing the command.
     def quietly(*command)
       if @buffer_stack == 0
         @buffer = ""
@@ -34,6 +61,12 @@ module Gamefic
       @buffer_stack -= 1
       @buffer
     end
+    
+    # Send a message to the Character.
+    # This method will automatically wrap the message in HTML paragraphs.
+    # To send a message without paragraph formatting, use #stream instead.
+    #
+    # @param message [String]
     def tell(message)
       if user != nil and message.to_s != ''
         if @buffer_stack > 0
@@ -48,29 +81,46 @@ module Gamefic
         end
       end
     end
+    
+    # Send a message to the Character as raw text.
+    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
+    #
+    # @param message [String]
     def stream(message)
       user.stream.send message
     end
+    
     def destroy
       if @user != nil
         @user.quit
       end
       super
     end
-    #def update
-    #  puts "Character update"
-    #  super
-    #  if (line = queue.shift)
-    #    @scene.finish self, line
-    #  end
-    #end
+    
+    # Proceed to the next Action in the current stack.
+    # This method is typically used in Action blocks to cascade through
+    # multiple implementations of the same verb.
+    #
+    # @example Proceed through two implementations of a verb
+    #   introduction do |actor|
+    #     actor[:has_eaten] = false # Initial value
+    #   end
+    #   respond :eat do |actor|
+    #     actor[:has_eaten] = true
+    #   end
+    #   respond :eat do |actor|
+    #     # This version will be executed first because it was implemented last
+    #     actor.tell "You eat something."
+    #     actor[:has_eaten] # Will be false on the first run
+    #     actor.proceed # Drop down to the previous
+    #     actor[:has_eaten] #=> true
+    #   end
+    #
     def proceed
       return if delegate_stack.last.nil?
       delegate_stack.last.proceed
     end
-    def on_turn
-      
-    end
+    
     private
     def delegate_stack
       @delegate_stack ||= []
