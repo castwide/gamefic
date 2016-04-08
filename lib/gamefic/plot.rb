@@ -17,7 +17,7 @@ module Gamefic
     autoload :QueryMount, 'gamefic/plot/query_mount'
     #autoload :ArticleMount, 'gamefic/plot/article_mount'
     #autoload :YouMount, 'gamefic/plot/you_mount'
-    attr_reader :commands, :imported_scripts, :rules, :asserts, :source, :delegate_stack
+    attr_reader :commands, :imported_scripts, :rules, :asserts, :source
     attr_accessor :default_scene
     include Stage
     # TODO This include is only here to make the module's methods visible in the IDE.
@@ -41,7 +41,6 @@ module Gamefic
       @players = Array.new
       @asserts = Hash.new
       @default_scene = :active
-      @delegate_stack = []
       post_initialize
     end
     
