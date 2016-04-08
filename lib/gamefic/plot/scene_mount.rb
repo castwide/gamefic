@@ -100,7 +100,7 @@ module Gamefic
     end
     
     # Create a generic scene.
-    # After the scene is complete, the character will automatically progress to the next cue.
+    # After the scene is complete, it will automatically start the next cue.
     #
     # @param [Symbol] A unique name for the scene.
     # @yieldparam [Character]
@@ -111,6 +111,7 @@ module Gamefic
           data.next_cue = :active
           block.call(actor, data) if !block.nil?
           cue actor, data.next_cue
+          actor.scene.start actor
         end
         # Since generic scenes always cue a new scene, there's no reason to
         # define a finish block.
