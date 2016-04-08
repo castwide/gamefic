@@ -307,11 +307,11 @@ module Gamefic
       }      
     end
     def add_action(action)
-      if (@commands[action.command] == nil)
-        @commands[action.command] = Array.new
+      if (@commands[action.verb] == nil)
+        @commands[action.verb] = Array.new
       end
-      @commands[action.command].unshift action
-      @commands[action.command].sort! { |a, b|
+      @commands[action.verb].unshift action
+      @commands[action.verb].sort! { |a, b|
         if a.specificity == b.specificity
           # Newer action takes precedence
           b.order_key <=> a.order_key
@@ -320,7 +320,7 @@ module Gamefic
           b.specificity <=> a.specificity
         end
       }
-      user_friendly = action.command.to_s.gsub(/_/, ' ')
+      user_friendly = action.verb.to_s.gsub(/_/, ' ')
       args = Array.new
       used_names = Array.new
       action.queries.each { |c|
@@ -334,10 +334,10 @@ module Gamefic
         user_friendly += " #{new_name}"
         args.push new_name
       }
-      Syntax.new self, user_friendly.strip, "#{action.command} #{args.join(' ')}"
+      Syntax.new self, user_friendly.strip, "#{action.verb} #{args.join(' ')}"
     end
     def rem_action(action)
-      @commands[action.command].delete(action)
+      @commands[action.verb].delete(action)
     end
     def rem_syntax(syntax)
       @syntaxes.delete syntax

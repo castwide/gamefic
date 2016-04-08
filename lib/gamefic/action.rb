@@ -7,27 +7,27 @@ module Gamefic
     attr_writer :meta
     @@order_key_seed = 0
     
-    def initialize(story, command, *queries, &proc)
-      if !command.kind_of?(Symbol)
-        command = command.to_s
-        command = nil if command == ''
+    def initialize(plot, verb, *queries, &proc)
+      if !verb.kind_of?(Symbol)
+        verb = verb.to_s
+        verb = nil if verb == ''
       end
-      @plot = story
+      @plot = plot
       @order_key = @@order_key_seed
       @@order_key_seed += 1
       @proc = proc
-      if (command.kind_of?(Symbol) == false and !command.nil?)
-        raise "Action commands must be symbols"
+      if (verb.kind_of?(Symbol) == false and !verb.nil?)
+        raise "Action verbs must be symbols"
       end
       if !@proc.nil?
         if (queries.length + 1 != @proc.arity) and (queries.length == 0 and @proc.arity != -1)
           raise "Number of queries is not compatible with proc arguments"
         end
       end
-      @command = command
+      @verb = verb
       @queries = queries
-      if !story.nil?
-        story.send :add_action, self
+      if !plot.nil?
+        plot.send :add_action, self
       end
     end
     
@@ -62,12 +62,7 @@ module Gamefic
     #
     # @return [Symbol] The Symbol representing the verb.
     def verb
-      @command
-    end
-    
-    # @deprecated Use {#verb} instead.
-    def command
-      @command
+      @verb
     end
     
     # Execute this Action. This method is typically called by the Plot when
@@ -77,7 +72,7 @@ module Gamefic
     end
     
     def signature
-      sig = ["#{@command}"]
+      sig = ["#{@verb}"]
       @queries.each { |q|
         sig.push q.signature
       }
