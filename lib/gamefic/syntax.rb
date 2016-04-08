@@ -4,6 +4,7 @@ module Gamefic
     autoload :Match, 'gamefic/syntax/match'
     attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
+    
     def initialize plot, template, *command
       command = command.join(' ')
       words = template.split_words
@@ -52,6 +53,8 @@ module Gamefic
         plot.send :add_syntax, self
       end
     end
+    
+    # @return [Syntax::Match]
     def translate text
       m = text.match(@regexp)
       return nil if m.nil?
@@ -65,12 +68,20 @@ module Gamefic
       }
       Syntax::Match.new @verb, arguments
     end
+    
     def signature
       [@regexp, @replace]
     end
+    
     def ==(other)
       signature == other.signature
     end
+    
+    # Get an Array of Syntaxes that match the specified text.
+    #
+    # @param text [String] The text to match.
+    # @param syntaxes [Array<Syntax>] The Syntaxes to search.
+    # @return [Array<Syntax>] The matching Syntaxes.
     def self.match text, syntaxes
       matches = []
       syntaxes.each { |syntax|
