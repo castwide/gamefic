@@ -6,6 +6,7 @@ module Gamefic
   module Plot::SceneMount
     # Get a Hash of SceneManager objects.
     #
+    # @return [Hash<Symbol, SceneManager>]
     def scene_managers
       if @scene_managers.nil?
         @scene_managers ||= {}
@@ -41,12 +42,8 @@ module Gamefic
           if data.answer.nil?
             actor.tell "Please answer Yes or No."
           else
+            data.next_cue ||= :active
             block.call(actor, data)
-            if actor.scene.key == key
-              # TODO: Not sure the :active scene should be hardcoded here, but
-              # YesOrNoSceneData does not have a next_cue property.
-              cue actor, :active
-            end
           end
         end
       end
@@ -67,7 +64,6 @@ module Gamefic
         config.finish do |actor, data|
           data.next_cue ||= :active
           block.call actor, data
-          cue actor, data.next_cue
         end
       end
       scene_managers[key].state = "Prompted"
@@ -85,11 +81,6 @@ module Gamefic
         config.start do |actor, data|
           data.next_cue = :active
           block.call actor, data
-        end
-        config.finish do |actor, data|
-          if actor.scene.key == key
-            cue actor, (data.next_cue || :active)
-          end
         end
       end
       scene_managers[key] = manager
@@ -109,7 +100,7 @@ module Gamefic
     end
     
     # Create a generic scene.
-    # After the scene is complete, the character will automatically progress to :active.
+    # After the scene is complete, the character will automatically progress to the next cue.
     #
     # @param [Symbol] A unique name for the scene.
     # @yieldparam [Character]
@@ -117,8 +108,8 @@ module Gamefic
     def scene key, &block
       scene = SceneManager.new do |manager|
         manager.start do |actor, data|
-          block.call(actor, data)
           data.next_cue = :active
+          block.call(actor, data) if !block.nil?
         end
         manager.finish do |actor, data|
           cue actor, data.next_cue

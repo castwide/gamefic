@@ -191,6 +191,7 @@ module Gamefic
       }
       @players.each { |player|
         update_player player
+        cue player, player.scene.data.next_cue if !player.scene.data.next_cue.nil?
       }
       @update_procs.each { |p|
         p.call
@@ -268,6 +269,7 @@ module Gamefic
       line = player.queue.shift
       if !line.nil?
         player.scene.finish player, line
+        #cue player, player.scene.data.next_cue if !player.scene.data.next_cue.nil?
       end
     end
     def update_player player
