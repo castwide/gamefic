@@ -100,6 +100,8 @@ end
     end
     
     # Start the scene. This method is typically called by the Plot.
+    #
+    # @param actor [Character] The Scene's Character.
     def start actor
       return if @start.nil?
       @data.input = nil
@@ -107,6 +109,11 @@ end
     end
     
     # Finish the scene. This method is typically called by the Plot.
+    # The Finish method is responsible for processing any input received
+    # from players.
+    #
+    # @param actor [Character] The Scene's Character.
+    # @param input [String] Input received from the Character (e.g., a player command).
     def finish actor, input
       @data.next_cue ||= :active
       return if @finish.nil?

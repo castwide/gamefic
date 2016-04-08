@@ -73,6 +73,9 @@ module Gamefic
       Command.new @verb, arguments
     end
     
+    # Get a signature that identifies the form of the Syntax.
+    # Signatures are used to compare Syntaxes to each other.
+    #
     def signature
       [@regexp, @replace]
     end
