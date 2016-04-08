@@ -110,10 +110,10 @@ module Gamefic
         manager.start do |actor, data|
           data.next_cue = :active
           block.call(actor, data) if !block.nil?
-        end
-        manager.finish do |actor, data|
           cue actor, data.next_cue
         end
+        # Since generic scenes always cue a new scene, there's no reason to
+        # define a finish block.
       end
       scene_managers[key] = scene
     end
@@ -155,16 +155,9 @@ module Gamefic
       end
       manager = scene_managers[key]
       if manager.nil?
-        #actor.scene = nil
         raise "No '#{key}' scene found"
       else
         actor.scene = manager.prepare key
-        if actor.scene.state == 'Passive'
-          actor.scene.start actor
-          actor.scene.finish actor, nil
-        end
-        # TODO The plot might be responsible for executing scenes in Plot#update
-        #actor.scene.NOT_A_start actor
       end
       @scene
     end
