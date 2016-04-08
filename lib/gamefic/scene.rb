@@ -99,16 +99,14 @@ end
       @key = key
     end
     
-    # Start the scene. This method is typically called by the Engine that
-    # handles game execution.
+    # Start the scene. This method is typically called by the Plot.
     def start actor
       return if @start.nil?
       @data.input = nil
       @start.call actor, @data
     end
     
-    # Finish the scene. This method is typically called by the Engine that
-    # handles game execution.
+    # Finish the scene. This method is typically called by the Plot.
     def finish actor, input
       @data.next_cue ||= :active
       return if @finish.nil?
