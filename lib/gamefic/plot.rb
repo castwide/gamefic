@@ -36,7 +36,6 @@ module Gamefic
       @player_procs = Array.new
       @working_scripts = Array.new
       @imported_scripts = Array.new
-      @imported_identifiers = Array.new
       @entities = Array.new
       @players = Array.new
       @asserts = Hash.new
