@@ -49,15 +49,15 @@ module Gamefic::Sdk
         test_file = nil
         if File.directory?(path)
           ext = nil
-          ['plot', 'rb'].each { |e|
+          ['plot.rb', 'plot', 'rb'].each { |e|
             if File.file?(path + '/main.' + e)
               ext = e
               break
             end
           }
           raise "#{path}/main.plot does not exist" if ext.nil?
-          if File.file?(path + '/test.plot')
-            test_file = path + '/test.plot'
+          if File.file?(path + '/test.plot.rb')
+            test_file = path + '/test.plot.rb'
           end
           main_file = path + '/main.' + ext
           config = YAML.load(File.read("#{path}/config.yaml"))
@@ -123,7 +123,7 @@ module Gamefic::Sdk
           Dir.mkdir(directory)
         end
         Dir.mkdir(directory + '/scripts')
-        main_rb = File.new(directory + '/main.plot', 'w')
+        main_rb = File.new(directory + '/main.plot.rb', 'w')
         main_rb.write <<EOS
 require 'standard'
 EOS
@@ -131,7 +131,7 @@ EOS
           main_rb.write "require '#{i}'\n"
         }
         main_rb.close
-        test_rb = File.new(directory + '/test.plot', 'w')
+        test_rb = File.new(directory + '/test.plot.rb', 'w')
         test_rb.write <<EOS
 require 'standard/test'
 EOS
