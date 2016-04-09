@@ -1,7 +1,7 @@
 module Gamefic
 
   class Source
-    @@extensions = ['', '.plot', '.rb']
+    @@extensions = ['', '.plot.rb', '.plot', '.rb']
     attr_reader :directories
     attr_accessor :main_dir
     def initialize(*args)

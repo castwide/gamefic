@@ -41,10 +41,4 @@ def method_missing(symbol, *args, &block)
   end
 end
 
-#class Module
-#  def const_missing(symbol)
-#    puts "oops #{symbol}"
-#  end
-#end
-
 require 'main'

@@ -17,7 +17,7 @@ module Gamefic::Sdk
       build_dir = config['build_dir']
       build_path = build_dir
       main = nil
-      ['plot','rb'].each { |e|
+      ['plot.rb', 'plot', 'rb'].each { |e|
         if File.file?(source_dir + '/main.' + e)
           main = source_dir + '/main.' + e
           break
@@ -62,7 +62,7 @@ module Gamefic::Sdk
       imported = []
       
       plot.imported_scripts.each { |script|
-        import_js = "scripts/" + File.dirname(script.relative) + "/" + File.basename(script.relative, File.extname(script.relative)) + ".rb"
+        import_js = "scripts/" + File.dirname(script.relative) + "/" + File.basename(script.relative, File.extname(script.relative)).gsub(/.plot$/, '') + ".rb"
         if !File.exist?(build_dir + "/" + import_js) or File.mtime(build_dir + "/" + import_js) < File.mtime(script.absolute)
           FileUtils.mkdir_p(build_dir + "/scripts/" + File.dirname(script.relative))
           File.open(build_dir + "/" + import_js, "w") do |file|

@@ -208,7 +208,7 @@ module Gamefic
     #
     # @param script [String] The path to the script being evaluated.
     def load script
-      ['', '.plot', '.rb'].each { |ext|
+      ['', '.plot.rb', '.plot', '.rb'].each { |ext|
         if File.exist?(script + ext)
           source.main_dir = File.dirname(script)
           stage File.read(script + ext), script + ext
