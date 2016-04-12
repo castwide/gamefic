@@ -1,4 +1,4 @@
-require 'standard/actions/look'
+script 'standard/actions/look'
 
 respond :look_under, Query::Reachable.new() do |actor, thing|
   actor.tell "There's nothing to see under #{the thing}."

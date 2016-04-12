@@ -25,7 +25,7 @@ module Gamefic
     # the plugin isn't activated.
     include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    expose :require, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players
+    expose :script, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players
     def initialize(source = nil)
       @source = source || Source.new
       @commands = Hash.new
@@ -222,27 +222,21 @@ module Gamefic
     # This method is similar to Kernel#require, except that the script is
     # evaluated within the Plot's context via #stage.
     #
-    # @param script [String] The path to the script being evaluated
-    # @return True if the script was loaded by this call or False if it was already loaded.
-    def require script
-      if script[-1] == "*"
-        source.search(script[0..-2]).each { |file|
-          import file
-        }
+    # @param path [String] The path to the script being evaluated
+    # @return [Boolean] true if the script was loaded by this call or false if it was already loaded.
+    def script path
+      imported_script = source.export(path)
+      if imported_script.nil?
+        raise "Import not found: #{path}"
+      end
+      if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
+        @working_scripts.push imported_script
+        stage imported_script.read, imported_script.absolute
+        @working_scripts.pop
+        imported_scripts.push imported_script
+        true
       else
-        imported_script = source.export(script)
-        if imported_script.nil?
-          raise "Import not found: #{script}"
-        end
-        if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
-          @working_scripts.push imported_script
-          stage imported_script.read, imported_script.absolute
-          @working_scripts.pop
-          imported_scripts.push imported_script
-          true
-        else
-          false
-        end
+        false
       end
     end
     

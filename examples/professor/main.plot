@@ -4,8 +4,8 @@
 # This game demonstrates interaction with characters. The professor has custom
 # responses to questions about his name or the job opening.
 
-require 'standard'
-require 'test'
+script 'standard'
+script 'test'
 
 office = make Room, :name => 'the professor\'s office', :description => 'A cozy room with thick carpet, rich mahogany woodwork, and lots of books.'
 

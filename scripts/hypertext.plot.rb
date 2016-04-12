@@ -1,4 +1,4 @@
-require 'clothing'
+script 'clothing'
 
 module Gamefic::Hypertext
   def self.link command, text = nil

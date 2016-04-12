@@ -1,4 +1,4 @@
-require 'standard/queries/ambiguous_visible'
+script 'standard/queries/ambiguous_visible'
 
 class Gamefic::Query::PluralVisible < Gamefic::Query::AmbiguousVisible
   def execute(subject, description)

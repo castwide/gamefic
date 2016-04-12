@@ -1,4 +1,4 @@
-require 'standard/modules/openable'
+script 'standard/modules/openable'
 
 module Gamefic::Lockable
   include Openable

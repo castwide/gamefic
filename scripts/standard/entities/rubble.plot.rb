@@ -1,4 +1,4 @@
-require 'standard/entities/scenery'
+script 'standard/entities/scenery'
 
 # Rubble is Scenery with slightly modified action responses.
 # Intended for things that might be portable but are useless.

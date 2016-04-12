@@ -1,4 +1,4 @@
-require 'clothing/actions/doff'
-require 'clothing/actions/drop'
-require 'clothing/actions/inventory'
-require 'clothing/actions/wear'
+script 'clothing/actions/doff'
+script 'clothing/actions/drop'
+script 'clothing/actions/inventory'
+script 'clothing/actions/wear'

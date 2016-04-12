@@ -1,1 +1,1 @@
-require 'standard/rules/has-enough-light'
+script 'standard/rules/has-enough-light'

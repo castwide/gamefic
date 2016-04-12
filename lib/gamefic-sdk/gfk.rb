@@ -73,7 +73,7 @@ module Gamefic::Sdk
         if test_file != nil
           plot.load test_file
         end
-        plot.require 'debug'
+        plot.script 'debug'
         engine = Tty::Engine.new plot
         puts "\n"
         engine.run

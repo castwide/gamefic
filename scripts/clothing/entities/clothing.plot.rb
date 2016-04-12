@@ -1,4 +1,4 @@
-require 'standard/entities/item'
+script 'standard/entities/item'
 
 class Gamefic::Clothing < Gamefic::Item
   def worn?

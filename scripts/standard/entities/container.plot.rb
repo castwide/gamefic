@@ -1,4 +1,4 @@
-require 'standard/entities/receptacle'
+script 'standard/entities/receptacle'
 
 class Gamefic::Container < Gamefic::Receptacle
   include Enterable

@@ -1,4 +1,4 @@
-require 'standard/test'
+script 'standard/test'
 
 on_test :me do |actor, queue|
   queue.push "n"

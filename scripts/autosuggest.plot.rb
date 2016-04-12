@@ -1,4 +1,4 @@
-require 'autosuggest/suggestible'
+script 'autosuggest/suggestible'
 
 class Gamefic::Character
   include Suggestible

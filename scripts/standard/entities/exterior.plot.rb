@@ -1,4 +1,4 @@
-require 'standard/entities/room'
+script 'standard/entities/room'
 
 class Gamefic::Exterior < Gamefic::Room
   

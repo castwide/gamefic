@@ -1,4 +1,4 @@
-require 'standard/entities/portal'
+script 'standard/entities/portal'
 
 class Gamefic::Door < Gamefic::Portal
   include Openable

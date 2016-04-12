@@ -1,4 +1,4 @@
-require 'standard'
+script 'standard'
 
 respond :insert, Use.visible, Use.reachable do |actor, thing, target|
   actor.tell "You can't put #{the thing} inside #{the target}."

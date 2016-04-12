@@ -1,4 +1,4 @@
-require 'clothing/entities/clothing'
+script 'clothing/entities/clothing'
 
 class Gamefic::Pants < Gamefic::Clothing
 

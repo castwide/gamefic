@@ -1,5 +1,5 @@
-require 'standard'
-require 'test'
+script 'standard'
+script 'test'
 
 # Cloak of Darkness for Gamefic. 
 # Gamefic implementation by Peter Orme. 

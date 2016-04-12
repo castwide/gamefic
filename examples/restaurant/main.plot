@@ -3,10 +3,10 @@
 #
 # Examples of the clothing and edible libraries.
 
-require 'standard'
-require 'clothing'
-require 'edible'
-require 'test'
+script 'standard'
+script 'clothing'
+script 'edible'
+script 'test'
 
 lobby = make Room, :name => 'the lobby', :description => 'An alcove that opens into the dining area to the north. The exit is south.'
 
@@ -40,7 +40,7 @@ respond :go, Query::Siblings.new(door) do |actor, door|
   # If the player has eaten the chicken, its parent will be nil.
   if chicken.parent != nil
     actor.tell "You can't leave the restaurant yet. You're still hungry!"
-  # Just for extra fun, we'll require the player to put on the jacket before
+  # Just for extra fun, we'll script the player to put on the jacket before
   # leaving.
   elsif jacket.parent == actor and jacket.attached?
     conclude actor, :finished

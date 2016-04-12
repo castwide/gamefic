@@ -1,4 +1,4 @@
-require 'snapshots'
+script 'snapshots'
 
 meta :undo do |actor|
   last = @snapshots.history.pop

@@ -1,2 +1,2 @@
-require 'clothing/entities'
-require 'clothing/actions'
+script 'clothing/entities'
+script 'clothing/actions'
