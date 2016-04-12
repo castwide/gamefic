@@ -27,7 +27,7 @@ module Gamefic
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     expose :script, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players
     def initialize(source = nil)
-      @source = source || Source.new
+      @source = source || Source::Text.new({})
       @commands = Hash.new
       @syntaxes = Array.new
       @ready_procs = Array.new
@@ -205,6 +205,10 @@ module Gamefic
     # Load a script into the current Plot.
     # This method is similar to Kernel#load, except that the script is
     # evaluated within the Plot's context via #stage.
+    #
+    # @deprecated The main script is being moved to the scripts directory, so
+    # this method will no longer be necessary. Plots can be initialized by
+    # calling #script('main') instead.
     #
     # @param script [String] The path to the script being evaluated.
     def load script
