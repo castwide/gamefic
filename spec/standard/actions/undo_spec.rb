@@ -7,8 +7,8 @@ describe "Undo Action" do
     room = nil
     character = nil
     item = nil
-    plot.require 'standard'
-    plot.require 'undo'
+    plot.script 'standard'
+    plot.script 'undo'
     plot.stage do
       room = make Room, :name => "room"
       character = make Character, :name => "character", :parent => room

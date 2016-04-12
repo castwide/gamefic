@@ -1,7 +1,7 @@
 describe "Give action" do
   before :each do
     @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.require 'standard'
+    @plot.script 'standard'
     @room = @plot.make Room, :name => 'room'
     @giver = @plot.make MetaCharacter, :name => 'giver', :parent => @room
     @item = @plot.make Item, :name => 'item', :parent => @giver
