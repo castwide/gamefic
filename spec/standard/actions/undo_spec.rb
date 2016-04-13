@@ -3,7 +3,7 @@ include Gamefic
 
 describe "Undo Action" do
   it "undoes the previous action" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     room = nil
     character = nil
     item = nil

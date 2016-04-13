@@ -1,6 +1,6 @@
 describe "Reachable Query" do
   it "does not include the subject" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
@@ -9,7 +9,7 @@ describe "Reachable Query" do
     expect(objects).to eq([])    
   end
   it "includes all siblings" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
@@ -20,7 +20,7 @@ describe "Reachable Query" do
     expect(objects).to eq([item, thing])
   end
   it "includes children of open containers" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
@@ -32,7 +32,7 @@ describe "Reachable Query" do
     expect(objects).to eq([container, item])  
   end
   it "does not include children of closed containers" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
@@ -43,7 +43,7 @@ describe "Reachable Query" do
     expect(objects).to eq([container])
   end
   it "includes children of supporters" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room

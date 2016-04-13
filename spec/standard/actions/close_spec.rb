@@ -1,6 +1,6 @@
 describe "Close Action" do
   it "closes an open container" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
