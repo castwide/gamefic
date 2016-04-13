@@ -1,17 +1,13 @@
 module Gamefic
 
   class Script::File < Script::Base
-    attr_reader :absolute, :relative
-    def initialize(filename, directory)
-      @absolute = filename.gsub(/\/+/, '/')
-      @relative = filename[directory.length..-1].gsub(/\/+/, '/')
-      @path =  (File.dirname(@relative) + '/' + File.basename(@relative, File.extname(@relative))).gsub(/\/+/, '/')
+    attr_reader :path, :absolute_path
+    def initialize filename, path
+      @absolute_path = filename.gsub(/\/+/, '/')
+      @path = path
     end
     def read
-      File.read(@absolute)
-    end
-    def path
-      @path
+      File.read(@absolute_path)
     end
   end
 

@@ -1,16 +1,16 @@
-require 'gamefic'
 # HACK Explicit requires to fix Opal's failure to resolve autoloads
 require 'gamefic/query/expression'
 require 'gamefic/query/matches'
 require 'gamefic/grammar/verb_set'
 
+# HACK Opal doesn't recognizes classes and modules declared from scripts
+def Object.const_missing sym
+  Gamefic.const_get sym
+end
+
 class WebPlot < Gamefic::Plot
-  def stage *args, &block
-    if block.nil?
-      instance_eval(*args)
-    else
-      instance_exec(*args, &block)
-    end
+  def script path
+    # Stub
   end
 end
 
@@ -23,22 +23,14 @@ class WebUser < Gamefic::User
     return data
   end
 end
-
+	
 module GameficOpal
   def self.static_plot
-    @@static_plot ||= WebPlot.new
+    @@static_plot ||= WebPlot.new(Gamefic::Source::Text.new)
   end
   def self.static_player
-    @@static_player ||= WebUser.new(Gamefic::GameficOpal.static_plot)
+    @@static_player ||= WebUser.new(GameficOpal.static_plot)
   end
 end
 
-def method_missing(symbol, *args, &block)
-  if GameficOpal.static_plot.respond_to?(symbol)
-    GameficOpal.static_plot.send(symbol, *args, &block)
-  else
-    raise NameError.new("Unrecognized method #{symbol}")
-  end
-end
-
-require 'main'
+GameficOpal.static_plot.script 'main'

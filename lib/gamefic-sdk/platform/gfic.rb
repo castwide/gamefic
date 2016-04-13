@@ -21,17 +21,9 @@ module Gamefic::Sdk
       FileUtils.rm filename if File.file?(filename)
       FileUtils.mkdir_p target_dir
       Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
-        main_file = nil
-        ['plot','rb'].each { |e|
-          if File.file?(source_dir + '/main.' + e)
-            main_file = 'main.' + e
-            break
-          end
-        }
-        zipfile.add(File.basename(main_file), source_dir + "/" + main_file)
         if plot.imported_scripts.length > 0
           plot.imported_scripts.each { |script|
-            zipfile.add "scripts#{script.relative}", script.absolute
+            zipfile.add "scripts/#{script.path}", script.absolute_path
           }
         end
       end

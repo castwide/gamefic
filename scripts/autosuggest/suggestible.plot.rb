@@ -1,4 +1,4 @@
-module Suggestible
+module Gamefic::Suggestible
   def suggestions
     @suggestions ||= []
   end

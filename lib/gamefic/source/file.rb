@@ -1,23 +1,22 @@
 module Gamefic
 
   class Source::File < Source::Base
-    @@extensions = ['', '.plot.rb', '.plot', '.rb']
+    @@extensions = ['.plot.rb', '.plot', '.rb']
     attr_reader :directories
     attr_accessor :main_dir
     def initialize(*directories)
       @directories = directories || []
     end
-    def export name
+    def export path
       @directories.each { |directory|
         @@extensions.each { |ext|
-          abs_dir = File.absolute_path(directory, main_dir)
-          abs_file = abs_dir + '/' + name + ext
+          abs_file = directory + '/' + path + ext
           if File.file?(abs_file)
-            return Script::File.new(abs_file, abs_dir)
+            return Script::File.new(abs_file, path)
           end
         }
       }
-      raise "Script #{name} not found"
+      raise "Script #{path} not found"
     end
   end
 

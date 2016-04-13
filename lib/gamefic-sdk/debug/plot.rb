@@ -17,11 +17,5 @@ module Gamefic::Sdk::Debug
     def action(command, *queries, &proc)
       Gamefic::Sdk::Debug::Action.new(self, command, *queries, &proc)
     end
-    def load script
-      super
-      if @main_dir.nil?
-        @main_dir = File.dirname(File.absolute_path(script))
-      end
-    end
   end
 end

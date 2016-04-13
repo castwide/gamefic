@@ -48,31 +48,13 @@ module Gamefic::Sdk
         main_file = path
         test_file = nil
         if File.directory?(path)
-          ext = nil
-          ['plot.rb', 'plot', 'rb'].each { |e|
-            if File.file?(path + '/main.' + e)
-              ext = e
-              break
-            end
-          }
-          raise "#{path}/main.plot does not exist" if ext.nil?
-          if File.file?(path + '/test.plot.rb')
-            test_file = path + '/test.plot.rb'
-          end
-          main_file = path + '/main.' + ext
-          config = YAML.load(File.read("#{path}/config.yaml"))
+          config = PlotConfig.new "#{path}/config.yaml"
         else
-          config = Build.load
+          config = PlotConfig.new
         end
-        if !File.file?(path + '/build.yaml')
-        end
-        plot = Gamefic::Sdk::Debug::Plot.new
-        plot.source.directories.concat config['sources']['script_paths']
-        plot.source.directories.push Gamefic::Sdk::GLOBAL_SCRIPT_PATH
-        plot.load main_file
-        if test_file != nil
-          plot.load test_file
-        end
+        paths = config.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
+        plot.script 'main'
         plot.script 'debug'
         engine = Tty::Engine.new plot
         puts "\n"
@@ -123,17 +105,17 @@ module Gamefic::Sdk
           Dir.mkdir(directory)
         end
         Dir.mkdir(directory + '/scripts')
-        main_rb = File.new(directory + '/main.plot.rb', 'w')
+        main_rb = File.new(directory + '/scripts/main.plot.rb', 'w')
         main_rb.write <<EOS
-require 'standard'
+script 'standard'
 EOS
         imports.each { |i|
           main_rb.write "require '#{i}'\n"
         }
         main_rb.close
-        test_rb = File.new(directory + '/test.plot.rb', 'w')
+        test_rb = File.new(directory + '/scripts/test.plot.rb', 'w')
         test_rb.write <<EOS
-require 'standard/test'
+script 'standard/test'
 EOS
         test_rb.close
         build_rb = File.new(directory + '/build.yaml', 'w')
@@ -149,11 +131,10 @@ EOS
 title: Untitled
 author: Anonymous
 
-sources:
-  script_paths:
-    - ./scripts
-  asset_paths:
-    - ./assets
+script_paths:
+  - ./scripts
+asset_paths:
+  - ./assets
 EOS
         config_rb.close
         Dir.mkdir(directory + '/html')
@@ -204,11 +185,6 @@ EOS
         Build.release directory
       end
       def clean directory
-        #build_file = nil
-        #if File.file?(directory + '/build.rb')
-        #  build_file = directory + '/build.rb'
-        #end
-        #config = Build.load build_file
         config = YAML.load(File.read(directory + '/build.yaml'))
         Build.clean directory, config
       end

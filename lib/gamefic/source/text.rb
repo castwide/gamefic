@@ -8,7 +8,7 @@ module Gamefic
       if @scripts.has_key?(path)
         Script::Text.new(path, @scripts[path])
       else
-        nil
+        raise "Script #{path} not found"
       end
     end
   end

@@ -26,6 +26,8 @@ module Gamefic
     include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     expose :script, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players
+    
+    # @param [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
       @commands = Hash.new
@@ -203,26 +205,6 @@ module Gamefic
     end
 
     # Load a script into the current Plot.
-    # This method is similar to Kernel#load, except that the script is
-    # evaluated within the Plot's context via #stage.
-    #
-    # @deprecated The main script is being moved to the scripts directory, so
-    # this method will no longer be necessary. Plots can be initialized by
-    # calling #script('main') instead.
-    #
-    # @param script [String] The path to the script being evaluated.
-    def load script
-      ['', '.plot.rb', '.plot', '.rb'].each { |ext|
-        if File.exist?(script + ext)
-          source.main_dir = File.dirname(script)
-          stage File.read(script + ext), script + ext
-          return
-        end
-      }
-      raise "File not found: #{script}"
-    end
-    
-    # Load a script into the current Plot.
     # This method is similar to Kernel#require, except that the script is
     # evaluated within the Plot's context via #stage.
     #
@@ -231,11 +213,11 @@ module Gamefic
     def script path
       imported_script = source.export(path)
       if imported_script.nil?
-        raise "Import not found: #{path}"
+        raise "Script not found: #{path}"
       end
       if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
         @working_scripts.push imported_script
-        stage imported_script.read, imported_script.absolute
+        stage imported_script.read, imported_script.absolute_path
         @working_scripts.pop
         imported_scripts.push imported_script
         true

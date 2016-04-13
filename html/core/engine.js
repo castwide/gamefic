@@ -5,6 +5,7 @@ Gamefic.Engine = new function() {
 		try {
 			var response = {};
 			if (!begun) {
+				Opal.GameficOpal.$load_scripts();
 				begun = true;
 				Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_player().$character());
 				//Opal.GameficOpal.$static_player().$character().$scene().$start(Opal.GameficOpal.$static_player().$character());
