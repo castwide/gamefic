@@ -18,12 +18,16 @@ module Gamefic::Sdk
       target_dir = config['target_dir']
       # TODO Configurable build folder?
       build_dir = config['build_dir']
-      app_config = AppConfig.new "#{source_dir}/html"
-      
+      html_dir = resolve_html_dir
+      app_config = AppConfig.new html_dir
+
+      FileUtils.mkdir_p target_dir
+
       # Copy everything in source except config and template
-      Dir.entries(source_dir + '/html').each { |entry|
+      Dir.entries(html_dir).each { |entry|
         if entry != 'config.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
-          FileUtils.cp_r "#{source_dir}/html/#{entry}", "#{target_dir}/#{entry}"
+          FileUtils.mkdir_p target_dir + File.dirname(entry)
+          FileUtils.cp_r "#{html_dir}/#{entry}", "#{target_dir}/#{entry}"
         end
       }
 
@@ -106,6 +110,20 @@ module Gamefic::Sdk
       }
       raise "#{filename} not found" if absolute.nil?
       absolute
+    end
+    
+    def resolve_html_dir
+      html_dir = "#{source_dir}/html"
+      if !File.directory?(html_dir) and config['html_skin'].to_s != ''
+        html_dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/#{config['html_skin']}"
+      end
+      if !File.directory?(html_dir)
+        html_dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/minimal"
+      end
+      if !File.directory?(html_dir)
+        raise "Could not resolve HTML directory"
+      end
+      html_dir
     end
   end
 

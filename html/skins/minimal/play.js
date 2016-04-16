@@ -4,9 +4,11 @@ $(function() {
 		Gamefic.update($('#gamefic_command').val());
 	});
 	Gamefic.onStart(function(response) {
+		$('#gamefic_controls').removeClass('working');
 		$('#gamefic_prompt').html(response.prompt);
 	});
 	Gamefic.onFinish(function(response) {
+		$('#gamefic_controls').addClass('working');
 		$('#gamefic_command').val('');
 		$('#gamefic_command').focus();
 		window.scrollTo(0, document.body.scrollHeight);
@@ -21,6 +23,7 @@ $(function() {
 		if (response.input != null) {
 			$('#gamefic_output').append('<p><kbd>' + response.prompt + ' ' + response.input + '</kbd></p>');
 		}
+		$('#gamefic_console').addClass('concluded');
 		$('#gamefic_output').append(response.output);
 		$('#gamefic_controls').hide();
 	});

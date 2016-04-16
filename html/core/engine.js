@@ -46,6 +46,9 @@ var Gamefic = (function() {
 			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			response = getResponse();
 			doReady(response);
+			if (response.state == 'Testing') {
+				Gamefic.update(null);
+			}
 		},
 		onStart: function(callback) {
 			startCallbacks.push(callback);
