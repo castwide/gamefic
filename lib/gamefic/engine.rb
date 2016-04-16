@@ -14,7 +14,7 @@ module Gamefic
       while @user.character.scene.state != "Concluded"
         turn
       end
-      turn
+      print @user.state.output
     end
     def turn
       @plot.ready
