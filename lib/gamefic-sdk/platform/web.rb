@@ -18,9 +18,9 @@ module Gamefic::Sdk
       target_dir = config['target_dir']
       # TODO Configurable build folder?
       build_dir = config['build_dir']
-      html_dir = resolve_html_dir
-      app_config = AppConfig.new html_dir
-
+      app_config = AppConfig.new source_dir, config
+      html_dir = app_config.html_dir
+      
       FileUtils.mkdir_p target_dir
 
       # Copy everything in source except config and template
@@ -112,19 +112,6 @@ module Gamefic::Sdk
       absolute
     end
     
-    def resolve_html_dir
-      html_dir = "#{source_dir}/html"
-      if !File.directory?(html_dir) and config['html_skin'].to_s != ''
-        html_dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/#{config['html_skin']}"
-      end
-      if !File.directory?(html_dir)
-        html_dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/minimal"
-      end
-      if !File.directory?(html_dir)
-        raise "Could not resolve HTML directory"
-      end
-      html_dir
-    end
   end
 
 end
