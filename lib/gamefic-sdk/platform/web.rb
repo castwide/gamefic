@@ -48,10 +48,9 @@ module Gamefic::Sdk
       end
       
       # GameficOpal
-      Opal.append_path Gamefic::Sdk::HTML_TEMPLATE_PATH + "/src"
       if !File.exist?(build_dir + "/core/static.js")
 	      File.open(build_dir + "/core/static.js", "w") do |file|
-	        file << Opal::Builder.build('static')
+	        file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
 	      end
       end
       

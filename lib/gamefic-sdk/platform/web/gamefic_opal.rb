@@ -7,23 +7,7 @@ require 'gamefic/grammar/verb_set'
 def Object.const_missing sym
   Gamefic.const_get sym
 end
-
-class WebPlot < Gamefic::Plot
-  def script path
-    # Stub
-  end
-end
-
-class WebUser < Gamefic::User
-  def save filename, data
-    `Gamefic.Engine.save(filename, data);`
-  end
-  def restore filename
-    data = `Gamefic.Engine.restore(filename);`
-    return data
-  end
-end
-	
+  
 module GameficOpal
   def self.static_plot
     @@static_plot ||= WebPlot.new(Gamefic::Source::Text.new)
@@ -31,6 +15,22 @@ module GameficOpal
   def self.static_player
     @@static_player ||= WebUser.new(GameficOpal.static_plot)
   end
+
+	class WebPlot < Gamefic::Plot
+	  def script path
+	    # Stub
+	  end
+	end
+	
+	class WebUser < Gamefic::User
+	  def save filename, data
+	    `Gamefic.Engine.save(filename, data);`
+	  end
+	  def restore filename
+	    data = `Gamefic.Engine.restore(filename);`
+	    return data
+	  end
+	end
 end
 
 GameficOpal.static_plot.script 'main'
