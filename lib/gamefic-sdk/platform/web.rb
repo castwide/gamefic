@@ -22,7 +22,7 @@ module Gamefic::Sdk
       
       # Copy everything in source except config and template
       Dir.entries(source_dir + '/html').each { |entry|
-        if entry != 'config.rb' and entry != 'index.erb' and entry != '.' and entry != '..'
+        if entry != 'config.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
           FileUtils.cp_r "#{source_dir}/html/#{entry}", "#{target_dir}/#{entry}"
         end
       }

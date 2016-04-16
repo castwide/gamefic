@@ -25,7 +25,7 @@ class Gamefic::Sdk::Platform::Web::AppConfig
   #
   # @return [String] The resulting HTML
   def render
-    erb = ERB.new(File.read(@source_dir + "/index.erb"))
+    erb = ERB.new(File.read(@source_dir + "/index.html.erb"))
     erb.result data.get_binding
   end
 end
