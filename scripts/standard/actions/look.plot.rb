@@ -47,7 +47,7 @@ respond :look, Use.room do |actor, room|
       else
         dirs = []
         portals.each { |p|
-          dirs.push p.direction
+          dirs.push (p.direction || p.name)
         }
         actor.tell "There are exits #{dirs.join_and(', ')}."
       end
