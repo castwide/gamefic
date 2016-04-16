@@ -12,7 +12,7 @@ module Gamefic
   #     manager.finish do |actor, data|
   #       actor[:name] = data.input
   #       actor.tell "Howdy, #{actor[:name]}!"
-  #       actor.next_cue = :active # Proceed to the default :active scene
+  #       data.next_cue = :active # Proceed to the default :active scene
   #     end
   #   end
   #
