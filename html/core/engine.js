@@ -1,5 +1,6 @@
 var Gamefic = (function() {
 	var startCallbacks = [];
+	var inputCallbacks = [];
 	var finishCallbacks = [];
 	var responseCallbacks = {};
 	var lastInput = null;
@@ -26,19 +27,22 @@ var Gamefic = (function() {
 		start: function() {
 			Opal.GameficOpal.$load_scripts();			
 			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_player().$character());
-			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			var response = getResponse();
 			doReady(response);
 			handle(response);
+			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 		},
 		update: function(input) {
 			if (input != null) {
 				Opal.GameficOpal.$static_player().$character().$queue().$push(input);
 			}
 			lastInput = input;
-			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
-			Opal.GameficOpal.$static_plot().$update();
 			var response = getResponse();
+			inputCallbacks.forEach(function(callback) {
+				callback(response);
+			});
+			Opal.GameficOpal.$static_plot().$update();
+			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			handle(response);
 			finishCallbacks.forEach(function(callback) {
 				callback(response);
@@ -52,6 +56,9 @@ var Gamefic = (function() {
 		},
 		onStart: function(callback) {
 			startCallbacks.push(callback);
+		},
+		onInput: function(callback) {
+			inputCallbacks.push(callback);
 		},
 		onFinish: function(callback) {
 			finishCallbacks.push(callback);
