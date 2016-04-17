@@ -4,11 +4,13 @@ $(function() {
 		Gamefic.update($('#gamefic_command').val());
 	});
 	Gamefic.onStart(function(response) {
-		$('#gamefic_controls').removeClass('working');
 		$('#gamefic_prompt').html(response.prompt);
 	});
-	Gamefic.onFinish(function(response) {
+	Gamefic.onInput(function(response) {
 		$('#gamefic_controls').addClass('working');
+	});
+	Gamefic.onFinish(function(response) {
+		$('#gamefic_controls').removeClass('working');
 		$('#gamefic_command').val('');
 		$('#gamefic_command').focus();
 		window.scrollTo(0, document.body.scrollHeight);

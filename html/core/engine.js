@@ -5,19 +5,19 @@ var Gamefic = (function() {
 	var responseCallbacks = {};
 	var lastInput = null;
 	var lastPrompt = null;
-	var getResponse = function() {
-		return {
-			output: Opal.GameficOpal.$static_player().$state().$output(),
+	var getResponse = function(withOutput) {
+		var r = {
+			output: (withOutput ? Opal.GameficOpal.$static_player().$state().$output() : null),
 			state: Opal.GameficOpal.$static_player().$character().$scene().$state(),
 			prompt: lastPrompt,
 			input: lastInput
 		}
+		return r;
 	}
 	var doReady = function(response) {
 		startCallbacks.forEach(function(callback) {
 			callback(response);
 		});
-		Opal.GameficOpal.$static_plot().$ready();
 	}
 	var handle = function(response) {
 		var handler = responseCallbacks[response.state] || responseCallbacks['Active'];
@@ -28,7 +28,9 @@ var Gamefic = (function() {
 			Opal.GameficOpal.$load_scripts();			
 			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_player().$character());
 			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
-			var response = getResponse();
+			Opal.GameficOpal.$static_plot().$ready();
+			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
+			var response = getResponse(true);
 			doReady(response);
 			handle(response);
 		},
@@ -37,19 +39,20 @@ var Gamefic = (function() {
 				Opal.GameficOpal.$static_player().$character().$queue().$push(input);
 			}
 			lastInput = input;
-			var response = getResponse();
+			var response = getResponse(false);
 			inputCallbacks.forEach(function(callback) {
 				callback(response);
 			});
 			Opal.GameficOpal.$static_plot().$update();
-			var previousResponse = getResponse();
+			Opal.GameficOpal.$static_plot().$ready();
 			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
-			response = getResponse();
+			response = getResponse(true);
+			var updateResponse = response;
 			doReady(response);
-			response = getResponse();
-			previousResponse.output += response.output;
-			previousResponse.prompt = response.prompt;
-			handle(previousResponse);
+			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
+			response = getResponse(true);
+			response.output = updateResponse.output + response.output;
+			handle(response);
 			finishCallbacks.forEach(function(callback) {
 				callback(response);
 			});
