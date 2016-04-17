@@ -17,6 +17,7 @@ class Gamefic::Sdk::Platform::Web::AppConfig
     @resource_paths = ["#{html_dir}", Gamefic::Sdk::HTML_TEMPLATE_PATH]
     config_file = "#{html_dir}/config.rb"
     stage File.read(config_file), config_file
+    javascripts.push "core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"
   end
   
   # @return [BuildConfig::Data]

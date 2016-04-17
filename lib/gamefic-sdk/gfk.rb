@@ -66,7 +66,7 @@ module Gamefic::Sdk
         imports = []
         opts = GetoptLong.new(
           [ '-q', '--quiet', GetoptLong::NO_ARGUMENT ],
-          [ '--with-html', GetoptLong::REQUIRED_ARGUMENT ],
+          [ '--with-html-skin', GetoptLong::OPTIONAL_ARGUMENT ],
           [ '-i', '--import', GetoptLong::REQUIRED_ARGUMENT ]
         )
         begin
@@ -74,8 +74,8 @@ module Gamefic::Sdk
             case opt
               when '-q'
                 quiet = true
-              when '--with-html'
-                html = arg
+              when '--with-html-skin'
+                html = arg || 'standard'
               when '-i'
                 imports = arg.split(';')
             end
@@ -139,7 +139,6 @@ EOS
         config_rb.close
         Dir.mkdir(directory + '/html')
         if !html.nil?
-          FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/core/*"], directory + "/html")
           FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + "/skins/" + html + "/*"], directory + "/html")
         end
         uuid = SecureRandom.uuid
