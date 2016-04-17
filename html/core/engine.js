@@ -42,7 +42,6 @@ var Gamefic = (function() {
 				callback(response);
 			});
 			Opal.GameficOpal.$static_plot().$update();
-			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			handle(response);
 			finishCallbacks.forEach(function(callback) {
 				callback(response);
