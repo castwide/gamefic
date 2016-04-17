@@ -9,8 +9,8 @@ module Gamefic::Sdk
     
     def defaults
       @defaults ||= {
-        :html_skin => 'multimedia',
-        :with_media => true
+        'html_skin' => 'standard',
+        'with_media' => true
       }
     end
     
