@@ -11,8 +11,8 @@ class Gamefic::Sdk::Platform::Web::AppConfig
     @javascripts = []
     @stylesheets = []
     @source_dir = source_dir
-    @html_dir = resolve_html_dir
     @config = config
+    @html_dir = resolve_html_dir
     @game_config = PlotConfig.new("#{source_dir}/config.yaml")
     @resource_paths = ["#{html_dir}", Gamefic::Sdk::HTML_TEMPLATE_PATH]
     config_file = "#{html_dir}/config.rb"
