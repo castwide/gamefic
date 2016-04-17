@@ -27,10 +27,10 @@ var Gamefic = (function() {
 		start: function() {
 			Opal.GameficOpal.$load_scripts();			
 			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_player().$character());
+			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			var response = getResponse();
 			doReady(response);
 			handle(response);
-			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 		},
 		update: function(input) {
 			if (input != null) {
@@ -42,13 +42,17 @@ var Gamefic = (function() {
 				callback(response);
 			});
 			Opal.GameficOpal.$static_plot().$update();
-			handle(response);
-			finishCallbacks.forEach(function(callback) {
-				callback(response);
-			});
+			var previousResponse = getResponse();
 			lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			response = getResponse();
 			doReady(response);
+			response = getResponse();
+			previousResponse.output += response.output;
+			previousResponse.prompt = response.prompt;
+			handle(previousResponse);
+			finishCallbacks.forEach(function(callback) {
+				callback(response);
+			});
 			if (response.state == 'Testing') {
 				Gamefic.update(null);
 			}
