@@ -16,17 +16,17 @@ module Gamefic::Sdk
     
     def build
       target_dir = config['target_dir']
-      # TODO Configurable build folder?
       build_dir = config['build_dir']
       app_config = AppConfig.new source_dir, config
       html_dir = app_config.html_dir
+
       
       FileUtils.mkdir_p target_dir
 
       # Copy everything in source except config and template
       Dir.entries(html_dir).each { |entry|
         if entry != 'config.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
-          FileUtils.mkdir_p target_dir + File.dirname(entry)
+          FileUtils.mkdir_p target_dir + '/' + File.dirname(entry)
           FileUtils.cp_r "#{html_dir}/#{entry}", "#{target_dir}/#{entry}"
         end
       }
