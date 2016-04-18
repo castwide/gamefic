@@ -6,7 +6,10 @@ require 'gamefic/engine/tty'
 module Gamefic
 
   class Shell
+    autoload :Subcommand, 'gamefic/shell/subcommand'
+
     attr_accessor :argv
+    
     def initialize
     
     end
