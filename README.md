@@ -102,7 +102,7 @@ and an import directory. The game is already capable of running:
 Right now the game is just a single featureless room. Open the mygame/main.rb
 file in a text editor. Modify it to the following:
 
-    require 'standard'
+    script 'standard'
 
     apartment = make Room, :name => "apartment", :description => "You are in a tiny one-room apartment."
 
@@ -147,10 +147,10 @@ Play the script again. Now the apartment contains an item you can manipulate.
 
 Let's take a closer look at the methods we used in the script.
 
-### require
+### script
 
-The require method in plot scripts is similar to Ruby's require method. It loads
-a script from your game's import directory. If the script doesn't exist locally,
+The script method in plot scripts is similar to Ruby's require method. It loads
+a script from your game's scripts directory. If the script doesn't exist locally,
 the program will look for it in the Gamefic library.
 
 The "standard" library provides a bunch of functionality common to text
