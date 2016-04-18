@@ -1,5 +1,4 @@
 script 'standard/entities/entity'
-script 'standard/entities/thing'
 script 'standard/entities/character'
 script 'standard/entities/container'
 script 'standard/entities/door'

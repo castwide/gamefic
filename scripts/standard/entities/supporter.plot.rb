@@ -1,4 +1,4 @@
-class Gamefic::Supporter < Gamefic::Thing
+class Gamefic::Supporter < Gamefic::Entity
   include Enterable
   serialize :enterable?
   def initialize(plot, args = {})

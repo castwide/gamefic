@@ -14,7 +14,7 @@ describe "Reachable Query" do
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item = plot.make Item, :name => 'item', :parent => room
-    thing = plot.make Thing, :name => 'thing', :parent => room
+    thing = plot.make Entity, :name => 'thing', :parent => room
     query = Query::Reachable.new
     objects = query.context_from(character)
     expect(objects).to eq([item, thing])

@@ -5,7 +5,7 @@ describe "Insert Action" do
     @room = @plot.make Room, :name => 'room'
     @character = @plot.make Character, :name => 'character', :parent => @room
     @item = @plot.make Item, :name => 'item', :parent => @character
-    @thing = @plot.make Thing, :name => 'thing', :parent => @character
+    @thing = @plot.make Entity, :name => 'thing', :parent => @character
     @receptacle = @plot.make Receptacle, :name => 'receptacle', :parent => @room
     @container = @plot.make Container, :name => 'container', :parent => @room
     @entity = @plot.make Entity, :name => 'entity', :parent => @room
