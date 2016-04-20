@@ -52,7 +52,6 @@ class Gamefic::Sdk::Shell::Command::Init < Gamefic::Shell::Command::Base
   
   def write_main_script
     File.open("#{@directory}/scripts/main.plot.rb", 'w') do |file|
-      file.puts "script 'standard'"
       @scripts.each { |script|
         file.puts "script '#{script}'"
       }
