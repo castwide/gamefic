@@ -17,15 +17,12 @@ module Gamefic::Sdk
       else
         filename = "#{target_dir}/#{config['filename']}"
       end
-      stream = StringIO.new("")
       FileUtils.rm filename if File.file?(filename)
       FileUtils.mkdir_p target_dir
       Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
-        if plot.imported_scripts.length > 0
-          plot.imported_scripts.each { |script|
-            zipfile.add "scripts/#{script.path}", script.absolute_path
-          }
-        end
+        plot.imported_scripts.each { |script|
+          zipfile.add "scripts/#{script.path}.plot.rb", script.absolute_path
+        }
       end
     end
   end

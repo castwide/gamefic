@@ -1,7 +1,19 @@
 #!/usr/bin/env ruby
 
 require 'gamefic'
+require 'gamefic/shell'
 require 'gamefic-sdk'
+require 'gamefic-sdk/shell'
 
-shell = Gamefic::Sdk::Gfk.new
-shell.execute
+shell = Gamefic::Shell.new
+
+shell.register "init", Gamefic::Sdk::Shell::Command::Init
+shell.register "create", Gamefic::Sdk::Shell::Command::Init
+shell.register "build", Gamefic::Sdk::Shell::Command::Build
+shell.register "test", Gamefic::Sdk::Shell::Command::Test
+
+begin
+  shell.execute
+rescue Exception => e
+  puts e.message
+end

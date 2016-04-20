@@ -4,4 +4,7 @@ require 'gamefic'
 require 'gamefic/shell'
 
 shell = Gamefic::Shell.new
+
+shell.register "play", Gamefic::Shell::Command::Play
+
 shell.execute

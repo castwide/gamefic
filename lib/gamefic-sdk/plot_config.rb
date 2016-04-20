@@ -1,6 +1,6 @@
 require 'yaml'
 
-module Gamefic
+module Gamefic::Sdk
   
   class PlotConfig
     attr_reader :author, :title, :script_paths, :asset_paths
