@@ -53,9 +53,9 @@ module Gamefic::Sdk
       
       # GameficOpal
       if !File.exist?(build_dir + "/core/static.js")
-	      File.open(build_dir + "/core/static.js", "w") do |file|
-	        file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
-	      end
+        File.open(build_dir + "/core/static.js", "w") do |file|
+          file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
+        end
       end
       
       # Plot scripts
@@ -89,6 +89,20 @@ module Gamefic::Sdk
         absolute = resolve(css, app_config.resource_paths)
         FileUtils.mkdir_p target_dir + "/" + File.dirname(css)
         FileUtils.cp_r absolute, target_dir + "/" + css
+      }
+      
+      # Copy media
+      pc = PlotConfig.new "#{source_dir}/config.yaml"
+      pc.media_paths.each { |path|
+        if File.directory?(path)
+          FileUtils.mkdir_p target_dir + "/media"
+          Dir.entries(path).each { |entry|
+            if entry != '.' and entry != '..'
+              FileUtils.mkdir_p target_dir + "/media/" + File.dirname(entry)
+              FileUtils.cp_r path + "/" + entry, target_dir + "/media/" + entry
+            end
+          }
+        end
       }
     end
         

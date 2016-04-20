@@ -80,8 +80,8 @@ class Gamefic::Sdk::Shell::Command::Init < Gamefic::Shell::Command::Base
       "",
       "script_paths:",
       "  - ./scripts",
-      "asset_paths:",
-      "  - ./assets"
+      "media_paths:",
+      "  - ./media"
     end
   end
   
