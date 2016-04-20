@@ -1,9 +1,4 @@
 #!/usr/bin/env ruby
 
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/lib"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/sdk/lib"
-require 'gamefic'
-require 'gamefic-sdk'
-
-shell = Gamefic::Sdk::Gfk.new
-shell.execute
+load 'bin/gfk'

@@ -1,5 +1,6 @@
 require 'gamefic-sdk'
 require 'gamefic-sdk/debug/plot'
+require 'gamefic-sdk/plot_config'
 
 module Gamefic::Sdk
   class Platform::Base

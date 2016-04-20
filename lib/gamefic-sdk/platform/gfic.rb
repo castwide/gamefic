@@ -21,7 +21,7 @@ module Gamefic::Sdk
       FileUtils.mkdir_p target_dir
       Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
         plot.imported_scripts.each { |script|
-          zipfile.add "scripts/#{script.path}", script.absolute_path
+          zipfile.add "scripts/#{script.path}.plot.rb", script.absolute_path
         }
       end
     end

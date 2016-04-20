@@ -1,18 +1,18 @@
-require 'gamefic'
-require 'gamefic-sdk/gfk'
 require 'tmpdir'
+require 'gamefic-sdk/shell'
+
 include Gamefic
 include Gamefic::Sdk
 
-describe Gfk do
+describe Gamefic::Sdk::Shell::Command::Init do
   before :all do
     @dir = Dir.mktmpdir
   end
   it "initializes a game source directory" do
-    shell = Gfk.new
     ARGV.clear
-    ARGV.push 'init', "#{@dir}/game", "-q"
-    shell.execute
+    ARGV.push 
+    command = Gamefic::Sdk::Shell::Command::Init.new
+    command.run ['init', "#{@dir}/game", "-q"]
     expect(File.exist?("#{@dir}/game")).to eq(true)
   end
   after :all do

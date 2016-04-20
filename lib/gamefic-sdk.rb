@@ -1,7 +1,7 @@
 require 'gamefic'
-require 'gamefic-sdk/gfk'
 require 'gamefic-sdk/platform'
 require 'gamefic-sdk/plot_config'
+require 'gamefic-sdk/debug'
 
 module Gamefic::Sdk
   HTML_TEMPLATE_PATH = File.dirname(__FILE__) + "/../html/"
