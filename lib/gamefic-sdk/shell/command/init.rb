@@ -20,6 +20,7 @@ class Gamefic::Sdk::Shell::Command::Init < Gamefic::Shell::Command::Base
     write_config_yaml
     write_uuid_file
     copy_html_skin
+    Dir.mkdir("#{@directory}/media")
     puts "Game directory '#{@directory}' initialized." unless @quiet
   end
   
