@@ -33,6 +33,9 @@ var Gamefic = (function() {
 			var response = getResponse(true);
 			doReady(response);
 			handle(response);
+			finishCallbacks.forEach(function(callback) {
+				callback(response);
+			});
 		},
 		update: function(input) {
 			if (input != null) {
