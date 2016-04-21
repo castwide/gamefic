@@ -19,7 +19,10 @@ $(function() {
 	Gamefic.onFinish(function(response) {
 		$('#gamefic_command').val('');
 		$('#gamefic_command').focus();
-		window.scrollTo(0, document.body.scrollHeight);
+		var outputElement = document.getElementById('gamefic_output');
+		$('#gamefic_output').animate({
+			scrollTop: outputElement.scrollHeight
+		}, 1000);
 	});
 	Gamefic.handleResponse('Active', function(response) {
 		$('#gamefic_output').append(response.output);
