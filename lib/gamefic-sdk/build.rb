@@ -18,7 +18,8 @@ module Gamefic::Sdk
       }
       puts "Build#{platforms.length > 1 ? 's' : ''} complete." unless quiet
     end
-    def self.clean directory, config
+    def self.clean directory
+      config = YAML.load(File.read("#{directory}/build.yaml"))
       config.each_pair { |k, v|
         v['name'] = k
         puts "Cleaning #{k}..."

@@ -20,10 +20,14 @@ module Gamefic::Sdk
       @config['build_dir'] = File.absolute_path(@config['build_dir'], source_dir)
     end
     
+    # @return [PlotConfig]
+    def plot_config
+      @plot_config ||= PlotConfig.new("#{source_dir}/config.yaml")
+    end
+    
     def plot
       if @plot.nil?
-        config = PlotConfig.new "#{source_dir}/config.yaml"
-        paths = config.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        paths = plot_config.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         @plot = Gamefic::Sdk::Debug::Plot.new(Gamefic::Source::File.new(*paths))
         @plot.script 'main'
       end
