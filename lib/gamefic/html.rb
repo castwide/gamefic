@@ -14,17 +14,13 @@ module Gamefic
     end
     def self.encode(text)
       Gamefic::Html::ENTITIES.each { |k, v|
-        while text.include?(k)
-          text[v] = k
-        end
+        text = text.gsub(v, k)
       }
       text
     end
     def self.decode(text)
       Gamefic::Html::ENTITIES.each { |k, v|
-        while text.include?(k)
-          text[k] = v
-        end
+        text = text.gsub(k, v)
       }
       text
     end
@@ -34,12 +30,11 @@ module Gamefic
       begin
         doc = REXML::Document.new code
       rescue REXML::ParseException => e
-        if e.source.buffer != last
-          if e.source.buffer[0,1] == '<'
-            code = code[0,(code.length - e.source.buffer.length)] + '&lt;' + e.source.buffer[1..-1]
-            last = e.source.buffer
-            retry
-          end
+        # Convert invalid < characters to &lt;
+        if e.source.buffer != last and e.source.buffer[0,1] == '<'
+          code = code[0,(code.length - e.source.buffer.length)] + '&lt;' + e.source.buffer[1..-1]
+          last = e.source.buffer
+          retry
         end
         raise e
       end
