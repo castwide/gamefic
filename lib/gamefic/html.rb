@@ -3,6 +3,10 @@
 module Gamefic
 
   module Html
+    # Convert ampersands to &amp;
+    #
+    # @param text [String]
+    # @return [String]
     def self.fix_ampersands(text)
       codes = []
       ENTITIES.keys.each { |e|
@@ -12,18 +16,33 @@ module Gamefic
       re = Regexp.new("&(?!(#{piped}))")
       text.gsub(re, '&amp;\1')
     end
+    
+    # Encode a String with HTML entities
+    #
+    # @param text [String]
+    # @return [String]
     def self.encode(text)
       Gamefic::Html::ENTITIES.each { |k, v|
         text = text.gsub(v, k)
       }
       text
     end
+    
+    # Decode a String's HTML entities
+    #
+    # @param text [String]
+    # @return [String]
     def self.decode(text)
       Gamefic::Html::ENTITIES.each { |k, v|
         text = text.gsub(k, v)
       }
       text
     end
+    
+    # Parse a String into an XML document
+    #
+    # @param code [String]
+    # @return [REXML::Document]
     def self.parse(code)
       code = fix_ampersands(code).strip
       last = nil
