@@ -8,11 +8,11 @@ module Gamefic::Grammar
     include Plural
     # @return [Gamefic::Grammar::Pronouns]
     def pronoun
-      @pronoun ||= Grammar::Pronouns.new(self)
+      @pronoun ||= Gamefic::Grammar::Pronouns.new(self)
     end
     # @return [Gamefic::Grammar::Verbs]
     def verb
-      @verb ||= Grammar::Verbs.new(self)
+      @verb ||= Gamefic::Grammar::Verbs.new(self)
     end
     def contract words
       contractions[words] || words
