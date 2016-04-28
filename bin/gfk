@@ -13,8 +13,4 @@ shell.register "build", Gamefic::Sdk::Shell::Command::Build
 shell.register "clean", Gamefic::Sdk::Shell::Command::Clean
 shell.register "test", Gamefic::Sdk::Shell::Command::Test
 
-begin
-  shell.execute
-rescue Exception => e
-  puts e.message
-end
+shell.execute
