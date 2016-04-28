@@ -16,6 +16,8 @@ module Gamefic
   end
   
   class YesOrNoSceneData < SceneData
+    # @!attribute [rw] answer
+    #   @return [String] The answer provided by the user, normalized to either "yes" or "no"
     attr_accessor :answer
   end
   
@@ -30,9 +32,6 @@ module Gamefic
         @data.answer = "no"
       end
       if @data.answer.nil?
-        # TODO: This should not raise an exception. It's just a placeholder
-        # until I configure a practical proc to handle invalid input.
-        #raise "Invalid selection"
         actor.tell "Please enter Yes or No."
       else
         return if @finish.nil?

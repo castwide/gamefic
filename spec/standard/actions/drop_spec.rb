@@ -1,7 +1,7 @@
 describe "Drop Action" do
   it "drops an item in the character's inventory" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item = plot.make Item, :name => 'item', :parent => character
@@ -9,8 +9,8 @@ describe "Drop Action" do
     expect(item.parent).to eq(room)
   end
   it "drops multiple items in the character's inventory" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'one', :parent => character
@@ -20,8 +20,8 @@ describe "Drop Action" do
     expect(item2.parent).to eq(room)
   end
   it "drops all from the character's inventory" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'one', :parent => character
@@ -31,8 +31,8 @@ describe "Drop Action" do
     expect(item2.parent).to eq(room)    
   end
   it "drops all described" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'red one', :parent => character
@@ -44,8 +44,8 @@ describe "Drop Action" do
     expect(item3.parent).to be(character)
   end
   it "drops all described with not" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'red one', :parent => character
@@ -57,8 +57,8 @@ describe "Drop Action" do
     expect(item3.parent).to be(room)
   end
   it "does not execute with an unrecognized phrase" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'red one', :parent => character
@@ -70,8 +70,8 @@ describe "Drop Action" do
     expect(item3.parent).to be(character)
   end
   it "drops all except described" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     character = plot.make Character, :name => 'character', :parent => room
     item1 = plot.make Item, :name => 'red one', :parent => character

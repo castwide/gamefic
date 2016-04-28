@@ -2,8 +2,8 @@ require 'securerandom'
 
 describe "Inventory Action" do
   it "lists an item in a character's inventory" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     # TODO: We need to put the character in a room so the has-enough-light room won't cause an error
     room = plot.make Room, :name => 'room'
     character = plot.make MetaCharacter, :name => 'character', :parent => room

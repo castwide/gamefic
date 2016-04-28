@@ -1,9 +1,11 @@
+require 'gamefic/command'
+
 module Gamefic
 
   class Syntax
-    autoload :Match, 'gamefic/syntax/match'
     attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
+    
     def initialize plot, template, *command
       command = command.join(' ')
       words = template.split_words
@@ -52,7 +54,12 @@ module Gamefic
         plot.send :add_syntax, self
       end
     end
-    def translate text
+    
+    # Convert a String into a Command.
+    #
+    # @param text [String]
+    # @return [Command]
+    def tokenize text
       m = text.match(@regexp)
       return nil if m.nil?
       arguments = []
@@ -63,18 +70,29 @@ module Gamefic
           arguments.push r
         end
       }
-      Syntax::Match.new @verb, arguments
+      Command.new @verb, arguments
     end
+    
+    # Get a signature that identifies the form of the Syntax.
+    # Signatures are used to compare Syntaxes to each other.
+    #
     def signature
       [@regexp, @replace]
     end
+    
     def ==(other)
       signature == other.signature
     end
-    def self.match text, syntaxes
+    
+    # Tokenize an Array of Commands from the specified text.
+    #
+    # @param text [String] The text to tokenize.
+    # @param syntaxes [Array<Syntax>] The Syntaxes to use.
+    # @return [Array<Command>] The tokenized commands.
+    def self.tokenize text, syntaxes
       matches = []
       syntaxes.each { |syntax|
-        result = syntax.translate text
+        result = syntax.tokenize text
         matches.push(result) if !result.nil?
       }
       # Sort matches having the most populated arguments first
@@ -91,7 +109,7 @@ module Gamefic
         }
         cb <=> ca
       }
-      matches
+      matches      
     end
   end
 

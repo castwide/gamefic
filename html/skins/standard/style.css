@@ -1,11 +1,70 @@
 html {
 	margin: 0;
 	padding: 0;
+	font-family: Arial, sans-serif;
+	font-size: 12pt;
 }
 body {
 	margin: 0;
 	padding: 0;
+	background-color: #E3E7EA;
 }
 #gamefic_console {
-	margin: 1em;
+	width: 80%;
+	min-width: 600px;
+	max-width: 1024px;
+	overflow: hidden;
+	margin: 0 auto;
+	background-color: #FFFFFF;
+	-webkit-box-shadow: 4px 4px 4px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 4px 4px 4px 0px rgba(0,0,0,0.75);
+	box-shadow: 4px 4px 4px 0px rgba(0,0,0,0.75);
+}
+#gamefic_command {
+	width: calc(100% - 80px);
+	margin: 0;
+	padding: 0;
+	font-size: 14pt;
+	border: 1px solid #909090;
+}
+#gamefic_output {
+	min-height: 600px;
+	max-height: 80vh;
+	overflow: auto;
+	padding: 1em;
+}
+#gamefic_output figure {
+	margin: 0;
+	padding: 0;
+}
+#gamefic_output img {
+	max-width: 100%;
+	display: block;
+	margin: 0 auto;
+	overflow: hidden;
+}
+#gamefic_controls {
+	border-top: 1px solid #909090;
+	overflow: hidden;
+	padding: 1em;
+}
+#gamefic_prompt {
+	font-size: 10pt;
+}
+#gamefic_controls input {
+	font-size: 14pt;
+	height: 24px;
+	border: 1px solid #303030;
+}
+#gamefic_controls button {
+	display: inline-block;
+	font-size: 14pt;
+	line-height: normal !important;
+	height: 26px;
+	width: 72px;
+	border: 1px solid #303030;
+	margin: 0;
+	padding: 0;
+	color: #303030;
+	vertical-align: top;
 }

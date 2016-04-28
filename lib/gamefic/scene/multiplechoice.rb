@@ -42,9 +42,11 @@ module Gamefic
       @data.index = nil
       @data.selection = nil
       if @data.input.strip =~ /[0-9]+/
-        @data.index = input.to_i - 1
-        @data.selection = @data.options[@data.index]
-        @data.index = nil if @data.selection.nil?
+        if input.to_i > 0
+          @data.index = input.to_i - 1
+          @data.selection = @data.options[@data.index]
+          @data.index = nil if @data.selection.nil?
+        end
       else
         i = 0
         @data.options.each { |o|
@@ -61,9 +63,9 @@ module Gamefic
         # response.
         actor.tell "That's not a valid selection."
       else
-        data.next_cue ||= :active
+        @data.next_cue ||= :active
         if !@finish.nil?
-          @finish.call actor, data
+          @finish.call actor, @data
         end
       end
     end

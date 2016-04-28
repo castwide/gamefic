@@ -3,37 +3,74 @@ require 'gamefic/grammar'
 
 module Gamefic
 
+  # Add a variety of text properties for naming, describing, and properly
+  # referencing objects.
   module Describable
     include Grammar::Person, Grammar::Plural
     attr_reader :name
     attr_accessor :synonyms, :indefinite_article
     attr_writer :definite_article
+    
+    # Get a set of Keywords associated with the object.
+    # Keywords are typically the words in the object's name plus its synonyms.
+    #
+    # @return [Keywords]
     def keywords
       Keywords.new "#{name} #{synonyms}"
     end
+    
+    # Get the name of the object with an indefinite article.
+    # Note: proper-named objects never append an article, though an article
+    # may be included in its proper name.
+    #
+    # @return [String]
     def indefinitely
       ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name
     end
+    
+    # Get the name of the object with a definite article.
+    # Note: proper-named objects never append an article, though an article
+    # may be included in its proper name.
     def definitely
       ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name
     end
+    
+    # Get the definite article for this object.
+    #
+    # @return [String]
     def definite_article
       @definite_article || "the"
     end
+    
+    # Is the object proper-named?
+    # Proper-named objects typically do not add articles to their names when
+    # referenced #definitely or #indefinitely, e.g., "Jane Doe" instead of
+    # "a Jane Doe" or "the Jane Doe."
+    #
+    # @return [Boolean]
     def proper_named?
       (@proper_named == true)
     end
-    def proper_named=(value)
-      if value == true
+    
+    # Set whether the object has a proper name.
+    #
+    # @param [Boolean]
+    def proper_named=(bool)
+      if bool == true
         if @definite_article != nil
           @name = "#{@definite_article} #{@name}"
           @definite_article = nil
         end
       end
-      @proper_named = value
+      @proper_named = bool
     end
+    
+    # Set the name of the object.
+    # Setting the name performs some magic to determine how to handle
+    # articles ("an object" and "the object").
+    #
+    # @param value [String]
     def name=(value)
-      # TODO: Split article from name
       words = value.split_words
       if ['a','an'].include?(words[0].downcase)
         @indefinite_article = words[0].downcase
@@ -57,12 +94,24 @@ module Gamefic
       end
       @name = value
     end
+    
+    # Does the object have a description?
+    #
+    # @return [Boolean]
     def has_description?
       (@description.to_s != '')
     end
+    
+    # Get the object's description.
+    #
+    # @return [String]
     def description
       @description || (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
     end
+    
+    # Set the object's description.
+    #
+    # @param text [String]
     def description=(text)
       if text != (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
         @description = text
@@ -70,12 +119,29 @@ module Gamefic
         @description = nil
       end
     end
+    
+    # Set the object's default description.
+    # The default description is typically set in an object's initialization
+    # to ensure that a non-empty string is available when a instance-specific
+    # description is not provided
+    #
+    # @param text [String]
     def self.default_description=(text)
       @default_description = text
     end
+    
+    # Get the object's default description.
+    #
+    # @return [String]
     def self.default_description
       @default_description || "There's nothing special about %{name}."
     end
+    
+    # Get a String representation of the object. By default, this is the
+    # object's name with an indefinite article, e.g., "a person" or "a red
+    # dog."
+    #
+    # @return [String]
     def to_s
       indefinitely
     end

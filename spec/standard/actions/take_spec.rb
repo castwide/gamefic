@@ -1,7 +1,7 @@
 describe "Take Action" do
   before :each do
-    @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.require 'standard'
+    @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    @plot.script 'standard'
   end
   it "takes a portable sibling" do
     room = @plot.make Room, :name => 'room'

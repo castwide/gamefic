@@ -1,5 +1,4 @@
-sources:
-  script_paths:
-    - ./scripts
-  asset_paths:
-    - ./assets
+script_paths:
+  - ./scripts
+asset_paths:
+  - ./assets

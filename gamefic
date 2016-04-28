@@ -1,8 +1,4 @@
 #!/usr/bin/env ruby
 
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/lib"
-require 'gamefic'
-require 'gamefic/shell'
-
-shell = Gamefic::Shell.new
-shell.execute
+load File.dirname(__FILE__) +  '/bin/gamefic'

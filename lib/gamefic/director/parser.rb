@@ -38,7 +38,7 @@ module Gamefic
         if command.to_s == ''
           return options
         end
-        matches = Syntax.match(command, actor.plot.syntaxes)
+        matches = Syntax.tokenize(command, actor.plot.syntaxes)
         matches.each { |match|
           actions = actor.plot.actions_with_verb(match.verb)
           actions.each { |action|
@@ -47,69 +47,71 @@ module Gamefic
         }
         options
       end
-      private
-      def self.bind_contexts_in_result(actor, handler, action)
-        queries = action.queries.clone
-        objects = self.execute_query(actor, handler.clone, queries, action)
-        num_nil = 0
-        while objects.length == 0 and queries.last.optional?
-          num_nil +=1
-          queries.pop
-          objects = self.execute_query(actor, handler.clone, queries, action, num_nil)
+      class << self
+        private
+        def bind_contexts_in_result(actor, handler, action)
+          queries = action.queries.clone
+          objects = execute_query(actor, handler.clone, queries, action)
+          num_nil = 0
+          while objects.length == 0 and queries.last.optional?
+            num_nil +=1
+            queries.pop
+            objects = execute_query(actor, handler.clone, queries, action, num_nil)
+          end
+          return objects
         end
-        return objects
-      end
-      def self.execute_query(actor, arguments, queries, action, num_nil = 0)
-        # If the action verb is nil, treat the first argument as a query
-        arguments.shift unless action.verb.nil?
-        prepared = Array.new
-        objects = Array.new
-        valid = true
-        last_remainder = nil
-        queries.clone.each { |context|
-          arg = arguments.shift.to_s
-          if last_remainder.to_s > ''
-            arg = (last_remainder + " " + arg).strip
-          end
-          if arg.nil? or arg == ''
-            valid = false
-            next
-          end
-          if context == String
-            prepared.push [arg]
-          elsif context.kind_of?(Query::Base)
-            result = context.execute(actor, arg)
-            if result.objects.length == 0
+        def execute_query(actor, arguments, queries, action, num_nil = 0)
+          # If the action verb is nil, treat the first argument as a query
+          arguments.shift unless action.verb.nil?
+          prepared = Array.new
+          objects = Array.new
+          valid = true
+          last_remainder = nil
+          queries.clone.each { |context|
+            arg = arguments.shift.to_s
+            if last_remainder.to_s > ''
+              arg = (last_remainder + " " + arg).strip
+            end
+            if arg.nil? or arg == ''
               valid = false
               next
-            else
-              prepared.push result.objects
-              last_remainder = result.remainder
             end
-          else
-            raise TypeError.new("Action parameters must inherit from Query::Base")
-          end
-        }
-        if valid == true
-          if last_remainder.nil? or last_remainder.empty?
-            prepared.each { |p|
-              p.uniq!
-            }
-            num_nil.times do
-              prepared.push [nil]
-            end
-            objects.push Order.new(actor, action, prepared)
-          else
-            if !action.queries.last.allow_many? or action.queries.last.allow_ambiguous?
-              misunderstood = Action.new nil, nil, Query::Text.new do |actor, text|
-                actor.tell "I understand the first part of your command but not \"#{text}.\""
+            if context == String
+              prepared.push [arg]
+            elsif context.kind_of?(Query::Base)
+              result = context.execute(actor, arg)
+              if result.objects.length == 0
+                valid = false
+                next
+              else
+                prepared.push result.objects
+                last_remainder = result.remainder
               end
-              misunderstood.meta = true
-              objects.push Order.new(actor, misunderstood, [[last_remainder]])
+            else
+              raise TypeError.new("Action parameters must inherit from Query::Base")
+            end
+          }
+          if valid == true
+            if last_remainder.nil? or last_remainder.empty?
+              prepared.each { |p|
+                p.uniq!
+              }
+              num_nil.times do
+                prepared.push [nil]
+              end
+              objects.push Order.new(actor, action, prepared)
+            else
+              if !action.queries.last.allow_many? or action.queries.last.allow_ambiguous?
+                misunderstood = Action.new nil, nil, Query::Text.new do |actor, text|
+                  actor.tell "I understand the first part of your command but not \"#{text}.\""
+                end
+                misunderstood.meta = true
+                objects.push Order.new(actor, misunderstood, [[last_remainder]])
+              end
             end
           end
+          objects
         end
-        objects
       end
     end
 

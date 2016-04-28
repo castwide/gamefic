@@ -1,0 +1,7 @@
+script 'standard/use'
+script 'standard/modules'
+script 'standard/entities'
+script 'standard/queries'
+script 'standard/actions'
+script 'standard/rules'
+script 'standard/pathfinder'

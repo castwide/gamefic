@@ -48,39 +48,56 @@ module Gamefic
     def stream(message)
       # Unlike tell, this method sends raw data without formatting.
     end
+    
+    # Execute the entity's on_update blocks.
+    # This method is typically called by the Engine that manages game execution.
+    #
     def update
       @update_procs.each { |p|
         p.call self
       }
     end
+    
+    # Add a block to be executed when the game updates a turn.
+    #
+    # @yieldparam [Entity]
     def on_update(&block)
       @update_procs.push block
     end
+    
+    # Set the Entity's parent.
+    #
+    # @param node [Entity] The new parent.
     def parent=(node)
       if node != nil and node.kind_of?(Entity) == false
         raise "Entity's parent must be an Entity"
       end
       super
     end
+    
+    # Remove this Entity from its current Plot.
+    #
     def destroy
       self.parent = nil
       # TODO: Need to call this private method here?
       @plot.send(:rem_entity, self)
     end
+    
+    # Get an extended property.
+    #
+    # @param key [Symbol] The property's name.
     def [](key)
       session[key]
     end
+    
+    # Set an extended property.
+    #
+    # @param key [Symbol] The property's name.
+    # @param value The value to set.
     def []=(key, value)
       session[key] = value
     end
-    def find(description)
-      query = Query::Children.new
-      results = query.execute(self, description)
-      if results.objects.length != 1
-        raise "Find failed for #{description} on #{definitely}"
-      end
-      return results.objects[0]
-    end
+    
   end
 
 end

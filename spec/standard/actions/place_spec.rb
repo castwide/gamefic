@@ -1,7 +1,7 @@
 describe "Place Action" do
   before :each do
-    @plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    @plot.require 'standard'
+    @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    @plot.script 'standard'
     @room = @plot.make Room, :name => 'room'
     @character = @plot.make Character, :name => 'character', :parent => @room
     @item = @plot.make Item, :name => 'item', :parent => @character
