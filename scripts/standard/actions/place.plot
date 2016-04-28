@@ -1,5 +1,5 @@
 respond :place, Use.children, Use.reachable do |actor, thing, supporter|
-  actor.tell "You can't put #{the thing} on #{the supporter}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.can + ' not')} put #{the thing} on #{the supporter}."
 end
 
 respond :place, Use.visible, Use.reachable(Supporter) do |actor, thing, supporter|
@@ -13,15 +13,15 @@ end
 
 respond :place, Use.children, Use.reachable(Supporter) do |actor, thing, supporter|
   thing.parent = supporter
-  actor.tell "You put #{the thing} on #{the supporter}."
+  actor.tell "#{you.pronoun.Subj} #{you.verb.put} #{the thing} on #{the supporter}."
 end
 
 respond :place, Use.visible, Use.text do |actor, thing, supporter|
-  actor.tell "You don't see anything called \"#{supporter}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see anything called \"#{supporter}\" here."
 end
 
 respond :place, Use.text, Use.visible do |actor, thing, supporter|
-  actor.tell "You don't see anything called \"#{thing}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see anything called \"#{thing}\" here."
 end
 
 respond :place, Use.text, Use.text do |actor, thing, supporter|

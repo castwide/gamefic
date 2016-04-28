@@ -1,9 +1,9 @@
 respond :open, Use.text do |actor, string|
-  actor.tell "You don't see any \"#{string}\" here."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see any \"#{string}\" here."
 end
 
 respond :open, Use.reachable() do |actor, thing|
-  actor.tell "You can't open #{the thing}."
+  actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.can + ' not')} open #{the thing}."
 end
 
 respond :open, Use.reachable(Openable) do |actor, container|
@@ -15,7 +15,7 @@ respond :open, Use.reachable(Openable) do |actor, container|
     end
   end
   if !container.open?
-    actor.tell "You open #{the container}."
+    actor.tell "#{you.pronoun.Subj} #{you.verb.open} #{the container}."
     container.open = true
     if container.children.that_are_not(:attached?).length > 0
       actor.perform :search, container
