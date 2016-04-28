@@ -21,5 +21,6 @@ module Gamefic::Grammar
     end
     conjugate :be,   :present, :am,   :are,  :is,  :are
     conjugate :have, :present, :have, :have, :has, :have
+    conjugate :can, :present, :can, :can, :can
   end
 end
