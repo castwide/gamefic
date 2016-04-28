@@ -1,7 +1,7 @@
-describe "Open Action" do
+describe "Use Action" do
   it "does not raise errors for valid commands" do
-    plot = Plot.new(Source.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    plot.require 'standard'
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot.script 'standard'
     room = plot.make Room, :name => 'room'
     tool = plot.make Item, :name => 'tool', :parent => room
     target = plot.make Item, :name => 'target', :parent => room
