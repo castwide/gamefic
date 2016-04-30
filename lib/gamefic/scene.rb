@@ -6,8 +6,8 @@ module Gamefic
     autoload :Active, 'gamefic/scene/active'
     autoload :Pause, 'gamefic/scene/paused'
     autoload :Conclusion, 'gamefic/scene/conclusion'
-    autoload :MultipleChoice, 'gamefic/scene/multiplechoice'
-    autoload :YesOrNo, 'gamefic/scene/yesorno'
+    autoload :MultipleChoice, 'gamefic/scene/multiple_choice'
+    autoload :YesOrNo, 'gamefic/scene/yes_or_no'
   end
   
 end

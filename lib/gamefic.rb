@@ -7,11 +7,6 @@ require 'gamefic/serialized'
 require 'gamefic/entity'
 require 'gamefic/character'
 require "gamefic/scene"
-require "gamefic/scene/active"
-require "gamefic/scene/concluded"
-require "gamefic/scene/paused"
-require "gamefic/scene/multiplechoice"
-require "gamefic/scene/yesorno"
 require "gamefic/query"
 require "gamefic/action"
 require "gamefic/syntax"
