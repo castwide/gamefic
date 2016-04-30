@@ -122,7 +122,28 @@ module Gamefic
       return if delegate_stack.last.nil?
       delegate_stack.last.proceed
     end
-        
+
+    def cue scene_name
+      @scene = scene_name
+      @next_scene = nil
+      plot.scenes[scene_name].start self
+    end
+    
+    def prepare scene_name
+      @next_scene = scene_name
+    end
+
+    # Get the name of the character's current scene
+    #
+    # @return [Symbol] The name of the scene    
+    def scene
+      @scene
+    end
+    
+    def next_scene
+      @next_scene
+    end
+    
     private
     def delegate_stack
       @delegate_stack ||= []

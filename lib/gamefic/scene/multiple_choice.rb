@@ -1,74 +1,62 @@
 module Gamefic
 
-  class MultipleChoiceSceneManager < SceneManager
-    def data_class
-      MultipleChoiceSceneData
-    end
-    def scene_class
-      MultipleChoiceScene
-    end
-    def state
-      @state ||= "MultipleChoice"
-    end
-    def prompt
-      @prompt ||= "Enter a choice:"
-    end
-  end
-  
-  class MultipleChoiceSceneData < SceneData
-    attr_accessor :index, :selection, :options
-    def options
-      @options ||= []
-    end
-  end
-
-  class MultipleChoiceScene < Scene
-    def initialize manager, key
+  class Scene::MultipleChoice < Scene::Custom
+    autoload :Input, 'gamefic/scene/multiple_choice/input'
+    
+    def initialize config = {}
       super
-      @prompt ||= "Enter a choice:"
+      @options = config[:options]
+      @invalid_choice_message = config[:invalid_choice_message]
     end
     def start actor
       super
+      tell_choices actor
+    end
+    def finish actor, input
+      this_scene = actor.scene
+      index = nil
+      choice = nil
+      if input.strip =~ /[0-9]+/ and input.to_i > 0
+        index = input.to_i - 1
+        choice = @options[index]
+      else
+        index = 0
+        @options.each { |o|
+          if o.casecmp(input).zero?
+            choice = o
+          end
+          index += 1
+        }
+      end
+      if choice.nil?
+        actor.tell invalid_choice_message
+        tell_choices actor
+      else
+        input_object = Input.new(input, index, choice)
+        super actor, input_object
+        actor.cue :active if (actor.scene == this_scene and actor.next_scene.nil?)
+      end
+    end
+
+    def prompt
+      @prompt ||= "Enter a choice:"
+    end
+    
+    def invalid_choice_message
+      @invalid_choice_message ||= "That's not a valid selection."
+    end
+    
+    private
+    
+    def tell_choices actor
       list = '<ol class="multiple_choice">'
-      @data.options.each { |o|
+      @options.each { |o|
         list += "<li>#{o}</li>"
       }
       list += "</ol>"
       actor.tell list
-      @data.prompt ||= @prompt
     end
-    def finish actor, input
-      @data.input = input
-      @data.index = nil
-      @data.selection = nil
-      if @data.input.strip =~ /[0-9]+/
-        if input.to_i > 0
-          @data.index = input.to_i - 1
-          @data.selection = @data.options[@data.index]
-          @data.index = nil if @data.selection.nil?
-        end
-      else
-        i = 0
-        @data.options.each { |o|
-          if o.casecmp(@data.input).zero?
-            @data.index = i
-            @data.selection = o
-            break
-          end
-          i += 1
-        }
-      end
-      if @data.selection.nil?
-        # TODO: Consider allowing for an error block to customize this
-        # response.
-        actor.tell "That's not a valid selection."
-      else
-        @data.next_cue ||= :active
-        if !@finish.nil?
-          @finish.call actor, @data
-        end
-      end
-    end
+    
   end
 
 end

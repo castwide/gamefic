@@ -1,6 +1,6 @@
 module Gamefic
 
-  class Scene::Active
+  class Scene::Active < Scene::Base
     def start actor
       # TODO Anything necessary here?
     end

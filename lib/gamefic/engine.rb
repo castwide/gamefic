@@ -11,7 +11,7 @@ module Gamefic
     def run
       @plot.introduce @user.character
       print @user.state.output
-      while @user.character.scene.state != "Concluded"
+      while !@plot.concluded?(@user.character)
         turn
       end
       print @user.state.output
@@ -20,12 +20,12 @@ module Gamefic
       @plot.ready
       print @user.state.output
       # HACK Exception for test scenes
-      if @user.character.scene.key != :test
-        if @user.character.scene.state != "Concluded"
-          @user.stream.select @user.character.scene.data.prompt
+      #if @user.character.scene.key != :test
+      #  if @user.character.scene.state != "Concluded"
+          @user.stream.select @plot.scenes[@user.character.scene].prompt
           @user.state.input
-        end
-      end
+      #  end
+      #end
       @plot.update
       print @user.state.output
     end

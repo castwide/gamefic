@@ -5,6 +5,12 @@ module Gamefic
       @prompt = prompt
       @start = block
     end
+    def finish actor, input
+      actor.prepare :active if actor.next_scene.nil?
+    end
+    def prompt
+      @prompt ||= "Press Enter to continue..."
+    end
   end
   
 end

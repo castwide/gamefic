@@ -1,11 +1,11 @@
-yes_or_no :confirm_quit, "Are you sure you want to quit?" do |actor, data|
-  if data.answer == "yes"
-    cue actor, :concluded
+yes_or_no :confirm_quit, "Are you sure you want to quit?" do |actor, input|
+  if input == "yes"
+    actor.cue :concluded
   else
-    cue actor, :active
+    actor.cue :active
   end
 end
 
 meta :quit do |actor|
-  cue actor, :confirm_quit
+  actor.cue :confirm_quit
 end

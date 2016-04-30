@@ -42,19 +42,28 @@ module Gamefic
       @players = []
       @asserts = {}
       @default_scene = :active
-      @prepared_scenes = {}
-      @current_scenes = {}
+      #@prepared_scenes = {}
+      #@current_scenes = {}
       post_initialize
     end
 
     def scenes
       if @scenes.nil?
         @scenes = {}
-        # TODO Default scenes
+        @scenes[:active] = Scene::Active.new
+        @scenes[:concluded] = Scene::Conclusion.new
       end
       @scenes
     end
-        
+    
+    #def scene_for(actor)
+    #  @current_scenes[actor]
+    #end
+    
+    def concluded?(actor)
+      scenes[actor.scene].kind_of?(Scene::Conclusion)
+    end
+    
     # Get an Array of all Actions defined in the Plot.
     #
     # @return Array[Action]
@@ -168,10 +177,10 @@ module Gamefic
       # by the plot, which would be :active by default. We could
       # get it like player.cue nil.
       if player.scene.nil?
-        cue player, default_scene
-        ready
-        update
+        player.cue default_scene
       end
+      ready
+      update
     end
     
     # Prepare the Plot for the next turn of gameplay.
@@ -185,12 +194,11 @@ module Gamefic
         @player_ready.each { |block|
           block.call player
         }
-        next_scene = @prepared_scenes[player]
-        if !next_scene.nil?
-          @current_scenes[player] = scenes[next_scene]
-        end
-        @prepared_scenes[player] = nil
-        @current_scenes[player].start player
+        #this_scene = player.next_scene || player.scene
+        #player.prepare nil
+        #if this_scene != player.scene
+        #  player.cue this_scene
+        #end
       }
     end
     
@@ -199,6 +207,11 @@ module Gamefic
     def update
       # Update the plot.
       @players.each { |player|
+	      this_scene = player.next_scene || player.scene
+	      player.prepare nil
+	      if this_scene != player.scene
+	        player.cue this_scene
+	      end
         process_input player
       }
       @entities.each { |e|
@@ -256,35 +269,11 @@ module Gamefic
       @player_procs.push block
     end
 
-    # Start a character in a scene.
-    # This method will start the scene immediately, even if another scene is
-    # currently in progress. To specify a scene that should be started on the
-    # next turn, use #prepare.
-    #
-    # @param actor [Character] The character being cued
-    # @param scene_name [Symbol] The name of the scene
-    def cue actor, scene_name
-      # TODO Validate key (maybe actor, too)
-      @current_scenes[actor] = scenes[scene_name]
-      @current_scenes[actor].start actor
-    end
-
-    # Prepare a character for a scene.
-    # The current scene will finish before the prepared scene starts. To start
-    # a scene immediately, use #cue.
-    #
-    # @param actor [Character] The character being prepared
-    # @param scene_name [Symbol] The name of the scene
-    def prepare actor, scene_name
-      @prepared_scenes[actor] = scenes[scene_name]
-    end
-
     private
     def process_input player
       line = player.queue.shift
       if !line.nil?
-        player.scene.finish player, line
-        #cue player, player.scene.data.next_cue if !player.scene.data.next_cue.nil?
+        scenes[player.scene].finish player, line
       end
     end
     def update_player player

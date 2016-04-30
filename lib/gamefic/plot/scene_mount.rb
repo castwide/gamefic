@@ -8,14 +8,12 @@ module Gamefic
     # The user will be required to make a valid choice to continue
     #
     # @yieldparam [Character]
-    # @yieldparam [MultipleChoiceSceneData]
-    def multiple_choice key, *args, &block
-      scene_managers[key] = MultipleChoiceSceneManager.new do |config|
-        config.start do |actor, data|
-          data.options = args
-        end
-        config.finish(&block)
-      end
+    # @yieldparam [String]
+    def multiple_choice key, options, &block
+      scenes[key] = Scene::MultipleChoice.new(
+        options: options,
+        finish: block
+      )
     end
     
     # Create a yes-or-no scene.
@@ -24,18 +22,7 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [YesOrNoSceneData]
     def yes_or_no key, prompt = nil, &block
-      manager = YesOrNoSceneManager.new do |config|
-        config.prompt = prompt
-        config.finish do |actor, data|
-          if data.answer.nil?
-            actor.tell "Please answer Yes or No."
-          else
-            data.next_cue ||= :active
-            block.call(actor, data)
-          end
-        end
-      end
-      scene_managers[key] = manager
+      scenes[key] = Scene::YesOrNo.new(prompt, &block)
     end
     
     # Create a scene with a prompt.
@@ -43,18 +30,11 @@ module Gamefic
     # from the user.
     #
     # @param key [Symbol] A unique name for the scene.
-    # @param prompt [String] The prompt message to display to the user.
+    # @param prompt [String] The input prompt to display to the user.
     # @yieldparam [Character]
-    # @yieldparam [SceneData]
-    def prompt key, prompt, &block
-      scene_managers[key] = SceneManager.new do |config|
-        config.prompt = prompt
-        config.finish do |actor, data|
-          data.next_cue ||= :active
-          block.call actor, data
-        end
-      end
-      scene_managers[key].state = "Prompted"
+    # @yieldparam [String]
+    def question key, prompt, &block
+      scenes[key] = Scene::Question.new prompt, &block
     end
     
     # Create a scene that pauses the game.
@@ -65,13 +45,7 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [SceneData]
     def pause key, &block
-      manager = PausedSceneManager.new do |config|
-        config.start do |actor, data|
-          data.next_cue = :active
-          block.call actor, data
-        end
-      end
-      scene_managers[key] = manager
+      scenes[key] = Scene::Pause.new &block
     end
     
     # Create a conclusion.
@@ -81,10 +55,10 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [SceneData]
     def conclusion key, &block
-      manager = ConcludedSceneManager.new do |config|
-        config.start(&block)
-      end
-      scene_managers[key] = manager
+      #manager = ConcludedSceneManager.new do |config|
+      #  config.start(&block)
+      #end
+      #scene_managers[key] = manager
     end
     
     # Create a generic scene.
@@ -94,17 +68,17 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [SceneData]
     def scene key, &block
-      scene = SceneManager.new do |manager|
-        manager.start do |actor, data|
-          data.next_cue = :active
-          block.call(actor, data) if !block.nil?
-          cue actor, data.next_cue
-          actor.scene.start actor
-        end
-        # Since generic scenes always cue a new scene, there's no reason to
-        # define a finish block.
-      end
-      scene_managers[key] = scene
+      #scene = SceneManager.new do |manager|
+      #  manager.start do |actor, data|
+      #    data.next_cue = :active
+      #    block.call(actor, data) if !block.nil?
+      #    cue actor, data.next_cue
+      #    actor.scene.start actor
+      #  end
+      #  # Since generic scenes always cue a new scene, there's no reason to
+      #  # define a finish block.
+      #end
+      #scene_managers[key] = scene
     end
     
     # Branch to a new scene based on a list of options.
@@ -126,9 +100,9 @@ module Gamefic
     # @param key [Symbol] A unique name for the scene.
     # @param options [Hash] A Hash of options and associated scene keys.
     def branch key, options
-      multiple_choice key, *options.keys do |actor, data|
-        cue actor, options[data.selection]
-      end
+      #multiple_choice key, *options.keys do |actor, data|
+      #  cue actor, options[data.selection]
+      #end
     end
 
     # Set the next scene for the character.
@@ -138,12 +112,12 @@ module Gamefic
     # @param actor [Character] The character being cued
     # @param key [Symbol] The name of the scene
     def conclude actor, key
-      key = :concluded if key.nil?
-      manager = scene_managers[key]
-      if manager.state != "Concluded"
-        raise NotConclusionError("Cued scene '#{key}' is not a conclusion")
-      end
-      cue actor, key
+      #key = :concluded if key.nil?
+      #manager = scene_managers[key]
+      #if manager.state != "Concluded"
+      #  raise NotConclusionError("Cued scene '#{key}' is not a conclusion")
+      #end
+      #cue actor, key
     end
     
   end
