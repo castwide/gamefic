@@ -1,25 +1,12 @@
 module Gamefic
 
-  class ActiveSceneManager < SceneManager
-    def scene_class
-      ActiveScene
+  class Scene::Active
+    def start actor
+      # TODO Anything necessary here?
     end
-    def state
-      @state ||= "Active"
+    def finish actor, input
+      actor.perform input
     end
   end
   
-  class ActiveScene < Scene
-    def finish actor, input
-      @data.input = input
-      if @finish.nil?
-        last_order = actor.perform data.input
-        # HACK Set the last_order here so inline performs don't set it
-        actor.send(:last_order=, last_order)
-      else
-        @finish.call actor, data
-      end
-    end
-  end
-
 end

@@ -25,26 +25,36 @@ module Gamefic
     # the plugin isn't activated.
     include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    expose :script, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players
+    expose :script, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes
     
     # @param [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
-      @commands = Hash.new
-      @syntaxes = Array.new
-      @ready_procs = Array.new
-      @update_procs = Array.new
-      @player_ready = Array.new
-      @player_procs = Array.new
-      @working_scripts = Array.new
-      @imported_scripts = Array.new
-      @entities = Array.new
-      @players = Array.new
-      @asserts = Hash.new
+      @commands = {}
+      @syntaxes = []
+      @ready_procs = []
+      @update_procs = []
+      @player_ready = []
+      @player_procs = []
+      @working_scripts = []
+      @imported_scripts = []
+      @entities = []
+      @players = []
+      @asserts = {}
       @default_scene = :active
+      @prepared_scenes = {}
+      @current_scenes = {}
       post_initialize
     end
-    
+
+    def scenes
+      if @scenes.nil?
+        @scenes = {}
+        # TODO Default scenes
+      end
+      @scenes
+    end
+        
     # Get an Array of all Actions defined in the Plot.
     #
     # @return Array[Action]
@@ -175,7 +185,12 @@ module Gamefic
         @player_ready.each { |block|
           block.call player
         }
-        player.scene.start player
+        next_scene = @prepared_scenes[player]
+        if !next_scene.nil?
+          @current_scenes[player] = scenes[next_scene]
+        end
+        @prepared_scenes[player] = nil
+        @current_scenes[player].start player
       }
     end
     
@@ -191,7 +206,6 @@ module Gamefic
       }
       @players.each { |player|
         update_player player
-        cue player, player.scene.data.next_cue if !player.scene.data.next_cue.nil?
       }
       @update_procs.each { |p|
         p.call
@@ -240,6 +254,29 @@ module Gamefic
     # @yieldparam [Character]
     def on_player_update &block
       @player_procs.push block
+    end
+
+    # Start a character in a scene.
+    # This method will start the scene immediately, even if another scene is
+    # currently in progress. To specify a scene that should be started on the
+    # next turn, use #prepare.
+    #
+    # @param actor [Character] The character being cued
+    # @param scene_name [Symbol] The name of the scene
+    def cue actor, scene_name
+      # TODO Validate key (maybe actor, too)
+      @current_scenes[actor] = scenes[scene_name]
+      @current_scenes[actor].start actor
+    end
+
+    # Prepare a character for a scene.
+    # The current scene will finish before the prepared scene starts. To start
+    # a scene immediately, use #cue.
+    #
+    # @param actor [Character] The character being prepared
+    # @param scene_name [Symbol] The name of the scene
+    def prepare actor, scene_name
+      @prepared_scenes[actor] = scenes[scene_name]
     end
 
     private

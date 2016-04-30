@@ -4,18 +4,6 @@ end
 module Gamefic
 
   module Plot::SceneMount
-    # Get a Hash of SceneManager objects.
-    #
-    # @return [Hash<Symbol, SceneManager>]
-    def scene_managers
-      if @scene_managers.nil?
-        @scene_managers ||= {}
-        @scene_managers[:active] = ActiveSceneManager.new
-        @scene_managers[:concluded] = ConcludedSceneManager.new
-      end
-      @scene_managers
-    end
-    
     # Create a multiple-choice scene.
     # The user will be required to make a valid choice to continue
     #
@@ -142,27 +130,8 @@ module Gamefic
         cue actor, options[data.selection]
       end
     end
-    
-    # Cue a Character's next scene
-    #
-    # @param actor [Character] The character being cued
-    # @param key [Symbol] The name of the scene
-    def cue actor, key
-      if !actor.scene.nil? and actor.scene.state == "Concluded"
-        return
-      end
-      if key.nil?
-        raise "Cueing scene with nil key"
-      end
-      manager = scene_managers[key]
-      if manager.nil?
-        raise "No '#{key}' scene found"
-      else
-        actor.scene = manager.prepare key
-      end
-      @scene
-    end
-    
+
+    # Set the next scene for the character.
     # This is functionally identical to #cue, but it also raises an
     # exception if the selected scene is not a Concluded state.
     #
@@ -176,6 +145,7 @@ module Gamefic
       end
       cue actor, key
     end
+    
   end
 
 end

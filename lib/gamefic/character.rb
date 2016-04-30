@@ -7,7 +7,7 @@ module Gamefic
     attr_reader :last_order
     # @return [Entity,nil]
     attr_reader :last_object
-    attr_accessor :object_of_pronoun, :scene
+    attr_accessor :object_of_pronoun
     
     def initialize(plot, args = {})
       @queue = Array.new
@@ -106,21 +106,23 @@ module Gamefic
     #     actor[:has_eaten] = false # Initial value
     #   end
     #   respond :eat do |actor|
+    #     actor.tell "You eat something."
     #     actor[:has_eaten] = true
     #   end
     #   respond :eat do |actor|
     #     # This version will be executed first because it was implemented last
-    #     actor.tell "You eat something."
-    #     actor[:has_eaten] # Will be false on the first run
-    #     actor.proceed # Execute the previous implementation
-    #     actor[:has_eaten] #=> true
+    #     if actor[:has_eaten]
+    #       actor.tell "You already ate."
+    #     else
+    #       actor.proceed # Execute the previous implementation
+    #     end
     #   end
     #
     def proceed
       return if delegate_stack.last.nil?
       delegate_stack.last.proceed
     end
-    
+        
     private
     def delegate_stack
       @delegate_stack ||= []

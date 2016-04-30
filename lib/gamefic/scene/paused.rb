@@ -1,26 +1,10 @@
 module Gamefic
 
-  class PausedSceneManager < SceneManager
-    def scene_class
-      PausedScene
-    end
-    def data_class
-      PausedSceneData
-    end
-    def state
-      @state ||= "Paused"
-    end
-    def prompt
-      @prompt ||= "Press enter to continue..."
+  class Scene::Pause < Scene::Custom
+    def initialize prompt = nil, &block
+      @prompt = prompt
+      @start = block
     end
   end
   
-  class PausedSceneData < SceneData
-    attr_accessor :next_cue
-  end
-  
-  class PausedScene < Scene
-  
-  end
-
 end
