@@ -211,8 +211,10 @@ module Gamefic
 	      player.prepare nil
 	      if this_scene != player.scene
 	        player.cue this_scene
-	      end
-        process_input player
+	        player.queue.shift
+	      else
+          process_input player
+        end
       }
       @entities.each { |e|
         e.update

@@ -75,6 +75,7 @@ module Gamefic
       #  # define a finish block.
       #end
       #scene_managers[key] = scene
+      scenes[key] = Scene::Passive.new &block
     end
     
     # Branch to a new scene based on a list of options.

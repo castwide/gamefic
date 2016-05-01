@@ -4,8 +4,8 @@ class Gamefic::Character
   include Suggestible
 end
 
-on_player_ready do |actor|
-  if actor.scene.key == :active or actor.scene.data.next_cue == :active
+on_player_update do |actor|
+  if actor.scene == :active
     actor.suggest "look around"
     actor.suggest "inventory"
     if Use.visible.context_from(actor).length > 0
