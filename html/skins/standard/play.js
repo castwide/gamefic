@@ -15,8 +15,12 @@ $(function() {
 		if (response.input != null) {
 			$('#gamefic_output').append('<p><kbd>' + response.prompt + ' ' + response.input + '</kbd></p>');
 		}
+		$('#gamefic_controls').addClass('working');
 	});
 	Gamefic.onFinish(function(response) {
+		if (!response.testing) {
+			$('#gamefic_controls').removeClass('working');
+		}
 		$('#gamefic_command').val('');
 		$('#gamefic_command').focus();
 		var outputElement = document.getElementById('gamefic_output');
@@ -45,7 +49,7 @@ $(function() {
 		});
 		$('#gamefic_output').append(jq);
 	});
-	Gamefic.handleResponse('Concluded', function(response) {
+	Gamefic.handleResponse('Conclusion', function(response) {
 		if (response.input != null) {
 			$('#gamefic_output').append('<p><kbd>' + response.prompt + ' ' + response.input + '</kbd></p>');
 		}

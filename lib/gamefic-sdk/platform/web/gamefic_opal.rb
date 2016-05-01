@@ -30,6 +30,9 @@ module GameficOpal
 	    data = `Gamefic.Engine.restore(filename);`
 	    return data
 	  end
+	  def test_queue
+	    character[:test_queue] || []
+	  end
 	end
 end
 

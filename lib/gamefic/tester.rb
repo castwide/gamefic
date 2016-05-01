@@ -13,7 +13,6 @@ module Gamefic
       actor[:test_queue] = queue
       actor[:test_queue_length] = queue.length
       actor[:test_queue_scene] = actor.scene
-      actor[:testing] = true
     end
   end
 

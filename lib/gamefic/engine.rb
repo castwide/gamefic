@@ -19,13 +19,14 @@ module Gamefic
     def turn
       @plot.ready
       print @user.state.output
-      # HACK Exception for test scenes
-      #if @user.character.scene.key != :test
-      #  if @user.character.scene.state != "Concluded"
-          @user.stream.select @plot.scenes[@user.character.scene].prompt
-          @user.state.input
-      #  end
-      #end
+      if !@user.character[:test_queue].nil? and @user.character[:test_queue].length > 0
+        test_command = @user.character[:test_queue].shift
+        @user.character.tell "[TESTING] #{@plot.scenes[@user.character.scene].prompt} #{test_command}"
+        @user.character.queue.push test_command 
+      else
+        @user.stream.select @plot.scenes[@user.character.scene].prompt
+        @user.state.input
+      end
       @plot.update
       print @user.state.output
     end

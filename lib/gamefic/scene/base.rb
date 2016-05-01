@@ -10,6 +10,9 @@ module Gamefic::Scene
     def finish actor, input
       
     end
+    def state
+      self.class.to_s.split('::').last
+    end
   end
   
 end

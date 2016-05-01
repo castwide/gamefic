@@ -7,10 +7,11 @@ describe "Professor" do
     character = plot.make Character, :name => 'player'
     plot.introduce character
     character.perform "test me"
-    100.times do
+    character[:test_queue].length.times do |actor|
       plot.ready
+      character.queue.push character[:test_queue].shift
       plot.update
     end
-    expect(character.scene.state).to eq("Concluded")
+    expect(plot.scenes[character.scene].class).to eq(Scene::Conclusion)
   end
 end

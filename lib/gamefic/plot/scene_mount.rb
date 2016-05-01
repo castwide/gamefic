@@ -53,12 +53,8 @@ module Gamefic
     #
     # @param key [Symbol] A unique name for the scene.
     # @yieldparam [Character]
-    # @yieldparam [SceneData]
     def conclusion key, &block
-      #manager = ConcludedSceneManager.new do |config|
-      #  config.start(&block)
-      #end
-      #scene_managers[key] = manager
+      scenes[key] = Scene::Conclusion.new &block
     end
     
     # Create a generic scene.
@@ -118,6 +114,7 @@ module Gamefic
       #  raise NotConclusionError("Cued scene '#{key}' is not a conclusion")
       #end
       #cue actor, key
+      actor.cue key
     end
     
   end

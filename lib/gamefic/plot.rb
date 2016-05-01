@@ -280,10 +280,6 @@ module Gamefic
       @player_procs.each { |proc|
         proc.call player
       }
-      # HACK Exception for running tests
-      if player[:testing] == true
-        cue player, :test
-      end
     end
     def rem_entity(entity)
       @entities.delete(entity)
