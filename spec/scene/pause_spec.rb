@@ -1,4 +1,4 @@
-describe PausedScene do
+describe Scene::Pause do
   it "changes the character's state after a response" do
     plot = Plot.new
     room = plot.make Room, :name => 'room'
@@ -8,12 +8,12 @@ describe PausedScene do
       actor[:has_paused] = true
     end
     plot.introduce character
-    plot.cue character, :pause
-    expect(character.scene.key).to eq(:pause)
+    character.cue :pause
+    expect(character.scene).to eq(:pause)
     character.queue.push ""
     plot.ready
     plot.update
-    expect(character.scene.key).to eq(:active)
+    expect(character.scene).to eq(:active)
     expect(character[:has_paused]).to eq(true)
   end
 end

@@ -15,7 +15,9 @@ module Gamefic
       if answer.nil?
         actor.tell "Please enter Yes or No."
       else
+        this_scene = actor.scene
         @finish.call actor, answer
+        actor.cue :active if (actor.scene == this_scene and actor.next_scene.nil?)
       end
     end
   end

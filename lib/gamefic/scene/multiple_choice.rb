@@ -24,6 +24,7 @@ module Gamefic
         @options.each { |o|
           if o.casecmp(input).zero?
             choice = o
+            break
           end
           index += 1
         }

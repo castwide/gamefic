@@ -16,9 +16,11 @@ describe "Undo Action" do
     end
     plot.introduce character
     character.queue.unshift "take item"
+    plot.ready
     plot.update
     expect(item.parent).to be(character)
     character.queue.unshift "undo"
+    plot.ready
     plot.update
     expect(item.parent).to be(room)
   end

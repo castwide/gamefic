@@ -10,7 +10,7 @@ end
 
 on_player_update do |actor|
   @snapshots ||= Snapshots.new(entities)
-  if actor.scene.key == :active and actor[:testing] != true and !actor.last_order.nil? and actor.last_order.action.verb != :undo and !last_snapshot.nil?
+  if actor.scene == :active and actor[:testing] != true and !actor.last_order.nil? and actor.last_order.action.verb != :undo and !last_snapshot.nil?
     @snapshots.history.push last_snapshot
   end
 end
