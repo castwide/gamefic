@@ -29,7 +29,7 @@ professor = make Character, :name => 'the professor', :synonyms => 'Sam Worthing
 #  actor.perform "ask professor about #{line}" unless line == ""
 #end
 
-prompt :talk_to_professor, "What do you want to ask him about?" do |actor, data|
+question :talk_to_professor, "What do you want to ask him about?" do |actor, data|
   actor.perform "ask professor about #{data.input}" unless data.input == ""
   cue actor, :active
 end
