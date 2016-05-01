@@ -2,12 +2,13 @@
 require 'gamefic/query/expression'
 require 'gamefic/query/matches'
 require 'gamefic/grammar/verb_set'
+require 'gamefic/scene/multiple_choice/input'
 
 # HACK Opal doesn't recognizes classes and modules declared from scripts
 def Object.const_missing sym
   Gamefic.const_get sym
 end
-  
+
 module GameficOpal
   def self.static_plot
     @@static_plot ||= WebPlot.new(Gamefic::Source::Text.new)
