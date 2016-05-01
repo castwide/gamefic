@@ -47,7 +47,7 @@ respond :talk, Query::Reachable.new(professor), Query::Text.new("name") do |acto
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new("job", "opening", "work", "interview") do |actor, professor, subject|
-  conclude actor, :asked_about_job
+  actor.conclude :asked_about_job
 end
 
 conclusion :asked_about_job do |actor|

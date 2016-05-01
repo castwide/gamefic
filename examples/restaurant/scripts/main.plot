@@ -43,7 +43,7 @@ respond :go, Query::Siblings.new(door) do |actor, door|
   # Just for extra fun, we'll script the player to put on the jacket before
   # leaving.
   elsif jacket.parent == actor and jacket.attached?
-    conclude actor, :finished
+    actor.conclude :finished
   else
     actor.tell "Hmm... it looks a little cold out there. You're not dressed for it right now."
   end

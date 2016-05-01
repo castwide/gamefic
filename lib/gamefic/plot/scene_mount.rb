@@ -20,7 +20,7 @@ module Gamefic
     # The user will be required to answer Yes or No to continue.
     #
     # @yieldparam [Character]
-    # @yieldparam [YesOrNoSceneData]
+    # @yieldparam [String] "yes" or "no"
     def yes_or_no key, prompt = nil, &block
       scenes[key] = Scene::YesOrNo.new(prompt, &block)
     end
@@ -43,7 +43,6 @@ module Gamefic
     #
     # @param key [Symbol] A unique name for the scene.
     # @yieldparam [Character]
-    # @yieldparam [SceneData]
     def pause key, &block
       scenes[key] = Scene::Pause.new &block
     end
@@ -58,23 +57,12 @@ module Gamefic
     end
     
     # Create a generic scene.
-    # After the scene is complete, it will automatically start the next cue.
+    # After the scene is complete, it will automatically start the next
+    # prepared scene, or the :active scene if none is prepared.
     #
     # @param [Symbol] A unique name for the scene.
     # @yieldparam [Character]
-    # @yieldparam [SceneData]
     def scene key, &block
-      #scene = SceneManager.new do |manager|
-      #  manager.start do |actor, data|
-      #    data.next_cue = :active
-      #    block.call(actor, data) if !block.nil?
-      #    cue actor, data.next_cue
-      #    actor.scene.start actor
-      #  end
-      #  # Since generic scenes always cue a new scene, there's no reason to
-      #  # define a finish block.
-      #end
-      #scene_managers[key] = scene
       scenes[key] = Scene::Passive.new &block
     end
     
@@ -95,29 +83,16 @@ module Gamefic
     #   end
     #
     # @param key [Symbol] A unique name for the scene.
-    # @param options [Hash] A Hash of options and associated scene keys.
-    def branch key, options
-      #multiple_choice key, *options.keys do |actor, data|
-      #  cue actor, options[data.selection]
-      #end
+    # @param map [Hash] A Hash of options and associated scene keys.
+    def branch key, map
+      scenes[key] = Scene::MultipleChoice.new(
+        options: map.keys,
+        finish: proc { |actor, input|
+          actor.cue map[input.choice]
+        }
+      )
     end
 
-    # Set the next scene for the character.
-    # This is functionally identical to #cue, but it also raises an
-    # exception if the selected scene is not a Concluded state.
-    #
-    # @param actor [Character] The character being cued
-    # @param key [Symbol] The name of the scene
-    def conclude actor, key
-      #key = :concluded if key.nil?
-      #manager = scene_managers[key]
-      #if manager.state != "Concluded"
-      #  raise NotConclusionError("Cued scene '#{key}' is not a conclusion")
-      #end
-      #cue actor, key
-      actor.cue key
-    end
-    
   end
 
 end

@@ -33,7 +33,7 @@ introduction do |actor|
 end
 
 respond :take, Query::Reachable.new(gold) do |actor, gold|
-  conclude actor, :found_gold
+  actor.conclude :found_gold
 end
 
 conclusion :found_gold do |actor|

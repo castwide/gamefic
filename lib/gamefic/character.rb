@@ -133,6 +133,12 @@ module Gamefic
       @next_scene = scene_name
     end
 
+    def conclude scene_name
+      scene = plot.scenes[scene_name]
+      raise "#{scene_name} is not a conclusion" unless scene.kind_of?(Scene::Conclusion)
+      cue scene_name
+    end
+    
     # Get the name of the character's current scene
     #
     # @return [Symbol] The name of the scene    
