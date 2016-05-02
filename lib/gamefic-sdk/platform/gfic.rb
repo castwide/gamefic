@@ -25,7 +25,6 @@ module Gamefic::Sdk
           zipfile.add "scripts/#{script.path}.plot.rb", script.absolute_path
         }
         Tempfile.open('metadata.plot.rb') do |file|
-          puts file.path
           file.puts metadata
           zipfile.add "scripts/metadata.plot.rb", file.path
         end

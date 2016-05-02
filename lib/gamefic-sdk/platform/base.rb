@@ -50,6 +50,9 @@ module Gamefic::Sdk
       puts "Nothing to do for this platform."
     end
     
+    # Get a string of build metadata, represented as constants in Ruby code.
+    #
+    # @return [String]
     def metadata
       code = "UUID = '#{File.read(source_dir + '/.uuid').strip}'\n"
       code += "GAMEFIC_VERSION = '#{Gamefic::VERSION}'\n"
