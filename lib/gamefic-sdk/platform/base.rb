@@ -54,10 +54,13 @@ module Gamefic::Sdk
     #
     # @return [String]
     def metadata
-      code = "UUID = '#{File.read(source_dir + '/.uuid').strip}'\n"
+      code = ""
+      uuid = File.exist?(source_dir + '/.uuid') ? File.read(source_dir + '/.uuid').strip : ''
+      code += "UUID = '#{uuid}'\n"
       code += "GAMEFIC_VERSION = '#{Gamefic::VERSION}'\n"
       code += "SDK_VERSION = '#{Gamefic::Sdk::VERSION}'\n"
-      code += "BUILD_DATE = '#{DateTime.now}'\n"      
+      code += "BUILD_DATE = '#{DateTime.now}'\n"
+      code
     end
   end
 end
