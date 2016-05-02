@@ -107,6 +107,7 @@ module Gamefic::Sdk
           file << "\nend\n"
         }
         file << "end\n"
+        file << metadata
       end
       Opal.append_path build_dir
       File.open(build_dir + "/core/scripts.js", 'w') do |file|

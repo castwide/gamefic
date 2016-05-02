@@ -49,5 +49,12 @@ module Gamefic::Sdk
     def clean
       puts "Nothing to do for this platform."
     end
+    
+    def metadata
+      code = "UUID = '#{File.read(source_dir + '/.uuid').strip}'\n"
+      code += "GAMEFIC_VERSION = '#{Gamefic::VERSION}'\n"
+      code += "SDK_VERSION = '#{Gamefic::Sdk::VERSION}'\n"
+      code += "BUILD_DATE = '#{DateTime.now}'\n"      
+    end
   end
 end

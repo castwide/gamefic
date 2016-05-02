@@ -1,5 +1,6 @@
 require 'zip'
-  
+require 'tempfile'
+
 module Gamefic::Sdk
 
   class Platform::Gfic < Platform::Base
@@ -23,6 +24,11 @@ module Gamefic::Sdk
         plot.imported_scripts.each { |script|
           zipfile.add "scripts/#{script.path}.plot.rb", script.absolute_path
         }
+        Tempfile.open('metadata.plot.rb') do |file|
+          puts file.path
+          file.puts metadata
+          zipfile.add "scripts/metadata.plot.rb", file.path
+        end
       end
     end
   end
