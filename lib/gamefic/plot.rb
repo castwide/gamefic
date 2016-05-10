@@ -42,8 +42,6 @@ module Gamefic
       @players = []
       @asserts = {}
       @default_scene = :active
-      #@prepared_scenes = {}
-      #@current_scenes = {}
       post_initialize
     end
 
@@ -55,10 +53,6 @@ module Gamefic
       end
       @scenes
     end
-    
-    #def scene_for(actor)
-    #  @current_scenes[actor]
-    #end
     
     def concluded?(actor)
       scenes[actor.scene].kind_of?(Scene::Conclusion)
@@ -177,10 +171,10 @@ module Gamefic
       # by the plot, which would be :active by default. We could
       # get it like player.cue nil.
       if player.scene.nil?
-        player.cue default_scene
+        player.cue :active
+        ready
+        update
       end
-      ready
-      update
     end
     
     # Prepare the Plot for the next turn of gameplay.
@@ -194,11 +188,6 @@ module Gamefic
         @player_ready.each { |block|
           block.call player
         }
-        #this_scene = player.next_scene || player.scene
-        #player.prepare nil
-        #if this_scene != player.scene
-        #  player.cue this_scene
-        #end
       }
     end
     

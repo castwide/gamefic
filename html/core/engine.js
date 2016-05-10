@@ -28,10 +28,6 @@ var Gamefic = (function() {
 		start: function() {
 			Opal.GameficOpal.$load_scripts();			
 			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_player().$character());
-			//lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
-			Opal.GameficOpal.$static_plot().$ready();
-			//lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
 			var response = getResponse(true);
 			doReady(response);
@@ -51,12 +47,10 @@ var Gamefic = (function() {
 			});
 			Opal.GameficOpal.$static_plot().$update();
 			Opal.GameficOpal.$static_plot().$ready();
-			//lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
 			response = getResponse(true);
 			var updateResponse = response;
 			doReady(response);
-			//lastPrompt = Opal.GameficOpal.$static_player().$character().$scene().$data().$prompt();
 			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
 			response = getResponse(true);
 			response.output = updateResponse.output + response.output;
