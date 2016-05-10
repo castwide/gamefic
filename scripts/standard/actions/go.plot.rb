@@ -7,7 +7,9 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
       actor.tell "That portal leads nowhere."
     else
       actor.parent = portal.destination
-      actor.tell "#{you.pronoun.Subj} go #{portal.direction.nil? ? 'to ' + portal.destination.definitely : portal.direction}."
+      if !portal.direction.nil?
+        actor.tell "#{you.pronoun.Subj} go #{portal.direction}"
+      end
       actor.perform :look, actor.room
     end
   end
