@@ -79,7 +79,7 @@ module Gamefic
     #     actor.tell "You went to scene two"
     #   end
     #   introduction do |actor|
-    #     cue actor, :select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
+    #     actor.cue, :select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
     #   end
     #
     # @param key [Symbol] A unique name for the scene.
