@@ -16,6 +16,8 @@ module Gamefic::Query
       @arguments = arguments
       @match_hash = Hash.new
     end
+    # Check whether the query allows ambiguous matches.
+    # If allowed, this query's 
     def allow_ambiguous?
       false
     end

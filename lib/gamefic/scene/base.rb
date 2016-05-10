@@ -1,5 +1,8 @@
 module Gamefic::Scene
   
+  # The Base Scene is not intended for instantiation. Other Scene classes
+  # should inherit from it.
+  #
   class Base
     def prompt
       @prompt ||= '>'

@@ -1,5 +1,9 @@
 module Gamefic
 
+  # Wait for input. After the scene is finished (e.g., the player presses
+  # Enter), the :active scene will be cued if no other scene has been prepared
+  # or cued.
+  #
   class Scene::Pause < Scene::Custom
     def initialize prompt = nil, &block
       @prompt = prompt

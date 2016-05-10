@@ -1,5 +1,10 @@
 module Gamefic
 
+  # Prompt the user to answer "yes" or "no". The scene will accept variations
+  # like "YES" or "n" and normalize the answer to "yes" or "no" in the finish
+  # block. After the scene is finished, the :active scene will be cued if no
+  # other scene has been prepared or cued.
+  #
   class Scene::YesOrNo < Scene::Custom
     def initialize prompt = nil, &block
       @prompt = prompt

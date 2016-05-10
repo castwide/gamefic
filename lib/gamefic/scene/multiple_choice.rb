@@ -1,5 +1,12 @@
 module Gamefic
 
+  # Provide a list of options and process the selection in the scene's finish
+  # block. After the scene is finished, the :active scene will be cued unless
+  # some other scene has already been prepared or cued.
+  #
+  # The finish block's input parameter receives a MultipleChoice::Input object
+  # instead of a String.
+  #
   class Scene::MultipleChoice < Scene::Custom
     autoload :Input, 'gamefic/scene/multiple_choice/input'
     
