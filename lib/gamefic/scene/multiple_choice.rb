@@ -12,23 +12,26 @@ module Gamefic
     
     def initialize config = {}
       super
-      @options = config[:options]
+      @options = (config[:options] || [])
       @invalid_choice_message = config[:invalid_choice_message]
     end
+    
     def start actor
-      super
+      @current_options = @options.clone
+      @start.call(actor, @current_options) unless @start.nil?
       tell_choices actor
     end
+    
     def finish actor, input
       this_scene = actor.scene
       index = nil
       choice = nil
       if input.strip =~ /[0-9]+/ and input.to_i > 0
         index = input.to_i - 1
-        choice = @options[index]
+        choice = @current_options[index]
       else
         index = 0
-        @options.each { |o|
+        @current_options.each { |o|
           if o.casecmp(input).zero?
             choice = o
             break
@@ -58,7 +61,7 @@ module Gamefic
     
     def tell_choices actor
       list = '<ol class="multiple_choice">'
-      @options.each { |o|
+      @current_options.each { |o|
         list += "<li>#{o}</li>"
       }
       list += "</ol>"
