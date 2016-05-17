@@ -24,18 +24,13 @@ end
 
 professor = make Character, :name => 'the professor', :synonyms => 'Sam Worthington', :description => 'A gangly older gentleman with thick glasses and a jaunty bowtie.', :parent => office
 
-#prompt :talk_to_professor, "What do you want to ask him about? " do |actor, line|
-#  actor.state = :active
-#  actor.perform "ask professor about #{line}" unless line == ""
-#end
-
-question :talk_to_professor, "What do you want to ask him about?" do |actor, data|
-  actor.perform "ask professor about #{data.input}" unless data.input == ""
-  cue actor, :active
+question :talk_to_professor, "What do you want to ask him about?" do |actor, input|
+  actor.perform "ask professor about #{input}" unless input == ""
+  actor.cue :active
 end
 
 respond :talk, Query::Reachable.new(professor) do |actor, professor|
-  cue actor, :talk_to_professor
+  actor.cue :talk_to_professor
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new do |actor, professor, subject|
