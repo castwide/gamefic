@@ -5,33 +5,33 @@ module Gamefic
   
     module Parser
       def self.from_tokens(actor, tokens)
-          options = []
-          command = tokens.shift
-          actions = actor.plot.actions_with_verb(command.to_sym)
-          actions.each { |action|
-            if action.queries.length == tokens.length
-              valid = true
-              index = 0
-              action.queries.each { |query|
-                if query.validate(actor, tokens[index]) == false
-                  valid = false
-                  break
-                end
-                index += 1
-              }
-              if valid
-                arguments = []
-                tokens.each { |token|
-                    arguments.push [token]
-                }
-                options.push Order.new(actor, action, arguments)
+        options = []
+        command = tokens.shift
+        actions = actor.plot.actions_with_verb(command.to_sym)
+        actions.each { |action|
+          if action.queries.length == tokens.length
+            valid = true
+            index = 0
+            action.queries.each { |query|
+              if query.validate(actor, tokens[index]) == false
+                valid = false
+                break
               end
+              index += 1
+            }
+            if valid
+              arguments = []
+              tokens.each { |token|
+                  arguments.push [token]
+              }
+              options.push Order.new(actor, action, arguments)
             end
-          }
-          if options.length == 0
-            tokens.unshift command
           end
-          options
+        }
+        if options.length == 0
+          tokens.unshift command
+        end
+        options.sort{ |a,b| b.action.specificity <=> a.action.specificity }
       end
       def self.from_string(actor, command)
         options = []
@@ -45,7 +45,7 @@ module Gamefic
             options.concat bind_contexts_in_result(actor, match.arguments, action)
           }
         }
-        options
+        options.sort{ |a,b| b.action.specificity <=> a.action.specificity }
       end
       class << self
         private
