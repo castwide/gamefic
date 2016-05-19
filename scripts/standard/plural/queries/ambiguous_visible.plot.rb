@@ -1,4 +1,4 @@
-script 'standard/queries/many_visible'
+script 'standard/plural/queries/many_visible'
 
 class Gamefic::Query::AmbiguousVisible < Gamefic::Query::ManyVisible
   def allow_ambiguous?

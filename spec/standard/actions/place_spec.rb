@@ -33,29 +33,4 @@ describe "Place Action" do
     @character.perform 'place item on entity'
     expect(@item.parent).to be(@character)
   end
-  it "places all on a supporter" do
-    @character.perform 'put all on supporter'
-    expect(@item.parent).to be(@supporter)
-    expect(@thing.parent).to be(@supporter)
-  end
-  it "places all described on a supporter" do
-    @character.perform 'put all things on supporter'
-    expect(@item.parent).to be(@character)
-    expect(@thing.parent).to be(@supporter)
-  end
-  it "places all not described on a supporter" do
-    @character.perform 'put all not things on supporter'
-    expect(@item.parent).to be(@supporter)
-    expect(@thing.parent).to be(@character)
-  end
-  it "places plurals on a supporter" do
-    @character.perform 'put things on supporter'
-    expect(@item.parent).to be(@character)
-    expect(@thing.parent).to be(@supporter)
-  end
-  it "places all except described on a supporter" do
-    @character.perform 'put all except thing on supporter'
-    expect(@item.parent).to be(@supporter)
-    expect(@thing.parent).to be(@character)
-  end
 end

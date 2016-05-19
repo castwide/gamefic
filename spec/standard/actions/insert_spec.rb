@@ -28,29 +28,4 @@ describe "Insert Action" do
     @character.perform 'insert item in entity'
     expect(@item.parent).to be(@character)
   end
-  it "inserts all into a receptacle" do
-    @character.perform 'insert all inside receptacle'
-    expect(@item.parent).to be(@receptacle)
-    expect(@thing.parent).to be(@receptacle)
-  end
-  it "inserts all described into a receptacle" do
-    @character.perform 'put all things in receptacle'
-    expect(@item.parent).to be(@character)
-    expect(@thing.parent).to be(@receptacle)
-  end
-  it "inserts all not described into a receptacle" do
-    @character.perform 'put all not things in receptacle'
-    expect(@item.parent).to be(@receptacle)
-    expect(@thing.parent).to be(@character)
-  end
-  it "inserts plurals into a receptacle" do
-    @character.perform 'put things in receptacle'
-    expect(@item.parent).to be(@character)
-    expect(@thing.parent).to be(@receptacle)
-  end
-  it "inserts all except described into a receptacle" do
-    @character.perform 'insert all except thing inside receptacle'
-    expect(@item.parent).to be(@receptacle)
-    expect(@thing.parent).to be(@character)
-  end
 end
