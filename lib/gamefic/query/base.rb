@@ -112,7 +112,7 @@ module Gamefic::Query
       arguments.each { |a|
         if a.kind_of?(Class) or a.kind_of?(Module)
           my_classes.push a
-        elsif a.kind_of?(Entity)
+        elsif a.kind_of?(Gamefic::Entity)
           my_objects.push a
         elsif a.kind_of?(Symbol)
           if my_classes.length == 0 and my_objects.length == 0
