@@ -9,6 +9,8 @@ module Gamefic
     attr_reader :last_object
     attr_accessor :object_of_pronoun
     
+    serialize :scene
+    
     def initialize(plot, args = {})
       @queue = Array.new
       super
@@ -87,7 +89,7 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      user.stream.send message
+      user.stream.send message if !user.nil?
     end
     
     def destroy
