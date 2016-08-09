@@ -5,7 +5,7 @@ meta :save do |actor|
 end
 
 meta :save, Query::Text.new() do |actor, filename|
-  actor.user.save filename, @snapshots.save(entities)
+  actor.user.save filename, Snapshots.history.last
 end
 
 meta :restore do |actor|
@@ -15,7 +15,7 @@ end
 meta :restore, Query::Text.new() do |actor, filename|
   data = actor.user.restore(filename)
   if !data.nil?
-    @snapshots.restore data
+    restore data
     actor.tell "Game restored."
   end
 end

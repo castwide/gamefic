@@ -1,16 +1,17 @@
-@snapshots = nil
-last_snapshot = nil
-
-on_update do
-  last_snapshot = nil
-  if !@snapshots.nil?
-    last_snapshot = @snapshots.save(entities)
+module Snapshots
+  def self.history
+    @history ||= []
   end
 end
 
+last_snapshot = nil
+
+on_player_ready do |actor|
+  last_snapshot = save
+end
+
 on_player_update do |actor|
-  @snapshots ||= Snapshots.new(entities)
-  if actor.scene == :active and actor[:testing] != true and !actor.last_order.nil? and actor.last_order.action.verb != :undo and !last_snapshot.nil?
-    @snapshots.history.push last_snapshot
+  if (actor.last_order.nil? or actor.last_order.action.verb != :undo) and !last_snapshot.nil?
+    Snapshots.history.push last_snapshot
   end
 end

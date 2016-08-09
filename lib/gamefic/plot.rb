@@ -7,6 +7,7 @@ require 'gamefic/script'
 require 'gamefic/query'
 require 'gamefic/plot/article_mount'
 require 'gamefic/plot/you_mount'
+require 'gamefic/snapshot'
 
 module Gamefic
 
@@ -23,8 +24,8 @@ module Gamefic
     # TODO This include is only here to make the module's methods visible in the IDE.
     # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if
     # the plugin isn't activated.
-    include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
+    include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
+    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
     expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes
     
     # @param [Source::Base]
