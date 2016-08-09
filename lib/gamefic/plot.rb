@@ -25,7 +25,7 @@ module Gamefic
     # the plugin isn't activated.
     include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount
-    expose :script, :introduction, :assert_action, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes
+    expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes
     
     # @param [Source::Base]
     def initialize(source = nil)
@@ -33,6 +33,7 @@ module Gamefic
       @commands = {}
       @syntaxes = []
       @ready_procs = []
+      @before_player_update_procs = []
       @update_procs = []
       @player_ready = []
       @player_procs = []
@@ -196,6 +197,10 @@ module Gamefic
     def update
       # Update the plot.
       @players.each { |player|
+        # TODO: This really doesn't belong here. We need a before_update in the plot.
+        @before_player_update_procs.each { |p|
+          p.call player
+        }
 	      this_scene = player.next_scene || player.scene
 	      player.prepare nil
 	      if this_scene != player.scene
@@ -260,6 +265,14 @@ module Gamefic
       @player_procs.push block
     end
 
+    # Add a block to  be executed for each player before the turn's update is
+    # performed.
+    #
+    # @yieldparam [Character]
+    def before_player_update &block
+      @before_player_update_procs.push block
+    end
+    
     private
     def process_input player
       line = player.queue.shift

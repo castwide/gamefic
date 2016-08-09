@@ -147,6 +147,11 @@ module Gamefic
     def scene
       @scene
     end
+
+    # Alias for Character#cue key
+    def scene= key
+      cue key.to_sym
+    end
     
     def next_scene
       @next_scene

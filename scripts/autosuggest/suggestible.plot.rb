@@ -2,27 +2,41 @@ module Gamefic::Suggestible
   def suggestions
     @suggestions ||= []
   end
+  def suggestions= arr
+    @suggestions = arr
+  end
   def suggest command
     if !suggestions.include?(command)
       suggestions.push command
     end
   end
-  def suggest_from entity
-    suggest_take_from entity
-    suggest_examine_from entity
-  end
-  def suggest_take_from entity
-    portables = entity.children.that_are(:portable?)
-    portables.each { |p|
-      suggest "take #{p.definitely}"
-    }
-    if portables.length > 1
-      suggest "take everything"
+  def self.automatic?
+    if @automatic.nil?
+      @automatic = false
     end
+    @automatic
   end
-  def suggest_examine_from entity
-    entity.children.that_are_not(Portal).that_are_not(self).each { |e|
-      suggest "examine #{e.definitely}"
-    }
+  def self.automatic= bool
+    @automatic = bool
   end
+end
+
+class Gamefic::Character
+  include Suggestible
+  serialize :suggestions
+end
+
+on_update do
+  players.each { |player|
+    if Suggestible.automatic? and player.suggestions.length > 0
+      player.suggestions.each { |s|
+        player.stream "<a class=\"suggestion\" href=\"#\" rel=\"gamefic\" data-command=\"#{s.cap_first}\">#{s.cap_first}</a>"
+      }
+    end
+    #player.suggestions.clear
+  }
+end
+
+before_player_update do |player|
+  player.suggestions.clear
 end

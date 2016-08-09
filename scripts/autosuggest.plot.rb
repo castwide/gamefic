@@ -1,21 +1,36 @@
 script 'autosuggest/suggestible'
 
+module Gamefic::Autosuggest
+  def suggest_from entity
+    suggest_take_from entity
+    suggest_examine_from entity
+  end
+  def suggest_take_from entity
+    portables = entity.children.that_are(:portable?)
+    portables.each { |p|
+      suggest "take #{p.definitely}"
+    }
+  end
+  def suggest_examine_from entity
+    entity.children.that_are_not(Portal).that_are_not(self).each { |e|
+      suggest "examine #{e.definitely}"
+    }
+  end
+end
+
 class Gamefic::Character
-  include Suggestible
+  include Autosuggest
 end
 
 on_player_update do |actor|
   if actor.scene == :active
     actor.suggest "look around"
     actor.suggest "inventory"
-    if Use.visible.context_from(actor).length > 0
-      actor.suggest "take everything"
-    end
     actor.room.children.that_are(Portal).each { |entity|
       if entity.direction
         actor.suggest "go #{entity.direction}"
       else
-        actor.suggest "go to #{the entity}"
+        actor.suggest "go to #{the entity.destination}"
       end
     }
     Use.visible.context_from(actor).that_are_not(Portal).each { |entity|
@@ -34,6 +49,9 @@ on_player_update do |actor|
     Use.siblings.context_from(actor).that_are(Enterable).that_are(:enterable?).each { |entity|
       actor.suggest "#{entity.enter_verb} #{the entity}"
     }
+    Use.siblings.context_from(actor).that_are(Character).that_are_not(actor).each { |entity|
+      actor.suggest "talk to #{the entity}"
+    }
     if (actor.parent != actor.room)
       actor.suggest "#{actor.parent.leave_verb} #{the actor.parent}"
     end
@@ -46,15 +64,6 @@ on_player_update do |actor|
         actor.suggest "put #{the entity} in #{the receptacle}"
       }
     }
-    if actor.children.that_are_not(:attached?).length > 0
-      actor.suggest "drop everything"
-      Use.siblings.context_from(actor).that_are(Supporter).each { |supporter|
-        actor.suggest "put everything on #{the supporter}"
-      }
-      Use.siblings.context_from(actor).that_are(Receptacle).each { |receptacle|
-        actor.suggest "put everything in #{the receptacle}"
-      }
-    end
     vicinity = actor.parent.children.that_are_not(Portal)
     if actor.parent != actor.room
       vicinity.concat actor.room.children.that_are_not(Portal)
@@ -64,15 +73,6 @@ on_player_update do |actor|
       actor.suggest "examine #{the e}"
     }
   end
-end
-
-on_update do
-  players.each { |player|
-    player.suggestions.each { |s|
-      player.stream "<a class=\"suggestion\" href=\"#\" rel=\"gamefic\" data-command=\"#{s.cap_first}\">#{s.cap_first}</a>"
-    }
-    player.suggestions.clear
-  }
 end
 
 respond :look, Use.visible(Supporter) do |actor, supporter|
@@ -128,9 +128,6 @@ respond :inventory do |actor|
     actor.suggest "drop #{the e}"
     actor.suggest "examine #{the e}"  
   }
-  if carried.length > 1
-    actor.suggest "drop everything"
-  end
   reachable = Use.reachable.context_from(actor)
   reachable.that_are(Supporter).each { |supporter|
     carried.each { |thing|
