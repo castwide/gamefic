@@ -2,6 +2,7 @@ require 'gamefic/engine'
 require 'rexml/document'
 require 'gamefic/ansi'
 require 'gamefic/html'
+require 'json'
 
 begin
   require 'io/console'
@@ -31,7 +32,8 @@ module Gamefic
       def ansi
         @stream.ansi
       end
-      def save filename, json
+      def save filename, snapshot
+        json = JSON.generate snapshot
         if json.nil?
           @character.tell "Nothing to save."
         end

@@ -1,3 +1,5 @@
+require 'json'
+
 module Gamefic
   module Snapshot
     def save
@@ -32,29 +34,54 @@ module Gamefic
         store.push hash
         index += 1
       }
-      json = JSON.generate(store)
-      #puts json
-      json
+      if @initial_state.nil?
+        @initial_state = store
+        store = []
+        @initial_state.length.times do
+          store.push {}
+        end
+      else
+        store = reduce(store)
+      end
+      store
     end
-    def restore snapshot
-      data = JSON.parse(snapshot)
+    def restore snapshot, with_restore = true
+      if with_restore
+        restore @initial_state, false
+      end
       index = 0
-      data.each { |hash|
+      snapshot.each { |hash|
         hash.each_pair { |k, v|
-          if k == 'scene'
+          if k == :scene
             entities[index].cue v.to_sym
           else
-            entities[index].send("#{k}=", unserialize(v)) if k.to_s != "session"
+            entities[index].send("#{k}=", unserialize(v)) if k != :session
           end
         }
-        #unser = unserialize(hash["session"])
-        hash["session"].each_pair { |k, v|
-          entities[index].session[k.to_sym] = unserialize(v)
-        }
+        unless hash[:session].nil?
+          hash[:session].each_pair { |k, v|
+            entities[index].session[k.to_sym] = unserialize(v)
+          }
+        end
         index += 1
       }
     end
     private
+    def reduce entities
+      reduced = []
+      index = 0
+      entities.each { |e|
+        r = {}
+        e.each_pair { |k, v|
+          if @initial_state[index][k] != v
+            r[k] = v
+          end
+        }
+        reduced.push r
+        index += 1
+      }
+      reduced
+    end
     def blacklist
       [:children, :session, :object_of_pronoun, :test_queue, :test_queue_scene, :test_queue_length, :testing]
     end

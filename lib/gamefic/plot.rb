@@ -19,7 +19,8 @@ module Gamefic
     #autoload :ArticleMount, 'gamefic/plot/article_mount'
     #autoload :YouMount, 'gamefic/plot/you_mount'
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
-    attr_accessor :default_scene
+    # TODO Metadata could use better protection
+    attr_accessor :default_scene, :metadata
     include Stage
     # TODO This include is only here to make the module's methods visible in the IDE.
     # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if

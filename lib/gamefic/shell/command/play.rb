@@ -2,6 +2,7 @@ require 'zip'
 require 'tmpdir'
 require 'gamefic/engine/tty'
 require 'gamefic/shell'
+require 'yaml'
 
 class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
   include Gamefic
@@ -40,6 +41,8 @@ class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
         #exit 1
       end
       story.script 'main'
+      story.metadata = YAML.load_file "#{dir}/metadata.yaml"
+      puts story.metadata
       engine = Tty::Engine.new story
       puts "\n"
       engine.run

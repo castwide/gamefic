@@ -24,9 +24,9 @@ module Gamefic::Sdk
         plot.imported_scripts.each { |script|
           zipfile.add "scripts/#{script.path}.plot.rb", script.absolute_path
         }
-        Tempfile.open('metadata.plot.rb') do |file|
+        Tempfile.open('metadata.yaml') do |file|
           file.puts metadata
-          zipfile.add "scripts/metadata.plot.rb", file.path
+          zipfile.add "metadata.yaml", file.path
         end
       end
     end
