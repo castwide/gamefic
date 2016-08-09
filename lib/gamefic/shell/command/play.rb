@@ -42,7 +42,6 @@ class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
       end
       story.script 'main'
       story.metadata = YAML.load_file "#{dir}/metadata.yaml"
-      puts story.metadata
       engine = Tty::Engine.new story
       puts "\n"
       engine.run
