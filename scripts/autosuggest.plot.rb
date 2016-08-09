@@ -1,4 +1,4 @@
-script 'autosuggest/suggestible'
+script 'suggestible'
 
 module Gamefic::Autosuggest
   def suggest_from entity
