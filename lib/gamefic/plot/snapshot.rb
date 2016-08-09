@@ -1,7 +1,7 @@
 require 'json'
 
 module Gamefic
-  module Snapshot
+  module Plot::Snapshot
     def save
       store = []
       index = 0

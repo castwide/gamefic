@@ -2,7 +2,7 @@ require 'gamefic'
 require 'gamefic/grammar'
 
 module Gamefic
-  module YouMount
+  module Plot::YouMount
     class YouGrammarSet
       include Grammar::Gender
       include Grammar::Person

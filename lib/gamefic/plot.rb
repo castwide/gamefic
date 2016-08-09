@@ -5,9 +5,6 @@ require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
-require 'gamefic/plot/article_mount'
-require 'gamefic/plot/you_mount'
-require 'gamefic/snapshot'
 
 module Gamefic
 
@@ -16,8 +13,10 @@ module Gamefic
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :EntityMount, 'gamefic/plot/entity_mount'
     autoload :QueryMount, 'gamefic/plot/query_mount'
-    #autoload :ArticleMount, 'gamefic/plot/article_mount'
-    #autoload :YouMount, 'gamefic/plot/you_mount'
+    autoload :ArticleMount, 'gamefic/plot/article_mount'
+    autoload :YouMount, 'gamefic/plot/you_mount'
+    autoload :Snapshot, 'gamefic/plot/snapshot'
+    
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
     # TODO Metadata could use better protection
     attr_accessor :default_scene, :metadata
@@ -25,7 +24,7 @@ module Gamefic
     # TODO This include is only here to make the module's methods visible in the IDE.
     # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if
     # the plugin isn't activated.
-    include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
+    #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
     expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes
     

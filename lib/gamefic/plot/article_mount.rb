@@ -1,5 +1,5 @@
 module Gamefic
-  module ArticleMount
+  module Plot::ArticleMount
     def a(entity)
       entity.indefinitely
     end
