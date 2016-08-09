@@ -11,7 +11,7 @@ on_player_ready do |actor|
 end
 
 on_player_update do |actor|
-  if (actor.last_order.nil? or actor.last_order.action.verb != :undo) and !last_snapshot.nil?
+  if (actor.last_order.nil? or !actor.last_order.action.meta?) and !last_snapshot.nil?
     Snapshots.history.push last_snapshot
   end
 end

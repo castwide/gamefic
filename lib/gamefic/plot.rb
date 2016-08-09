@@ -26,7 +26,7 @@ module Gamefic
     # the plugin isn't activated.
     #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
-    expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes
+    expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes, :metadata
     
     # @param [Source::Base]
     def initialize(source = nil)

@@ -33,7 +33,11 @@ module Gamefic
         @stream.ansi
       end
       def save filename, snapshot
-        json = JSON.generate snapshot
+        data = {
+          :metadata => @character.plot.metadata,
+          :entities => snapshot
+        }
+        json = JSON.generate data
         if json.nil?
           @character.tell "Nothing to save."
         end
@@ -55,11 +59,17 @@ module Gamefic
         end
         if filename != ''
           if File.exists?(filename)
-            return JSON.parse(File.read(filename))
+            data = JSON.parse File.read(filename), symbolize_names: true
+            if (data[:metadata] != @character.plot.metadata)
+              @character.tell "The save file is not compatible with this version of the game."
+            else
+              return data[:entities]
+            end
           else
             @character.tell "File \"#{filename}\" not found."
           end
         end
+        nil
       end
     end
     class UserStream < Gamefic::UserStream
