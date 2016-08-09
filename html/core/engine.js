@@ -74,6 +74,16 @@ var Gamefic = (function() {
 		},
 		handleResponse: function(state, callback) {
 			responseCallbacks[state] = callback;
+		},
+		save: function(filename, data) {
+			var json = JSON.stringify(data);
+			console.log("Save " + filename + ": " + json);
+			localStorage.setItem(filename, json);
+			Opal.GameficOpal.$static_player().$character().$tell('Game saved.');
+		},
+		restore: function(filename) {
+			console.log("Restore " + filename + ": " + localStorage.getItem(filename));
+			return JSON.parse(localStorage.getItem(filename));
 		}
 	}
 })();

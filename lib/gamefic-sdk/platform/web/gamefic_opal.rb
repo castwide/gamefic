@@ -25,10 +25,10 @@ module GameficOpal
 	
 	class WebUser < Gamefic::User
 	  def save filename, data
-	    `Gamefic.Engine.save(filename, data);`
+	    `Gamefic.save(filename, data);`
 	  end
 	  def restore filename
-	    data = `Gamefic.Engine.restore(filename);`
+	    data = `Gamefic.restore(filename);`
 	    return data
 	  end
 	  def test_queue

@@ -55,7 +55,7 @@ module Gamefic
         end
         if filename != ''
           if File.exists?(filename)
-            return File.read(filename)
+            return JSON.parse(File.read(filename))
           else
             @character.tell "File \"#{filename}\" not found."
           end
