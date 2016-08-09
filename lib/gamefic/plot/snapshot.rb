@@ -27,6 +27,7 @@ module Gamefic
             end
           end
         }
+        hash[:class] = e.class.to_s
         hash[:session] = {}
         e.session.each_pair { |k, v|
           hash[:session][k] = serialize_obj(v)
@@ -45,17 +46,33 @@ module Gamefic
       end
       store
     end
-    def restore snapshot, with_restore = true
+    def restore snapshot
+      internal_restore snapshot, true
+    end
+    private
+    def internal_restore snapshot, with_restore = true
       if with_restore
-        restore @initial_state, false
+        @entities[@initial_state.length..-1].each { |e|
+          e.parent = nil
+        }
+        @entities.slice! @initial_state.length..-1
+        internal_restore @initial_state, false
       end
       index = 0
       snapshot.each { |hash|
+        if entities[index].nil?
+          if with_restore
+            cls = Kernel.const_get(hash[:class])
+            entities[index] = make cls
+          else
+            break
+          end
+        end 
         hash.each_pair { |k, v|
           if k == :scene
             entities[index].cue v.to_sym
           else
-            entities[index].send("#{k}=", unserialize(v)) if k != :session
+            entities[index].send("#{k}=", unserialize(v)) if k != :session and k != :class
           end
         }
         unless hash[:session].nil?
@@ -66,14 +83,13 @@ module Gamefic
         index += 1
       }
     end
-    private
     def reduce entities
       reduced = []
       index = 0
       entities.each { |e|
         r = {}
         e.each_pair { |k, v|
-          if @initial_state[index][k] != v
+          if index >= @initial_state.length or @initial_state[index][k] != v
             r[k] = v
           end
         }
@@ -81,9 +97,6 @@ module Gamefic
         index += 1
       }
       reduced
-    end
-    def blacklist
-      [:children, :session, :object_of_pronoun, :test_queue, :test_queue_scene, :test_queue_length, :testing]
     end
     private
     def can_serialize? obj
@@ -120,8 +133,6 @@ module Gamefic
           return "#<EIN_#{@entities.index(obj)}>"
         elsif obj.kind_of?(Direction)
           return "#<DIR_#{obj.name}>"
-        #elsif obj.kind_of?(Symbol)
-        #  return "#<SYM_#{obj.to_s}>"
         end
       end
       return obj
@@ -145,8 +156,6 @@ module Gamefic
           @entities[i]
         elsif obj.to_s.match(/^#<DIR_[a-z]+>$/)
           Direction.find(obj[6..-2])
-        #elsif obj.to_s.match(/^#<SYM_[a-z]+>$/)
-        #  Direction.find(obj[6..-2].to_sym)
         else
           obj
         end

@@ -5,7 +5,7 @@ meta :save do |actor|
 end
 
 meta :save, Query::Text.new() do |actor, filename|
-  actor.user.save filename, Snapshots.history.last
+  actor.user.save filename, save
 end
 
 meta :restore do |actor|
