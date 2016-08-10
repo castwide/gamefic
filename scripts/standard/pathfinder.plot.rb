@@ -1,5 +1,14 @@
+# Pathfinders provide the shortest route between two locations. The
+# destination needs to be accessible from the origin through portals. Note
+# that Pathfinders do not take into account portals that characters cannot
+# traverse, such as locked doors.
+#
 class Gamefic::Pathfinder
-  attr_reader :origin, :destination, :path
+  # @return [Room]
+  attr_reader :origin
+  # @return [Room]
+  attr_reader :destination
+  
   def initialize origin, destination
     @origin = origin
     @destination = destination
@@ -13,6 +22,16 @@ class Gamefic::Pathfinder
         embark
       end
     end
+  end
+  # @return [Array<Room>]
+  def path
+    # @path is nil if the path is invalid, but #path should return an empty
+    # array instead.
+    @path || []
+  end
+  # @return [Boolean]
+  def valid?
+    path.length > 0 or origin == destination
   end
   private
   def embark
