@@ -10,7 +10,7 @@ module Gamefic
     def export path
       @directories.each { |directory|
         @@extensions.each { |ext|
-          abs_file = directory + '/' + path + ext
+          abs_file = File.join(directory, path + ext)
           if File.file?(abs_file)
             return Script::File.new(abs_file, path)
           end

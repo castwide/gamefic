@@ -5,8 +5,8 @@ require 'gamefic-sdk/debug'
 require 'gamefic-sdk/version'
 
 module Gamefic::Sdk
-  HTML_TEMPLATE_PATH = File.dirname(__FILE__) + "/../html/"
-  GLOBAL_SCRIPT_PATH = File.dirname(__FILE__) + "/../scripts/"
+  HTML_TEMPLATE_PATH = File.realpath(File.dirname(__FILE__) + "/../html/")
+  GLOBAL_SCRIPT_PATH = File.realpath(File.dirname(__FILE__) + "/../scripts/")
   # @deprecated
   GLOBAL_IMPORT_PATH = GLOBAL_SCRIPT_PATH
   LIB_PATH = File.dirname(__FILE__)

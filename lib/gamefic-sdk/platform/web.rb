@@ -47,7 +47,7 @@ module Gamefic::Sdk
       absolute = nil
       paths.each { |path|
         if File.file?("#{path}/#{filename}")
-          absolute = "#{path}/#{filename}"
+          absolute = File.join(path, filename)
           break
         end
       }

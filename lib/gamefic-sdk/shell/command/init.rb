@@ -20,7 +20,7 @@ class Gamefic::Sdk::Shell::Command::Init < Gamefic::Shell::Command::Base
     write_config_yaml
     write_uuid_file
     copy_html_skin
-    Dir.mkdir("#{@directory}/media")
+    Dir.mkdir(File.join(@directory, 'media'))
     puts "Game directory '#{@directory}' initialized." unless @quiet
   end
   
@@ -51,7 +51,8 @@ class Gamefic::Sdk::Shell::Command::Init < Gamefic::Shell::Command::Base
   end
   
   def write_main_script
-    File.open("#{@directory}/scripts/main.plot.rb", 'w') do |file|
+    main_file = File.join(@directory, 'scripts', 'main.plot.rb')
+    File.open(main_file, 'w') do |file|
       @scripts.each { |script|
         file.puts "script '#{script}'"
       }

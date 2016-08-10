@@ -4,11 +4,13 @@ module Gamefic::Sdk
 
   module Build
     def self.release directory, quiet = false
-      config = YAML.load(File.read("#{directory}/config.yaml"))
-      if File.file?("#{directory}/.uuid")
-        config['uuid'] = File.read("#{directory}/.uuid").strip
+      config = YAML.load(File.read(File.join(directory, 'config.yaml')))
+      uuid_file = File.join(directory, '.uuid')
+      if File.file?(uuid_file)
+        config['uuid'] = File.read(uuid_file).strip
       end
-      platforms = YAML.load(File.read("#{directory}/build.yaml"))
+      build_file = File.join(directory, 'build.yaml')
+      platforms = YAML.load(File.read(build_file))
       platforms.each_pair { |k, v|
         v['name'] = k
         cls = Gamefic::Sdk::Platform.const_get(v['platform'])
@@ -19,12 +21,13 @@ module Gamefic::Sdk
       puts "Build#{platforms.length > 1 ? 's' : ''} complete." unless quiet
     end
     def self.clean directory
-      config = YAML.load(File.read("#{directory}/build.yaml"))
+      build_file = File.join(directory, 'build.yaml')
+      config = YAML.load(File.read(build_file))
       config.each_pair { |k, v|
         v['name'] = k
         puts "Cleaning #{k}..."
         build_dir = "#{directory}/build/#{k}"
-        platform_dir = "#{directory}/release/#{k}"
+        platform_dir = File.join(directory, release, k)
         cls = Gamefic::Sdk::Platform.const_get(v['platform'])
         plat = cls.new(directory, v)
         plat.clean

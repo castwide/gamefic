@@ -17,7 +17,7 @@ module Gamefic
 		    main_file = path
 		    test_file = nil
 		    if File.directory?(path)
-		      config = PlotConfig.new "#{path}/config.yaml"
+		      config = PlotConfig.new File.join(path, 'config.yaml')
 		    else
 		      config = PlotConfig.new
 		    end

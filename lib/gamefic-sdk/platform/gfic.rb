@@ -15,15 +15,15 @@ module Gamefic::Sdk
     def build
       target_dir = config['target_dir']
       if config['filename'].to_s == ''
-        filename = target_dir + '/' + source_dir.split('/').delete_if{|i| i.to_s == ''}.last + '.gfic'
+        filename = File.join(target_dir, source_dir.split('/').delete_if{|i| i.to_s == ''}.last + '.gfic')
       else
-        filename = "#{target_dir}/#{config['filename']}"
+        filename = File.join(target_dir, config['filename'])
       end
       FileUtils.rm filename if File.file?(filename)
       FileUtils.mkdir_p target_dir
       Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
         plot.imported_scripts.each { |script|
-          zipfile.add "scripts/#{script.path}.plot.rb", script.absolute_path
+          zipfile.add File.join('scripts', "#{script.path}.plot.rb"), script.absolute_path
         }
         Tempfile.open('metadata.yaml') do |file|
           file.puts metadata.to_yaml
