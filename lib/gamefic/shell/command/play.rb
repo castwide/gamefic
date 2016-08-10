@@ -9,7 +9,7 @@ class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
   
   def run input
     result = parse input
-    file = ARGV[1]
+    file = result.arguments[1]
     raise "File not specified." if file.nil?
     raise "'#{file}' does not exist." if !File.exist?(file)
     raise "'#{file}' is a directory." if File.directory?(file)
@@ -21,9 +21,10 @@ class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
   def decompress(zipfile, destination)
     Zip::File.open(zipfile) do |z|
       z.each do |entry|
-        FileUtils.mkdir_p "#{destination}/#{File.dirname(entry.name)}"
-        if !File.exist?("#{destination}/#{entry.name}")
-          entry.extract "#{destination}/#{entry.name}"
+        FileUtils.mkdir_p File.join(destination, File.dirname(entry.name))
+        full_path = File.join(destination, entry.name)
+        if !File.exist?(full_path)
+          entry.extract full_path
         end
       end
     end
@@ -32,7 +33,7 @@ class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
   def play file
     Dir.mktmpdir 'gamefic_' do |dir|
       puts "Loading..."
-      story = Plot.new(Source::File.new(dir + '/scripts'))
+      story = Plot.new(Source::File.new(File.join(dir, 'scripts')))
       begin
         decompress file, dir
       rescue Exception => e
@@ -41,7 +42,7 @@ class Gamefic::Shell::Command::Play < Gamefic::Shell::Command::Base
         #exit 1
       end
       story.script 'main'
-      story.metadata = YAML.load_file "#{dir}/metadata.yaml"
+      story.metadata = YAML.load_file File.join(dir, 'metadata.yaml')
       engine = Tty::Engine.new story
       puts "\n"
       engine.run

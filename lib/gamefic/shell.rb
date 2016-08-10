@@ -14,10 +14,10 @@ module Gamefic
     def execute
       command = ARGV[0]
       cls = @commands[command]
-      if !cls.nil?
-        cls.new.run ARGV
+      if cls.nil?
+        Gamefic::Shell::Command::Play.new.run(['play'] + ARGV)
       else
-        raise "Command not recognized: #{command}"
+        cls.new.run ARGV
       end
     end
   end
