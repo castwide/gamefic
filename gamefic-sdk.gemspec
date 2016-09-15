@@ -16,5 +16,7 @@ Gem::Specification.new do |s|
 	s.required_ruby_version = '>= 1.9.3'
 	s.add_runtime_dependency 'gamefic'
 	s.add_runtime_dependency 'opal', [">= 0.7.2"]
+	s.add_runtime_dependency 'slop'
 	s.add_development_dependency 'rspec'
+	s.add_development_dependency 'poltergeist'
 end
