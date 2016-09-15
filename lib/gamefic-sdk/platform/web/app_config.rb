@@ -17,7 +17,7 @@ module Gamefic
 		    @html_dir = resolve_html_dir
 		    @game_config = PlotConfig.new("#{source_dir}/config.yaml")
 		    @resource_paths = ["#{html_dir}", Gamefic::Sdk::HTML_TEMPLATE_PATH]
-		    config_file = "#{html_dir}/config.rb"
+		    config_file = "#{html_dir}/index.rb"
 		    stage File.read(config_file), config_file
 		    javascripts.push "core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"
 		  end
