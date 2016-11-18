@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 	s.description = "Development tools for Gamefic"
 	s.authors     = ["Fred Snyder"]
 	s.email       = 'fsnyder@gamefic.com'
-	s.files       = ['lib/gamefic-sdk.rb'] + Dir['lib/gamefic-sdk/**/*.rb'] + Dir['html/**/*.rb'] + Dir['scripts/**/*.plot']
+	s.files       = ['lib/gamefic-sdk.rb'] + Dir['lib/gamefic-sdk/**/*.rb'] + Dir['html/**/*'] + Dir['scripts/**/*']
 	s.executables << 'gfk'
 	s.homepage    = 'http://gamefic.com'
 	s.license     = 'MIT'
