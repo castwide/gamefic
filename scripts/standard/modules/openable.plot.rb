@@ -1,5 +1,8 @@
 module Gamefic::Openable
-  attr_writer :open, :openable
+  attr_writer :openable
+  def open= bool
+    @open = bool
+  end
   def open?
     @open ||= false
   end

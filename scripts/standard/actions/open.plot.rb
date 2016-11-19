@@ -15,7 +15,7 @@ respond :open, Use.reachable(Openable) do |actor, container|
     end
   end
   if !container.open?
-    actor.tell "#{you.pronoun.Subj} #{you.verb.open} #{the container}."
+    actor.tell "#{you.pronoun.Subj} #{you.verb['open']} #{the container}."
     container.open = true
     if container.children.that_are_not(:attached?).length > 0
       actor.perform :search, container
