@@ -4,7 +4,7 @@ require 'gamefic/query/matches'
 require 'gamefic/grammar/verb_set'
 require 'gamefic/scene/multiple_choice/input'
 
-# HACK Opal doesn't recognizes classes and modules declared from scripts
+# HACK Opal doesn't recognize classes and modules declared from scripts
 def Object.const_missing sym
   Gamefic.const_get sym
 end
