@@ -27,7 +27,7 @@ module Gamefic::Sdk
         v['name'] = k
         puts "Cleaning #{k}..."
         build_dir = "#{directory}/build/#{k}"
-        platform_dir = File.join(directory, release, k)
+        platform_dir = File.join(directory, "release", k)
         cls = Gamefic::Sdk::Platform.const_get(v['platform'])
         plat = cls.new(directory, v)
         plat.clean
