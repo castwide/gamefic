@@ -23,53 +23,7 @@ module Gamefic
         while !executed
           order = @orders.shift
           break if order.nil?
-          arg_i = 0
-          final_arguments = []
-          order.arguments.each { |argument|
-            if argument.length > 1 and !order.action.queries[arg_i].allow_many?
-              if argument[0].kind_of?(Array)
-                # This thing refers to multiple items. Just keep going.
-                final_arguments = nil
-                break
-              else
-                ambiguous = argument
-              end
-              order = Order.new(@actor, @@disambiguator, [])
-              final_arguments = [ambiguous]
-              break
-            end
-            valid = []
-            if order.action.queries[arg_i].allow_ambiguous?
-              valid = argument.flatten
-            else
-              argument.each { |m|
-                if order.action.queries[arg_i].validate(@actor, m)
-                  valid.push m
-                else
-                  final_arguments = nil
-                  break
-                end
-              }
-            end
-            if order.action == @@disambiguator or final_arguments.nil?
-              break
-            end
-            if order.action.queries[arg_i].allow_many?
-              final_arguments.push valid.flatten
-            elsif valid.length == 1
-              final_arguments.push valid[0]
-            else
-              final_arguments = nil
-              break
-            end
-            arg_i += 1
-          }
-          if !final_arguments.nil?
-            # The actor is always the first argument to an Action proc
-            final_arguments.unshift @actor
-            order.action.execute(*final_arguments)
-            executed = true
-          end
+          executed = try(order)
         end
         @actor.send(:delegate_stack).pop
       end
@@ -86,6 +40,65 @@ module Gamefic
         proceed
       end
       private
+      def try order
+        executed = false
+        arg_i = 0
+        final_arguments = []
+        order.arguments.each { |argument|
+          if argument.length > 1 and !order.action.queries[arg_i].allow_many?
+            if argument[0].kind_of?(Array)
+              # This thing refers to multiple items. Just keep going.
+              final_arguments = nil
+              break
+            else
+              ambiguous = argument
+            end
+            order = Order.new(@actor, @@disambiguator, [])
+            final_arguments = [ambiguous]
+            break
+          end
+          if order.action.queries[arg_i].allow_ambiguous?
+            valid = argument.flatten
+          else
+            valid = validate(argument, arg_i, order)
+            if valid.nil?
+              final_arguments = nil
+              break
+            end
+          end
+          if order.action == @@disambiguator or final_arguments.nil?
+            break
+          end
+          if order.action.queries[arg_i].allow_many?
+            final_arguments.push valid.flatten
+          elsif valid.length == 1
+            final_arguments.push valid[0]
+          else
+            final_arguments = nil
+            break
+          end
+          arg_i += 1
+        }
+        if !final_arguments.nil?
+          # The actor is always the first argument to an Action proc
+          final_arguments.unshift @actor
+          order.action.execute(*final_arguments)
+          executed = true
+        end
+        executed
+      end
+      def validate argument, arg_i, order
+        valid = []
+        argument.each { |m|
+          if order.action.queries[arg_i].validate(@actor, m)
+            valid.push m
+          else
+            valid = nil
+            break
+          end
+        }
+        valid
+      end
     end
   end
 end
