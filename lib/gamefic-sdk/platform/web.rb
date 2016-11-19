@@ -1,5 +1,7 @@
 require 'gamefic'
 require 'gamefic-sdk'
+#require 'rubygems'
+#gem 'opal', '>= 0.9', '< 0.10'
 require 'opal'
 
 module Gamefic::Sdk
@@ -71,9 +73,9 @@ module Gamefic::Sdk
       # Opal core
       if !File.exist?(build_dir + "/core/opal.js")
         File.open(build_dir + "/core/opal.js", "w") do |file|
-         file << Opal::Builder.build('opal')
-         file << Opal::Builder.build('json')
-         file << Opal::Builder.build('native')
+          file << Opal::Builder.build('opal')
+          file << Opal::Builder.build('json')
+          file << Opal::Builder.build('native')
         end
       end
     end
