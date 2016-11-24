@@ -5,6 +5,7 @@ require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
+require 'gamefic/subplot'
 
 module Gamefic
 
@@ -44,6 +45,7 @@ module Gamefic
       @players = []
       @asserts = {}
       @default_scene = :active
+      @subplots = []
       post_initialize
     end
 
@@ -165,6 +167,7 @@ module Gamefic
     # Introduce a player to the game.
     # This method is typically called by the Engine that manages game execution.
     def introduce(player)
+      player.extend Subplot::Feature
       @players.push player
       if @introduction != nil
         @introduction.call(player)
@@ -272,6 +275,24 @@ module Gamefic
     # @yieldparam [Character]
     def before_player_update &block
       @before_player_update_procs.push block
+    end
+
+    expose :subplots, :branch
+    
+    # Get an array of all the current subplots.
+    #
+    # @return [Array<Subplot>]
+    def subplots
+      @subplots.clone
+    end
+    
+    # Start a new subplot based on the provided class.
+    #
+    # @return [Subplot]
+    def branch subplot_class
+      subplot = subplot_class.new(self)
+      @subplots.push subplot
+      subplot
     end
     
     private
