@@ -1,13 +1,10 @@
-require "gamefic"
-include Gamefic
-
 describe Syntax do
 	it "finds an action for a valid syntax" do
-		syn = Syntax.new nil, "command", :command
+		syn = Syntax.new "command", :command
 		expect(Syntax.tokenize("command", [syn]).length).to eq(1)
 	end
 	it "finds nothing for an invalid syntax" do
-		syn = Syntax.new nil, "command", :command
+		syn = Syntax.new "command", :command
 		expect(Syntax.tokenize("invalid", [syn]).length).to eq(0)	
 	end
   it "does not accept extra text sent to a one-word command" do
