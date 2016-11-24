@@ -5,23 +5,35 @@ module Gamefic
       attr_reader :subplot
     end
     module Feature
-      attr_reader :subplot
+      def subplots
+        @p_subplots.clone
+      end
+      private
+      def p_subplots
+        @p_subplots ||= []
+      end
     end
     module Host
       # Get an array of all the current subplots.
       #
       # @return [Array<Subplot>]
       def subplots
-        @subplots.clone
+        p_subplots.clone
       end
       
       # Start a new subplot based on the provided class.
       #
+      # @param [Class] The class of the subplot to be created.
       # @return [Subplot]
       def branch subplot_class
         subplot = subplot_class.new(self)
-        @subplots.push subplot
+        p_subplots.push subplot
         subplot
+      end
+      
+      private
+      def p_subplots
+        @p_subplots ||= []
       end
     end
     
@@ -43,14 +55,11 @@ module Gamefic
       e
     end
     def introduce player
-      if !player.subplot.nil?
-        player.subplot.exeunt @player
-      end
-      player.instance_variable_set(:@subplot, self)
+      player.send(:p_subplots).push self
       players.push player
     end
     def exeunt player
-      player.instance_variable_set(:@subplot, nil)
+      player.send(:p_subplots).delete self
       players.delete player
     end
     def conclude
