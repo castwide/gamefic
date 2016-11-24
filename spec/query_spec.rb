@@ -1,6 +1,3 @@
-require 'gamefic'
-include Gamefic
-
 module LastObjectTest
   attr_accessor :last_object
 end
