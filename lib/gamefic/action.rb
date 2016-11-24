@@ -45,14 +45,12 @@ module Gamefic
       if verb.nil?
         spec = -100
       end
-      magnitude = 1
       @queries.each { |q|
         if q.kind_of?(Query::Base)
-          spec += (q.specificity * magnitude)
+          spec += q.specificity
         else
-          spec += magnitude
+          spec += 1
         end
-        #magnitude = magnitude * 10
       }
       return spec
     end
