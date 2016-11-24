@@ -26,8 +26,11 @@ module Gamefic
     # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if
     # the plugin isn't activated.
     #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
-    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot, Subplot::Host
-    expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes, :metadata
+    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount,
+      ArticleMount, YouMount, Snapshot, Subplot::Host
+    expose :script, :introduction, :assert_action, :before_player_update,
+      :on_update, :on_player_update, :entities, :on_ready, :on_player_ready,
+      :players, :scenes, :metadata
     
     # @param [Source::Base]
     def initialize(source = nil)

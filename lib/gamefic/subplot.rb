@@ -22,7 +22,7 @@ module Gamefic
         subplot = subplot_class.new(self)
         @subplots.push subplot
         subplot
-      end    
+      end
     end
     
     attr_reader :plot, :entities, :players
