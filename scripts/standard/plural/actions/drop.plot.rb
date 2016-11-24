@@ -112,7 +112,7 @@ respond :drop, Use.any_expression, Use.ambiguous_children do |actor, text1, thin
   end
 end
 
-respond :drop, Use.any_expression, Use.ambiguous_children, Use.text("except", "but"), Use.any_expression, Use.ambiguous_children do |actor, _, things, _, exceptions|
+respond :drop, Use.any_expression, Use.ambiguous_children, Use.text("except", "but"), Use.any_expression, Use.ambiguous_children do |actor, _, things, _, _, exceptions|
   actor.perform :drop, things - exceptions
 end
 

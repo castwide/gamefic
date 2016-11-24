@@ -41,11 +41,11 @@ respond :insert, Use.many_children, Use.reachable(Container) do |actor, children
   end
 end
 
-respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, children, _, receptacle|
+respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, children, receptacle|
   actor.perform :insert, children, receptacle
 end
 
-respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, children, _, receptacle|
+respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, children, receptacle|
   actor.perform :insert, children, receptacle
 end
 
