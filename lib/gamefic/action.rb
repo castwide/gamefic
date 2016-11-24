@@ -7,17 +7,16 @@ module Gamefic
     attr_writer :meta
     @@order_key_seed = 0
     
-    def initialize(plot, verb, *queries, &proc)
+    def initialize(verb, *queries, &proc)
       if !verb.kind_of?(Symbol)
         verb = verb.to_s
         verb = nil if verb == ''
       end
-      @plot = plot
       @order_key = @@order_key_seed
       @@order_key_seed += 1
       @proc = proc
       if (verb.kind_of?(Symbol) == false and !verb.nil?)
-        raise "Action verbs must be symbols"
+        raise "Action verbs must be symbols #{verb}"
       end
       if !@proc.nil?
         if (queries.length + 1 != @proc.arity) and (queries.length == 0 and @proc.arity != -1)
@@ -26,9 +25,6 @@ module Gamefic
       end
       @verb = verb
       @queries = queries
-      if !plot.nil?
-        plot.send :add_action, self
-      end
     end
     
     # Get the specificity of the Action.

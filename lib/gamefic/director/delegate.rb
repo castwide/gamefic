@@ -4,7 +4,7 @@ module Gamefic
       # If we use Query::Base.new in the @disambiguator declaration, Opal
       # passes the block to the query instead of the action.
       base = Query::Base.new
-      @@disambiguator = Action.new nil, nil, base do |actor, entities|
+      @@disambiguator = Action.new nil, base do |actor, entities|
         definites = []
         entities.each { |entity|
           definites.push entity.definitely

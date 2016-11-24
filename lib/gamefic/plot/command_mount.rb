@@ -24,7 +24,9 @@ module Gamefic
       act
     end
     def action(command, *queries, &proc)
-      Action.new(self, command, *queries, &proc)
+      act = Action.new(command, *queries, &proc)
+      add_action act
+      act
     end
     # Create an Action that responds to a command.
     # An Action uses the command argument to identify the imperative verb that
@@ -72,7 +74,8 @@ module Gamefic
       xlate(*args)
     end
     def xlate(*args)
-      syn = Syntax.new(self, *args)
+      syn = Syntax.new(*args)
+      add_syntax syn
       syn
     end
     def commandwords

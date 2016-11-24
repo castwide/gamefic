@@ -6,7 +6,7 @@ module Gamefic
     attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
     
-    def initialize plot, template, *command
+    def initialize template, *command
       command = command.join(' ')
       words = template.split_words
       @token_count = words.length
@@ -50,9 +50,6 @@ module Gamefic
       }
       @replace = subs.join(' ')
       @regexp = Regexp.new("^#{tokens.join(' ')}$", Regexp::IGNORECASE)
-      if !plot.nil?
-        plot.send :add_syntax, self
-      end
     end
     
     # Convert a String into a Command.

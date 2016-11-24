@@ -102,7 +102,7 @@ module Gamefic
               objects.push Order.new(actor, action, prepared)
             else
               if !action.queries.last.allow_many? or action.queries.last.allow_ambiguous?
-                misunderstood = Action.new nil, nil, Query::Text.new do |actor, text|
+                misunderstood = Action.new nil, Query::Text.new do |actor, text|
                   actor.tell "I understand the first part of your command but not \"#{text}.\""
                 end
                 misunderstood.meta = true

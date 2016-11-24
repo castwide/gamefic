@@ -341,7 +341,7 @@ module Gamefic
         user_friendly += " #{new_name}"
         args.push new_name
       }
-      Syntax.new self, user_friendly.strip, "#{action.verb} #{args.join(' ')}"
+      add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}")
     end
     def rem_action(action)
       @commands[action.verb].delete(action)

@@ -15,7 +15,9 @@ module Gamefic::Sdk::Debug
       end
     end
     def action(command, *queries, &proc)
-      Gamefic::Sdk::Debug::Action.new(self, command, *queries, &proc)
+      act = Gamefic::Sdk::Debug::Action.new(command, *queries, &proc)
+      add_action act
+      act
     end
   end
 end

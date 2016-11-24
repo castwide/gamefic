@@ -12,7 +12,7 @@ describe "Assertion" do
       @number += 1
     end
     @character.perform "increment"
-    expect(@number).to eq(2)  
+    expect(@number).to eq(2)
   end
   it "validates a user action by returning true" do
     @plot.assert_action :return_true do |actor, verb, arguments|

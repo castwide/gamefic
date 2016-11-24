@@ -4,7 +4,7 @@ module Gamefic::Sdk
   module Debug
     class Action < Gamefic::Action
       attr_reader :source_location
-      def initialize(story, command, *queries, &proc)
+      def initialize(command, *queries, &proc)
         super
         @executed = false
         caller.each { |c|
