@@ -1,5 +1,10 @@
 module Gamefic
 
+  # Exception raised when the Action's proc arity is not compatible with the
+  # number of queries
+  class ActionArgumentError < ArgumentError
+  end
+  
   # Actions manage the execution of commands that Characters can perform.
   # 
   class Action
@@ -19,8 +24,8 @@ module Gamefic
         raise "Action verbs must be symbols #{verb}"
       end
       if !@proc.nil?
-        if (queries.length + 1 != @proc.arity) and (queries.length == 0 and @proc.arity != -1)
-          raise "Number of queries is not compatible with proc arguments"
+        if (queries.length + 1 != @proc.arity) and (@proc.arity > 0)
+          raise ActionArgumentError.new("Number of queries is not compatible with proc arguments")
         end
       end
       @verb = verb
