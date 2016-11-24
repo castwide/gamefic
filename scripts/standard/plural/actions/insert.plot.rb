@@ -45,17 +45,9 @@ respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Recep
   actor.perform :insert, children, receptacle
 end
 
-respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, children, receptacle|
-  actor.perform :insert, children, receptacle
-end
-
 respond :insert, Use.text("everything", "all"), Use.text("except", "but"), Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, _, exceptions, receptacle|
   children = Use.children.context_from(actor).that_are_not(:attached?)
   actor.perform :insert, children - exceptions, receptacle
-end
-
-respond :insert, Use.any_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, children, receptacle|
-  actor.perform :insert, children, receptacle
 end
 
 respond :insert, Use.not_expression, Use.ambiguous_children, Use.reachable(Receptacle) do |actor, _, exceptions, receptacle|
