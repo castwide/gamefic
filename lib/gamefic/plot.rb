@@ -26,7 +26,7 @@ module Gamefic
     # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if
     # the plugin isn't activated.
     #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
-    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
+    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot, Subplot::Host
     expose :script, :introduction, :assert_action, :before_player_update, :on_update, :on_player_update, :entities, :on_ready, :on_player_ready, :players, :scenes, :metadata
     
     # @param [Source::Base]
@@ -275,24 +275,6 @@ module Gamefic
     # @yieldparam [Character]
     def before_player_update &block
       @before_player_update_procs.push block
-    end
-
-    expose :subplots, :branch
-    
-    # Get an array of all the current subplots.
-    #
-    # @return [Array<Subplot>]
-    def subplots
-      @subplots.clone
-    end
-    
-    # Start a new subplot based on the provided class.
-    #
-    # @return [Subplot]
-    def branch subplot_class
-      subplot = subplot_class.new(self)
-      @subplots.push subplot
-      subplot
     end
     
     private
