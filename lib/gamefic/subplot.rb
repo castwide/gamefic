@@ -6,7 +6,7 @@ module Gamefic
     end
     module Feature
       def subplots
-        @p_subplots.clone
+        p_subplots.clone
       end
       private
       def p_subplots

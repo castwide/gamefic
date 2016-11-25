@@ -48,7 +48,10 @@ module Gamefic
       else
         store = reduce(store)
       end
-      store
+      return {
+        entities: store,
+        subplots: save_subplots
+      }
     end
     
     # Restore the plot to the state of the provided snapshot.
@@ -56,7 +59,8 @@ module Gamefic
     # @param [Hash]
     def restore snapshot
       restore_initial_state
-      internal_restore snapshot
+      internal_restore snapshot[:entities]
+      restore_subplots snapshot[:subplots]
     end
     
     private
@@ -184,6 +188,40 @@ module Gamefic
         arr[i] = unserialize(obj[i])
       }
       arr
+    end
+    def save_subplots
+      arr = []
+      subplots.each { |s|
+        hash = {}
+        hash[:class] = s.class.to_s
+        s.instance_variables.each { |k|
+          v = s.instance_variable_get(k)
+          if can_serialize?(v)
+            hash[k] = serialize_obj(v)
+          end
+        }
+        arr.push hash
+      }
+      arr
+    end
+    def restore_subplots arr
+      players.each { |p|
+        p.send(:p_subplots).clear
+      }
+      p_subplots.clear
+      arr.each { |hash|
+        cls = Kernel.const_get(hash[:class])
+        subplot = cls.new self
+        hash.each { |k, v|
+          if k != :class
+            subplot.instance_variable_set(k, unserialize(v))
+          end
+        }
+        subplot.players.each { |p|
+          p.send(:p_subplots).push subplot
+        }
+        p_subplots.push subplot
+      }
     end
   end
 end
