@@ -2,6 +2,10 @@ require 'json'
 
 module Gamefic
   module Plot::Snapshot
+  
+    # Take a snapshot of the plot's current state.
+    #
+    # @return [Hash]
     def save
       store = []
       index = 0
@@ -46,42 +50,53 @@ module Gamefic
       end
       store
     end
+    
+    # Restore the plot to the state of the provided snapshot.
+    #
+    # @param [Hash]
     def restore snapshot
-      internal_restore snapshot, true
+      restore_initial_state
+      internal_restore snapshot
     end
+    
     private
-    def internal_restore snapshot, with_restore = true
-      if with_restore
+    
+    # Restore the plot to the state of its first snapshot.
+    #
+    def restore_initial_state
         @entities[@initial_state.length..-1].each { |e|
           e.parent = nil
         }
         @entities.slice! @initial_state.length..-1
-        internal_restore @initial_state, false
-      end
+        internal_restore @initial_state
+    end
+    
+    def internal_restore snapshot
       index = 0
       snapshot.each { |hash|
         if entities[index].nil?
-          if with_restore
-            cls = Kernel.const_get(hash[:class])
-            entities[index] = make cls
-          else
-            break
-          end
+          cls = Kernel.const_get(hash[:class])
+          @entities[index] = make cls
         end 
-        hash.each_pair { |k, v|
-          if k == :scene
-            entities[index].cue v.to_sym
-          else
-            entities[index].send("#{k}=", unserialize(v)) if k != :session and k != :class
-          end
-        }
+        internal_restore_hash hash, index
+        index += 1
+      }
+      nil
+    end
+    def internal_restore_hash hash, index
+      hash.each { |k, v|
+        if k == :scene
+          entities[index].cue v.to_sym
+        elsif (k != :session and k != :class)
+          entities[index].send("#{k}=", unserialize(v))
+        end
         unless hash[:session].nil?
           hash[:session].each_pair { |k, v|
             entities[index].session[k.to_sym] = unserialize(v)
           }
         end
-        index += 1
       }
+      nil
     end
     def reduce entities
       reduced = []
@@ -98,7 +113,6 @@ module Gamefic
       }
       reduced
     end
-    private
     def can_serialize? obj
       return true if (obj == true or obj == false or obj.nil?)
       allowed = [String, Fixnum, Float, Numeric, Entity, Direction, Hash, Array, Symbol]
@@ -111,23 +125,9 @@ module Gamefic
       return nil if obj.nil?
       return false if obj == false
       if obj.kind_of?(Hash)
-        hash = {}
-        obj.each_pair { |k, v|
-          if can_serialize?(k) and can_serialize?(v)
-            hash[serialize_obj(k)] = serialize_obj(v)
-          end
-        }
-        return hash
+        return serialize_hash obj
       elsif obj.kind_of?(Array)
-        arr = []
-        obj.each_index { |i|
-          if can_serialize?(obj[i])
-            arr[i] = serialize_obj(obj[i])
-          else
-            raise "Bad array in snapshot"
-          end
-        }
-        return arr
+        return serialize_array obj
       else
         if obj.kind_of?(Entity)
           return "#<EIN_#{@entities.index(obj)}>"
@@ -137,29 +137,53 @@ module Gamefic
       end
       return obj
     end
+    def serialize_hash obj
+      hash = {}
+      obj.each_pair { |k, v|
+        if can_serialize?(k) and can_serialize?(v)
+          hash[serialize_obj(k)] = serialize_obj(v)
+        end
+      }
+      return hash
+    end
+    def serialize_array obj
+      arr = []
+      obj.each_index { |i|
+        if can_serialize?(obj[i])
+          arr[i] = serialize_obj(obj[i])
+        else
+          raise "Bad array in snapshot"
+        end
+      }
+      return arr
+    end
     def unserialize obj
       if obj.kind_of?(Hash)
-        hash = {}
-        obj.each_pair { |k, v|
-          hash[unserialize(k)] = unserialize(v)
-        }
-        hash
+        unserialize_hash obj
       elsif obj.kind_of?(Array)
-        arr = []
-        obj.each_index { |i|
-          arr[i] = unserialize(obj[i])
-        }
-        arr
+        unserialize_array obj
+      elsif obj.to_s.match(/^#<EIN_[0-9]+>$/)
+        i = obj[6..-2].to_i
+        @entities[i]
+      elsif obj.to_s.match(/^#<DIR_[a-z]+>$/)
+        Direction.find(obj[6..-2])
       else
-        if obj.to_s.match(/^#<EIN_[0-9]+>$/)
-          i = obj[6..-2].to_i
-          @entities[i]
-        elsif obj.to_s.match(/^#<DIR_[a-z]+>$/)
-          Direction.find(obj[6..-2])
-        else
-          obj
-        end
+        obj
       end
+    end
+    def unserialize_hash obj
+      hash = {}
+      obj.each_pair { |k, v|
+        hash[unserialize(k)] = unserialize(v)
+      }
+      hash
+    end
+    def unserialize_array obj
+      arr = []
+      obj.each_index { |i|
+        arr[i] = unserialize(obj[i])
+      }
+      arr
     end
   end
 end

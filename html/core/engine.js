@@ -76,14 +76,14 @@ var Gamefic = (function() {
 			responseCallbacks[state] = callback;
 		},
 		save: function(filename, data) {
-			var json = JSON.stringify(data);
-			console.log("Save " + filename + ": " + json);
+			var json = Opal.JSON.$generate(data);
 			localStorage.setItem(filename, json);
 			Opal.GameficOpal.$static_player().$character().$tell('Game saved.');
 		},
 		restore: function(filename) {
-			console.log("Restore " + filename + ": " + localStorage.getItem(filename));
-			return JSON.parse(localStorage.getItem(filename));
+			// TODO Validate the restore file against build metadata
+			var data = Opal.JSON.$parse(localStorage.getItem(filename));
+			return data;
 		}
 	}
 })();
