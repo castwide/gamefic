@@ -15,7 +15,11 @@ module Gamefic::Sdk
     def build
       target_dir = config['target_dir']
       if config['filename'].to_s == ''
-        filename = File.join(target_dir, source_dir.split('/').delete_if{|i| i.to_s == ''}.last + '.gfic')
+        if plot_config.title.to_s == ''
+          filename = File.join(target_dir, File.expand_path(source_dir).split('/').delete_if{|i| i.to_s == ''}.last + '.gfic')
+        else
+          filename = File.join(target_dir, plot_config.title.gsub(/ /, '-').downcase + '.gfic')
+        end
       else
         filename = File.join(target_dir, config['filename'])
       end
