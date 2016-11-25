@@ -220,6 +220,10 @@ module Gamefic
         subplot.players.each { |p|
           p.send(:p_subplots).push subplot
         }
+        subplot.entities.each { |e|
+          e.extend Subplot::Element
+          e.instance_variable_set(:@subplot, subplot)
+        }
         p_subplots.push subplot
       }
     end
