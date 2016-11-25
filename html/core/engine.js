@@ -81,9 +81,9 @@ var Gamefic = (function() {
 			Opal.GameficOpal.$static_player().$character().$tell('Game saved.');
 		},
 		restore: function(filename) {
-			// TODO Validate the restore file against build metadata
 			var data = Opal.JSON.$parse(localStorage.getItem(filename));
-			var metadata = data.$fetch('metadata')
+			var metadata = data.$fetch('metadata');
+			// HACK Converting hashes to strings for JavaScript comparison
 			if (metadata.$to_s() != Opal.GameficOpal.$static_plot().$metadata().$to_s()) {
 				Opal.GameficOpal.$static_player().$character().$tell('The saved data is not compatible with this version of the game.');
 				return Opal.nil;
