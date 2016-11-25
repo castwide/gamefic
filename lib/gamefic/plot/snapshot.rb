@@ -2,6 +2,10 @@ require 'json'
 
 module Gamefic
   module Plot::Snapshot
+  
+    # Take a snapshot of the plot's current state.
+    #
+    # @return [Hash]
     def save
       store = []
       index = 0
@@ -46,12 +50,19 @@ module Gamefic
       end
       store
     end
+    
+    # Restore the plot to the state of the provided snapshot.
+    #
+    # @param [Hash]
     def restore snapshot
       restore_initial_state
       internal_restore snapshot
     end
     
     private
+    
+    # Restore the plot to the state of its first snapshot.
+    #
     def restore_initial_state
         @entities[@initial_state.length..-1].each { |e|
           e.parent = nil
@@ -59,31 +70,33 @@ module Gamefic
         @entities.slice! @initial_state.length..-1
         internal_restore @initial_state
     end
+    
     def internal_restore snapshot
       index = 0
       snapshot.each { |hash|
         if entities[index].nil?
-          if with_restore
-            cls = Kernel.const_get(hash[:class])
-            entities[index] = make cls
-          else
-            break
-          end
+          cls = Kernel.const_get(hash[:class])
+          @entities[index] = make cls
         end 
-        hash.each_pair { |k, v|
-          if k == :scene
-            entities[index].cue v.to_sym
-          else
-            entities[index].send("#{k}=", unserialize(v)) if k != :session and k != :class
-          end
-        }
+        internal_restore_hash hash, index
+        index += 1
+      }
+      nil
+    end
+    def internal_restore_hash hash, index
+      hash.each { |k, v|
+        if k == :scene
+          entities[index].cue v.to_sym
+        elsif (k != :session and k != :class)
+          entities[index].send("#{k}=", unserialize(v))
+        end
         unless hash[:session].nil?
           hash[:session].each_pair { |k, v|
             entities[index].session[k.to_sym] = unserialize(v)
           }
         end
-        index += 1
       }
+      nil
     end
     def reduce entities
       reduced = []
@@ -149,15 +162,13 @@ module Gamefic
         unserialize_hash obj
       elsif obj.kind_of?(Array)
         unserialize_array obj
+      elsif obj.to_s.match(/^#<EIN_[0-9]+>$/)
+        i = obj[6..-2].to_i
+        @entities[i]
+      elsif obj.to_s.match(/^#<DIR_[a-z]+>$/)
+        Direction.find(obj[6..-2])
       else
-        if obj.to_s.match(/^#<EIN_[0-9]+>$/)
-          i = obj[6..-2].to_i
-          @entities[i]
-        elsif obj.to_s.match(/^#<DIR_[a-z]+>$/)
-          Direction.find(obj[6..-2])
-        else
-          obj
-        end
+        obj
       end
     end
     def unserialize_hash obj
