@@ -70,7 +70,8 @@ class Gamefic::Sdk::Shell::Command::Init < Gamefic::Shell::Command::Base
       file.puts "web:",
       "  platform: Web",
       "gfic:",
-      "  platform: Gfic"
+      "  platform: Gfic",
+      "  filename: game.gfic"
     end
   end
   
