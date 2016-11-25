@@ -13,7 +13,8 @@ Gem::Specification.new do |s|
 	s.executables << 'gamefic'
 	s.homepage    = 'http://gamefic.com'
 	s.license     = 'MIT'
-	s.required_ruby_version = '>= 1.9.3'
+	s.required_ruby_version = '>= 2.0.0'
+	s.add_runtime_dependency 'slop', '~> 4.0'
 	s.add_runtime_dependency 'rubyzip'
 	s.add_development_dependency 'rspec'
 end
