@@ -47,17 +47,19 @@ module Gamefic
       store
     end
     def restore snapshot
-      internal_restore snapshot, true
+      restore_initial_state
+      internal_restore snapshot
     end
+    
     private
-    def internal_restore snapshot, with_restore = true
-      if with_restore
+    def restore_initial_state
         @entities[@initial_state.length..-1].each { |e|
           e.parent = nil
         }
         @entities.slice! @initial_state.length..-1
-        internal_restore @initial_state, false
-      end
+        internal_restore @initial_state
+    end
+    def internal_restore snapshot
       index = 0
       snapshot.each { |hash|
         if entities[index].nil?
@@ -98,7 +100,6 @@ module Gamefic
       }
       reduced
     end
-    private
     def can_serialize? obj
       return true if (obj == true or obj == false or obj.nil?)
       allowed = [String, Fixnum, Float, Numeric, Entity, Direction, Hash, Array, Symbol]
@@ -111,23 +112,9 @@ module Gamefic
       return nil if obj.nil?
       return false if obj == false
       if obj.kind_of?(Hash)
-        hash = {}
-        obj.each_pair { |k, v|
-          if can_serialize?(k) and can_serialize?(v)
-            hash[serialize_obj(k)] = serialize_obj(v)
-          end
-        }
-        return hash
+        return serialize_hash obj
       elsif obj.kind_of?(Array)
-        arr = []
-        obj.each_index { |i|
-          if can_serialize?(obj[i])
-            arr[i] = serialize_obj(obj[i])
-          else
-            raise "Bad array in snapshot"
-          end
-        }
-        return arr
+        return serialize_array obj
       else
         if obj.kind_of?(Entity)
           return "#<EIN_#{@entities.index(obj)}>"
@@ -137,19 +124,31 @@ module Gamefic
       end
       return obj
     end
+    def serialize_hash obj
+      hash = {}
+      obj.each_pair { |k, v|
+        if can_serialize?(k) and can_serialize?(v)
+          hash[serialize_obj(k)] = serialize_obj(v)
+        end
+      }
+      return hash
+    end
+    def serialize_array obj
+      arr = []
+      obj.each_index { |i|
+        if can_serialize?(obj[i])
+          arr[i] = serialize_obj(obj[i])
+        else
+          raise "Bad array in snapshot"
+        end
+      }
+      return arr
+    end
     def unserialize obj
       if obj.kind_of?(Hash)
-        hash = {}
-        obj.each_pair { |k, v|
-          hash[unserialize(k)] = unserialize(v)
-        }
-        hash
+        unserialize_hash obj
       elsif obj.kind_of?(Array)
-        arr = []
-        obj.each_index { |i|
-          arr[i] = unserialize(obj[i])
-        }
-        arr
+        unserialize_array obj
       else
         if obj.to_s.match(/^#<EIN_[0-9]+>$/)
           i = obj[6..-2].to_i
@@ -160,6 +159,20 @@ module Gamefic
           obj
         end
       end
+    end
+    def unserialize_hash obj
+      hash = {}
+      obj.each_pair { |k, v|
+        hash[unserialize(k)] = unserialize(v)
+      }
+      hash
+    end
+    def unserialize_array obj
+      arr = []
+      obj.each_index { |i|
+        arr[i] = unserialize(obj[i])
+      }
+      arr
     end
   end
 end
