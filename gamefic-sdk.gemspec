@@ -13,9 +13,9 @@ Gem::Specification.new do |s|
 	s.executables << 'gfk'
 	s.homepage    = 'http://gamefic.com'
 	s.license     = 'MIT'
-	s.required_ruby_version = '>= 1.9.3'
+	s.required_ruby_version = '>= 2.0.0'
 	s.add_runtime_dependency 'gamefic'
-	s.add_runtime_dependency 'opal', [">= 0.7.2"]
+	s.add_runtime_dependency 'opal', [">= 0.10.3"]
 	s.add_runtime_dependency 'slop'
 	s.add_development_dependency 'rspec'
 	s.add_development_dependency 'poltergeist'
