@@ -16,7 +16,7 @@ describe Gamefic::Sdk::Shell::Command do
   it "builds a game" do
     command = Gamefic::Sdk::Shell::Command::Build.new
     command.run ['build', "#{@dir}/game", "-q"]
-    expect(File.exist?("#{@dir}/game/release/gfic/untitled.gfic")).to eq(true)
+    expect(File.exist?("#{@dir}/game/release/gfic/game.gfic")).to eq(true)
     expect(File.exist?("#{@dir}/game/release/web")).to eq(true)
   end
   after :all do
