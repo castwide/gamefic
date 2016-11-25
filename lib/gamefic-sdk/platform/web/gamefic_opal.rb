@@ -17,24 +17,25 @@ module GameficOpal
     @@static_player ||= WebUser.new(GameficOpal.static_plot)
   end
 
-	class WebPlot < Gamefic::Plot
-	  def script path
-	    # Stub
-	  end
-	end
-	
-	class WebUser < Gamefic::User
-	  def save filename, data
-	    `Gamefic.save(filename, data);`
-	  end
-	  def restore filename
-	    data = `Gamefic.restore(filename);`
-	    return data
-	  end
-	  def test_queue
-	    character[:test_queue] || []
-	  end
-	end
+  class WebPlot < Gamefic::Plot
+    def script path
+      # Stub
+    end
+  end
+  
+  class WebUser < Gamefic::User
+    def save filename, data
+      data[:metadata] = character.plot.metadata
+      `Gamefic.save(filename, data);`
+    end
+    def restore filename
+      data = `Gamefic.restore(filename);`
+      return data
+    end
+    def test_queue
+      character[:test_queue] || []
+    end
+  end
 end
 
 GameficOpal.static_plot.script 'main'

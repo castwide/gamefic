@@ -109,7 +109,7 @@ module Gamefic::Sdk
           file << "\nend\n"
         }
         file << "end\n"
-        #file << metadata
+        file << metadata_code
       end
       Opal.append_path build_dir
       File.open(build_dir + "/core/scripts.js", 'w') do |file|
@@ -153,6 +153,10 @@ module Gamefic::Sdk
           }
         end
       }
+    end
+    
+    def metadata_code
+      "\nGameficOpal.static_plot.metadata = JSON.parse('#{metadata.to_json}')"
     end
   end
 

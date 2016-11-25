@@ -33,10 +33,7 @@ module Gamefic
         @stream.ansi
       end
       def save filename, snapshot
-        data = {
-          :metadata => @character.plot.metadata,
-          :entities => snapshot
-        }
+        data = snapshot.merge(:metadata => @character.plot.metadata)
         json = JSON.generate data
         if json.nil?
           @character.tell "Nothing to save."
@@ -63,7 +60,7 @@ module Gamefic
             if (data[:metadata] != @character.plot.metadata)
               @character.tell "The save file is not compatible with this version of the game."
             else
-              return data[:entities]
+              return data
             end
           else
             @character.tell "File \"#{filename}\" not found."
