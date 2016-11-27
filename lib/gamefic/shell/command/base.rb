@@ -19,7 +19,7 @@ class Gamefic::Shell::Command::Base
   #
   # @return [String]
   def help
-    optons.to_s
+    options.to_s
   end
   
   protected
