@@ -23,10 +23,10 @@ module Gamefic
       
       # Start a new subplot based on the provided class.
       #
-      # @param [Class] The class of the subplot to be created.
+      # @param [Class] The class of the subplot to be created (Subplot by default)
       # @return [Subplot]
-      def branch subplot_class
-        subplot = subplot_class.new(self)
+      def branch subplot_class = Subplot, &block
+        subplot = subplot_class.new(self, &block)
         p_subplots.push subplot
         subplot
       end
@@ -43,7 +43,9 @@ module Gamefic
       @plot = plot
       @entities = []
       @players = []
+      @concluded = false
       post_initialize
+      yield(self) if block_given?
     end
     def post_initialize
     end
@@ -63,12 +65,16 @@ module Gamefic
       players.delete player
     end
     def conclude
+      concluded = true
       entities.each { |e|
         e.destroy
       }
       players.each { |p|
         exeunt p
       }
+    end
+    def concluded?
+      @concluded
     end
   end
   
