@@ -15,4 +15,5 @@ require "gamefic/director"
 require "gamefic/plot"
 require "gamefic/engine"
 require "gamefic/direction"
-require "gamefic/version"
+
+require 'gamefic/version'

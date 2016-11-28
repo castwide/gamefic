@@ -1,30 +1,28 @@
 require 'gamefic'
 require 'gamefic-sdk'
-#require 'rubygems'
-#gem 'opal', '>= 0.9', '< 0.10'
 require 'opal'
 
 module Gamefic::Sdk
 
   class Platform::Web < Platform::Base
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
-    
+
     def defaults
       @defaults ||= {
         'html_skin' => 'standard',
         'with_media' => true
       }
     end
-    
+
     def app_config
       @app_config ||= AppConfig.new source_dir, config
     end
-    
+
     def build
       target_dir = config['target_dir']
       build_dir = config['build_dir']
       html_dir = app_config.html_dir
-      
+
       FileUtils.mkdir_p target_dir
       copy_html_files target_dir
       build_opal_js build_dir
@@ -34,17 +32,17 @@ module Gamefic::Sdk
       render_index target_dir
       copy_assets build_dir, target_dir
       copy_media source_dir, target_dir
-      
+
     end
-        
+
     def clean
       FileUtils.remove_entry_secure config['build_dir'] if File.exist?(config['build_dir'])
       FileUtils.mkdir_p config['build_dir']
       puts "#{config['build_dir']} cleaned."
     end
-    
+
     private
-    
+
     def resolve filename, paths
       absolute = nil
       paths.each { |path|
@@ -79,7 +77,7 @@ module Gamefic::Sdk
         end
       end
     end
-    
+
     def build_gamefic_js build_dir
       # Gamefic core
       Opal.append_path Gamefic::Sdk::LIB_PATH
@@ -89,7 +87,7 @@ module Gamefic::Sdk
         end
       end
     end
-    
+
     def build_static_js build_dir
       # GameficOpal
       if !File.exist?(build_dir + "/core/static.js")
@@ -98,7 +96,7 @@ module Gamefic::Sdk
         end
       end
     end
-    
+
     def build_scripts_js build_dir
       # Plot scripts
       File.open("#{build_dir}/scripts.rb", 'w') do |file|
@@ -116,14 +114,14 @@ module Gamefic::Sdk
         file << Opal::Builder.build('scripts')
       end
     end
-    
+
     def render_index target_dir
       # Render index
       File.open(target_dir + "/index.html", "w") do |file|
         file << app_config.render
       end
     end
-    
+
     def copy_assets build_dir, target_dir
       paths = app_config.resource_paths
       paths.push build_dir
@@ -138,7 +136,7 @@ module Gamefic::Sdk
         FileUtils.cp_r absolute, target_dir + "/" + css
       }
     end
-    
+
     def copy_media source_dir, target_dir
       # Copy media
       pc = PlotConfig.new "#{source_dir}/config.yaml"
@@ -154,7 +152,7 @@ module Gamefic::Sdk
         end
       }
     end
-    
+
     def metadata_code
       "\nGameficOpal.static_plot.metadata = JSON.parse('#{metadata.to_json}')"
     end
