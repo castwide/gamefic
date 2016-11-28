@@ -1,16 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'gamefic'
-require 'gamefic/shell'
 require 'gamefic-sdk'
 require 'gamefic-sdk/shell'
 
-shell = Gamefic::Shell.new
-
-shell.register "init", Gamefic::Sdk::Shell::Command::Init
-shell.register "create", Gamefic::Sdk::Shell::Command::Init
-shell.register "build", Gamefic::Sdk::Shell::Command::Build
-shell.register "clean", Gamefic::Sdk::Shell::Command::Clean
-shell.register "test", Gamefic::Sdk::Shell::Command::Test
-
-shell.execute
+Gamefic::Sdk::Shell.start(ARGV)

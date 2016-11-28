@@ -22,7 +22,7 @@ module GameficOpal
       # Stub
     end
   end
-  
+
   class WebUser < Gamefic::User
     def save filename, data
       data[:metadata] = character.plot.metadata
