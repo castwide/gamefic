@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'gamefic'
-require 'gamefic/shell'
-
-shell = Gamefic::Shell.new
-shell.execute

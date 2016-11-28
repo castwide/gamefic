@@ -3,8 +3,8 @@
 require 'gamefic'
 require 'gamefic/shell'
 
-shell = Gamefic::Shell.new
+# make play the default command but retain help and no commands
+# this works because we only have one real command here
+args = %w(play help).include?(ARGV[0].downcase) || ARGV.count.zero? ? ARGV : ARGV.dup.unshift('play')
 
-shell.register "play", Gamefic::Shell::Command::Play
-
-shell.execute
+Gamefic::Shell.start(args)
