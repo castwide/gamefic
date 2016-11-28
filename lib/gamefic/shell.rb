@@ -6,9 +6,15 @@ require 'yaml'
 
 module Gamefic
   class Shell < Thor
+    map %w[--version -v] => :version
+
+    desc "--version, -v", "Print the version"
+    def version
+      puts "gamefic #{Gamefic::VERSION}"
+    end
+    
     desc 'play FILE_NAME', 'Execute a compiled (.gfic) game'
     option :verbose, type: :boolean, aliases: :v, desc: "Don't suppress Ruby exceptions"
-
     def play(file)
       Dir.mktmpdir 'gamefic_' do |dir|
         puts 'Loading...'
@@ -20,6 +26,26 @@ module Gamefic
       show_exception(e) if options[:verbose]
     end
 
+    desc 'info FILE_NAME', 'Print information about a (.gfic) game'
+    option :verbose, type: :boolean, aliases: :v, desc: "Don't suppress Ruby exceptions"
+    def info(file)
+      Dir.mktmpdir 'gamefic_' do |dir|
+        decompress file, dir
+        metadata = YAML.load_file File.join(dir, 'metadata.yaml')
+        metadata.each { |k, v|
+          puts "#{k}: #{v}"
+        }
+      end
+    rescue StandardError, Zip::Error => e
+      puts "'#{file}' does not appear to be a valid Gamefic file."
+      show_exception(e) if options[:verbose]
+    end
+    
+    # Custom error message for invalid command or filename
+    def method_missing(symbol, *args)
+      raise UndefinedCommandError, "Could not find command or file named \"#{symbol}\"."
+    end
+    
     private
 
     def show_exception(exception)

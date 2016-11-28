@@ -7,8 +7,17 @@ module Gamefic
       autoload :Init, 'gamefic-sdk/shell/init'
       autoload :Test, 'gamefic-sdk/shell/test'
 
+      map %w[--version -v] => :version
+
+      desc "--version, -v", "Print the version"
+      def version
+        puts "gamefic-sdk #{Gamefic::Sdk::VERSION}"
+        puts "gamefic #{Gamefic::VERSION}"
+      end
+
       desc 'init DIRECTORY_NAME', 'Initialize a new game in DIRECTORY_NAME'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
+      option :scripts, type: :array, aliases: :s, desc: 'Add scripts to project'
       def init(directory_name)
         Gamefic::Sdk::Shell::Init.new(directory: directory_name, quiet: options[:quiet]).run
       end
@@ -27,7 +36,7 @@ module Gamefic
       desc 'clean DIRECTORY_NAME', 'Perform cleanup of DIRECTORY_NAME'
       def clean(directory_name)
         Gamefic::Sdk::Build.clean(directory_name)
-      end
+      end      
     end
   end
 end
