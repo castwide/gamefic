@@ -17,13 +17,14 @@ The Gamefic SDK is also a gem:
 # Using the Executables
 
 There are two Gamefic executables: "gamefic" for playing games and "gfk" for
-development. The examples in this README assume you are working with the
-executables that get distributed with the gems.
+writing games.
 
 ## Using Executables in Development
 
-If you want the binaries to use the libraries in the repo, use
-bundle to configure the environment:
+The examples in this README assume you are working with the executables that
+get distributed with the gems. If you're actively developing the core Gamefic
+libraries, you'll want the executables to use the repo instead of the gems.
+Use bundle to configure the environment:
 
     cd /path/to/repo
     bundle install
