@@ -13,18 +13,16 @@ Gem::Specification.new do |s|
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(spec|examples|scripts|html)/|^lib/gamefic-sdk/})
-  end
-  s.executables   = ['bin/gamefic']
+  s.files = ['lib/gamefic.rb'] + Dir['lib/gamefic/**/*.rb']
+  s.executables   = ['gamefic']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
-  s.add_runtime_dependency 'thor'
-  s.add_runtime_dependency 'rubyzip'
+  s.add_runtime_dependency 'thor', '~> 0.19', '>= 0.19.4'
+  s.add_runtime_dependency 'rubyzip', '~> 1.2', '>= 1.2.0'
 
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'poltergeist'
-  s.add_development_dependency 'codeclimate-test-reporter'
+  s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
+  s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'
+  s.add_development_dependency 'poltergeist', '~> 1.11'
+  s.add_development_dependency 'codeclimate-test-reporter', '~> 1.0', '>= 1.0.0'
 end
