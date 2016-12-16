@@ -31,6 +31,7 @@ class Gamefic::Room < Gamefic::Entity
     end
     portal
   end
+  
   def synonyms
     @synonyms.to_s + " around here room"
   end
