@@ -21,8 +21,11 @@ module Gamefic
         decompress file, dir
         run_game(dir)
       end
-    rescue StandardError => e
+    rescue Zip::Error => e
       puts "'#{file}' does not appear to be a valid Gamefic file."
+      show_exception(e) if options[:verbose]
+    rescue StandardError => e
+      puts "An error occurred: #{e.message}"
       show_exception(e) if options[:verbose]
     end
 
