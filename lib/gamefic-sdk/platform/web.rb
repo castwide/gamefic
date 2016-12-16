@@ -81,7 +81,6 @@ module Gamefic::Sdk
     def build_gamefic_js build_dir
       # Gamefic core
       Opal.use_gem 'gamefic'
-      #Opal.append_path Gamefic::Sdk::LIB_PATH
       if !File.exist?(build_dir + "/core/gamefic.js")
         File.open(build_dir + "/core/gamefic.js", "w") do |file|
          file << Opal::Builder.build('gamefic').to_s
@@ -91,6 +90,7 @@ module Gamefic::Sdk
 
     def build_static_js build_dir
       # GameficOpal
+      Opal.append_path Gamefic::Sdk::LIB_PATH
       if !File.exist?(build_dir + "/core/static.js")
         File.open(build_dir + "/core/static.js", "w") do |file|
           file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
