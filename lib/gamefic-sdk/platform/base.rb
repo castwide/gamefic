@@ -59,7 +59,7 @@ module Gamefic::Sdk
       hash[:uuid] = "#{uuid}"
       hash[:gamefic_version] = "#{Gamefic::VERSION}"
       hash[:sdk_version] = "#{Gamefic::Sdk::VERSION}"
-      hash[:build_data] = "#{DateTime.now}"
+      hash[:build_date] = "#{DateTime.now}"
       hash
     end
   end
