@@ -25,8 +25,8 @@ module Gamefic
       #
       # @param [Class] The class of the subplot to be created (Subplot by default)
       # @return [Subplot]
-      def branch subplot_class = Subplot, &block
-        subplot = subplot_class.new(self, &block)
+      def branch subplot_class, feature:nil, &block
+        subplot = subplot_class.new(self, feature: feature, &block)
         p_subplots.push subplot
         subplot
       end
@@ -39,13 +39,14 @@ module Gamefic
     
     attr_reader :plot, :entities, :players
     
-    def initialize plot
+    def initialize plot, feature:nil
       @plot = plot
       @entities = []
       @players = []
       @concluded = false
       post_initialize
       yield(self) if block_given?
+      introduce feature unless feature.nil?
     end
     def post_initialize
     end
