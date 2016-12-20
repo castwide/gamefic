@@ -27,4 +27,8 @@ describe Array do
     array = ["one", "two", "three"]
     expect(array.join_and(', ', ' and ', false)).to eq("one, two and three")
   end
+  it "keeps duplicate elements" do
+    array = ["one", "one", "three"]
+    expect(array.join_and).to eq("one, one, and three")
+  end
 end
