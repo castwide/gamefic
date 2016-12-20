@@ -44,8 +44,9 @@ module Gamefic
         tell_choices actor
       else
         input_object = Input.new(input, index, choice)
+        # The next scene will be :active unless this scene cues something else.
+        actor.cue :active
         super actor, input_object
-        actor.cue :active if (actor.scene == this_scene and actor.next_scene.nil?)
       end
     end
 
