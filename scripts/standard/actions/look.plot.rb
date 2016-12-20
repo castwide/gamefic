@@ -10,7 +10,7 @@ end
 
 respond :look, Use.room do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
-  actor.tell room.description
+  actor.tell room.description if room.has_description?
   with_locales = []
   chars = room.children.that_are(Character).that_are(:itemized?) - [actor]
   charsum = []
