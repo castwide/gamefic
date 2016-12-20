@@ -47,7 +47,7 @@ class Array
     if self.length < 3
       self.join(andSep)
     else
-      start = self - [self.last]
+      start = self[0..-2]
       start.join(sep) + "#{serial ? sep.strip : ''}#{andSep}#{self.last}"
     end
   end
