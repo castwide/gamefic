@@ -66,12 +66,12 @@ module Gamefic
       scenes[key] = Scene::Passive.new &block
     end
     
-    # Branch to a new scene based on a list of options.
+    # Choose a new scene based on a list of options.
     # This is a specialized type of multiple-choice scene that determines
     # which scene to cue based on a Hash of choices and scene keys.
     #
     # @example Select a scene
-    #   branch :select_one_or_two, { "one" => :scene_one, "two" => :scene_two }
+    #   multiple_scene :select_one_or_two, { "one" => :scene_one, "two" => :scene_two }
     #   scene :scene_one do |actor|
     #     actor.tell "You went to scene one"
     #   end
@@ -79,12 +79,12 @@ module Gamefic
     #     actor.tell "You went to scene two"
     #   end
     #   introduction do |actor|
-    #     actor.cue, :select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
+    #     actor.cue :select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
     #   end
     #
     # @param key [Symbol] A unique name for the scene.
     # @param map [Hash] A Hash of options and associated scene keys.
-    def branch key, map
+    def multiple_scene key, map
       scenes[key] = Scene::MultipleChoice.new(
         options: map.keys,
         finish: proc { |actor, input|
