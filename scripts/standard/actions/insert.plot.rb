@@ -5,9 +5,13 @@ respond :insert, Use.visible, Use.reachable do |actor, thing, target|
 end
 
 respond :insert, Use.visible, Use.reachable(Receptacle) do |actor, thing, receptacle|
-  if actor.auto_takes?(thing)
-    actor.tell "#{you.pronoun.Subj} put #{the thing} in #{the receptacle}."
-    thing.parent = receptacle
+  if thing.sticky?
+    actor.tell thing.sticky_message || "#{you.pronoun.Subj} #{you.verb.need} to keep #{the thing} for now."
+  else
+    if actor.auto_takes?(thing)
+      actor.tell "#{you.pronoun.Subj} put #{the thing} in #{the receptacle}."
+      thing.parent = receptacle
+    end
   end
 end
 

@@ -12,8 +12,12 @@ respond :place, Use.visible, Use.reachable(Supporter) do |actor, thing, supporte
 end
 
 respond :place, Use.children, Use.reachable(Supporter) do |actor, thing, supporter|
-  thing.parent = supporter
-  actor.tell "#{you.pronoun.Subj} #{you.verb.put} #{the thing} on #{the supporter}."
+  if thing.sticky?
+    actor.tell thing.sticky_message || "#{you.pronoun.Subj} #{you.verb.need} to keep #{the thing} for now."
+  else
+    thing.parent = supporter
+    actor.tell "#{you.pronoun.Subj} #{you.verb.put} #{the thing} on #{the supporter}."
+  end
 end
 
 respond :place, Use.visible, Use.text do |actor, thing, supporter|

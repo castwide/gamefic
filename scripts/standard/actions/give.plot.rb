@@ -16,7 +16,11 @@ respond :give, Query::Reachable.new, Query::Reachable.new do |actor, character, 
 end
 
 respond :give, Query::Reachable.new(Character), Query::Children.new do |actor, character, gift|
-  actor.tell "#{The character} doesn't want #{the gift}."
+  if gift.sticky?
+    actor.tell gift.sticky_message || "#{you.pronoun.Subj} #{you.verb.need} to keep #{the gift} for now."
+  else
+    actor.tell "#{The character} doesn't want #{the gift}."
+  end
 end
 
 respond :give, Query::Text.new, Query::Children.new do |actor, character, gift|
