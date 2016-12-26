@@ -5,7 +5,7 @@ module Gamefic
   module Sdk
     class Shell
       class Init
-        def initialize(directory:, standard: true, quiet: false, scripts: [], webskin: 'standard')
+        def initialize(directory:, standard: true, quiet: false, scripts: [], webskin: 'standard', title: nil, author: nil)
           @quiet = quiet
           @directory = directory
           @html = webskin
@@ -13,6 +13,8 @@ module Gamefic
           @scripts.push('standard') if standard
           @scripts += scripts if scripts
           @platforms = ['Gfic', 'Web']
+          @title = title
+          @author = author
         end
 
         def run
@@ -67,8 +69,8 @@ module Gamefic
 
         def write_config_yaml
           File.open("#{@directory}/config.yaml", 'w') do |file|
-            file.puts "title: Untitled",
-            "author: Anonymous",
+            file.puts "title: #{@title || 'Untitled'}",
+            "author: #{@author || 'Anonymous'}",
             "",
             "script_paths:",
             "  - ./scripts",
