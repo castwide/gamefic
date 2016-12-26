@@ -5,6 +5,31 @@ class Gamefic::Room < Gamefic::Entity
   serialize :dark?, :explicit_exits?
   
   def connect(destination, direction = nil, type = Portal, two_way = true)
+    if direction.kind_of?(Hash)
+      connect2(destination, direction)
+    else
+      connect2 destination, direction: direction, type: type, two_way: true
+    end
+  end
+
+  def synonyms
+    @synonyms.to_s + " around here room"
+  end
+  
+  def tell(message)
+    children.each { |c|
+      c.tell message
+    }
+  end
+  
+  def find_portal(direction)
+    d = direction.to_s
+    portals = children.that_are(Portal).delete_if { |p| p.direction.to_s != d }
+    portals[0]
+  end
+  
+  private
+  def connect2 destination, direction:nil, type:Portal, two_way:true
     if direction.nil?
       portal = type.new self.plot, :parent => self, :destination => destination, :name => destination.definitely
       if two_way == true
@@ -30,19 +55,5 @@ class Gamefic::Room < Gamefic::Entity
       end
     end
     portal
-  end
-  
-  def synonyms
-    @synonyms.to_s + " around here room"
-  end
-  def tell(message)
-    children.each { |c|
-      c.tell message
-    }
-  end
-  def find_portal(direction)
-    d = direction.to_s
-    portals = children.that_are(Portal).delete_if { |p| p.direction.to_s != d }
-    portals[0]
   end
 end
