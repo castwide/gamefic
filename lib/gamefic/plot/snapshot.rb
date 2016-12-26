@@ -4,41 +4,11 @@ module Gamefic
   module Plot::Snapshot
   
     # Take a snapshot of the plot's current state.
+    # The snapshot is a hash with two keys: entities and subplots.
     #
     # @return [Hash]
     def save
-      store = []
-      index = 0
-      entities.each { |e|
-        hash = {}
-        e.serialized_attributes.each {|m|
-          con = m.to_s
-          if con.end_with?("?")
-            con = con[0..-2]
-          end
-          if e.respond_to?(m) == true
-            begin
-              val = e.send(m)
-              if val == false
-                hash[con] = false
-              elsif val
-                hash[con] = serialize_obj(val)
-              else
-                hash[con] = nil
-              end
-            rescue Exception => error
-              hash[con] = nil
-            end
-          end
-        }
-        hash[:class] = e.class.to_s
-        hash[:session] = {}
-        e.session.each_pair { |k, v|
-          hash[:session][k] = serialize_obj(v)
-        }
-        store.push hash
-        index += 1
-      }
+      store = get_entity_hash
       if @initial_state.nil?
         @initial_state = store
         store = []
@@ -73,6 +43,42 @@ module Gamefic
         }
         @entities.slice! @initial_state.length..-1
         internal_restore @initial_state
+    end
+    
+    def get_entity_hash
+      store = []
+      index = 0
+      entities.each { |e|
+        hash = {}
+        e.serialized_attributes.each {|m|
+          con = m.to_s
+          if con.end_with?("?")
+            con = con[0..-2]
+          end
+          if e.respond_to?(m) == true
+            begin
+              val = e.send(m)
+              if val == false
+                hash[con] = false
+              elsif val
+                hash[con] = serialize_obj(val)
+              else
+                hash[con] = nil
+              end
+            rescue Exception => error
+              hash[con] = nil
+            end
+          end
+        }
+        hash[:class] = e.class.to_s
+        hash[:session] = {}
+        e.session.each_pair { |k, v|
+          hash[:session][k] = serialize_obj(v)
+        }
+        store.push hash
+        index += 1
+      }
+      store
     end
     
     def internal_restore snapshot
