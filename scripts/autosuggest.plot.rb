@@ -37,7 +37,7 @@ on_player_update do |actor|
       actor.suggest "examine #{the entity}"
     }
     Use.visible.context_from(actor).that_are(:portable?).each { |entity|
-      actor.suggest "take #{the entity}"
+      actor.suggest "take #{the entity}" unless entity.parent == actor
     }
     Use.visible.context_from(actor).that_are(Container).that_are_not(:open?).each { |entity|
       actor.suggest "close #{the entity}"
@@ -118,7 +118,7 @@ end
 
 respond :look, Use.visible(:portable?) do |actor, thing|
   actor.proceed
-  actor.suggest "take #{the thing}"
+  actor.suggest "take #{the thing}" unless thing.parent == actor
 end
 
 respond :inventory do |actor|
