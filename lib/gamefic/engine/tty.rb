@@ -88,7 +88,7 @@ module Gamefic
         return if data.strip == ''
         output = ''
         begin
-          doc = Html.parse("<body>#{data}</body>")
+          doc = Html.parse("<body>#{data.strip}</body>")
           format_recursively doc
           texts = REXML::XPath.match(doc, './/text()')
           output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
@@ -150,8 +150,10 @@ module Gamefic
               formats.push [Extra::LINE]
             when 'img'
               formats.push [Extra::IGNORED]
-            when 'p', 'ol', 'ul'
+            when 'body', 'p', 'ol', 'ul'
               formats.push Extra::BLOCK
+            when 'pre'
+              formats.push [Extra::BLOCK, Extra::PRE]
             when 'nav'
               formats.push Extra::BLOCK
             when 'h1', 'h2', 'h3', 'h4', 'h5'
@@ -183,6 +185,16 @@ module Gamefic
               stack.push tmp
               element.add_text "#{Ansi.graphics_mode(*stack)}"
             end
+          end
+          if has_code?(stack.last, Extra::BLOCK) and !has_code?(stack.last, Extra::PRE)
+            puts "KAPOWIE #{element.to_s}"
+            element.texts.first.value.lstrip! unless element.texts.first.nil?
+            element.texts.last.value.rstrip! unless element.texts.last.nil?
+            element.texts.each { |t|
+              puts "(((#{t})))"
+              t.value = t.value.gsub(/ +/, ' ').strip
+              puts "[[[#{t}]]]"
+            }
           end
           if has_code?(stack.last, Extra::BLOCK)
             element.add_text("\n\n")
