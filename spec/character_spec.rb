@@ -18,10 +18,4 @@ describe Character do
     user.character.tell "This is one paragraph."
     expect(user.stream.flush).to eq("<p>This is one paragraph.</p>")
   end
-  it "formats newlines in #tell messages into HTML line breaks and paragraphs" do
-    plot = Plot.new
-    user = User.new plot
-    user.character.tell "This is a paragraph with a \nline break.\n\nThis is a second paragraph."
-    expect(user.stream.flush).to eq("<p>This is a paragraph with a <br/>line break.</p><p>This is a second paragraph.</p>")
-  end
 end
