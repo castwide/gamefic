@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'bundler/setup'
 require 'capybara/rspec'
 require 'capybara/poltergeist'
 require 'simplecov'

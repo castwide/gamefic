@@ -12,7 +12,8 @@ describe "Warehouse (Web)", :type => :feature, :js => true do
     config = { 'target_dir' => "#{@dir}/release", 'build_dir' => "#{@dir}/build" }
     web = Gamefic::Sdk::Platform::Web.new("examples/warehouse", config)
     web.build
-    visit("#{@dir}/release/index.html")
+    url = "file://" + (@dir.start_with?('/') ? '' : '/') + @dir + '/release/index.html'
+    visit url
     sleep(0.1) while page.evaluate_script("$('#gamefic_controls').hasClass('working')")
     fill_in 'command', :with => 'test me'
     click_button 'gamefic_submit'
