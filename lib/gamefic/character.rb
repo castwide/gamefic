@@ -74,11 +74,11 @@ module Gamefic
         if @buffer_stack > 0
           @buffer += message
         else
-          message = "<p>#{message}</p>"
+          message = "<p>#{message.strip}</p>"
           # This method uses String#gsub instead of String#gsub! for
           # compatibility with Opal.
-          message = message.gsub(/\n\n/, '</p><p>')
-          message = message.gsub(/\n/, '<br/>')
+          message = message.gsub(/[ \t]*\n[ \t]*\n[ \t]*/, '</p><p>')
+          message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
           user.stream.send message
         end
       end
@@ -89,7 +89,7 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      user.stream.send message if !user.nil?
+      user.stream.send message.strip if !user.nil?
     end
     
     def destroy

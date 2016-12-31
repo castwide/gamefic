@@ -36,6 +36,7 @@ module Gamefic
       end
       module Extra
         BLOCK = Nonstandard.new("block")
+        PRE = Nonstandard.new("pre")
         HREF = Nonstandard.new("href")
         IMAGE = Nonstandard.new("image")
         SRC = Nonstandard.new("src")
