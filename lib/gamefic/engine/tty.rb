@@ -95,7 +95,6 @@ module Gamefic
           output += Ansi.graphics_mode(Attribute::NORMAL)
           output = Html::decode(output)
         rescue REXML::ParseException => e
-          puts e.inspect
           output = Html.encode(data) + "\n\n"
         end
         output.gsub!(/(\n\n)+/, "\n\n")
@@ -187,13 +186,10 @@ module Gamefic
             end
           end
           if has_code?(stack.last, Extra::BLOCK) and !has_code?(stack.last, Extra::PRE)
-            puts "KAPOWIE #{element.to_s}"
             element.texts.first.value.lstrip! unless element.texts.first.nil?
             element.texts.last.value.rstrip! unless element.texts.last.nil?
             element.texts.each { |t|
-              puts "(((#{t})))"
               t.value = t.value.gsub(/ +/, ' ').strip
-              puts "[[[#{t}]]]"
             }
           end
           if has_code?(stack.last, Extra::BLOCK)
