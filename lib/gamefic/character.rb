@@ -77,7 +77,7 @@ module Gamefic
           message = "<p>#{message.strip}</p>"
           # This method uses String#gsub instead of String#gsub! for
           # compatibility with Opal.
-          message = message.gsub(/[ \t]*\n[ \t]*\n[ \t]*/, '</p><p>')
+          message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
           message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
           user.stream.send message
         end
