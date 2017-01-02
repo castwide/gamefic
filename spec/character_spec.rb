@@ -18,4 +18,10 @@ describe Character do
     user.character.tell "This is one paragraph."
     expect(user.stream.flush).to eq("<p>This is one paragraph.</p>")
   end
+  it "splits #tell messages into multiple paragraphs" do
+    plot = Plot.new
+    user = User.new plot
+    user.character.tell "This is paragraph 1.\n\nThis is paragraph 2.\r\n\r\nThis is paragraph 3."
+    expect(user.stream.flush).to eq("<p>This is paragraph 1.</p><p>This is paragraph 2.</p><p>This is paragraph 3.</p>")
+  end
 end
