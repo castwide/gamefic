@@ -208,12 +208,12 @@ module Gamefic
         @before_player_update_procs.each { |p|
           p.call player
         }
-	      this_scene = player.next_scene || player.scene
-	      player.prepare nil
-	      if this_scene != player.scene
-	        player.cue this_scene
-	        player.queue.shift
-	      else
+        this_scene = player.next_scene || player.scene
+        player.prepare nil
+        if this_scene != player.scene
+          player.cue this_scene
+          player.queue.shift
+        else
           process_input player
         end
       }
