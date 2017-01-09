@@ -67,7 +67,7 @@ module Gamefic
     
     # Get an Array of all Actions defined in the Plot.
     #
-    # @return Array[Action]
+    # @return [Array<Action>]
     def actions
       @commands.values.flatten
     end
@@ -75,7 +75,7 @@ module Gamefic
     # Get an Array of all Actions associated with the specified verb.
     #
     # @param verb [Symbol] The Symbol for the verb (e.g., :go or :look)
-    # @return Array<Action> The verb's associated Actions
+    # @return [Array<Action>] The verb's associated Actions
     def actions_with_verb(verb)
       @commands[verb].clone || []
     end
