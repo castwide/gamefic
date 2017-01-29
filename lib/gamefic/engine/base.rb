@@ -7,11 +7,15 @@ module Gamefic
       @plot = plot
     end
 
+    def post_initialize
+      # Override in subclasses
+    end
+
     def user_class
       @user_class ||= Gamefic::User::Base
     end
 
-    def connect user_klass: nil, character_klass: Gamefic::Character, attributes: nil
+    def connect user: user_class, character: Character, attributes: nil
       if attributes.nil?
         attributes = {
           name: 'yourself',
@@ -19,8 +23,8 @@ module Gamefic
           proper_named: true
         }
       end
-      @user = (user_klass || user_class).new
-      @character = @plot.make character_klass, attributes
+      @user = user.new
+      @character = @plot.make character, attributes
       @character.connect @user
     end
 

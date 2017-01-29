@@ -7,11 +7,11 @@ var Gamefic = (function() {
 	var lastPrompt = null;
 	var getResponse = function(withOutput) {
 		var r = {
-			output: (withOutput ? Opal.GameficOpal.$static_player().$state().$output() : null),
-			state: Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$state(),
+			output: (withOutput ? Opal.GameficOpal.$static_user().$flush() : null),
+			state: Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$state(),
 			prompt: lastPrompt,
 			input: lastInput,
-			testing: (Opal.GameficOpal.$static_player().$test_queue().$length() > 0)
+			testing: (Opal.GameficOpal.$static_user().$test_queue().$length() > 0)
 		}
 		return r;
 	}
@@ -27,8 +27,8 @@ var Gamefic = (function() {
 	return {
 		start: function() {
 			Opal.GameficOpal.$load_scripts();			
-			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_player().$character());
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
+			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_character());
+			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt();
 			var response = getResponse(true);
 			doReady(response);
 			handle(response);
@@ -38,7 +38,7 @@ var Gamefic = (function() {
 		},
 		update: function(input) {
 			if (input != null) {
-				Opal.GameficOpal.$static_player().$character().$queue().$push(input);
+				Opal.GameficOpal.$static_character().$queue().$push(input);
 			}
 			lastInput = input;
 			var response = getResponse(false);
@@ -47,18 +47,18 @@ var Gamefic = (function() {
 			});
 			Opal.GameficOpal.$static_plot().$update();
 			Opal.GameficOpal.$static_plot().$ready();
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
+			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt();
 			response = getResponse(true);
 			var updateResponse = response;
 			doReady(response);
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_player().$character().$scene()).$prompt();
+			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt();
 			response = getResponse(true);
 			response.output = updateResponse.output + response.output;
 			handle(response);
 			finishCallbacks.forEach(function(callback) {
 				callback(response);
 			});
-			var testCommand = Opal.GameficOpal.$static_player().$test_queue().$shift();
+			var testCommand = Opal.GameficOpal.$static_user().$test_queue().$shift();
 			if (typeof testCommand == 'string') {
 				setTimeout("Gamefic.update(" + JSON.stringify(testCommand) + ");", 1);
 			}
@@ -78,14 +78,14 @@ var Gamefic = (function() {
 		save: function(filename, data) {
 			var json = Opal.JSON.$generate(data);
 			localStorage.setItem(filename, json);
-			Opal.GameficOpal.$static_player().$character().$tell('Game saved.');
+			Opal.GameficOpal.$static_character().$tell('Game saved.');
 		},
 		restore: function(filename) {
 			var data = Opal.JSON.$parse(localStorage.getItem(filename));
 			var metadata = data.$fetch('metadata');
 			// HACK Converting hashes to strings for JavaScript comparison
 			if (metadata.$to_s() != Opal.GameficOpal.$static_plot().$metadata().$to_s()) {
-				Opal.GameficOpal.$static_player().$character().$tell('The saved data is not compatible with this version of the game.');
+				Opal.GameficOpal.$static_character().$tell('The saved data is not compatible with this version of the game.');
 				return Opal.nil;
 			} else {
 				return data;
