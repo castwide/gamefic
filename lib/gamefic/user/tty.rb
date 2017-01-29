@@ -50,8 +50,7 @@ module Gamefic
     end
 
     def flush
-      data = @buffer.clone
-      @buffer.clear
+      data = super
       return if data.strip == ''
       output = ''
       begin

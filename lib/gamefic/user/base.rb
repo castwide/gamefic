@@ -1,21 +1,18 @@
 module Gamefic
 
   class User::Base
-    def initialize
-      @buffer = ''
-    end
     def send message
-      @buffer += message
+      buffer.send message
     end
-    def recv prompt = '>'
-      print "#{prompt} "
-      STDOUT.flush
-      STDIN.gets
-    end
+
     def flush
-      tmp = @buffer
-      @buffer = ''
-      tmp
+      buffer.flush
+    end
+
+    private
+
+    def buffer
+      @buffer ||= User::Buffer.new
     end
   end
 

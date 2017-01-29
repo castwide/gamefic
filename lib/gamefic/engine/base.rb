@@ -1,5 +1,7 @@
 module Gamefic
   class Engine::Base
+    attr_writer :user_class
+
     def initialize(plot)
       @plot = plot
       post_initialize
@@ -9,25 +11,15 @@ module Gamefic
       # Override in subclasses
     end
 
-    def set_user_class(cls)
-      @user_class = cls
-    end
-
     def user_class
       @user_class ||= Gamefic::User::Base
     end
 
-    def connect(user: user_class, character: Character, attributes: nil)
-      if attributes.nil?
-        attributes = {
-          name: 'yourself',
-          synonyms: 'self myself you me',
-          proper_named: true
-        }
-      end
-      @user = user.new
-      @character = @plot.make character, attributes
+    def connect
+      @character = @plot.make Character, name: 'yourself', synonyms: 'self myself you me', proper_named: true
+      @user = user_class.new
       @character.connect @user
+      @character
     end
 
     def run
@@ -41,11 +33,17 @@ module Gamefic
       @plot.ready
       print @user.flush
       if @character.queue.empty?
-        input = @user.recv(@plot.scenes[@character.scene].prompt)
-        @character.queue.push input unless input.nil?
+        receive
       end
       @plot.update
       print @user.flush
+    end
+
+    def receive
+      print @plot.scenes[@character.scene].prompt + ' '
+      input = STDIN.gets
+      @character.queue.push input unless input.nil?
+      puts ''
     end
   end
 end

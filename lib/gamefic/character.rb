@@ -79,7 +79,6 @@ module Gamefic
           # compatibility with Opal.
           message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
           message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
-          #user.stream.send message
           user.send message
         end
       end
@@ -90,16 +89,16 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      #user.stream.send message.strip if !user.nil?
       user.send message.strip unless user.nil?
     end
-    
-    def destroy
-      if @user != nil
-        @user.quit
-      end
-      super
-    end
+
+    # TODO This might not be necessary. The User#quit method was a noop anyway.
+    #def destroy
+    #  if @user != nil
+    #    @user.quit
+    #  end
+    #  super
+    #end
     
     # Proceed to the next Action in the current stack.
     # This method is typically used in Action blocks to cascade through
