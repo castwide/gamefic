@@ -67,10 +67,11 @@ module Gamefic
     end
 
     def run_game(directory)
-      story = Plot.new(Source::File.new(File.join(directory, 'scripts')))
-      story.script 'main'
-      story.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
-      engine = Tty::Engine.new story
+      plot = Plot.new(Source::File.new(File.join(directory, 'scripts')))
+      plot.script 'main'
+      plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
+      engine = Engine::Tty.new plot
+      engine.connect
       puts "\n"
       engine.run
     end

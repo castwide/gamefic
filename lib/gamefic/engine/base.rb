@@ -1,14 +1,17 @@
 module Gamefic
 
   class Engine::Base
-    attr_writer :user_class
-
     def initialize(plot)
       @plot = plot
+      post_initialize
     end
 
     def post_initialize
       # Override in subclasses
+    end
+
+    def set_user_class cls
+      @user_class = cls
     end
 
     def user_class
@@ -39,29 +42,17 @@ module Gamefic
       @plot.ready
       print @user.flush
       # TODO The base engine should not be concerned with plot tests
-      #if !@user.character[:test_queue].nil? and @user.character[:test_queue].length > 0
-      #  test_command = @user.character[:test_queue].shift
-      #  @user.character.tell "[TESTING] #{@plot.scenes[@user.character.scene].prompt} #{test_command}"
-      #  @user.character.queue.push test_command
-      #else
-        #input = get_input(@plot.scenes[@character.scene].prompt)
+      if !@character[:test_queue].nil? and @character[:test_queue].length > 0
+        test_command = @character[:test_queue].shift
+        @character.tell "[TESTING] #{@plot.scenes[@character.scene].prompt} #{test_command}"
+        @character.queue.push test_command
+      else
         input = @user.recv(@plot.scenes[@character.scene].prompt)
         @character.queue.push input unless input.nil?
-      #end
+      end
       @plot.update
       print @user.flush
     end
-  end
-
-  def self.start plot, config = {}
-    engine = self.new(plot)
-    engine.connect config
-    engine.run
-  end
-
-  private
-
-  def get_input(prompt)
   end
 
 end

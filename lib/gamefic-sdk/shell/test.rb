@@ -17,7 +17,7 @@ module Gamefic
           plot.script 'main'
           plot.script 'debug'
           engine = Engine::Tty.new plot
-          engine.connect user_klass: User::Tty
+          engine.connect
           puts "\n"
           engine.run
         end
