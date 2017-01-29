@@ -83,7 +83,7 @@ module Gamefic::Sdk
       Opal.use_gem 'gamefic'
       if !File.exist?(build_dir + "/core/gamefic.js")
         File.open(build_dir + "/core/gamefic.js", "w") do |file|
-         file << Opal::Builder.build('gamefic').to_s
+          file << Opal::Builder.build('gamefic').to_s
         end
       end
     end
