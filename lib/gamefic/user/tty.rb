@@ -3,6 +3,7 @@ require 'rexml/document'
 require 'gamefic/ansi'
 require 'gamefic/html'
 require 'json'
+require 'io/console'
 
 module Gamefic
 
