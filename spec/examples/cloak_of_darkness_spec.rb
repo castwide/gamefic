@@ -7,9 +7,8 @@ describe "Cloak of Darkness" do
     character = plot.make Character, :name => 'player'
     plot.introduce character
     character.perform "test me"
-    character[:test_queue].length.times do |actor|
+    character.queue.length.times do |actor|
       plot.ready
-      character.queue.push character[:test_queue].shift
       plot.update
     end
     expect(plot.scenes[character.scene].class).to eq(Scene::Conclusion)

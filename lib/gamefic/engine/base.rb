@@ -1,5 +1,4 @@
 module Gamefic
-
   class Engine::Base
     def initialize(plot)
       @plot = plot
@@ -10,7 +9,7 @@ module Gamefic
       # Override in subclasses
     end
 
-    def set_user_class cls
+    def set_user_class(cls)
       @user_class = cls
     end
 
@@ -18,7 +17,7 @@ module Gamefic
       @user_class ||= Gamefic::User::Base
     end
 
-    def connect user: user_class, character: Character, attributes: nil
+    def connect(user: user_class, character: Character, attributes: nil)
       if attributes.nil?
         attributes = {
           name: 'yourself',
@@ -41,12 +40,7 @@ module Gamefic
     def turn
       @plot.ready
       print @user.flush
-      # TODO The base engine should not be concerned with plot tests
-      if !@character[:test_queue].nil? and @character[:test_queue].length > 0
-        test_command = @character[:test_queue].shift
-        @character.tell "[TESTING] #{@plot.scenes[@character.scene].prompt} #{test_command}"
-        @character.queue.push test_command
-      else
+      if @character.queue.empty?
         input = @user.recv(@plot.scenes[@character.scene].prompt)
         @character.queue.push input unless input.nil?
       end
@@ -54,5 +48,4 @@ module Gamefic
       print @user.flush
     end
   end
-
 end
