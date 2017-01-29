@@ -59,7 +59,7 @@ module Gamefic
         texts = REXML::XPath.match(doc, './/text()')
         output = texts.join('').gsub(/&apos;/, "'").gsub(/&quot;/, '"').gsub(/&lt;/, '<').gsub(/&gt;/, '>')
         output += Ansi.graphics_mode(Attribute::NORMAL)
-        output = Html::decode(output)
+        output = Html.decode(output)
       rescue REXML::ParseException => e
         output = Html.encode(data) + "\n\n"
       end
@@ -68,7 +68,7 @@ module Gamefic
       if width.nil?
         output
       else
-        "#{terminalize(output, width - 1)}"
+        terminalize(output, width - 1)
       end
     end
 
