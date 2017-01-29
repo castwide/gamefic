@@ -79,7 +79,8 @@ module Gamefic
           # compatibility with Opal.
           message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
           message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
-          user.stream.send message
+          #user.stream.send message
+          user.send message
         end
       end
     end
@@ -89,7 +90,8 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      user.stream.send message.strip if !user.nil?
+      #user.stream.send message.strip if !user.nil?
+      user.send message.strip unless user.nil?
     end
     
     def destroy

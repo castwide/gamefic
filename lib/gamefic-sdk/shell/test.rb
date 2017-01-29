@@ -16,7 +16,8 @@ module Gamefic
           plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
           plot.script 'main'
           plot.script 'debug'
-          engine = Tty::Engine.new plot
+          engine = Engine::Tty.new plot
+          engine.connect user_klass: User::Tty
           puts "\n"
           engine.run
         end
