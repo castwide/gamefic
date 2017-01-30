@@ -294,6 +294,7 @@ module Gamefic
     end
     def rem_entity(entity)
       @entities.delete(entity)
+      @players.delete(entity)
     end
     def recursive_update(entity)
       entity.update
