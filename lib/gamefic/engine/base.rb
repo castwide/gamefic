@@ -1,6 +1,10 @@
 module Gamefic
+
+  # Basic functionality for running a single-player game from a console.
+  #
   class Engine::Base
     attr_writer :user_class
+    attr_reader :plot
 
     def initialize(plot)
       @plot = plot
@@ -23,6 +27,7 @@ module Gamefic
     end
 
     def run
+      connect
       @plot.introduce @character
       print @user.flush
       turn until @plot.concluded?(@character)
@@ -46,4 +51,5 @@ module Gamefic
       puts ''
     end
   end
+
 end

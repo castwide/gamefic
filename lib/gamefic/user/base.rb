@@ -1,5 +1,7 @@
 module Gamefic
 
+  # The base user provides methods for handling messages received from plots.
+  #
   class User::Base
     def send message
       buffer.send message

@@ -22,10 +22,11 @@ module Gamefic
     # @param text [String]
     # @return [String]
     def self.encode(text)
+      encoded = text
       Gamefic::Html::ENTITIES.each { |k, v|
-        text = text.gsub(v, k)
+        encoded = encoded.gsub(v, k)
       }
-      text
+      encoded
     end
     
     # Decode a String's HTML entities
