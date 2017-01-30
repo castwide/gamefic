@@ -19,7 +19,7 @@ module Gamefic
         output += Ansi.graphics_mode(Attribute::NORMAL)
         output = Html.decode(output)
       rescue REXML::ParseException => e
-        output = Html.encode(data) + "\n\n"
+        output = Html.encode(text) + "\n\n"
         #output = data
       end
       output.gsub!(/(\n\n)+/, "\n\n")
