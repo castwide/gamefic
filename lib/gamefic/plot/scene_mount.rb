@@ -16,7 +16,7 @@ module Gamefic
       end
       scenes[key].on_finish do |actor, data|
         block.call actor, data unless block.nil?
-        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+        cue_default actor, key
       end
     end
     
@@ -42,7 +42,7 @@ module Gamefic
       end
       scenes[key].on_finish do |actor, data|
         block.call actor, data unless block.nil?
-        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+        cue_default actor, key
       end
     end
 
@@ -61,7 +61,7 @@ module Gamefic
         block.call actor, data unless block.nil?
       end
       scenes[key].on_finish do |actor, data|
-        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+        cue_default actor, key
       end
     end
     
@@ -88,7 +88,7 @@ module Gamefic
       scenes[key] = Scene::Custom.new
       scenes[key].on_start do |actor, data|
         block.call actor, data
-        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+        cue_default actor, key
       end
     end
 
@@ -160,6 +160,11 @@ module Gamefic
       end
     end
 
+    private
+    
+    def cue_default actor, key
+      actor.cue :active if actor.scene == key and actor.next_scene.nil?
+    end
   end
 
 end
