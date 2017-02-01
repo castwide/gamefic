@@ -14,7 +14,10 @@ module Gamefic
       scenes[key].on_start do |actor, data|
         data.options.push *choices
       end
-      scenes[key].on_finish &block
+      scenes[key].on_finish do |actor, data|
+        block.call actor, data unless block.nil?
+        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+      end
     end
     
     # Create a yes-or-no scene.
@@ -37,7 +40,10 @@ module Gamefic
       scenes[key].on_start do |actor, data|
         data.prompt = prompt
       end
-      scenes[key].on_finish &block
+      scenes[key].on_finish do |actor, data|
+        block.call actor, data unless block.nil?
+        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+      end
     end
 
     # Create a scene that pauses the game.
@@ -55,7 +61,7 @@ module Gamefic
         block.call actor, data unless block.nil?
       end
       scenes[key].on_finish do |actor, data|
-        actor.cue :active if actor.scene == key or actor.next_scene.nil?
+        actor.cue :active if actor.scene == key and actor.next_scene.nil?
       end
     end
     
@@ -82,7 +88,7 @@ module Gamefic
       scenes[key] = Scene::Custom.new
       scenes[key].on_start do |actor, data|
         block.call actor, data
-        actor.cue :active if actor.scene == key or actor.next_scene.nil?
+        actor.cue :active if actor.scene == key and actor.next_scene.nil?
       end
     end
 

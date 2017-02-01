@@ -24,7 +24,7 @@ describe Scene::MultipleChoice do
       if answer == '4'
         expect(@character.scene).to eq(:next)
       else
-        expect(@character.scene).to eq(:choose)
+        expect(@character.scene).to eq(:active)
       end
     }
   end
@@ -37,7 +37,7 @@ describe Scene::MultipleChoice do
       @plot.ready
       @plot.update
       expect(@character[:selection]).to eq(answer)
-      expect(@character.scene).to eq(:choose)
+      expect(@character.scene).to eq(:active)
     }
   end
   it "detects an invalid answer and stays in the current scene" do
