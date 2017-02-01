@@ -141,23 +141,7 @@ module Gamefic::Query
       }
     end
     def match(description, array)
-      if description.include?(',')
-        tmp = description.split(',', -1)
-        keywords = []
-        first = tmp.shift
-        if first.strip != ''
-          keywords.push first.strip
-        end
-        tmp.each { |t|
-          keywords.push ','
-          if t.strip != ''
-            keywords += t.strip.split_words
-          end
-        }
-        keywords = keywords.join(' ').split_words
-      else
-        keywords = description.split_words
-      end
+      keywords = get_keywords(description)
       array.each { |e|
         if e.uid == keywords[0]
           return Matches.new([e], keywords.shift, keywords.join(' '))
@@ -261,6 +245,24 @@ module Gamefic::Query
         return r
       else
         return Matches.new([], '', description)
+      end
+    end
+
+    private
+
+    def get_keywords text
+      if text.include?(',')
+        tmp = text.split(',', -1)
+        keywords = []
+        first = tmp.shift
+        keywords.push first.strip unless first.strip == ''
+        tmp.each { |t|
+          keywords.push ','
+          keywords += t.strip.split_words unless t.strip == ''
+        }
+        keywords.join(' ').split_words
+      else
+        text.split_words
       end
     end
   end

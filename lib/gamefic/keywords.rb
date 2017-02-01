@@ -12,15 +12,14 @@ module Gamefic
         end
         self.concat statement.to_s.gsub(/[^a-z0-9]/i, ' ').strip.downcase.split(' ')
       end
-      # TODO: This routine is stubbed to allow any combination of letters and
-      # numbers as a keyword. Since we're doing this, there's a distinct
-      # possibility that the Keywords class can be deprecated.
-      #self.delete_if { |w|
-      #  w.length < 2 or w == 'an' or w == 'the'
-      #}
-      #self.uniq!
       self
     end
+
+    # Count the number of matching words in another Keywords array.
+    # The total includes partial matches; for example, "gre" is a 0.6 match
+    # for "green".
+    #
+    # @return [Float] The total number of matches
     def found_in(other, fuzzy = false)
       matches = 0.0
       self.each { |my_word|
@@ -33,14 +32,7 @@ module Gamefic
                 matches = matches + (my_word.length.to_f / other_word.length.to_f)
               end
             elsif fuzzy
-              fuzzy_word = my_word
-              if fuzzy_word.end_with?('ies')
-                fuzzy_word = fuzzy_word[0..-4]
-              elsif fuzzy_word.end_with?('ae')
-                fuzzy_word = fuzzy_word[0..-3]
-              elsif fuzzy_word.end_with?('s') or fuzzy_word.end_with?('i')
-                fuzzy_word = fuzzy_word[0..-2]
-              end
+              fuzzy_word = fuzzify my_word
               if other_word[0, fuzzy_word.length] == fuzzy_word and fuzzy_word.length > 2
                 matches = matches + (fuzzy_word.length.to_f / other_word.length.to_f)
               elsif fuzzy_word[0, other_word.length] == other_word and other_word.length > 2
@@ -50,10 +42,25 @@ module Gamefic
           }
         end
       }
-      return matches
+      matches
     end
+
     def to_s
       self.join(' ')
+    end
+
+    private
+    
+    def fuzzify word
+      if word.end_with?('ies')
+        word[0..-4]
+      elsif word.end_with?('ae')
+        word[0..-3]
+      elsif word.end_with?('s') or word.end_with?('i')
+        word[0..-2]
+      else
+        word
+      end
     end
   end
 
