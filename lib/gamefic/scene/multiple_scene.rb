@@ -7,9 +7,7 @@ module Gamefic
 
     def finish actor, input
       data = super
-      if data.selection.nil?
-        actor.tell data.invalid_message
-      else
+      unless data.selection.nil?
         actor.cue data.scene_for(data.selection)
       end
     end
