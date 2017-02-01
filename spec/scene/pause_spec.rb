@@ -6,12 +6,14 @@ describe Scene::Pause do
     character[:has_paused] = false
     plot.pause :pause do |actor|
       actor[:has_paused] = true
+      actor.prepare :active
     end
     plot.introduce character
     character.cue :pause
     expect(character.scene).to eq(:pause)
     character.queue.push ""
     plot.ready
+    expect(character.scene).to eq(:pause)
     plot.update
     expect(character.scene).to eq(:active)
     expect(character[:has_paused]).to eq(true)

@@ -7,6 +7,8 @@ describe Scene::MultipleChoice do
       actor[:selection] = data.selection
       if data.selection == 'next'
         actor.cue :next
+      else
+        actor.cue :active
       end
     end
     @plot.pause :next

@@ -14,10 +14,7 @@ module Gamefic
       scenes[key].on_start do |actor, data|
         data.options.push *choices
       end
-      scenes[key].on_finish do |actor, data|
-        block.call actor, data unless block.nil?
-        cue_default actor, key
-      end
+      scenes[key].on_finish &block
     end
     
     # Create a yes-or-no scene.
@@ -40,10 +37,7 @@ module Gamefic
       scenes[key].on_start do |actor, data|
         data.prompt = prompt
       end
-      scenes[key].on_finish do |actor, data|
-        block.call actor, data unless block.nil?
-        cue_default actor, key
-      end
+      scenes[key].on_finish &block
     end
 
     # Create a scene that pauses the game.
@@ -60,9 +54,6 @@ module Gamefic
         data.prompt = prompt unless prompt.nil?
         block.call actor, data unless block.nil?
       end
-      scenes[key].on_finish do |actor, data|
-        cue_default actor, key
-      end
     end
     
     # Create a conclusion.
@@ -77,18 +68,18 @@ module Gamefic
       scenes[key].on_start &block
     end
     
-    # Create a passive scene.
-    # Passive scenes will cue the active scene if another scene
-    # has not been prepared or cued.
+    # Create a snippet.
+    # A snippet is a scene that runs one block of code and immediately cues
+    # the active scene if another scene has not been prepared or cued.
     #
     # @param [Symbol] A unique name for the scene.
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
-    def passive key, &block
+    def snippet key, &block
       scenes[key] = Scene::Custom.new
       scenes[key].on_start do |actor, data|
         block.call actor, data
-        cue_default actor, key
+        actor.cue :active if actor.scene == key
       end
     end
 
@@ -160,11 +151,6 @@ module Gamefic
       end
     end
 
-    private
-    
-    def cue_default actor, key
-      actor.cue :active if actor.scene == key and actor.next_scene.nil?
-    end
   end
 
 end
