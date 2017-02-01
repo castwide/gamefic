@@ -17,7 +17,7 @@ module Gamefic
     end
 
     def data_class
-      Scene::Data::Base
+      SceneData::Base
     end
 
     # Get the prompt to be displayed to the user when accepting input.

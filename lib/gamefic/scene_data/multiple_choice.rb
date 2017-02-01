@@ -1,6 +1,6 @@
 module Gamefic
 
-  class Scene::Data::MultipleChoice < Scene::Data::Base
+  class SceneData::MultipleChoice < SceneData::Base
     attr_accessor :selection
     attr_accessor :number
     attr_accessor :index

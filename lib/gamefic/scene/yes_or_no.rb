@@ -7,7 +7,7 @@ module Gamefic
   #
   class Scene::YesOrNo < Scene::Custom
     def data_class
-      Scene::Data::YesOrNo
+      SceneData::YesOrNo
     end
 
     def finish actor, input

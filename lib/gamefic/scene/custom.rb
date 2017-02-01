@@ -17,7 +17,9 @@ module Gamefic
     end
 
     def start actor
-      do_start_block actor, start_data_for(actor)
+      data = start_data_for(actor)
+      do_start_block actor, data
+      data
     end
 
     def finish actor, input

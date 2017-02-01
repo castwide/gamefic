@@ -1,6 +1,6 @@
 module Gamefic
 
-  class Scene::Data::Base
+  class SceneData::Base
     attr_writer :prompt
     attr_accessor :input
     

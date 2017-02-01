@@ -9,7 +9,7 @@ module Gamefic
   #
   class Scene::MultipleChoice < Scene::Custom
     def data_class
-      Scene::Data::MultipleChoice
+      SceneData::MultipleChoice
     end
 
     def start actor

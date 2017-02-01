@@ -1,6 +1,6 @@
 module Gamefic
 
-  class Scene::Data::YesOrNo < Scene::Data::Base
+  class SceneData::YesOrNo < SceneData::Base
     def yes?
       input.to_s[0,1].downcase == 'y'
     end

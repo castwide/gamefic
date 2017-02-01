@@ -2,7 +2,7 @@ module Gamefic
 
   class Scene::MultipleScene < Scene::Custom
     def data_class
-      Scene::Data::MultipleScene
+      SceneData::MultipleScene
     end
 
     def finish actor, input

@@ -122,7 +122,9 @@ module Gamefic
     # @param key [cls] The class of scene to be instantiated.
     # @yieldparam [Scene::Custom] The instantiated scene.
     def scene key, cls = Scene::Custom, &block
-      scenes[key] = cls.new &block
+      scenes[key] = cls.new
+      #block.call scenes[key]
+      yield scenes[key] if block_given?
     end
 
     # Choose a new scene based on a list of options.

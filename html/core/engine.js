@@ -8,7 +8,7 @@ var Gamefic = (function() {
 	var getResponse = function(withOutput) {
 		var r = {
 			output: (withOutput ? Opal.GameficOpal.$static_user().$flush() : null),
-			state: Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$state(),
+			state: Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$type(),
 			prompt: lastPrompt,
 			input: lastInput,
 			testing: (Opal.GameficOpal.$static_character().$queue().$length() > 0)
@@ -26,9 +26,9 @@ var Gamefic = (function() {
 	}
 	return {
 		start: function() {
-			Opal.GameficOpal.$load_scripts();			
+			Opal.GameficOpal.$load_scripts();
 			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_character());
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt();
+			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt_for(Opal.GameficOpal.$static_character());
 			var response = getResponse(true);
 			doReady(response);
 			handle(response);
@@ -47,11 +47,11 @@ var Gamefic = (function() {
 			});
 			Opal.GameficOpal.$static_plot().$update();
 			Opal.GameficOpal.$static_plot().$ready();
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt();
+			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt_for(Opal.GameficOpal.$static_character());
 			response = getResponse(true);
 			var updateResponse = response;
 			doReady(response);
-			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt();
+			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt_for(Opal.GameficOpal.$static_character());
 			response = getResponse(true);
 			response.output = updateResponse.output + response.output;
 			handle(response);

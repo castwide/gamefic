@@ -1,4 +1,4 @@
-require 'gamefic/scene/data'
+require 'gamefic/scene_data'
 
 module Gamefic
 

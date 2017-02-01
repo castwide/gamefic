@@ -14,7 +14,7 @@ module GameficOpal
   end
   def self.static_character
     if @@static_character.nil?
-      @@static_character = static_plot.make Gamefic::Character
+      @@static_character = static_plot.make Gamefic::Character, name: 'player', synonyms: 'me you myself yourself self'
       @@static_character.connect static_user
     end
     @@static_character
