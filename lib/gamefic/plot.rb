@@ -271,27 +271,32 @@ module Gamefic
     end
     
     private
+
     def process_input player
       line = player.queue.shift
       if !line.nil?
         scenes[player.scene].finish player, line
       end
     end
+
     def update_player player
       @player_procs.each { |proc|
         proc.call player
       }
     end
+
     def rem_entity(entity)
       @entities.delete(entity)
       @players.delete(entity)
     end
+
     def recursive_update(entity)
       entity.update
       entity.children.each { |e|
         recursive_update e
       }
     end
+
     def add_syntax syntax
       if @commands[syntax.verb] == nil
         raise "Action \"#{syntax.verb}\" does not exist."
@@ -310,6 +315,7 @@ module Gamefic
         end
       }
     end
+
     def add_action(action)
       @commands[action.verb] ||= []
       @commands[action.verb].unshift action
@@ -324,6 +330,7 @@ module Gamefic
       }
       generate_default_syntax action
     end
+
     def generate_default_syntax action
       user_friendly = action.verb.to_s.gsub(/_/, ' ')
       args = []
@@ -341,12 +348,15 @@ module Gamefic
       }
       add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}")
     end
+
     def rem_action(action)
       @commands[action.verb].delete(action)
     end
+
     def rem_syntax(syntax)
       @syntaxes.delete syntax
     end
+    
     def add_entity(entity)
       @entities.push entity
     end
