@@ -202,12 +202,8 @@ module Gamefic
     # Update the Plot's current turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def update
-      # Update the plot.
       @players.each { |player|
-        # TODO: This really doesn't belong here. We need a before_update in the plot.
-        @before_player_update_procs.each { |p|
-          p.call player
-        }
+        @before_player_update_procs.each { |p| p.call player }
         this_scene = player.next_scene || player.scene
         player.prepare nil
         if this_scene != player.scene
@@ -217,15 +213,9 @@ module Gamefic
           process_input player
         end
       }
-      @entities.each { |e|
-        e.update
-      }
-      @players.each { |player|
-        update_player player
-      }
-      @update_procs.each { |p|
-        p.call
-      }
+      @entities.each { |e| e.update }
+      @players.each { |player| update_player player }
+      @update_procs.each { |p| p.call }
     end
 
     def tell entities, message, refresh = false
@@ -301,7 +291,7 @@ module Gamefic
       entity.children.each { |e|
         recursive_update e
       }
-    end  
+    end
     def add_syntax syntax
       if @commands[syntax.verb] == nil
         raise "Action \"#{syntax.verb}\" does not exist."
@@ -318,12 +308,10 @@ module Gamefic
         else
           b.token_count <=> a.token_count
         end
-      }      
+      }
     end
     def add_action(action)
-      if (@commands[action.verb] == nil)
-        @commands[action.verb] = Array.new
-      end
+      @commands[action.verb] ||= []
       @commands[action.verb].unshift action
       @commands[action.verb].sort! { |a, b|
         if a.specificity == b.specificity
@@ -334,9 +322,12 @@ module Gamefic
           b.specificity <=> a.specificity
         end
       }
+      generate_default_syntax action
+    end
+    def generate_default_syntax action
       user_friendly = action.verb.to_s.gsub(/_/, ' ')
-      args = Array.new
-      used_names = Array.new
+      args = []
+      used_names = []
       action.queries.each { |c|
         num = 1
         new_name = ":var"
