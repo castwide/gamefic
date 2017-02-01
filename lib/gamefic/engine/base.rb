@@ -45,7 +45,7 @@ module Gamefic
     end
 
     def receive
-      print @plot.scenes[@character.scene].prompt + ' '
+      print @plot.scenes[@character.scene].prompt_for(@character) + ' '
       input = STDIN.gets
       @character.queue.push input unless input.nil?
       puts ''

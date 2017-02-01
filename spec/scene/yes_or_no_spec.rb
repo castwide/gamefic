@@ -4,7 +4,7 @@ describe Scene::YesOrNo do
     @character = @plot.make Character, :name => 'character'
     @character[:answered] = nil
     @plot.yes_or_no :yes_or_no, "Yes or no?" do |actor, data|
-      actor[:answered] = data
+      actor[:answered] = data.yes? ? 'yes' : 'no'
     end
     @plot.introduce @character
   end

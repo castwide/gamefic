@@ -2,10 +2,10 @@ describe Scene::MultipleChoice do
   before :each do
     @plot = Plot.new
     @character = @plot.make Character, :name => 'character'
-    @plot.multiple_choice :choose, ["one", "two", "three", "next"] do |actor, data|
+    @plot.multiple_choice :choose, "one", "two", "three", "next" do |actor, data|
       actor[:index] = data.index
-      actor[:selection] = data.choice
-      if data.choice == 'next'
+      actor[:selection] = data.selection
+      if data.selection == 'next'
         actor.cue :next
       end
     end

@@ -28,16 +28,19 @@ module Gamefic
     # Disconnect the current User.
     #
     def disconnect
-      # TODO: We might need some cleanup here. Like, move the character out of the game, or set a timeout to allow dropped users to reconnect... figure it out.
       @user = nil
     end
     
     # Perform a command.
     # The command can be specified as a String or a set of tokens. Either form
     # should yield the same result, but using tokens can yield better
-    # performance since it doesn't need to parse the command first.
+    # performance since it bypasses the parser.
     #
     # The command will be executed immediately regardless of game state.
+    #
+    # If the from_user argument is true, the command is assumed to have come
+    # directly from user input. The character's last_order and last_object
+    # will be updated with the result.
     #
     # @example Send a command as a string
     #   character.perform "take the key"
@@ -45,8 +48,10 @@ module Gamefic
     # @example Send a command as a set of tokens
     #   character.perform :take, @key
     #
-    def perform(*command)
-      Director.dispatch(self, *command)
+    def perform(*command, from_user: false)
+      o = Director.dispatch(self, *command)
+      last_order = o if from_user
+      o
     end
     
     # Quietly perform a command.

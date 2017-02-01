@@ -5,15 +5,16 @@ module Gamefic
 
   module Plot::SceneMount
     # Create a multiple-choice scene.
-    # The user will be required to make a valid choice to continue
+    # The user will be required to make a valid choice to continue.
     #
     # @yieldparam [Character]
-    # @yieldparam [String]
-    def multiple_choice key, options, &block
-      scenes[key] = Scene::MultipleChoice.new(
-        options: options,
-        finish: block
-      )
+    # @yieldparam [Scene::Data::MultipleChoice]
+    def multiple_choice key, *choices, &block
+      scenes[key] = Scene::MultipleChoice.new
+      scenes[key].on_start do |actor, data|
+        data.options.push *choices
+      end
+      scenes[key].on_finish &block
     end
     
     # Create a yes-or-no scene.
@@ -22,50 +23,108 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [String] "yes" or "no"
     def yes_or_no key, prompt = nil, &block
-      scenes[key] = Scene::YesOrNo.new(prompt, &block)
+      scenes[key] = Scene::YesOrNo.new
+      unless prompt.nil?
+        scenes[key].on_start do |actor, data|
+          data.prompt = prompt
+        end
+      end
+      scenes[key].on_finish &block
     end
     
-    # Create a scene with a prompt.
-    # This scene will use the provided block to process arbitrary input
-    # from the user.
-    #
-    # @param key [Symbol] A unique name for the scene.
-    # @param prompt [String] The input prompt to display to the user.
-    # @yieldparam [Character]
-    # @yieldparam [String]
-    def question key, prompt, &block
-      scenes[key] = Scene::Question.new prompt, &block
+    def question key, prompt = 'What is your answer?', &block
+      scenes[key] = Scene::Custom.new
+      scenes[key].on_start do |actor, data|
+        data.prompt = prompt
+      end
+      scenes[key].on_finish &block
     end
-    
+
     # Create a scene that pauses the game.
-    # This scene will execute the specified block and wait for input
-    # from the user (e.g., pressing Enter) to continue.
+    # This scene will execute the specified block and wait for input from the
+    # the user (e.g., pressing Enter) to continue.
     #
     # @param key [Symbol] A unique name for the scene.
+    # @param prompt [String] The text to display when prompting the user to continue.
     # @yieldparam [Character]
-    def pause key, &block
-      scenes[key] = Scene::Pause.new &block
+    # @yieldparam [Scene::Data::Base]
+    def pause key, prompt = nil, &block
+      scenes[key] = Scene::Pause.new
+      scenes[key].on_start do |actor, data|
+        data.prompt = prompt unless prompt.nil?
+        block.call actor, data unless block.nil?
+      end
+      scenes[key].on_finish do |actor, data|
+        actor.cue :active if actor.scene == key or actor.next_scene.nil?
+      end
     end
     
     # Create a conclusion.
-    # The game will end after this scene is complete.
+    # The game (or the character's participation in it) will end after this
+    # scene is complete.
     #
     # @param key [Symbol] A unique name for the scene.
     # @yieldparam [Character]
+    # @yieldparam [Scene::Data::Base]
     def conclusion key, &block
-      scenes[key] = Scene::Conclusion.new &block
+      scenes[key] = Scene::Conclusion.new
+      scenes[key].on_start &block
     end
     
-    # Create a generic scene.
-    # After the scene is complete, it will automatically start the next
-    # prepared scene, or the :active scene if none is prepared.
+    # Create a passive scene.
+    # Passive scenes will cue the active scene if another scene
+    # has not been prepared or cued.
     #
     # @param [Symbol] A unique name for the scene.
     # @yieldparam [Character]
-    def scene key, &block
-      scenes[key] = Scene::Passive.new &block
+    # @yieldparam [Scene::Data::Base]
+    def passive key, &block
+      scenes[key] = Scene::Custom.new
+      scenes[key].on_start do |actor, data|
+        block.call actor, data
+        actor.cue :active if actor.scene == key or actor.next_scene.nil?
+      end
     end
-    
+
+    # Create a custom scene.
+    #
+    # Custom scenes should always specify the next scene to be cued or
+    # prepared. If not, the scene will get repeated on the next turn.
+    #
+    # This method creates a Scene::Custom by default. You can customize other
+    # scene types by specifying the class to create.
+    #
+    # @example Ask the user for a name
+    #   scene :ask_for_name do |scene|
+    #     scene.on_start do |actor, data|
+    #       data.prompt = "What's your name?"
+    #     end
+    #     scene.on_finish do |actor, data|
+    #       actor.name = data.input
+    #       actor.tell "Hello, #{actor.name}!"
+    #       actor.cue :active
+    #     end
+    #   end
+    #
+    # @example Customize the prompt for a MultipleChoice scene
+    #   scene :ask_for_choice, Scene::MultipleChoice do |scene|
+    #     scene.on_start do |actor, data|
+    #       data.options.push 'red', 'green', 'blue'
+    #       data.prompt = "Which color?"
+    #     end
+    #     scene.on_finish do |actor, data|
+    #       actor.tell "You chose #{data.selection}"
+    #       actor.cue :active
+    #     end
+    #   end
+    #
+    # @param key [Symbol] A unique name for the scene.
+    # @param key [cls] The class of scene to be instantiated.
+    # @yieldparam [Scene::Custom] The instantiated scene.
+    def scene key, cls = Scene::Custom, &block
+      scenes[key] = cls.new &block
+    end
+
     # Choose a new scene based on a list of options.
     # This is a specialized type of multiple-choice scene that determines
     # which scene to cue based on a Hash of choices and scene keys.
@@ -85,12 +144,12 @@ module Gamefic
     # @param key [Symbol] A unique name for the scene.
     # @param map [Hash] A Hash of options and associated scene keys.
     def multiple_scene key, map
-      scenes[key] = Scene::MultipleChoice.new(
-        options: map.keys,
-        finish: proc { |actor, input|
-          actor.cue map[input.choice]
+      scenes[key] = Scene::MultipleChoice.new
+      scenes[key].on_start do |actor, data|
+        map.each { |k, v|
+          data.map k, v
         }
-      )
+      end
     end
 
   end

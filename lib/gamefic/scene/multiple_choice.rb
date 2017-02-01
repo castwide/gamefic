@@ -8,59 +8,52 @@ module Gamefic
   # instead of a String.
   #
   class Scene::MultipleChoice < Scene::Custom
-    autoload :Input, 'gamefic/scene/multiple_choice/input'
-    
-    def initialize config = {}
-      super
-      @options = (config[:options] || [])
-      @invalid_choice_message = config[:invalid_choice_message]
+    def data_class
+      Scene::Data::MultipleChoice
     end
-    
+
     def start actor
-      @current_options = @options.clone
-      @start.call(actor, @current_options) unless @start.nil?
-      tell_choices actor
+      data = start_data_for(actor)
+      do_start_block actor, data
+      tell_options actor, data
     end
     
     def finish actor, input
-      this_scene = actor.scene
-      index = nil
-      choice = nil
-      if input.strip =~ /[0-9]+/ and input.to_i > 0
-        index = input.to_i - 1
-        choice = @current_options[index]
+      data = finish_data_for(actor, input)
+      get_choice data
+      if data.selection.nil?
+        actor.tell data.invalid_message
+        tell_options actor, data
+      else
+        do_finish_block actor, data
+      end
+      data
+    end
+
+    private
+    
+    def get_choice data
+      if data.input.strip =~ /[0-9]+/ and data.input.to_i > 0
+        data.number = data.input.to_i
+        data.index = data.number - 1
+        data.selection = data.options[data.number - 1]
       else
         index = 0
-        @current_options.each { |o|
-          if o.casecmp(input).zero?
-            choice = o
+        data.options.each { |o|
+          if o.casecmp(data.input).zero?
+            data.selection = o
+            data.index = index
+            data.number = index + 1
             break
           end
           index += 1
         }
       end
-      if choice.nil?
-        actor.tell invalid_choice_message
-        tell_choices actor
-      else
-        input_object = Input.new(input, index, choice)
-        super actor, input_object
-      end
     end
 
-    def prompt
-      @prompt ||= "Enter a choice:"
-    end
-    
-    def invalid_choice_message
-      @invalid_choice_message ||= "That's not a valid selection."
-    end
-    
-    private
-    
-    def tell_choices actor
+    def tell_options actor, data
       list = '<ol class="multiple_choice">'
-      @current_options.each { |o|
+      data.options.each { |o|
         list += "<li>#{o}</li>"
       }
       list += "</ol>"
