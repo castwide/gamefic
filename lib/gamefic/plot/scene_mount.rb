@@ -54,6 +54,9 @@ module Gamefic
         data.prompt = prompt unless prompt.nil?
         block.call actor, data unless block.nil?
       end
+      scenes[key].on_finish do |actor, data|
+        actor.cue :active if actor.scene == key and actor.next_scene.nil?
+      end
     end
     
     # Create a conclusion.
