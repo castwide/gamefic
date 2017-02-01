@@ -177,14 +177,12 @@ module Gamefic::Query
         end
         used.push next_word
         new_results = []
-        most_matches = 0.0
         possibilities.each { |p|
           words = Keywords.new(used.last)
           if words.length > 0
             matches = words.found_in(p.keywords, (allow_many? or allow_ambiguous?))
             if matches > 0
               new_results.push p
-              most_matches = matches
             end
           end
         }
