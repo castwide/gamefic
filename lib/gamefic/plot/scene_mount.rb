@@ -146,7 +146,7 @@ module Gamefic
     # @param key [Symbol] A unique name for the scene.
     # @param map [Hash] A Hash of options and associated scene keys.
     def multiple_scene key, map
-      scenes[key] = Scene::MultipleChoice.new
+      scenes[key] = Scene::MultipleScene.new
       scenes[key].on_start do |actor, data|
         map.each { |k, v|
           data.map k, v
