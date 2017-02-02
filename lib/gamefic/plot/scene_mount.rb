@@ -71,21 +71,6 @@ module Gamefic
       scenes[key].on_start &block
     end
     
-    # Create a snippet.
-    # A snippet is a scene that runs one block of code and immediately cues
-    # the active scene if another scene has not been prepared or cued.
-    #
-    # @param [Symbol] A unique name for the scene.
-    # @yieldparam [Character]
-    # @yieldparam [Scene::Data::Base]
-    def snippet key, &block
-      scenes[key] = Scene::Custom.new
-      scenes[key].on_start do |actor, data|
-        block.call actor, data
-        actor.cue :active if actor.scene == key
-      end
-    end
-
     # Create a custom scene.
     #
     # Custom scenes should always specify the next scene to be cued or

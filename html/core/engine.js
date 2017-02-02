@@ -29,12 +29,7 @@ var Gamefic = (function() {
 			Opal.GameficOpal.$load_scripts();
 			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_character());
 			lastPrompt = Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$prompt_for(Opal.GameficOpal.$static_character());
-			var response = getResponse(true);
-			doReady(response);
-			handle(response);
-			finishCallbacks.forEach(function(callback) {
-				callback(response);
-			});
+			this.update('');
 		},
 		update: function(input) {
 			if (input != null) {
@@ -58,10 +53,6 @@ var Gamefic = (function() {
 			finishCallbacks.forEach(function(callback) {
 				callback(response);
 			});
-			/*var testCommand = Opal.GameficOpal.$static_character().$queue().$shift();
-			if (typeof testCommand == 'string') {
-				setTimeout("Gamefic.update(" + JSON.stringify(testCommand) + ");", 1);
-			}*/
 			if (Opal.GameficOpal.$static_character().$queue().$length() > 0) {
 				setTimeout("Gamefic.update();", 1);
 			}

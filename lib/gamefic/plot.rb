@@ -28,7 +28,7 @@ module Gamefic
     #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
     mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount,
       ArticleMount, YouMount, Snapshot, Subplot::Host
-    expose :script, :introduction, :assert_action, :before_player_update,
+    expose :script, :introduction, :assert_action,
       :on_update, :on_player_update, :entities, :on_ready, :on_player_ready,
       :players, :scenes, :metadata
     
@@ -38,7 +38,6 @@ module Gamefic
       @commands = {}
       @syntaxes = []
       @ready_procs = []
-      @before_player_update_procs = []
       @update_procs = []
       @player_ready = []
       @player_procs = []
@@ -171,28 +170,20 @@ module Gamefic
     # This method is typically called by the Engine that manages game execution.
     def introduce(player)
       player.extend Subplot::Feature
+      player.cue :active
       @players.push player
-      if @introduction != nil
-        @introduction.call(player)
-      end
-      # TODO: There should probably be a default state specified
-      # by the plot, which would be :active by default. We could
-      # get it like player.cue nil.
-      if player.scene.nil?
-        player.cue :active
-        ready
-        update
-      end
+      @introduction.call(player) unless @introduction.nil?
     end
     
     # Prepare the Plot for the next turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def ready
-      @ready_procs.each { |p|
-        p.call
-      }
+      @ready_procs.each { |p| p.call }
       # Prepare player scenes for the update.
       @players.each { |player|
+        this_scene = player.next_scene || player.scene
+        player.prepare nil
+        player.cue this_scene unless player.scene == this_scene
         @player_ready.each { |block|
           block.call player
         }
@@ -202,17 +193,7 @@ module Gamefic
     # Update the Plot's current turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def update
-      @players.each { |player|
-        @before_player_update_procs.each { |p| p.call player }
-        this_scene = player.next_scene || player.scene
-        player.prepare nil
-        if this_scene != player.scene
-          player.cue this_scene
-          player.queue.shift
-        else
-          process_input player
-        end
-      }
+      @players.each { |p| process_input p }
       @entities.each { |e| e.update }
       @players.each { |player| update_player player }
       @update_procs.each { |p| p.call }
@@ -262,14 +243,6 @@ module Gamefic
       @player_procs.push block
     end
 
-    # Add a block to  be executed for each player before the turn's update is
-    # performed.
-    #
-    # @yieldparam [Character]
-    def before_player_update &block
-      @before_player_update_procs.push block
-    end
-    
     private
 
     def process_input player

@@ -29,7 +29,6 @@ module Gamefic
     def run
       connect
       @plot.introduce @character
-      print @user.flush
       turn until @plot.concluded?(@character)
       print @user.flush
     end
