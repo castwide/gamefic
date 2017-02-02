@@ -29,7 +29,6 @@ module Gamefic
       else
         terminalize(output, calc_width - 1)
       end
-      output
     end
 
     private
