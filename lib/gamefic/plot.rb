@@ -290,13 +290,6 @@ module Gamefic
       @players.delete(entity)
     end
 
-    def recursive_update(entity)
-      entity.update
-      entity.children.each { |e|
-        recursive_update e
-      }
-    end
-
     def add_syntax syntax
       if @commands[syntax.verb] == nil
         raise "Action \"#{syntax.verb}\" does not exist."
