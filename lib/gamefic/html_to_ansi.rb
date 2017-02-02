@@ -23,7 +23,7 @@ module Gamefic
         #output = data
       end
       output.gsub!(/(\n\n)+/, "\n\n")
-      calc_width = size[0] || width
+      calc_width = width || size[0]
       if calc_width.nil? or !wrap
         output
       else
@@ -162,7 +162,7 @@ module Gamefic
           i += 1
         end
       end
-      output #output.strip
+      output
     end
 
     def has_code?(fmt, code)
