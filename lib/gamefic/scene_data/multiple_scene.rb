@@ -1,8 +1,6 @@
 module Gamefic
 
   class SceneData::MultipleScene < SceneData::MultipleChoice
-    attr_accessor :selection
-    attr_accessor :number
     def options
       scene_map.keys
     end
@@ -14,8 +12,6 @@ module Gamefic
     def scene_for choice
       scene_map[choice]
     end
-
-    private
 
     def scene_map
       @scene_map ||= {}
