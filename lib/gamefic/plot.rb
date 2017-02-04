@@ -18,6 +18,7 @@ module Gamefic
     autoload :Snapshot, 'gamefic/plot/snapshot'
     autoload :Host, 'gamefic/plot/host'
     autoload :Players, 'gamefic/plot/players'
+    autoload :Playbook, 'gamefic/plot/playbook'
 
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
     # TODO Metadata could use better protection
@@ -31,7 +32,7 @@ module Gamefic
       ArticleMount, YouMount, Snapshot, Host
     expose :script, :introduction, :assert_action,
       :on_update, :on_player_update, :entities, :on_ready, :on_player_ready,
-      :players, :metadata
+      :players, :metadata, :playbook
     
     # @param [Source::Base]
     def initialize(source = nil)
@@ -47,7 +48,16 @@ module Gamefic
       @asserts = {}
       #@default_scene = :active
       @subplots = []
+      @running = false
       post_initialize
+    end
+
+    def playbook
+      Playbook.new @commands, @syntaxes
+    end
+
+    def running?
+      @running
     end
 
     #def scenes
@@ -60,7 +70,8 @@ module Gamefic
     #end
     
     def concluded?(actor)
-      scenes[actor.scene].kind_of?(Scene::Conclusion)
+      #scenes[actor.scene].kind_of?(Scene::Conclusion)
+      actor.scene.kind_of?(Scene::Conclusion)
     end
     
     # Get an Array of all Actions defined in the Plot.
@@ -69,15 +80,7 @@ module Gamefic
     def actions
       @commands.values.flatten
     end
-    
-    # Get an Array of all Actions associated with the specified verb.
-    #
-    # @param verb [Symbol] The Symbol for the verb (e.g., :go or :look)
-    # @return [Array<Action>] The verb's associated Actions
-    def actions_with_verb(verb)
-      @commands[verb].clone || []
-    end
-    
+        
     # Get an Array of all scripts that have been imported into the Plot.
     #
     # @return [Array<Script>] The imported scripts
@@ -140,6 +143,7 @@ module Gamefic
     # Prepare the Plot for the next turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def ready
+      @running = true
       @ready_procs.each { |p| p.call }
       # Prepare player scenes for the update.
       p_players.each { |player|
@@ -203,10 +207,6 @@ module Gamefic
     # @yieldparam [Character]
     def on_player_update &block
       @player_procs.push block
-    end
-
-    def perform actor, *command
-      Director.dispatch(self, actor, *command)
     end
 
     private

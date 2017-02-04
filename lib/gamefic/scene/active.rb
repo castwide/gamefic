@@ -12,7 +12,7 @@ module Gamefic
     end
 
     def finish actor, input
-      o = Director.dispatch plot, actor, input
+      o = actor.perform input.strip
       actor.performed o
     end
   end

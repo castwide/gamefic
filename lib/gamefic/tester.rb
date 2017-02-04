@@ -9,7 +9,7 @@ module Gamefic
     end
     def run_test name, actor
       queue = []
-      actor.plot.stage actor, queue, &test_procs[name]
+      stage actor, queue, &test_procs[name]
       actor.queue.push *queue
       actor[:test_queue_length] = queue.length
       actor[:test_queue_scene] = actor.scene

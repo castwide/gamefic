@@ -10,6 +10,7 @@ module Gamefic
     attr_accessor :object_of_pronoun
     attr_reader :scene
     attr_reader :next_scene
+    attr_accessor :playbook
 
     def initialize(args = {})
       @queue = Array.new
@@ -48,26 +49,24 @@ module Gamefic
     # @example Send a command as a set of tokens
     #   character.perform :take, @key
     #
-    #def perform(*command, from_user: false)
-    #  o = Director.dispatch(self, *command)
-    #  last_order = o if from_user
-    #  o
-    #end
+    def perform(*command, from_user: false)
+      Director.dispatch(playbook, self, *command)
+    end
     
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
     #
     # @return [String] The output that resulted from performing the command.
-    #def quietly(*command)
-    #  if @buffer_stack == 0
-    #    @buffer = ""
-    #  end
-    #  @buffer_stack += 1
-    #  self.perform *command
-    #  @buffer_stack -= 1
-    #  @buffer
-    #end
+    def quietly(*command)
+      if @buffer_stack == 0
+        @buffer = ""
+      end
+      @buffer_stack += 1
+      self.perform *command
+      @buffer_stack -= 1
+      @buffer
+    end
     
     # Send a message to the Character.
     # This method will automatically wrap the message in HTML paragraphs.
@@ -139,6 +138,18 @@ module Gamefic
 
     def prepare scene
       @next_scene = scene
+    end
+
+    def conclude scene
+      cue scene
+    end
+
+    def concluded?
+      !scene.nil? and scene.kind_of?(Scene::Conclusion)
+    end
+
+    def performed order
+      @last_order = order
     end
 
     private

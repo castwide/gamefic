@@ -31,6 +31,7 @@ module Gamefic
     def introduce(player)
       # TODO: As elsewhere, entities shouldn't need to be aware of plots
       #player.extend Subplot::Feature
+      player.playbook = playbook
       player.cue default_scene
       p_players.push player
       @introduction.call(player) unless @introduction.nil?

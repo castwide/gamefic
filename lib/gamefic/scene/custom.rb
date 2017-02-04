@@ -33,6 +33,10 @@ module Gamefic
       do_finish_block actor, data
     end
 
+    def prompt_for actor
+      character_data[actor].prompt
+    end
+
     private
 
     def do_start_block actor, data

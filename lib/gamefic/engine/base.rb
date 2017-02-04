@@ -29,7 +29,7 @@ module Gamefic
     def run
       connect
       @plot.introduce @character
-      turn until @plot.concluded?(@character)
+      turn until @character.concluded?
       print @user.flush
     end
 
@@ -44,7 +44,7 @@ module Gamefic
     end
 
     def receive
-      print @plot.scenes[@character.scene].prompt_for(@character) + ' '
+      print @character.scene.prompt_for(@character) + ' '
       input = STDIN.gets
       @character.queue.push input unless input.nil?
       puts ''

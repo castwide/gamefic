@@ -6,8 +6,8 @@ module Gamefic
     module Parser
       def self.from_tokens(plot, actor, tokens)
         options = []
-        command = tokens.shift
-        actions = plot.actions_with_verb(command.to_sym)
+        verb = tokens.shift
+        actions = plot.actions_with_verb(verb.to_sym)
         actions.each { |action|
           if action.queries.length == tokens.length
             valid = true
@@ -22,7 +22,7 @@ module Gamefic
             if valid
               arguments = []
               tokens.each { |token|
-                  arguments.push [token]
+                arguments.push [token]
               }
               options.push Order.new(actor, action, arguments)
             end
@@ -62,7 +62,7 @@ module Gamefic
         end
         def execute_query(actor, arguments, queries, action, num_nil = 0)
           # If the action verb is nil, treat the first argument as a query
-          arguments.shift unless action.verb.nil?
+          #arguments.shift unless action.verb.nil?
           prepared = Array.new
           objects = Array.new
           valid = true
@@ -72,10 +72,11 @@ module Gamefic
             if last_remainder.to_s > ''
               arg = (last_remainder + " " + arg).strip
             end
-            if arg.nil? or arg == ''
-              valid = false
-              next
-            end
+            #if arg.nil? or arg == ''
+            #  puts "Nil or empty arg?"
+            #  valid = false
+            #  next
+            #end
             if context == String
               prepared.push [arg]
             elsif context.kind_of?(Query::Base)

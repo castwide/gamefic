@@ -17,12 +17,18 @@ module Gamefic
         raise "Invalid entity class"
       end
       p_entities.push ent
+      p_dynamic.push ent if running?
       ent
     end
 
     def destroy entity
-      p_entities.delete entity
-      p_players.delete entity
+      if p_dynamic.include?(entity)
+        p_entities.delete entity
+        p_dynamic.delete entity
+        p_players.delete entity
+      else
+        entity.parent = nil
+      end
     end
 
     # Pick an entity based on its description.
@@ -65,6 +71,10 @@ module Gamefic
 
     def p_players
       @p_players ||= []
+    end
+
+    def p_dynamic
+      @p_dynamic ||= []
     end
   end
   end
