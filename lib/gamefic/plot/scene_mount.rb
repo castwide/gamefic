@@ -1,6 +1,3 @@
-class NotConclusionError < Exception
-end
-
 module Gamefic
 
   module Plot::SceneMount

@@ -1,5 +1,8 @@
 require 'gamefic/director'
 
+class NotConclusionError < Exception
+end
+
 module Gamefic
   class Character < Entity
     attr_reader :queue, :user
@@ -141,6 +144,7 @@ module Gamefic
     end
 
     def conclude scene
+      raise NotConclusionError if !scene.kind_of?(Scene::Conclusion)
       cue scene
     end
 
