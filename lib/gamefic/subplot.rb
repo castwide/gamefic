@@ -18,7 +18,7 @@ module Gamefic
         @p_subplots ||= []
       end
     end
-    
+
     attr_reader :plot
     
     def initialize plot, feature:nil
@@ -28,23 +28,25 @@ module Gamefic
       yield(self) if block_given?
       introduce feature unless feature.nil?
     end
+
     def post_initialize
     end
-    #def make *args
-      #e = plot.make(*args)
-      #e.extend Gamefic::Subplot::Element
-      #e.instance_variable_set(:@subplot, self)
-      #entities.push e
-      #e
-    #end
+
+    # HACK: Always assume subplots are running for the sake of entity destruction    
+    def running?
+      true
+    end
+
     def introduce player
       player.send(:p_subplots).push self
       players.push player
     end
+
     def exeunt player
       player.send(:p_subplots).delete self
       players.delete player
     end
+
     def conclude
       concluded = true
       entities.each { |e|
@@ -54,6 +56,7 @@ module Gamefic
         exeunt p
       }
     end
+    
     def concluded?
       @concluded
     end
