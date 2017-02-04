@@ -9,11 +9,9 @@ describe "Undo Action" do
     item = nil
     plot.script 'standard'
     plot.script 'undo'
-    plot.stage do
-      room = make Room, :name => "room"
-      character = make Character, :name => "character", :parent => room
-      item = make Item, :name => "item", :parent => room
-    end
+    room = plot.make Room, :name => "room"
+    character = plot.make Character, :name => "character", :parent => room
+    item = plot.make Item, :name => "item", :parent => room
     plot.introduce character
     character.queue.unshift "take item"
     plot.ready

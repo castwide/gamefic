@@ -86,13 +86,14 @@ module Gamefic
       snapshot.each { |hash|
         if entities[index].nil?
           cls = Kernel.const_get(hash[:class])
-          @entities[index] = make cls
+          p_entities[index] = make cls
         end 
         internal_restore_hash hash, index
         index += 1
       }
       nil
     end
+
     def internal_restore_hash hash, index
       hash.each { |k, v|
         if k == :scene
@@ -108,6 +109,7 @@ module Gamefic
       }
       nil
     end
+
     def reduce entities
       reduced = []
       index = 0
@@ -123,6 +125,7 @@ module Gamefic
       }
       reduced
     end
+
     def can_serialize? obj
       return true if (obj == true or obj == false or obj.nil?)
       allowed = [String, Fixnum, Float, Numeric, Entity, Direction, Hash, Array, Symbol]
@@ -131,6 +134,7 @@ module Gamefic
       }
       false
     end
+
     def serialize_obj obj
       return nil if obj.nil?
       return false if obj == false
@@ -140,13 +144,14 @@ module Gamefic
         return serialize_array obj
       else
         if obj.kind_of?(Entity)
-          return "#<EIN_#{@entities.index(obj)}>"
+          return "#<EIN_#{p_entities.index(obj)}>"
         elsif obj.kind_of?(Direction)
           return "#<DIR_#{obj.name}>"
         end
       end
       return obj
     end
+
     def serialize_hash obj
       hash = {}
       obj.each_pair { |k, v|
@@ -156,6 +161,7 @@ module Gamefic
       }
       return hash
     end
+
     def serialize_array obj
       arr = []
       obj.each_index { |i|
@@ -167,6 +173,7 @@ module Gamefic
       }
       return arr
     end
+
     def unserialize obj
       if obj.kind_of?(Hash)
         unserialize_hash obj
@@ -174,13 +181,14 @@ module Gamefic
         unserialize_array obj
       elsif obj.to_s.match(/^#<EIN_[0-9]+>$/)
         i = obj[6..-2].to_i
-        @entities[i]
+        p_entities[i]
       elsif obj.to_s.match(/^#<DIR_[a-z]+>$/)
         Direction.find(obj[6..-2])
       else
         obj
       end
     end
+
     def unserialize_hash obj
       hash = {}
       obj.each_pair { |k, v|
@@ -188,6 +196,7 @@ module Gamefic
       }
       hash
     end
+
     def unserialize_array obj
       arr = []
       obj.each_index { |i|
@@ -195,6 +204,7 @@ module Gamefic
       }
       arr
     end
+
     def save_subplots
       # TODO: Subplot snapshots are temporarily disabled.
       return []
@@ -212,6 +222,7 @@ module Gamefic
       }
       arr
     end
+    
     def restore_subplots arr
       # TODO: Subplot snapshots are temporarily disabled.
       return
