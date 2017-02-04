@@ -16,7 +16,7 @@ module Gamefic::Sdk::Debug
     end
     def action(command, *queries, &proc)
       act = Gamefic::Sdk::Debug::Action.new(command, *queries, &proc)
-      add_action act
+      playbook.send :add_action, act
       act
     end
   end

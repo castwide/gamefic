@@ -20,7 +20,7 @@ class Class
   end
 end
 
-class Entity
+class Gamefic::Entity
   def self.names
     result = []
     Entity.descendants.each { |e| result << e.to_s.split('::').last }
