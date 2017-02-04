@@ -16,6 +16,10 @@ module Gamefic
     def prompt_for actor
       '>'
     end
+
+    def type
+      self.class.to_s.split('::').last
+    end
   end
 
 end

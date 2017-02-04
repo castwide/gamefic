@@ -38,10 +38,10 @@ module Gamefic
     # Restore the plot to the state of its first snapshot.
     #
     def restore_initial_state
-        @entities[@initial_state.length..-1].each { |e|
+        p_entities[@initial_state.length..-1].each { |e|
           e.parent = nil
         }
-        @entities.slice! @initial_state.length..-1
+        p_entities.slice! @initial_state.length..-1
         internal_restore @initial_state
     end
     
@@ -196,6 +196,8 @@ module Gamefic
       arr
     end
     def save_subplots
+      # TODO: Subplot snapshots are temporarily disabled.
+      return []
       arr = []
       subplots.each { |s|
         hash = {}
@@ -211,6 +213,8 @@ module Gamefic
       arr
     end
     def restore_subplots arr
+      # TODO: Subplot snapshots are temporarily disabled.
+      return
       players.each { |p|
         p.send(:p_subplots).clear
       }

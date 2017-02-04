@@ -5,20 +5,6 @@ module Gamefic
   class Subplot
     include Plot::EntityMount
 
-    # TODO: Entities should not need to be aware of plots or subplots
-    #module Element
-    #  attr_reader :subplot
-    #end
-    module Feature
-      def subplots
-        p_subplots.clone
-      end
-      private
-      def p_subplots
-        @p_subplots ||= []
-      end
-    end
-
     attr_reader :plot
     
     def initialize plot, feature:nil
@@ -56,7 +42,7 @@ module Gamefic
         exeunt p
       }
     end
-    
+
     def concluded?
       @concluded
     end

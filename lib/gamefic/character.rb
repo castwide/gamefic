@@ -152,6 +152,10 @@ module Gamefic
       @last_order = order
     end
 
+    def prompt
+      scene.nil? ? '>' : scene.prompt_for(self)
+    end
+
     private
 
     def delegate_stack
