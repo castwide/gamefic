@@ -4,9 +4,6 @@ include Gamefic
 describe "Undo Action" do
   it "undoes the previous action" do
     plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
-    room = nil
-    character = nil
-    item = nil
     plot.script 'standard'
     plot.script 'undo'
     room = plot.make Room, :name => "room"
