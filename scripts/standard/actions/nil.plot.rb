@@ -1,6 +1,7 @@
 meta nil, Query::Text.new() do |actor, string|
   words = string.split_words
-  if verbs.include?(words[0])
+  list = verbs(to_s: true)
+  if list.include?(words[0])
     if words.length > 1
       actor.tell "I recognize '#{words[0]}' as a verb but could not understand the rest of your sentence."
     else
@@ -8,8 +9,7 @@ meta nil, Query::Text.new() do |actor, string|
     end
   else
     found = []
-    verbs.each { |v|
-      c = v.to_s
+    list.each { |c|
       next if c.include?('_')
       if c.length > words[0].length and c.start_with?(words[0])
         found.push c
@@ -28,7 +28,7 @@ end
 
 meta nil, Query::Text.new("it") do |actor, string|
   words = string.split_words
-  if verbs.include?(words[0])
+  if verbs(to_s: true).include?(words[0])
     actor.tell "I'm not sure what you mean by \"it.\""
   else
     actor.proceed

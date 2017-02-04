@@ -76,8 +76,8 @@ module Gamefic
       interpret command, translation
     end
 
-    def verbs symbols: true
-      symbols ? playbook.verbs : playbook.verbs.map { |s| s.to_s }
+    def verbs to_s: false
+      to_s ? playbook.verbs.map { |v| v.to_s } : playbook.verbs
     end
 
     # Get an Array of all Actions defined in the Plot.
