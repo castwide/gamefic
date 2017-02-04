@@ -101,9 +101,9 @@ message = make Scenery,
 
 respond :look, Query::Siblings.new(message) do |actor, message|
   if actor.session[:disturbed] then 
-    actor.conclude :you_have_lost
+    actor.conclude @you_have_lost
   else
-    actor.conclude :you_have_won
+    actor.conclude @you_have_won
   end
 end
 
@@ -137,20 +137,20 @@ end
 
 introduction do |player|
   player.tell "Hurrying through the rainswept November night, you're glad to see the bright lights of the Opera House. It's surprising that there aren't more people about but, hey, what do you expect in a cheap demo game...?"
-    player.parent = foyer
-    cloak.parent = player
-    player.session[:disturbed] = false
-    player.perform "look"
+  player.parent = foyer
+  cloak.parent = player
+  player[:disturbed] = false
+  player.perform "look"
 end
 
 # Two different endings
 
-conclusion :you_have_won do |actor|
+@you_have_won = conclusion do |actor|
   actor.tell "The message, neatly marked in the sawdust, reads..."
   actor.tell "*** You have won ***"
 end
 
-conclusion :you_have_lost do |actor|
+@you_have_lost = conclusion do |actor|
   actor.tell "The message has been carelessly trampled, making it difficult to read. You can just distinguish the words..."
   actor.tell "*** You have lost ***"
 end

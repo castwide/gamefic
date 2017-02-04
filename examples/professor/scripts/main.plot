@@ -24,13 +24,13 @@ end
 
 professor = make Character, :name => 'the professor', :synonyms => 'Sam Worthington', :description => 'A gangly older gentleman with thick glasses and a jaunty bowtie.', :parent => office
 
-question :talk_to_professor, "What do you want to ask him about?" do |actor, input|
+@talk_to_professor = question "What do you want to ask him about?" do |actor, input|
   actor.perform "ask professor about #{input}" unless input == ""
-  actor.cue :active
+  actor.cue default_scene
 end
 
 respond :talk, Query::Reachable.new(professor) do |actor, professor|
-  actor.cue :talk_to_professor
+  actor.cue @talk_to_professor
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new do |actor, professor, subject|
@@ -42,9 +42,9 @@ respond :talk, Query::Reachable.new(professor), Query::Text.new("name") do |acto
 end
 
 respond :talk, Query::Reachable.new(professor), Query::Text.new("job", "opening", "work", "interview") do |actor, professor, subject|
-  actor.conclude :asked_about_job
+  actor.conclude @asked_about_job
 end
 
-conclusion :asked_about_job do |actor|
+@asked_about_job = conclusion do |actor|
   actor.tell "#{The professor} smiles. \"Ah, you're here about the job.\" He hands you an application. \"Fill this out and get back to me later.\""
 end

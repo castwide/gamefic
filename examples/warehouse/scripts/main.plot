@@ -33,9 +33,9 @@ introduction do |actor|
 end
 
 respond :take, Query::Reachable.new(gold) do |actor, gold|
-  actor.conclude :found_gold
+  actor.conclude @found_gold
 end
 
-conclusion :found_gold do |actor|
+@found_gold = conclusion do |actor|
   actor.tell "Congratulations, you got the gold!"
 end
