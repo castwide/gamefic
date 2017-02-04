@@ -60,7 +60,7 @@ module Gamefic
       m = text.match(@regexp)
       return nil if m.nil?
       arguments = []
-      @replace.to_s.split_words.each { |r|
+      @replace.to_s.split_words[1..-1].each { |r|
         if r.match(/^\{\$[0-9]+\}$/)
           arguments.push m[r[2..-2].to_i]
         else
@@ -70,6 +70,10 @@ module Gamefic
       Command.new @verb, arguments
     end
     
+    def accept? text
+      !text.match(@regexp).nil?
+    end
+
     # Get a signature that identifies the form of the Syntax.
     # Signatures are used to compare Syntaxes to each other.
     #
@@ -106,7 +110,7 @@ module Gamefic
         }
         cb <=> ca
       }
-      matches      
+      matches
     end
   end
 

@@ -5,8 +5,15 @@ module Gamefic
   # a Plot.
   #
   class Scene::Active < Scene::Base
+    attr_reader :plot
+
+    def initialize plot
+      @plot = plot
+    end
+
     def finish actor, input
-      actor.perform input, from_user: true
+      o = Director.dispatch plot, actor, input
+      actor.performed o
     end
   end
   

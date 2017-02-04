@@ -11,16 +11,11 @@ module Gamefic
     extend Serialized::ClassMethods
     include Grammar::WordAdapter
     
-    attr_reader :session, :plot
+    attr_reader :session
     serialize :name, :parent, :description
     
-    def initialize(plot, args = {})
-      if (plot.kind_of?(Plot) == false)
-        raise "First argument must be a Plot"
-      end
+    def initialize(args = {})
       pre_initialize
-      @plot = plot
-      @plot.send :add_entity, self
       args.each { |key, value|
         send "#{key}=", value
       }
@@ -73,14 +68,6 @@ module Gamefic
         raise "Entity's parent must be an Entity"
       end
       super
-    end
-    
-    # Remove this Entity from its current Plot.
-    #
-    def destroy
-      self.parent = nil
-      # TODO: Need to call this private method here?
-      @plot.send(:rem_entity, self)
     end
     
     # Get an extended property.

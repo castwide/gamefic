@@ -4,10 +4,10 @@ module Gamefic
   module Director
   
     module Parser
-      def self.from_tokens(actor, tokens)
+      def self.from_tokens(plot, actor, tokens)
         options = []
         command = tokens.shift
-        actions = actor.plot.actions_with_verb(command.to_sym)
+        actions = plot.actions_with_verb(command.to_sym)
         actions.each { |action|
           if action.queries.length == tokens.length
             valid = true
@@ -33,14 +33,14 @@ module Gamefic
         end
         options.sort{ |a,b| b.action.specificity <=> a.action.specificity }
       end
-      def self.from_string(actor, command)
+      def self.from_string(plot, actor, command)
         options = []
         if command.to_s == ''
           return options
         end
-        matches = Syntax.tokenize(command, actor.plot.syntaxes)
+        matches = Syntax.tokenize(command, plot.syntaxes)
         matches.each { |match|
-          actions = actor.plot.actions_with_verb(match.verb)
+          actions = plot.actions_with_verb(match.verb)
           actions.each { |action|
             options.concat bind_contexts_in_result(actor, match.arguments, action)
           }

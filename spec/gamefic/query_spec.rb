@@ -98,13 +98,12 @@ describe Query::Base do
     expect(matches.objects.length).to eq(1)        
   end
   it "matches a set of many that includes a child reference" do
-    plot = Plot.new
-    item1 = plot.make Entity, :name => 'item one'
-    item2 = plot.make Entity, :name => 'item two'
-    parent = plot.make Entity, :name => 'parent'
-    item3 = plot.make Entity, :name => 'item three', :parent => parent
+    item1 = Entity.new name: 'item one'
+    item2 = Entity.new name: 'item two'
+    parent = Entity.new name: 'parent'
+    item3 = Entity.new name: 'item three', parent: parent
     query = Query::Base.new
-    matches = query.match("one, item in parent and two", plot.entities)
+    matches = query.match("one, item in parent and two", [item1, item2, item3, parent])
     flat = matches.objects.flatten
     expect(flat.include?(item1)).to eq(true)
     expect(flat.include?(item2)).to eq(true)

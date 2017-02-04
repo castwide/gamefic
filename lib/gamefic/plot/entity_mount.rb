@@ -1,6 +1,7 @@
 module Gamefic
 
-  module Plot::EntityMount
+  class Plot
+  module EntityMount
     # Make a new Entity with the provided properties.
     #
     # @example Create an Entity
@@ -11,12 +12,19 @@ module Gamefic
     # @param args [Hash] The entity's properties.
     # @return The Entity instance.
     def make(cls, args = {}, &block)
-      ent = cls.new(self, args, &block)
+      ent = cls.new(args, &block)
       if ent.kind_of?(Entity) == false
         raise "Invalid entity class"
       end
+      p_entities.push ent
       ent
     end
+
+    def destroy entity
+      p_entities.delete entity
+      p_players.delete entity
+    end
+
     # Pick an entity based on its description.
     # The description provided must match exactly one entity; otherwise
     # an error is raised.
@@ -40,6 +48,25 @@ module Gamefic
       end
       result.objects[0]
     end
+
+    def entities
+      p_entities.clone
+    end
+
+    def players
+      p_players.clone
+    end
+
+    private
+
+    def p_entities
+      @p_entities ||= []
+    end
+
+    def p_players
+      @p_players ||= []
+    end
+  end
   end
 
 end

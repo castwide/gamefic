@@ -23,7 +23,8 @@ describe Plot do
 	it "removes destroyed entities" do
 		plot = Plot.new
 		entity = plot.make Entity
-		entity.destroy
+		#entity.destroy
+		plot.destroy entity
 		expect(plot.entities.length).to eq(0)
 	end
 end

@@ -9,7 +9,7 @@ describe Character do
     plot.respond :increment_number do |actor|
       x += 1
     end
-    character.perform "increment number"
+    plot.perform character, "increment number"
     expect(x).to eq(1)
   end
   it "formats #tell messages into HTML paragraphs" do

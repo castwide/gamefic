@@ -8,10 +8,10 @@ module Gamefic
     # @return [Entity,nil]
     attr_reader :last_object
     attr_accessor :object_of_pronoun
-    
-    serialize :scene
-    
-    def initialize(plot, args = {})
+    attr_reader :scene
+    attr_reader :next_scene
+
+    def initialize(args = {})
       @queue = Array.new
       super
       @buffer_stack = 0
@@ -48,26 +48,26 @@ module Gamefic
     # @example Send a command as a set of tokens
     #   character.perform :take, @key
     #
-    def perform(*command, from_user: false)
-      o = Director.dispatch(self, *command)
-      last_order = o if from_user
-      o
-    end
+    #def perform(*command, from_user: false)
+    #  o = Director.dispatch(self, *command)
+    #  last_order = o if from_user
+    #  o
+    #end
     
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
     #
     # @return [String] The output that resulted from performing the command.
-    def quietly(*command)
-      if @buffer_stack == 0
-        @buffer = ""
-      end
-      @buffer_stack += 1
-      self.perform *command
-      @buffer_stack -= 1
-      @buffer
-    end
+    #def quietly(*command)
+    #  if @buffer_stack == 0
+    #    @buffer = ""
+    #  end
+    #  @buffer_stack += 1
+    #  self.perform *command
+    #  @buffer_stack -= 1
+    #  @buffer
+    #end
     
     # Send a message to the Character.
     # This method will automatically wrap the message in HTML paragraphs.
@@ -131,42 +131,22 @@ module Gamefic
       delegate_stack.last.proceed
     end
 
-    def cue scene_name
-      @scene = scene_name
+    def cue scene
       @next_scene = nil
-      plot.scenes[scene_name].start self
-    end
-    
-    def prepare scene_name
-      @next_scene = scene_name
+      @scene = scene
+      @scene.start self unless @scene.nil?
     end
 
-    def conclude scene_name
-      scene = plot.scenes[scene_name]
-      raise "#{scene_name} is not a conclusion" unless scene.kind_of?(Scene::Conclusion)
-      cue scene_name
-    end
-    
-    # Get the name of the character's current scene
-    #
-    # @return [Symbol] The name of the scene    
-    def scene
-      @scene
+    def prepare scene
+      @next_scene = scene
     end
 
-    # Alias for Character#cue key
-    def scene= key
-      cue key.to_sym
-    end
-    
-    def next_scene
-      @next_scene
-    end
-    
     private
+
     def delegate_stack
       @delegate_stack ||= []
     end
+
     def last_order=(order)
       return if order.nil?
       @last_order = order

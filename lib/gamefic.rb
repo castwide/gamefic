@@ -13,6 +13,7 @@ require "gamefic/syntax"
 require "gamefic/rule"
 require "gamefic/director"
 require "gamefic/plot"
+require 'gamefic/subplot'
 require "gamefic/engine"
 require "gamefic/user"
 require "gamefic/direction"

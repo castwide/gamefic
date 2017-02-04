@@ -15,7 +15,7 @@ module Gamefic
       if data.yes? or data.no?
         this_scene = actor.scene
         do_finish_block actor, data
-        actor.cue :active if (actor.scene == this_scene and actor.next_scene.nil?)
+        #actor.cue :active if (actor.scene == this_scene and actor.next_scene.nil?)
       else
         actor.tell data.invalid_message
       end

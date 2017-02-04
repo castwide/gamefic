@@ -5,7 +5,6 @@ require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
-require 'gamefic/subplot'
 
 module Gamefic
 
@@ -17,20 +16,22 @@ module Gamefic
     autoload :ArticleMount, 'gamefic/plot/article_mount'
     autoload :YouMount, 'gamefic/plot/you_mount'
     autoload :Snapshot, 'gamefic/plot/snapshot'
-    
+    autoload :Host, 'gamefic/plot/host'
+    autoload :Players, 'gamefic/plot/players'
+
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
     # TODO Metadata could use better protection
-    attr_accessor :default_scene, :metadata
+    attr_accessor :metadata
     include Stage
     # TODO This include is only here to make the module's methods visible in the IDE.
     # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if
     # the plugin isn't activated.
     #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
-    mount Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount,
-      ArticleMount, YouMount, Snapshot, Subplot::Host
+    mount Gamefic, Tester, Players, SceneMount, CommandMount, EntityMount, QueryMount,
+      ArticleMount, YouMount, Snapshot, Host
     expose :script, :introduction, :assert_action,
       :on_update, :on_player_update, :entities, :on_ready, :on_player_ready,
-      :players, :scenes, :metadata
+      :players, :metadata
     
     # @param [Source::Base]
     def initialize(source = nil)
@@ -43,22 +44,20 @@ module Gamefic
       @player_procs = []
       @working_scripts = []
       @imported_scripts = []
-      @entities = []
-      @players = []
       @asserts = {}
-      @default_scene = :active
+      #@default_scene = :active
       @subplots = []
       post_initialize
     end
 
-    def scenes
-      if @scenes.nil?
-        @scenes = {}
-        @scenes[:active] = Scene::Active.new
-        @scenes[:concluded] = Scene::Conclusion.new
-      end
-      @scenes
-    end
+    #def scenes
+    #  if @scenes.nil?
+    #    @scenes = {}
+    #    @scenes[:active] = Scene::Active.new
+    #    @scenes[:concluded] = Scene::Conclusion.new
+    #  end
+    #  @scenes
+    #end
     
     def concluded?(actor)
       scenes[actor.scene].kind_of?(Scene::Conclusion)
@@ -110,25 +109,11 @@ module Gamefic
       # TODO: Should this method be required by extended classes?
     end
     
-    # Get an Array of the Plot's current Entities.
-    #
-    # @return [Array<Entity>]
-    def entities
-      @entities.clone
-    end
-    
     # Get an Array of the Plot's current Syntaxes.
     #
     # @return [Array<Syntax>]
     def syntaxes
       @syntaxes.clone
-    end
-    
-    # Get an Array of current players.
-    #
-    # @return [Array<Character>] The players.
-    def players
-      @players.clone
     end
     
     # Add a block to be executed on preparation of every turn.
@@ -151,38 +136,15 @@ module Gamefic
     def on_update(&block)
       @update_procs.push block
     end
-    
-    # Add a block to be executed when a player is added to the game.
-    # Each Plot can only have one introduction. Subsequent calls will
-    # overwrite the existing one.
-    #
-    # @example Welcome the player to the game
-    #   introduction do |actor|
-    #     actor.tell "Welcome to the game!"
-    #   end
-    #
-    # @yieldparam [Character]
-    def introduction (&proc)
-      @introduction = proc
-    end
-    
-    # Introduce a player to the game.
-    # This method is typically called by the Engine that manages game execution.
-    def introduce(player)
-      player.extend Subplot::Feature
-      player.cue :active
-      @players.push player
-      @introduction.call(player) unless @introduction.nil?
-    end
-    
+            
     # Prepare the Plot for the next turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def ready
       @ready_procs.each { |p| p.call }
       # Prepare player scenes for the update.
-      @players.each { |player|
+      p_players.each { |player|
         this_scene = player.next_scene || player.scene
-        player.prepare nil
+        player.cue nil
         player.cue this_scene unless player.scene == this_scene
         @player_ready.each { |block|
           block.call player
@@ -193,9 +155,9 @@ module Gamefic
     # Update the Plot's current turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def update
-      @players.each { |p| process_input p }
-      @entities.each { |e| e.update }
-      @players.each { |player| update_player player }
+      p_players.each { |p| process_input p }
+      p_entities.each { |e| e.update }
+      p_players.each { |player| update_player player }
       @update_procs.each { |p| p.call }
     end
 
@@ -243,12 +205,17 @@ module Gamefic
       @player_procs.push block
     end
 
+    def perform actor, *command
+      Director.dispatch(self, actor, *command)
+    end
+
     private
 
     def process_input player
       line = player.queue.shift
       if !line.nil?
-        scenes[player.scene].finish player, line
+        #scenes[player.scene].finish player, line
+        player.scene.finish player, line
       end
     end
 

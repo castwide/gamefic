@@ -8,9 +8,15 @@ module Gamefic
     def initialize
       yield self if block_given?
     end
+
+    def data_class
+      SceneData::Base
+    end
+
     def on_start &block
       @start = block
     end
+
 
     def on_finish &block
       @finish = block
@@ -37,6 +43,19 @@ module Gamefic
       @finish.call actor, data unless @finish.nil?
     end
 
+    def character_data
+      @character_data ||= {}
+    end
+
+    def start_data_for actor
+      character_data[actor] ||= data_class.new
+    end
+
+    def finish_data_for actor, input
+      data = character_data[actor]
+      data.input = input.strip
+      data
+    end
   end
   
 end

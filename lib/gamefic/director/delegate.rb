@@ -29,14 +29,15 @@ module Gamefic
       end
       def execute
         return if @orders.length == 0
-        if !@orders[0].action.meta?
-          @actor.plot.asserts.each_pair { |name, rule|
-            result = rule.test(@actor, @orders[0].action.verb, @orders[0].arguments)
-            if result == false
-              return
-            end
-          }
-        end
+        # TODO: Action assertions are temporarily disabled.
+        #if !@orders[0].action.meta?
+        #  @actor.plot.asserts.each_pair { |name, rule|
+        #    result = rule.test(@actor, @orders[0].action.verb, @orders[0].arguments)
+        #    if result == false
+        #      return
+        #    end
+        #  }
+        #end
         proceed
       end
       private
