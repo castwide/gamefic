@@ -1,7 +1,7 @@
 module Gamefic
 
   class Plot
-  module EntityMount
+  module Entities
     # Make a new Entity with the provided properties.
     #
     # @example Create an Entity

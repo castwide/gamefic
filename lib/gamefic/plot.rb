@@ -11,8 +11,8 @@ module Gamefic
   class Plot
     autoload :SceneMount, 'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
-    autoload :EntityMount, 'gamefic/plot/entity_mount'
-    autoload :QueryMount, 'gamefic/plot/query_mount'
+    autoload :Entities, 'gamefic/plot/entities'
+    #autoload :QueryMount, 'gamefic/plot/query_mount'
     autoload :ArticleMount, 'gamefic/plot/article_mount'
     autoload :YouMount, 'gamefic/plot/you_mount'
     autoload :Snapshot, 'gamefic/plot/snapshot'
@@ -24,11 +24,7 @@ module Gamefic
     # TODO Metadata could use better protection
     attr_accessor :metadata
     include Stage
-    # TODO This include is only here to make the module's methods visible in the IDE.
-    # Gamefic Studio has a PlotStageMetaMapper that handles it, but it doesn't run if
-    # the plugin isn't activated.
-    #include Gamefic, Tester, SceneMount, CommandMount, EntityMount, QueryMount, ArticleMount, YouMount, Snapshot
-    mount Gamefic, Tester, Players, SceneMount, CommandMount, EntityMount, QueryMount,
+    mount Gamefic, Tester, Players, SceneMount, CommandMount, Entities,
       ArticleMount, YouMount, Snapshot, Host
     expose :script, :introduction, :assert_action,
       :on_update, :on_player_update, :entities, :on_ready, :on_player_ready,
@@ -57,13 +53,6 @@ module Gamefic
 
     def running?
       @running
-    end
-
-    # Get an Array of all Actions defined in the Plot.
-    #
-    # @return [Array<Action>]
-    def actions
-      playbook.actions
     end
         
     # Get an Array of all scripts that have been imported into the Plot.

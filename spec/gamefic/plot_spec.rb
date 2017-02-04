@@ -18,7 +18,7 @@ describe Plot do
 		plot.respond :mycommand do |actor|
 			actor.tell "myresult"
 		end
-		expect(plot.commandwords.include?("mycommand")).to eq(true)
+		expect(plot.verbs.include?(:mycommand)).to be true
 	end
 	it "removes destroyed dynamic entities" do
 		plot = Plot.new

@@ -31,7 +31,7 @@ module GameficOpal
 
   class WebUser < Gamefic::User::Base
     def save filename, data
-      data[:metadata] = GameficOpal.static_character.plot.metadata
+      data[:metadata] = GameficOpal.static_plot.metadata
       `Gamefic.save(filename, data);`
     end
     def restore filename

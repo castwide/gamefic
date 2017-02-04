@@ -2,13 +2,12 @@ require 'gamefic/plot'
 
 module Gamefic
 
-  class Subplot
-    include Plot::EntityMount
-
+  class Subplot < Plot
     attr_reader :plot
     
     def initialize plot, feature:nil
       @plot = plot
+      @playbook = plot.playbook.clone
       @concluded = false
       post_initialize
       yield(self) if block_given?
@@ -24,8 +23,7 @@ module Gamefic
     end
 
     def introduce player
-      player.send(:p_subplots).push self
-      players.push player
+      p_players.push player
     end
 
     def exeunt player
