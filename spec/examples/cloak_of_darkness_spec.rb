@@ -11,6 +11,6 @@ describe "Cloak of Darkness" do
       plot.ready
       plot.update
     end
-    expect(plot.scenes[character.scene].class).to eq(Scene::Conclusion)
+    expect(character.scene.kind_of?(Scene::Conclusion)).to be true
   end
 end

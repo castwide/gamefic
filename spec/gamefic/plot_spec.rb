@@ -11,7 +11,7 @@ describe Plot do
 		plot = Plot.new
 		plot.respond :mycommand do |actor|
 		end
-		expect(plot.actions_with_verb(:mycommand).length).to eq(1)
+		expect(plot.playbook.actions_for(:mycommand).length).to eq(1)
 	end
 	it "adds new actions to the list of command words" do
 		plot = Plot.new
@@ -20,10 +20,10 @@ describe Plot do
 		end
 		expect(plot.commandwords.include?("mycommand")).to eq(true)
 	end
-	it "removes destroyed entities" do
+	it "removes destroyed dynamic entities" do
 		plot = Plot.new
+		plot.ready
 		entity = plot.make Entity
-		#entity.destroy
 		plot.destroy entity
 		expect(plot.entities.length).to eq(0)
 	end

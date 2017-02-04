@@ -7,7 +7,7 @@ describe "Leave Action" do
     @supporter = @plot.make Supporter, :name => 'supporter', :parent => @room, :enterable => true
     @receptacle = @plot.make Receptacle, :name => 'receptacle', :parent => @room, :enterable => true
     @container = @plot.make Container, :name => 'container', :parent => @room, :enterable => true
-    @entity = @plot.make Entity, :name => 'entity', :parent => @room
+    @entity = @plot.make Entity, name: 'entity', parent: @room
   end
   it "leaves a supporter" do
     @character.parent = @supporter

@@ -8,17 +8,17 @@ describe "Quit Action" do
   it "quits on yes" do
     @character.perform "quit"
     @character.update
-    expect(@character.scene).to eq(:confirm_quit)
+    expect(@character.scene.class).to be(Scene::YesOrNo)
     @character.queue.push "yes"
     @plot.update
-    expect(@character.scene).to eq(:concluded)
+    expect(@character.scene.class).to be(Scene::Conclusion)
   end
   it "cancels quit on no" do
     @character.perform "quit"
     @character.update
-    expect(@character.scene).to eq(:confirm_quit)
+    expect(@character.scene.class).to be(Scene::YesOrNo)
     @character.queue.push "no"
     @plot.update
-    expect(@character.scene).to eq(:active)
+    expect(@character.scene).to be(@plot.default_scene)
   end
 end

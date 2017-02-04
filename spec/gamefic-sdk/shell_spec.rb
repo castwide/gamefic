@@ -1,5 +1,4 @@
 require 'tmpdir'
-require 'gamefic-sdk'
 require 'gamefic-sdk/shell'
 
 include Gamefic

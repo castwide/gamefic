@@ -10,7 +10,7 @@ describe Director::Delegate do
       number += 2
       actor.proceed
     end
-    plot.perform character, "increment"
+    character.perform "increment"
     expect(number).to eq(3)
   end
 end

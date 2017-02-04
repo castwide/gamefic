@@ -11,6 +11,6 @@ describe "Professor" do
       plot.ready
       plot.update
     end
-    expect(plot.scenes[character.scene].class).to eq(Scene::Conclusion)
+    expect(character.scene.class).to eq(Scene::Conclusion)
   end
 end
