@@ -19,14 +19,10 @@ module Gamefic
     # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
     # @yieldparam [Character]
     def meta(command, *queries, &proc)
-      act = self.action(command, *queries, &proc)
-      act.meta = true
-      act
+      playbook.meta command, *queries, &proc
     end
     def action(command, *queries, &proc)
-      act = Action.new(command, *queries, &proc)
-      add_action act
-      act
+      playbook.respond command, *queries, &proc
     end
     # Create an Action that responds to a command.
     # An Action uses the command argument to identify the imperative verb that
@@ -67,16 +63,22 @@ module Gamefic
     # @param command [String] The format of the original command
     # @param translation [String] The format of the translated command
     # @return [Syntax] the Syntax object
+    #def interpret command, translation
+    #  xlate command, translation
+    #end
+    #def syntax(*args)
+    #  xlate(*args)
+    #end
+    #def xlate(*args)
+    #  syn = Syntax.new(*args)
+    #  add_syntax syn
+    #  syn
+    #end
     def interpret command, translation
-      xlate command, translation
+      playbook.interpret command, translation
     end
-    def syntax(*args)
-      xlate(*args)
-    end
-    def xlate(*args)
-      syn = Syntax.new(*args)
-      add_syntax syn
-      syn
+    def xlate command, translation
+      interpret command, translation
     end
     def commandwords
       words = Array.new

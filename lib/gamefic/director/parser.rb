@@ -7,7 +7,7 @@ module Gamefic
       def self.from_tokens(plot, actor, tokens)
         options = []
         verb = tokens.shift
-        actions = plot.actions_with_verb(verb.to_sym)
+        actions = plot.actions_for(verb.to_sym)
         actions.each { |action|
           if action.queries.length == tokens.length
             valid = true
@@ -40,7 +40,7 @@ module Gamefic
         end
         matches = Syntax.tokenize(command, plot.syntaxes)
         matches.each { |match|
-          actions = plot.actions_with_verb(match.verb)
+          actions = plot.actions_for(match.verb)
           actions.each { |action|
             options.concat bind_contexts_in_result(actor, match.arguments, action)
           }

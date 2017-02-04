@@ -11,13 +11,14 @@ module Gamefic
     # @param cls [Class] The Class of the Entity to be created.
     # @param args [Hash] The entity's properties.
     # @return The Entity instance.
-    def make(cls, args = {}, &block)
-      ent = cls.new(args, &block)
+    def make cls, args = {}, &block
+      ent = cls.new args, &block
       if ent.kind_of?(Entity) == false
         raise "Invalid entity class"
       end
       p_entities.push ent
       p_dynamic.push ent if running?
+      ent.playbook = playbook if ent.kind_of?(Character)
       ent
     end
 

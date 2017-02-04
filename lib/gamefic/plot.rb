@@ -37,8 +37,6 @@ module Gamefic
     # @param [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
-      @commands = {}
-      @syntaxes = []
       @ready_procs = []
       @update_procs = []
       @player_ready = []
@@ -49,36 +47,23 @@ module Gamefic
       #@default_scene = :active
       @subplots = []
       @running = false
+      @playbook = Playbook.new
       post_initialize
     end
 
     def playbook
-      Playbook.new @commands, @syntaxes
+      @playbook ||= Playbook.new
     end
 
     def running?
       @running
     end
 
-    #def scenes
-    #  if @scenes.nil?
-    #    @scenes = {}
-    #    @scenes[:active] = Scene::Active.new
-    #    @scenes[:concluded] = Scene::Conclusion.new
-    #  end
-    #  @scenes
-    #end
-    
-    def concluded?(actor)
-      #scenes[actor.scene].kind_of?(Scene::Conclusion)
-      actor.scene.kind_of?(Scene::Conclusion)
-    end
-    
     # Get an Array of all Actions defined in the Plot.
     #
     # @return [Array<Action>]
     def actions
-      @commands.values.flatten
+      playbook.actions
     end
         
     # Get an Array of all scripts that have been imported into the Plot.
@@ -116,7 +101,7 @@ module Gamefic
     #
     # @return [Array<Syntax>]
     def syntaxes
-      @syntaxes.clone
+      playbook.syntaxes
     end
     
     # Add a block to be executed on preparation of every turn.
@@ -225,74 +210,6 @@ module Gamefic
       }
     end
 
-    def rem_entity(entity)
-      @entities.delete(entity)
-      @players.delete(entity)
-    end
-
-    def add_syntax syntax
-      if @commands[syntax.verb] == nil
-        raise "Action \"#{syntax.verb}\" does not exist."
-      end
-      # Delete duplicate syntaxes
-      @syntaxes = @syntaxes.delete_if { |existing|
-        existing == syntax
-      }
-      @syntaxes.unshift syntax
-      @syntaxes.sort! { |a, b|
-        if a.token_count == b.token_count
-          # For syntaxes of the same length, length of action takes precedence
-          b.first_word <=> a.first_word
-        else
-          b.token_count <=> a.token_count
-        end
-      }
-    end
-
-    def add_action(action)
-      @commands[action.verb] ||= []
-      @commands[action.verb].unshift action
-      @commands[action.verb].sort! { |a, b|
-        if a.specificity == b.specificity
-          # Newer action takes precedence
-          b.order_key <=> a.order_key
-        else
-          # Higher specificity takes precedence
-          b.specificity <=> a.specificity
-        end
-      }
-      generate_default_syntax action
-    end
-
-    def generate_default_syntax action
-      user_friendly = action.verb.to_s.gsub(/_/, ' ')
-      args = []
-      used_names = []
-      action.queries.each { |c|
-        num = 1
-        new_name = ":var"
-        while used_names.include? new_name
-          num = num + 1
-          new_name = ":var#{num}"
-        end
-        used_names.push new_name
-        user_friendly += " #{new_name}"
-        args.push new_name
-      }
-      add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}")
-    end
-
-    def rem_action(action)
-      @commands[action.verb].delete(action)
-    end
-
-    def rem_syntax(syntax)
-      @syntaxes.delete syntax
-    end
-    
-    def add_entity(entity)
-      @entities.push entity
-    end
   end
 
 end
