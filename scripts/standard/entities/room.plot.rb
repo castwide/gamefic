@@ -31,22 +31,22 @@ class Gamefic::Room < Gamefic::Entity
   private
   def connect2 destination, direction:nil, type:Portal, two_way:true
     if direction.nil?
-      portal = type.new self.plot, :parent => self, :destination => destination, :name => destination.definitely
+      portal = type.new :parent => self, :destination => destination, :name => destination.definitely
       if two_way == true
-        portal2 = type.new self.plot, :parent => destination, :destination => self, :name => self.definitely
+        portal2 = type.new :parent => destination, :destination => self, :name => self.definitely
       end
     else
       if direction.kind_of?(String)
         direction = Direction.find(direction)
       end
-      portal = type.new self.plot, :direction => direction, :parent => self, :destination => destination
+      portal = type.new :direction => direction, :parent => self, :destination => destination
       portal.proper_named = true if type == Portal
       if two_way == true
         reverse = direction.reverse
         if reverse == nil
           raise "#{direction.name.cap_first} does not have an opposite direction"
         end
-        portal2 = type.new(self.plot, {
+        portal2 = type.new({
           :direction => reverse,
           :parent => destination,
           :destination => self

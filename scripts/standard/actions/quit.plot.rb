@@ -1,11 +1,11 @@
-yes_or_no :confirm_quit, 'Are you sure you want to quit?' do |actor, data|
+confirm_quit = yes_or_no 'Are you sure you want to quit?' do |actor, data|
   if data.yes?
-    actor.cue :concluded
+    actor.cue default_conclusion
   else
-    actor.cue :active
+    actor.cue default_scene
   end
 end
 
 meta :quit do |actor|
-  actor.cue :confirm_quit
+  actor.cue confirm_quit
 end

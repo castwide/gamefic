@@ -15,5 +15,5 @@ end
 
 respond :eat, Use.reachable(:edible?) do |actor, item|
   actor.tell "You eat #{the item}."
-  item.destroy
+  destroy item
 end
