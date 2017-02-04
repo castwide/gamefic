@@ -42,17 +42,13 @@ module Gamefic
     #
     # The command will be executed immediately regardless of game state.
     #
-    # If the from_user argument is true, the command is assumed to have come
-    # directly from user input. The character's last_order and last_object
-    # will be updated with the result.
-    #
     # @example Send a command as a string
     #   character.perform "take the key"
     #
     # @example Send a command as a set of tokens
     #   character.perform :take, @key
     #
-    def perform(*command, from_user: false)
+    def perform(*command)
       Director.dispatch(playbook, self, *command)
     end
     
