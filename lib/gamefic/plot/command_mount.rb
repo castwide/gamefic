@@ -76,6 +76,10 @@ module Gamefic
       interpret command, translation
     end
 
+    # Get an Array of available verbs.
+    # If the to_s parameter is true, convert Symbols to Strings.
+    #
+    # @return [Array<Symbol|String>]
     def verbs to_s: false
       to_s ? playbook.verbs.map { |v| v.to_s } : playbook.verbs
     end
