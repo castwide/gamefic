@@ -4,10 +4,10 @@ module Gamefic
   module Director
   
     module Parser
-      def self.from_tokens(plot, actor, tokens)
+      def self.from_tokens(actor, tokens)
         options = []
-        verb = tokens.shift
-        actions = plot.actions_for(verb.to_sym)
+        command = tokens.shift
+        actions = actor.playbook.actions_for(command.to_sym)
         actions.each { |action|
           if action.queries.length == tokens.length
             valid = true
@@ -22,7 +22,7 @@ module Gamefic
             if valid
               arguments = []
               tokens.each { |token|
-                arguments.push [token]
+                  arguments.push [token]
               }
               options.push Order.new(actor, action, arguments)
             end
@@ -33,14 +33,14 @@ module Gamefic
         end
         options.sort{ |a,b| b.action.specificity <=> a.action.specificity }
       end
-      def self.from_string(plot, actor, command)
+      def self.from_string(actor, command)
         options = []
         if command.to_s == ''
           return options
         end
-        matches = Syntax.tokenize(command, plot.syntaxes)
+        matches = Syntax.tokenize(command, actor.playbook.syntaxes)
         matches.each { |match|
-          actions = plot.actions_for(match.verb)
+          actions = actor.playbook.actions_for(match.verb)
           actions.each { |action|
             options.concat bind_contexts_in_result(actor, match.arguments, action)
           }
@@ -53,18 +53,18 @@ module Gamefic
           queries = action.queries.clone
           objects = execute_query(actor, handler.clone, queries, action)
           num_nil = 0
-          while objects.length == 0 and queries.last.optional?
-            num_nil +=1
-            queries.pop
-            objects = execute_query(actor, handler.clone, queries, action, num_nil)
-          end
+          #while objects.length == 0 and queries.last.optional?
+          #  num_nil +=1
+          #  queries.pop
+          #  objects = execute_query(actor, handler.clone, queries, action, num_nil)
+          #end
           return objects
         end
         def execute_query(actor, arguments, queries, action, num_nil = 0)
           # If the action verb is nil, treat the first argument as a query
           #arguments.shift unless action.verb.nil?
-          prepared = Array.new
-          objects = Array.new
+          prepared = []
+          objects = []
           valid = true
           last_remainder = nil
           queries.clone.each { |context|
@@ -72,11 +72,10 @@ module Gamefic
             if last_remainder.to_s > ''
               arg = (last_remainder + " " + arg).strip
             end
-            #if arg.nil? or arg == ''
-            #  puts "Nil or empty arg?"
-            #  valid = false
-            #  next
-            #end
+            if arg.nil? or arg == ''
+              valid = false
+              next
+            end
             if context == String
               prepared.push [arg]
             elsif context.kind_of?(Query::Base)

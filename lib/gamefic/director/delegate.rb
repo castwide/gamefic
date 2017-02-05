@@ -1,6 +1,20 @@
 module Gamefic
   module Director
     class Delegate
+
+      class << self
+        def proceed_for actor
+          return if stack_map[actor].nil?
+          stack_map[actor].last.proceed unless stack_map[actor].last.nil?
+        end
+
+        private
+
+        def stack_map
+          @stack_map ||= {}
+        end
+      end
+
       # If we use Query::Base.new in the @disambiguator declaration, Opal
       # passes the block to the query instead of the action.
       base = Query::Base.new
@@ -12,24 +26,29 @@ module Gamefic
         actor.tell "I don't know which you mean: #{definites.join_or}."
       end
       @@disambiguator.meta = true
+
       def initialize(actor, orders)
         @actor = actor
         @orders = orders
+        @did = []
       end
+
       def proceed
         return if @orders.length == 0
-        @actor.send(:delegate_stack).push self
         executed = false
         while !executed
           order = @orders.shift
           break if order.nil?
-          executed = try(order)
+          # HACK: Make sure Character#proceed does not repeat an action
+          next if @did.include?(order.action)
+          @did.push order.action
+          @last_action = order.action
+          executed = attempt(order)
         end
-        @actor.send(:delegate_stack).pop
       end
+
       def execute
         return if @orders.length == 0
-        # TODO: Action assertions are temporarily disabled.
         #if !@orders[0].action.meta?
         #  @actor.plot.asserts.each_pair { |name, rule|
         #    result = rule.test(@actor, @orders[0].action.verb, @orders[0].arguments)
@@ -38,10 +57,16 @@ module Gamefic
         #    end
         #  }
         #end
+        stack_map[@actor] ||= []
+        stack_map[@actor].push self
         proceed
+        stack_map[@actor].pop
+        stack_map.delete @actor if stack_map[@actor].empty?
       end
+
       private
-      def try order
+
+      def attempt order
         executed = false
         arg_i = 0
         final_arguments = []
@@ -88,6 +113,7 @@ module Gamefic
         end
         executed
       end
+
       def validate argument, arg_i, order
         valid = []
         argument.each { |m|
@@ -99,6 +125,12 @@ module Gamefic
           end
         }
         valid
+      end
+
+      private
+
+      def stack_map
+        Delegate.send(:stack_map)
       end
     end
   end

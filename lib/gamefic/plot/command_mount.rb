@@ -26,7 +26,7 @@ module Gamefic
     # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
     # @yieldparam [Character]
     def respond(command, *queries, &proc)
-      self.action(command, *queries, &proc)
+      playbook.respond(command, *queries, &proc)
     end
 
     # Create a Meta Action that responds to a command.
@@ -50,7 +50,7 @@ module Gamefic
 
     # @deprecated
     def action(command, *queries, &proc)
-      playbook.respond command, *queries, &proc
+      respond command, *queries, &proc
     end
 
     # Create an alternate Syntax for an Action.

@@ -49,7 +49,7 @@ module Gamefic
     #   character.perform :take, @key
     #
     def perform(*command)
-      Director.dispatch(playbook, self, *command)
+      Director.dispatch(self, *command)
     end
     
     # Quietly perform a command.
@@ -95,14 +95,6 @@ module Gamefic
       user.send message.strip unless user.nil?
     end
 
-    # TODO This might not be necessary. The User#quit method was a noop anyway.
-    #def destroy
-    #  if @user != nil
-    #    @user.quit
-    #  end
-    #  super
-    #end
-    
     # Proceed to the next Action in the current stack.
     # This method is typically used in Action blocks to cascade through
     # multiple implementations of the same verb.
@@ -125,8 +117,7 @@ module Gamefic
     #   end
     #
     def proceed
-      return if delegate_stack.last.nil?
-      delegate_stack.last.proceed
+      Director::Delegate.proceed_for self
     end
 
     def cue scene
