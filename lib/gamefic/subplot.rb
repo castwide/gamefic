@@ -5,6 +5,7 @@ module Gamefic
   class Subplot
     include Plot::Entities
     include Plot::CommandMount
+    include Plot::Callbacks
 
     attr_reader :plot
     
@@ -33,8 +34,6 @@ module Gamefic
     end
 
     def exeunt player
-      #player.send(:p_subplots).delete self
-      player.tell "And yer outta here."
       player.playbook = plot.playbook
       p_players.delete player
     end
@@ -55,11 +54,13 @@ module Gamefic
 
     def ready
       playbook.freeze
-      # TODO
+      call_ready
+      call_player_ready
     end
 
     def update
-      # TODO
+      call_update
+      call_player_update
     end
   end
   

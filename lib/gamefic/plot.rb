@@ -12,30 +12,26 @@ module Gamefic
     autoload :SceneMount, 'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :Entities, 'gamefic/plot/entities'
-    #autoload :QueryMount, 'gamefic/plot/query_mount'
     autoload :ArticleMount, 'gamefic/plot/article_mount'
     autoload :YouMount, 'gamefic/plot/you_mount'
     autoload :Snapshot, 'gamefic/plot/snapshot'
     autoload :Host, 'gamefic/plot/host'
     autoload :Players, 'gamefic/plot/players'
     autoload :Playbook, 'gamefic/plot/playbook'
+    autoload :Callbacks, 'gamefic/plot/callbacks'
 
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Stage
     mount Gamefic, Tester, Players, SceneMount, CommandMount, Entities,
-      ArticleMount, YouMount, Snapshot, Host
+      ArticleMount, YouMount, Snapshot, Host, Callbacks
     expose :script, :assert_action, :on_update, :on_player_update, :entities,
       :on_ready, :on_player_ready, :players, :metadata
     
     # @param [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
-      @ready_procs = []
-      @update_procs = []
-      @player_ready = []
-      @player_procs = []
       @working_scripts = []
       @imported_scripts = []
       @asserts = {}
@@ -91,42 +87,13 @@ module Gamefic
       playbook.syntaxes
     end
     
-    # Add a block to be executed on preparation of every turn.
-    # Each on_ready block is executed once per turn, as opposed to
-    # on_player_ready blocks, which are executed once for each player.
-    #
-    # @example Increment a turn counter
-    #   turn = 0
-    #   on_ready do
-    #     turn += 1
-    #   end
-    #
-    def on_ready(&block)
-      @ready_procs.push block
-    end
-    
-    # Add a block to be executed after the Plot is finished updating a turn.
-    # Each on_update block is executed once per turn, as opposed to
-    # on_player_update blocks, which are executed once for each player.
-    def on_update(&block)
-      @update_procs.push block
-    end
-            
     # Prepare the Plot for the next turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def ready
       playbook.freeze
       @running = true
-      @ready_procs.each { |p| p.call }
-      # Prepare player scenes for the update.
-      p_players.each { |player|
-        this_scene = player.next_scene || player.scene
-        player.cue nil
-        player.cue this_scene unless player.scene == this_scene
-        @player_ready.each { |block|
-          block.call player
-        }
-      }
+      call_ready
+      call_player_ready
       p_subplots.each { |s| s.ready }
     end
     
@@ -135,8 +102,8 @@ module Gamefic
     def update
       p_players.each { |p| process_input p }
       p_entities.each { |e| e.update }
-      p_players.each { |player| update_player player }
-      @update_procs.each { |p| p.call }
+      call_player_update
+      call_update
       p_subplots.each { |s| s.update unless s.concluded? }
       p_subplots.delete_if { |s| s.concluded? }
     end
@@ -169,36 +136,13 @@ module Gamefic
       end
     end
     
-    # Add a block to be executed for each player when the Plot prepares them
-    # for the next turn in the game.
-    #
-    # @yieldparam [Character]
-    def on_player_ready &block
-      @player_ready.push block
-    end
-    
-    # Add a block to  be executed for each player after they have completed a
-    # turn in the game.
-    #
-    # @yieldparam [Character]
-    def on_player_update &block
-      @player_procs.push block
-    end
-
     private
 
     def process_input player
       line = player.queue.shift
       if !line.nil?
-        #scenes[player.scene].finish player, line
         player.scene.finish player, line
       end
-    end
-
-    def update_player player
-      @player_procs.each { |proc|
-        proc.call player
-      }
     end
 
   end

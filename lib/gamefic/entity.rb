@@ -19,45 +19,40 @@ module Gamefic
       args.each { |key, value|
         send "#{key}=", value
       }
-      @update_procs = Array.new
       @session = Hash.new
       yield self if block_given?
       post_initialize
     end
+
     def uid
       if @uid == nil
         @uid = self.object_id.to_s
       end
       @uid
     end
+
     def pre_initialize
       # raise NotImplementedError, "#{self.class} must implement post_initialize"    
     end
+
     def post_initialize
       # raise NotImplementedError, "#{self.class} must implement post_initialize"
     end
+
     def tell(message)
       #TODO: Should this even be here? In all likelihood, only Characters receive tells, right?
       #TODO: On second thought, it might be interesting to see logs from an npc point of view.
     end
+
     def stream(message)
       # Unlike tell, this method sends raw data without formatting.
     end
     
     # Execute the entity's on_update blocks.
     # This method is typically called by the Engine that manages game execution.
+    # The base method does nothing. Subclasses can override it.
     #
     def update
-      @update_procs.each { |p|
-        p.call self
-      }
-    end
-    
-    # Add a block to be executed when the game updates a turn.
-    #
-    # @yieldparam [Entity]
-    def on_update(&block)
-      @update_procs.push block
     end
     
     # Set the Entity's parent.
