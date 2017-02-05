@@ -7,7 +7,7 @@ module Gamefic
     
     def initialize plot, feature:nil
       @plot = plot
-      @playbook = plot.playbook.clone
+      @playbook = plot.playbook.dup
       @concluded = false
       post_initialize
       yield(self) if block_given?
@@ -24,11 +24,14 @@ module Gamefic
 
     def introduce player
       p_players.push player
+      player.playbook = playbook
     end
 
     def exeunt player
-      player.send(:p_subplots).delete self
-      players.delete player
+      #player.send(:p_subplots).delete self
+      player.tell "And yer outta here."
+      player.playbook = plot.playbook
+      p_players.delete player
     end
 
     def conclude

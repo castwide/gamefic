@@ -21,14 +21,13 @@ module Gamefic
     autoload :Playbook, 'gamefic/plot/playbook'
 
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
-    # TODO Metadata could use better protection
+    # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Stage
     mount Gamefic, Tester, Players, SceneMount, CommandMount, Entities,
       ArticleMount, YouMount, Snapshot, Host
-    expose :script, :introduction, :assert_action,
-      :on_update, :on_player_update, :entities, :on_ready, :on_player_ready,
-      :players, :metadata, :playbook
+    expose :script, :assert_action, :on_update, :on_player_update, :entities,
+      :on_ready, :on_player_ready, :players, :metadata
     
     # @param [Source::Base]
     def initialize(source = nil)
@@ -40,7 +39,6 @@ module Gamefic
       @working_scripts = []
       @imported_scripts = []
       @asserts = {}
-      #@default_scene = :active
       @subplots = []
       @running = false
       @playbook = Playbook.new
