@@ -27,9 +27,8 @@ module Gamefic
           p_entities.delete entity
           p_dynamic.delete entity
           p_players.delete entity
-        else
-          entity.parent = nil
         end
+        entity.parent = nil
       end
 
       # Pick an entity based on its description.

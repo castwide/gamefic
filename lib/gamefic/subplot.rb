@@ -3,13 +3,16 @@ require 'gamefic/plot'
 module Gamefic
 
   class Subplot
-    include Plot::Entities
-    include Plot::CommandMount
-    include Plot::Callbacks
-    include Plot::SceneMount
-
+    include Stage
+    
     attr_reader :plot
-    attr_writer :deny_message
+    attr_writer :denied_message
+
+    mount Plot::Entities
+    mount Plot::CommandMount
+    mount Plot::Callbacks
+    mount Plot::SceneMount
+    expose :plot, :conclude
 
     def initialize plot, introduce: nil
       @plot = plot
