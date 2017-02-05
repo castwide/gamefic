@@ -16,7 +16,7 @@ module Gamefic
           end
         }
       }
-      raise "Script #{path} not found"
+      raise LoadError.new("cannot load script -- #{path}")
     end
   end
 

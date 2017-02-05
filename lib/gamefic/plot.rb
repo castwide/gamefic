@@ -123,7 +123,7 @@ module Gamefic
     def script path
       imported_script = source.export(path)
       if imported_script.nil?
-        raise "Script not found: #{path}"
+        raise LoadError.new("cannot load script -- #{path}")
       end
       if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
         @working_scripts.push imported_script
