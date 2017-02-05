@@ -14,6 +14,7 @@ module Gamefic
 
     def start actor
       data = start_data_for(actor)
+      data.options.clear
       do_start_block actor, data
       tell_options actor, data
     end

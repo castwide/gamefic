@@ -40,6 +40,7 @@ module Gamefic
     def multiple_choice *choices, &block
       s = Scene::MultipleChoice.new
       s.on_start do |actor, data|
+        data.options.clear
         data.options.push *choices
       end
       s.on_finish &block
