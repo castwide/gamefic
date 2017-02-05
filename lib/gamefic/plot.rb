@@ -115,6 +115,7 @@ module Gamefic
     # Prepare the Plot for the next turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def ready
+      playbook.freeze
       @running = true
       @ready_procs.each { |p| p.call }
       # Prepare player scenes for the update.
@@ -126,6 +127,7 @@ module Gamefic
           block.call player
         }
       }
+      p_subplots.each { |s| s.ready }
     end
     
     # Update the Plot's current turn of gameplay.
@@ -135,6 +137,8 @@ module Gamefic
       p_entities.each { |e| e.update }
       p_players.each { |player| update_player player }
       @update_procs.each { |p| p.call }
+      p_subplots.each { |s| s.update unless s.concluded? }
+      p_subplots.delete_if { |s| s.concluded? }
     end
 
     def tell entities, message, refresh = false

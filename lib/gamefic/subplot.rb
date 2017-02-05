@@ -2,19 +2,24 @@ require 'gamefic/plot'
 
 module Gamefic
 
-  class Subplot < Plot
+  class Subplot
+    include Plot::Entities
+    include Plot::CommandMount
+
     attr_reader :plot
     
-    def initialize plot, feature:nil
+    def initialize plot, introduce: nil
       @plot = plot
-      @playbook = plot.playbook.dup
       @concluded = false
       post_initialize
-      yield(self) if block_given?
-      introduce feature unless feature.nil?
+      self.introduce introduce unless introduce.nil?
     end
 
     def post_initialize
+    end
+
+    def playbook
+      @playbook ||= plot.playbook.dup
     end
 
     # HACK: Always assume subplots are running for the sake of entity destruction    
@@ -35,7 +40,7 @@ module Gamefic
     end
 
     def conclude
-      concluded = true
+      @concluded = true
       entities.each { |e|
         destroy e
       }
@@ -46,6 +51,15 @@ module Gamefic
 
     def concluded?
       @concluded
+    end
+
+    def ready
+      playbook.freeze
+      # TODO
+    end
+
+    def update
+      # TODO
     end
   end
   

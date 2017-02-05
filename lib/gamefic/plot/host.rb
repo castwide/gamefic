@@ -14,8 +14,8 @@ module Gamefic
     #
     # @param [Class] The class of the subplot to be created (Subplot by default)
     # @return [Subplot]
-    def branch subplot_class = Gamefic::Subplot, feature:nil, &block
-      subplot = subplot_class.new(self, feature: feature, &block)
+    def branch subplot_class = Gamefic::Subplot, introduce: nil
+      subplot = subplot_class.new(self, introduce: introduce)
       p_subplots.push subplot
       subplot
     end

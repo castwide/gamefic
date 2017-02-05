@@ -97,10 +97,17 @@ module Gamefic
       end
 
       # Duplicate the playbook.
-      # This method will clone the commands hash and the syntax array so the new
-      # playbook can be modified without affecting the original.
+      # This method will duplicate the commands hash and the syntax array so
+      # the new playbook can be modified without affecting the original.
+      #
+      # @return [Playbook]
       def dup
-        Playbook.new commands: @commands.clone, syntaxes: @syntaxes.clone
+        Playbook.new commands: @commands.dup, syntaxes: @syntaxes.dup
+      end
+
+      def freeze
+        @commands.freeze
+        @syntaxes.freeze
       end
 
       private
@@ -155,5 +162,5 @@ module Gamefic
       end
     end
   end
-  
+
 end
