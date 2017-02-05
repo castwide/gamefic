@@ -14,15 +14,24 @@ module Gamefic
     mount Plot::SceneMount
     expose :plot, :conclude
 
+    class << self
+      def start_proc
+        @start_proc
+      end
+
+      private
+
+      def on_start &block
+        @start_proc = block
+      end
+    end
+
     def initialize plot, introduce: nil
       @plot = plot
       @concluded = false
-      post_initialize
+      stage &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
       self.introduce introduce unless introduce.nil?
-    end
-
-    def post_initialize
     end
 
     def default_scene
