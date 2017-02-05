@@ -19,7 +19,24 @@ module Gamefic
       p_subplots.push subplot
       subplot
     end
-    
+
+    # Get the player's current subplot or nil if none exists.
+    #
+    # @return [Subplot]
+    def subplot_for player
+      subplots.each { |s|
+        return s if s.players.include?(player)
+      }
+      nil
+    end
+
+    # Determine whether the player is involved in a subplot.
+    #
+    # @return [Boolean]
+    def subbed? player
+      !subplot_for(player).nil?
+    end
+
     private
     def p_subplots
       @p_subplots ||= []

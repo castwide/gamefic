@@ -9,16 +9,16 @@ require 'gamefic/query'
 module Gamefic
 
   class Plot
-    autoload :SceneMount, 'gamefic/plot/scene_mount'
+    autoload :SceneMount,   'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
-    autoload :Entities, 'gamefic/plot/entities'
+    autoload :Entities,     'gamefic/plot/entities'
     autoload :ArticleMount, 'gamefic/plot/article_mount'
-    autoload :YouMount, 'gamefic/plot/you_mount'
-    autoload :Snapshot, 'gamefic/plot/snapshot'
-    autoload :Host, 'gamefic/plot/host'
-    autoload :Players, 'gamefic/plot/players'
-    autoload :Playbook, 'gamefic/plot/playbook'
-    autoload :Callbacks, 'gamefic/plot/callbacks'
+    autoload :YouMount,     'gamefic/plot/you_mount'
+    autoload :Snapshot,     'gamefic/plot/snapshot'
+    autoload :Host,         'gamefic/plot/host'
+    autoload :Players,      'gamefic/plot/players'
+    autoload :Playbook,     'gamefic/plot/playbook'
+    autoload :Callbacks,    'gamefic/plot/callbacks'
 
     attr_reader :commands, :imported_scripts, :rules, :asserts, :source
     # TODO: Metadata could use better protection
@@ -46,17 +46,6 @@ module Gamefic
 
     def running?
       @running
-    end
-
-    def subplot_for player
-      subplots.each { |s|
-        return s if s.players.include?(player)
-      }
-      nil
-    end
-
-    def subbed? player
-      !subplot_for(player).nil?
     end
 
     # Get an Array of all scripts that have been imported into the Plot.
