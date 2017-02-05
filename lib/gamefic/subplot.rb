@@ -6,13 +6,14 @@ module Gamefic
     include Plot::Entities
     include Plot::CommandMount
     include Plot::Callbacks
-
+    
     attr_reader :plot
     
     def initialize plot, introduce: nil
       @plot = plot
       @concluded = false
       post_initialize
+      playbook.freeze
       self.introduce introduce unless introduce.nil?
     end
 
@@ -59,8 +60,8 @@ module Gamefic
     end
 
     def update
-      call_update
       call_player_update
+      call_update
     end
   end
   
