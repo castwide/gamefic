@@ -6,9 +6,11 @@ module Gamefic
     include Plot::Entities
     include Plot::CommandMount
     include Plot::Callbacks
-    
+    include Plot::SceneMount
+
     attr_reader :plot
-    
+    attr_writer :deny_message
+
     def initialize plot, introduce: nil
       @plot = plot
       @concluded = false
@@ -20,6 +22,14 @@ module Gamefic
     def post_initialize
     end
 
+    def default_scene
+      plot.default_scene
+    end
+
+    def default_conclusion
+      plot.default_conclusion
+    end
+
     def playbook
       @playbook ||= plot.playbook.dup
     end
@@ -29,9 +39,16 @@ module Gamefic
       true
     end
 
+    def denied_message
+      @denied_message ||= 'You are already involved in another subplot.'
+    end
+
     def introduce player
-      p_players.push player
-      player.playbook = playbook
+      if plot.subbed?(player)
+        player.tell denied_message
+      else
+        super
+      end
     end
 
     def exeunt player
@@ -54,6 +71,8 @@ module Gamefic
     end
 
     def ready
+      conclude if players.empty?
+      return if concluded?
       playbook.freeze
       call_ready
       call_player_ready

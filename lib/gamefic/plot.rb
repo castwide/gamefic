@@ -35,7 +35,6 @@ module Gamefic
       @working_scripts = []
       @imported_scripts = []
       @asserts = {}
-      @subplots = []
       @running = false
       @playbook = Playbook.new
       post_initialize
@@ -48,7 +47,18 @@ module Gamefic
     def running?
       @running
     end
-        
+
+    def subplot_for player
+      subplots.each { |s|
+        return s if s.players.include?(player)
+      }
+      nil
+    end
+
+    def subbed? player
+      !subplot_for(player).nil?
+    end
+
     # Get an Array of all scripts that have been imported into the Plot.
     #
     # @return [Array<Script>] The imported scripts

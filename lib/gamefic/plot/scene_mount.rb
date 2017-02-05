@@ -26,8 +26,6 @@ module Gamefic
     # Introduce a player to the game.
     # This method is typically called by the Engine that manages game execution.
     def introduce(player)
-      # TODO: As elsewhere, entities shouldn't need to be aware of plots
-      #player.extend Subplot::Feature
       player.playbook = playbook
       player.cue default_scene
       p_players.push player
