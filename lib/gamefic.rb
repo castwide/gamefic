@@ -15,6 +15,5 @@ require "gamefic/plot"
 require 'gamefic/subplot'
 require "gamefic/engine"
 require "gamefic/user"
-require "gamefic/direction"
 
 require 'gamefic/version'

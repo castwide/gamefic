@@ -5,6 +5,7 @@
 
 script 'standard/use'
 script 'standard/modules'
+script 'standard/direction'
 script 'standard/entities'
 script 'standard/queries'
 script 'standard/actions'

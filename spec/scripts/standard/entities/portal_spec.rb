@@ -1,8 +1,8 @@
 describe "Portal" do
   it "can have a direction" do
     plot = Plot.new
-    portal = plot.make Portal, :direction => Direction::NORTH
-    expect(portal.direction).to be(Direction::NORTH)
+    portal = plot.make Portal, :direction => 'north'
+    expect(portal.direction).to be(Direction.compass[:north])
     expect(portal.name).to eq("north")
   end
   it "can have a name" do
@@ -13,8 +13,8 @@ describe "Portal" do
   end
   it "can have a name and a direction" do
     plot = Plot.new
-    portal = plot.make Portal, :name => 'the staircase', :direction => Direction::NORTH
-    expect(portal.direction).to be(Direction::NORTH)
+    portal = plot.make Portal, :name => 'the staircase', :direction => :north
+    expect(portal.direction).to be(Direction.compass[:north])
     expect(portal.name).to eq("staircase")
   end
 end

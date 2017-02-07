@@ -1,5 +1,5 @@
 class Gamefic::Portal < Gamefic::Entity
-  attr_accessor :destination, :direction
+  attr_accessor :destination
   serialize :destination, :direction
 
   # Find the portal in the destination that returns to this portal's parent
@@ -27,6 +27,10 @@ class Gamefic::Portal < Gamefic::Entity
     @direction
   end
   
+  def direction= d
+    @direction = Direction.find(d)
+  end
+
   def name
     @name || direction.name
   end
