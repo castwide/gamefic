@@ -1,14 +1,12 @@
 require 'gamefic/engine'
 require 'json'
-require 'gamefic/html_to_ansi'
+require 'gamefic/text'
 
 module Gamefic
 
   # Extend User::Base to convert HTML into ANSI text.
   #
   class User::Tty < User::Base
-    include HtmlToAnsi
-
     def save filename, snapshot
       data = snapshot.merge(:metadata => @character.plot.metadata)
       json = JSON.generate data
@@ -48,7 +46,7 @@ module Gamefic
     end
 
     def flush
-      html_to_ansi(super)
+      Gamefic::Text::Html::Conversions.html_to_ansi(super)
     end
   end
 

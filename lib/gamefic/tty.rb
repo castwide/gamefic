@@ -1,3 +1,5 @@
+require 'gamefic/text'
+
 module Gamefic
   module Engine
     autoload :Tty, 'gamefic/engine/tty'

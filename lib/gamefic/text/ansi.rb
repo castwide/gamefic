@@ -1,10 +1,13 @@
 module Gamefic
 
-  # Constants for ANSI codes, plus Extras for custom formatting.
-  module Ansi
+  # Constants for ANSI codes, plus ExtraCodes for custom formatting.
+  module Text::Ansi
     module Code
-      class Nonstandard < String
-      
+      class ExtraCode
+        attr_reader :name
+        def initialize name
+          @name = name
+        end
       end
       module Attribute
         NORMAL = 0
@@ -35,19 +38,19 @@ module Gamefic
         WHITE = 47
       end
       module Extra
-        BLOCK = Nonstandard.new("block")
-        PRE = Nonstandard.new("pre")
-        HREF = Nonstandard.new("href")
-        IMAGE = Nonstandard.new("image")
-        SRC = Nonstandard.new("src")
-        UPPERCASE = Nonstandard.new("uppercase")
-        COMMAND = Nonstandard.new("command")
-        IGNORED = Nonstandard.new("ignored")
-        LINE = Nonstandard.new("line")
+        BLOCK = ExtraCode.new("block")
+        PRE = ExtraCode.new("pre")
+        HREF = ExtraCode.new("href")
+        IMAGE = ExtraCode.new("image")
+        SRC = ExtraCode.new("src")
+        UPPERCASE = ExtraCode.new("uppercase")
+        COMMAND = ExtraCode.new("command")
+        IGNORED = ExtraCode.new("ignored")
+        LINE = ExtraCode.new("line")
       end
     end  
     def self.graphics_mode(*settings)
-      ansi = settings.flatten.that_are_not(Code::Nonstandard)
+      ansi = settings.flatten.that_are_not(Code::ExtraCode)
       return '' if ansi.length == 0
       "\e[#{ansi.join(';')}m"
     end

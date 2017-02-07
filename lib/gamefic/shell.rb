@@ -70,7 +70,6 @@ module Gamefic
       plot = Plot.new(Source::File.new(File.join(directory, 'scripts')))
       plot.script 'main'
       plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
-      puts ""
       Engine::Tty.start(plot)
     end
   end

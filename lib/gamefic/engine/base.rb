@@ -47,7 +47,6 @@ module Gamefic
       print @character.scene.prompt_for(@character) + ' '
       input = STDIN.gets
       @character.queue.push input unless input.nil?
-      puts ''
     end
   end
 
