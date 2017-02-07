@@ -5,6 +5,13 @@ module Gamefic
       @actor = actor
       @action = action
       @arguments = arguments
+      @canceled = false
+    end
+    def cancel
+      @canceled = true
+    end
+    def canceled?
+      @canceled
     end
   end
 end

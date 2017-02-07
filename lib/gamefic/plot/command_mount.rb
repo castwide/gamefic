@@ -53,6 +53,10 @@ module Gamefic
       respond command, *queries, &proc
     end
 
+    def disambiguate &block
+      playbook.disambiguate &block
+    end
+
     # Create an alternate Syntax for an Action.
     # The command and its translation can be parameterized.
     #

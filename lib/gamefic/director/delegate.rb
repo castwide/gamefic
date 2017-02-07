@@ -15,18 +15,6 @@ module Gamefic
         end
       end
 
-      # If we use Query::Base.new in the @disambiguator declaration, Opal
-      # passes the block to the query instead of the action.
-      base = Query::Base.new
-      @@disambiguator = Action.new nil, base do |actor, entities|
-        definites = []
-        entities.each { |entity|
-          definites.push entity.definitely
-        }
-        actor.tell "I don't know which you mean: #{definites.join_or}."
-      end
-      @@disambiguator.meta = true
-
       def initialize(actor, orders)
         @actor = actor
         @orders = orders
@@ -49,14 +37,12 @@ module Gamefic
 
       def execute
         return if @orders.length == 0
-        #if !@orders[0].action.meta?
-        #  @actor.plot.asserts.each_pair { |name, rule|
-        #    result = rule.test(@actor, @orders[0].action.verb, @orders[0].arguments)
-        #    if result == false
-        #      return
-        #    end
-        #  }
-        #end
+        unless @orders[0].action.meta?
+          @actor.playbook.assertions.each { |a|
+            a.call @orders[0]
+            return if @orders[0].canceled?
+          }
+        end
         stack_map[@actor] ||= []
         stack_map[@actor].push self
         proceed
@@ -79,7 +65,7 @@ module Gamefic
             else
               ambiguous = argument
             end
-            order = Order.new(@actor, @@disambiguator, [])
+            order = Order.new(@actor, @actor.playbook.disambiguator, [])
             final_arguments = [ambiguous]
             break
           end
@@ -92,7 +78,7 @@ module Gamefic
               break
             end
           end
-          if order.action == @@disambiguator or final_arguments.nil?
+          if order.action == @actor.playbook.disambiguator or final_arguments.nil?
             break
           end
           if order.action.queries[arg_i].allow_many?

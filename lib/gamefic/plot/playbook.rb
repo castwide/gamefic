@@ -2,9 +2,11 @@ module Gamefic
 
   class Plot
     class Playbook
-      def initialize commands: {}, syntaxes: []
+      def initialize commands: {}, syntaxes: [], assertions: [], disambiguator: nil
         @commands = commands
         @syntaxes = syntaxes
+        @assertions = assertions
+        @disambiguator = disambiguator
       end
 
       def syntaxes
@@ -17,6 +19,26 @@ module Gamefic
 
       def verbs
         @commands.keys
+      end
+
+      def assertions
+        @assertions
+      end
+
+      def disambiguator
+        @disambiguator ||= Action.new(nil, Query::Base.new) do |actor, entities|
+          definites = []
+          entities.each { |entity|
+            definites.push entity.definitely
+          }
+          actor.tell "I don't know which you mean: #{definites.join_or}."
+        end
+      end
+
+      def disambiguate &block
+        @disambiguator = Action.new(nil, Query::Base.new, &block)
+        @disambiguator.meta = true
+        @disambiguator
       end
 
       # Get an Array of all Actions associated with the specified verb.
@@ -94,6 +116,10 @@ module Gamefic
         syn = Syntax.new(*args)
         add_syntax syn
         syn
+      end
+
+      def assert &block
+        @assertions.push block
       end
 
       # Duplicate the playbook.
