@@ -6,7 +6,7 @@ describe "Plural Take Action" do
   end
   it "takes multiple items" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    character = @plot.make Character, :name => 'character', :parent => room
     item1 = @plot.make Item, :name => 'one', :parent => room
     item2 = @plot.make Item, :name => 'two', :parent => room
     character.perform 'take one and two'
@@ -15,7 +15,7 @@ describe "Plural Take Action" do
   end
   it "takes all obvious items" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    character = @plot.make Character, :name => 'character', :parent => room
     item1 = @plot.make Item, :name => 'one item', :parent => room
     item2 = @plot.make Item, :name => 'two item', :parent => room
     container = @plot.make Container, :name => 'container', :parent => room
@@ -27,7 +27,7 @@ describe "Plural Take Action" do
   end
   it "takes ambiguous items for an adjectival phrase" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    character = @plot.make Character, :name => 'character', :parent => room
     item1 = @plot.make Item, :name => 'red item', :parent => room
     item2 = @plot.make Item, :name => 'red entity', :parent => room
     item3 = @plot.make Item, :name => 'blue item', :parent => room
@@ -43,7 +43,7 @@ describe "Plural Take Action" do
   end
   it "does not take ambiguous items for a singular direct object" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    character = @plot.make Character, :name => 'character', :parent => room
     item = @plot.make Item, :name => 'ambiguous item', :parent => room
     entity = @plot.make Item, :name => 'ambiguous entity', :parent => room    
     character.perform "take ambiguous"
@@ -52,7 +52,7 @@ describe "Plural Take Action" do
   end
   it "understands exceptions" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make MetaCharacter, :name => 'character', :parent => room
+    character = @plot.make Character, :name => 'character', :parent => room
     item1 = @plot.make Item, :name => 'red item', :parent => room
     item2 = @plot.make Item, :name => 'red entity', :parent => room
     item3 = @plot.make Item, :name => 'blue item', :parent => room

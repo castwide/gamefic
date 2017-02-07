@@ -3,7 +3,7 @@ describe "Give action" do
     @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
     @plot.script 'standard'
     @room = @plot.make Room, :name => 'room'
-    @giver = @plot.make MetaCharacter, :name => 'giver', :parent => @room
+    @giver = @plot.make Character, :name => 'giver', :parent => @room
     @item = @plot.make Item, :name => 'item', :parent => @giver
     @receiver = @plot.make Character, :name => 'receiver', :parent => @room
   end
