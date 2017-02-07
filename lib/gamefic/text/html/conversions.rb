@@ -15,7 +15,7 @@ module Gamefic
         output = AnsiFormatter.new.format(doc) + Ansi.graphics_mode(Ansi::Code::Attribute::NORMAL)
         output = Html.decode(output)
       rescue REXML::ParseException => e
-        output = Html.encode(text) + "\n\n"
+        output = text.strip
       end
       calc_width = width || size[0]
       if calc_width.nil? or !wrap

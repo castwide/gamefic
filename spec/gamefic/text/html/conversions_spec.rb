@@ -99,4 +99,10 @@ describe Text::Html::Conversions do
     text = Gamefic::Text::Html::Conversions.html_to_text "<p>#{orig}</p>"
     expect(text).to eq "\n#{orig}\n\n"
   end
+
+  it "returns raw HTML for invalid markup" do
+    html = "<p>one"
+    text = Gamefic::Text::Html::Conversions.html_to_text html
+    expect(text).to eq html
+  end
 end

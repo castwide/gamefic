@@ -26,7 +26,7 @@ module Gamefic
       # @return [String]
       def self.encode(text)
         encoded = text
-        Gamefic::Html::ENTITIES.each { |k, v|
+        ENTITIES.each { |k, v|
           encoded = encoded.gsub(v, k)
         }
         encoded
