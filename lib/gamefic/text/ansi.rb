@@ -3,12 +3,6 @@ module Gamefic
   # Constants for ANSI codes, plus ExtraCodes for custom formatting.
   module Text::Ansi
     module Code
-      class ExtraCode
-        attr_reader :name
-        def initialize name
-          @name = name
-        end
-      end
       module Attribute
         NORMAL = 0
         BOLD = 1
@@ -38,19 +32,19 @@ module Gamefic
         WHITE = 47
       end
       module Extra
-        BLOCK = ExtraCode.new("block")
-        PRE = ExtraCode.new("pre")
-        HREF = ExtraCode.new("href")
-        IMAGE = ExtraCode.new("image")
-        SRC = ExtraCode.new("src")
-        UPPERCASE = ExtraCode.new("uppercase")
-        COMMAND = ExtraCode.new("command")
-        IGNORED = ExtraCode.new("ignored")
-        LINE = ExtraCode.new("line")
+        BLOCK = :block
+        PRE = :pre
+        HREF = :href
+        IMAGE = :image
+        SRC = :src
+        UPPERCASE = :uppercase
+        COMMAND = :command
+        IGNORED = :ignored
+        LINE = :line
       end
     end  
     def self.graphics_mode(*settings)
-      ansi = settings.flatten.that_are_not(Code::ExtraCode)
+      ansi = settings.flatten.that_are(Fixnum)
       return '' if ansi.length == 0
       "\e[#{ansi.join(';')}m"
     end
