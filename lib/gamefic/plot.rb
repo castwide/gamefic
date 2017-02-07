@@ -20,13 +20,13 @@ module Gamefic
     autoload :Playbook,     'gamefic/plot/playbook'
     autoload :Callbacks,    'gamefic/plot/callbacks'
 
-    attr_reader :commands, :imported_scripts, :rules, :asserts, :source
+    attr_reader :commands, :imported_scripts, :source
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Stage
     mount Gamefic, Tester, Players, SceneMount, CommandMount, Entities,
       ArticleMount, YouMount, Snapshot, Host, Callbacks
-    expose :script, :assert_action, :on_update, :on_player_update, :entities,
+    expose :script, :on_update, :on_player_update, :entities,
       :on_ready, :on_player_ready, :players, :metadata
     
     # @param [Source::Base]
@@ -34,7 +34,6 @@ module Gamefic
       @source = source || Source::Text.new({})
       @working_scripts = []
       @imported_scripts = []
-      @asserts = {}
       @running = false
       @playbook = Playbook.new
       post_initialize
@@ -53,26 +52,6 @@ module Gamefic
     # @return [Array<Script>] The imported scripts
     def imported_scripts
       @imported_scripts ||= []
-    end
-    
-    # Add a Block to be executed for the given verb.
-    # If the block returns false, the Action is cancelled.
-    #
-    # @example Require the player to have a property enabled before performing the Action.
-    #   assert_action :authorize do |actor, verb, arguments|
-    #     if actor[:can_authorize] == true
-    #       true
-    #     else
-    #       actor.tell "You don't have permission to use the authorize command."
-    #       false
-    #     end
-    #   end
-    #
-    # @yieldparam [Character] The character performing the Action.
-    # @yieldparam [Symbol] The verb associated with the Action.
-    # @yieldparam [Array] The arguments that will be passed to the Action's #execute method.
-    def assert_action name, &block
-      @asserts[name] = Assert.new(name, &block)
     end
     
     def post_initialize

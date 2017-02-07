@@ -57,6 +57,10 @@ module Gamefic
       playbook.disambiguate &block
     end
 
+    def validate &block
+      playbook.validate &block
+    end
+
     # Create an alternate Syntax for an Action.
     # The command and its translation can be parameterized.
     #

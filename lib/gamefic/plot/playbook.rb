@@ -2,10 +2,10 @@ module Gamefic
 
   class Plot
     class Playbook
-      def initialize commands: {}, syntaxes: [], assertions: [], disambiguator: nil
+      def initialize commands: {}, syntaxes: [], validators: [], disambiguator: nil
         @commands = commands
         @syntaxes = syntaxes
-        @assertions = assertions
+        @validators = validators
         @disambiguator = disambiguator
       end
 
@@ -21,8 +21,8 @@ module Gamefic
         @commands.keys
       end
 
-      def assertions
-        @assertions
+      def validators
+        @validators
       end
 
       def disambiguator
@@ -39,6 +39,10 @@ module Gamefic
         @disambiguator = Action.new(nil, Query::Base.new, &block)
         @disambiguator.meta = true
         @disambiguator
+      end
+
+      def validate &block
+        @validators.push block
       end
 
       # Get an Array of all Actions associated with the specified verb.

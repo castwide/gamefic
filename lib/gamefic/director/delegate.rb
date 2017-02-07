@@ -19,6 +19,7 @@ module Gamefic
         @actor = actor
         @orders = orders
         @did = []
+        @validated = false
       end
 
       def proceed
@@ -32,17 +33,12 @@ module Gamefic
           @did.push order.action
           @last_action = order.action
           executed = attempt(order)
+          return if order.canceled?
         end
       end
 
       def execute
         return if @orders.length == 0
-        unless @orders[0].action.meta?
-          @actor.playbook.assertions.each { |a|
-            a.call @orders[0]
-            return if @orders[0].canceled?
-          }
-        end
         stack_map[@actor] ||= []
         stack_map[@actor].push self
         proceed
@@ -92,6 +88,13 @@ module Gamefic
           arg_i += 1
         }
         if !final_arguments.nil?
+          unless @validated or order.action.meta?
+            @actor.playbook.validators.each { |v|
+              v.call order
+              return false if order.canceled?
+            }
+          end
+          @validated = true
           # The actor is always the first argument to an Action proc
           final_arguments.unshift @actor
           order.action.execute(*final_arguments)

@@ -10,7 +10,6 @@ require "gamefic/scene"
 require "gamefic/query"
 require "gamefic/action"
 require "gamefic/syntax"
-require "gamefic/rule"
 require "gamefic/director"
 require "gamefic/plot"
 require 'gamefic/subplot'
