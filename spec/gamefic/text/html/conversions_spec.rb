@@ -63,13 +63,13 @@ describe Text::Html::Conversions do
   it "formats ordered lists" do
     html = '<ol><li>Item</li></ol>'
     ansi = Gamefic::Text::Html::Conversions.html_to_ansi html
-    expect(ansi.include? '1. Item').to be true
+    expect(ansi).to include '1. Item'
   end
 
   it "formats unordered lists" do
     html = '<ul><li>Item</li></ul>'
     ansi = Gamefic::Text::Html::Conversions.html_to_ansi html
-    expect(ansi.include? '* Item').to be true
+    expect(ansi).to include '* Item'
   end
 
   it "conserves whitespace in pre" do
@@ -83,8 +83,8 @@ describe Text::Html::Conversions do
     %w(h1 h2 h3 h4 h5).each { |h|
       html = "<#{h}>header</#{h}>"
       ansi = Gamefic::Text::Html::Conversions.html_to_ansi html
-      expect(ansi.include? bold).to be true
-      expect(ansi.include? 'HEADER').to be true
+      expect(ansi).to include bold
+      expect(ansi).to include 'HEADER'
     }
   end
 
