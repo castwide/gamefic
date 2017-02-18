@@ -26,9 +26,8 @@ module Gamefic
     include Stage
     mount Gamefic, Tester, Players, SceneMount, CommandMount, Entities,
       ArticleMount, YouMount, Snapshot, Host, Callbacks
-    expose :script, :on_update, :on_player_update, :entities,
-      :on_ready, :on_player_ready, :players, :metadata
-    
+    expose :script, :metadata
+
     # @param [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
