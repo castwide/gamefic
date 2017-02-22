@@ -122,10 +122,6 @@ module Gamefic
         syn
       end
 
-      def assert &block
-        @assertions.push block
-      end
-
       # Duplicate the playbook.
       # This method will duplicate the commands hash and the syntax array so
       # the new playbook can be modified without affecting the original.
