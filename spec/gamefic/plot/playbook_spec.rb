@@ -68,4 +68,20 @@ describe Plot::Playbook do
     actor.perform 'illegal'
     expect(actor[:illegal]).not_to be true
   end
+
+  it "ignores validators for meta actions" do
+    playbook.validate do |order|
+      order.cancel unless order.action.verb == :legal
+    end
+    playbook.respond :legal do |actor|
+      actor[:legal] = true
+    end
+    playbook.meta :illegal do |actor|
+      actor[:illegal] = true
+    end
+    actor = Character.new
+    actor.playbook = playbook
+    actor.perform 'illegal'
+    expect(actor[:illegal]).to be true
+  end
 end
