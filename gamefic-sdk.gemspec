@@ -1,6 +1,7 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'gamefic-sdk/version'
+require 'date'
 
 Gem::Specification.new do |s|
   s.name          = 'gamefic-sdk'
@@ -18,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
-  s.add_runtime_dependency 'gamefic', '~> 1.2'
+  s.add_runtime_dependency 'gamefic', '~> 1.5'
   s.add_runtime_dependency 'opal', '~> 0.10', '>= 0.10.3'
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
