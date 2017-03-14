@@ -73,9 +73,6 @@ describe Plot::Playbook do
     playbook.validate do |order|
       order.cancel unless order.action.verb == :legal
     end
-    playbook.respond :legal do |actor|
-      actor[:legal] = true
-    end
     playbook.meta :illegal do |actor|
       actor[:illegal] = true
     end
