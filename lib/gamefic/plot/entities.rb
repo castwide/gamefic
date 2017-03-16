@@ -10,7 +10,7 @@ module Gamefic
       #
       # @param cls [Class] The Class of the Entity to be created.
       # @param args [Hash] The entity's properties.
-      # @return The Entity instance.
+      # @return [Entity]
       def make cls, args = {}, &block
         ent = cls.new args, &block
         if ent.kind_of?(Entity) == false
@@ -55,10 +55,16 @@ module Gamefic
         result.objects[0]
       end
 
+      # Get an array of entities associated with this plot.
+      #
+      # @return [Array<Entity>]
       def entities
         p_entities.clone
       end
 
+      # Get an array of players associated with this plot.
+      #
+      # @return [Array<Character>]
       def players
         p_players.clone
       end

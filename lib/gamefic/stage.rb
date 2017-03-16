@@ -1,6 +1,10 @@
 module Gamefic
 
   module Stage
+    # Execute a block of code in a subset of the object's scope.
+    #
+    # An object's stage is an isolated namespace that has its own instance
+    # variables and limited access to its parent's instance methods.
     def stage *args, &block
       s = generate_stage
       if block.nil?
@@ -47,6 +51,14 @@ module Gamefic
     end
 
     module ClassMethods
+      # Mount a module in this class.
+      #
+      # Mounting a module will include it like a typical mixin and expose its
+      # public methods to the stage.
+      #
+      # Assuming you have a module Foo with one public method bar,
+      # <code>mount Foo</code> is functionally equivalent to
+      # <code>include Foo; expose bar</code>.
       def mount *args
         args.each { |a|
           include a
@@ -54,6 +66,17 @@ module Gamefic
         }
       end
 
+      # Give this object's stage access to an instance method.
+      #
+      # @example
+      #   class Container
+      #     def foobar; end
+      #     expose :foobar
+      #   end
+      #   x = Container.new
+      #   x.stage do
+      #     foobar
+      #   end
       def expose *args
         args.each { |a|
           exposed_methods[a] = nil
