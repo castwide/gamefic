@@ -5,6 +5,8 @@ require 'gamefic-sdk/debug'
 require 'gamefic-sdk/version'
 
 module Gamefic::Sdk
+  autoload :Server, 'gamefic-sdk/server'
+  
   HTML_TEMPLATE_PATH = File.realpath(File.dirname(__FILE__) + "/../html/")
   GLOBAL_SCRIPT_PATH = File.realpath(File.dirname(__FILE__) + "/../scripts/")
   # @deprecated

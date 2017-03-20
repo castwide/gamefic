@@ -34,6 +34,12 @@ module Gamefic
         Gamefic::Sdk::Shell::Test.new(directory: directory_name).run
       end
 
+      desc 'server DIRECTORY_NAME', 'Run the game in DIRECTORY_NAME in a web server'
+      def server(directory_name)
+        Gamefic::Sdk::Server.set :root, directory_name
+        Gamefic::Sdk::Server.run!
+      end
+
       desc 'build DIRECTORY_NAME', 'Build the game for specified platforms in DIRECTORY_NAME'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       def build(directory_name)
