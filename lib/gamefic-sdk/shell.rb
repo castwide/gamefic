@@ -38,7 +38,6 @@ module Gamefic
       def server(directory_name)
         Gamefic::Sdk::Server.set :source_dir, directory_name
         pub = File.join(directory_name, 'release', 'sinatra').gsub(/\\/, '/')
-        STDERR.puts "Hey jerk! Your pub dir is " + pub
         Gamefic::Sdk::Server.set :public_folder, pub
         Gamefic::Sdk::Server.run!
       end

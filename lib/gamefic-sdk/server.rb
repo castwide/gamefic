@@ -40,14 +40,13 @@ module Gamefic
         content_type :json
         @@character.queue.push params['command']
         @@plot.update
+        @@plot.ready
         response = {
           output: @@character.user.flush,
           prompt: @@character.prompt,
           state: @@character.scene.type,
           input: params['command']
         }
-        @@plot.ready
-        response[:output] += @@character.user.flush
         response.to_json
       end
 
