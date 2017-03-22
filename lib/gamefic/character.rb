@@ -5,6 +5,8 @@ end
 
 module Gamefic
   class Character < Entity
+    autoload :State, 'gamefic/character/state'
+
     attr_reader :queue, :user
     # @return [Gamefic::Director::Order]
     attr_reader :last_order
@@ -14,6 +16,8 @@ module Gamefic
     attr_reader :scene
     attr_reader :next_scene
     attr_accessor :playbook
+
+    include Character::State
 
     def initialize(args = {})
       @queue = Array.new
@@ -120,21 +124,34 @@ module Gamefic
       Director::Delegate.proceed_for self
     end
 
+    # Immediately start a new scene for the character.
+    # Use #prepare if you want to declare a scene to be started at the
+    # beginning of the next turn.
+    #
     def cue scene
       @next_scene = nil
       @scene = scene
       @scene.start self unless @scene.nil?
     end
 
+    # Prepare a scene to be started for this character at the beginning of the
+    # next turn.
+    #
     def prepare scene
       @next_scene = scene
     end
 
+    # Cue a conclusion. This method works like #cue, except it will raise a
+    # NotConclusionError if the scene is not a Scene::Conclusion.
+    #
     def conclude scene
       raise NotConclusionError if !scene.kind_of?(Scene::Conclusion)
       cue scene
     end
 
+    # True if the character is in a conclusion.
+    #
+    # @return [Boolean]
     def concluded?
       !scene.nil? and scene.kind_of?(Scene::Conclusion)
     end
@@ -143,6 +160,9 @@ module Gamefic
       @last_order = order
     end
 
+    # Get the prompt that the user should see for the current scene.
+    #
+    # @return [String]
     def prompt
       scene.nil? ? '>' : scene.prompt_for(self)
     end

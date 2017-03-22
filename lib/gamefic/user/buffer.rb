@@ -12,6 +12,13 @@ module Gamefic
       @data += message
     end
 
+    # Read the current buffer without clearing it.
+    #
+    # @return [String]
+    def peek
+      @data
+    end
+
     # Get the current data and clear the buffer.
     #
     # @return [String]

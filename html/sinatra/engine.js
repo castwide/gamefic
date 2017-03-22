@@ -12,7 +12,7 @@ var Gamefic = (function() {
 		});
 	}
 	var handle = function(response) {
-		var handler = responseCallbacks[response.state] || responseCallbacks['Active'];
+		var handler = responseCallbacks[response.scene] || responseCallbacks['Active'];
 		handler(response);
 	}
 	return {

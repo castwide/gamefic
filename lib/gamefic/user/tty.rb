@@ -45,6 +45,10 @@ module Gamefic
       nil
     end
 
+    def peek
+      Gamefic::Text::Html::Conversions.html_to_ansi(super)
+    end
+
     def flush
       Gamefic::Text::Html::Conversions.html_to_ansi(super)
     end

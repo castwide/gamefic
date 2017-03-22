@@ -23,7 +23,7 @@ class Gamefic::Character
 end
 
 on_player_update do |actor|
-  if actor.scene == :active
+  if (actor.scene == default_scene and actor.next_scene.nil?) or actor.next_scene == default_scene
     actor.suggest "look around"
     actor.suggest "inventory"
     actor.room.children.that_are(Portal).each { |entity|

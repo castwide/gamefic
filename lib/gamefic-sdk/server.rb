@@ -25,12 +25,7 @@ module Gamefic
         @@character.connect User::Base.new
         @@plot.introduce @@character
         @@plot.ready
-        {
-          output: @@character.user.flush,
-          prompt: @@character.prompt,
-          state: @@character.scene.type,
-          input: ''
-        }.to_json
+        @@character.state.to_json
       end
 
       post '/update' do
@@ -38,13 +33,7 @@ module Gamefic
         @@character.queue.push params['command']
         @@plot.update
         @@plot.ready
-        response = {
-          output: @@character.user.flush,
-          prompt: @@character.prompt,
-          state: @@character.scene.type,
-          input: params['command']
-        }
-        response.to_json
+        @@character.state.merge(input: params['command']).to_json
       end
 
       private

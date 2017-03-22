@@ -11,6 +11,10 @@ module Gamefic
       buffer.flush
     end
 
+    def peek
+      buffer.peek
+    end
+    
     private
 
     def buffer
