@@ -31,7 +31,16 @@ module Gamefic
         if options.length == 0
           tokens.unshift command
         end
-        options.sort{ |a,b| b.action.specificity <=> a.action.specificity }
+        # HACK: This sort is necessary for a problem on Windows.
+        options.sort{ |a,b|
+          if a.action.specificity == b.action.specificity
+            # Newer action takes precedence
+            b.action.order_key <=> a.action.order_key
+          else
+            # Higher specificity takes precedence
+            b.action.specificity <=> a.action.specificity
+          end
+        }
       end
       def self.from_string(actor, command)
         options = []
@@ -45,7 +54,16 @@ module Gamefic
             options.concat bind_contexts_in_result(actor, match.arguments, action)
           }
         }
-        options.sort{ |a,b| b.action.specificity <=> a.action.specificity }
+        # HACK: This sort is necessary for a problem on Windows.
+        options.sort{ |a,b|
+          if a.action.specificity == b.action.specificity
+            # Newer action takes precedence
+            b.action.order_key <=> a.action.order_key
+          else
+            # Higher specificity takes precedence
+            b.action.specificity <=> a.action.specificity
+          end
+        }
       end
       class << self
         private
