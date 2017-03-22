@@ -36,6 +36,22 @@ module Gamefic
         @@character.state.merge(input: params['command']).to_json
       end
 
+      class << self
+
+        def run!
+          start_browser if settings.browser
+          super
+        end
+        
+        def start_browser
+          Thread.new {
+            sleep 1 until Server.running?
+            `start http://localhost:#{settings.port}`
+          }
+        end
+
+      end
+
       private
 
       def config_path dir
@@ -46,6 +62,6 @@ module Gamefic
         end
       end
     end
-  
+
   end
 end

@@ -35,8 +35,10 @@ module Gamefic
       end
 
       desc 'server DIRECTORY_NAME', 'Run the game in DIRECTORY_NAME in a web server'
+      option :browser, type: :boolean, aliases: :b, desc: 'Open a browser when the server starts'
       def server(directory_name)
         Gamefic::Sdk::Server.set :source_dir, directory_name
+        Gamefic::Sdk::Server.set :browser, options[:browser]
         pub = File.join(directory_name, 'release', 'sinatra').gsub(/\\/, '/')
         Gamefic::Sdk::Server.set :public_folder, pub
         Gamefic::Sdk::Server.run!
