@@ -6,18 +6,6 @@ var Gamefic = (function() {
 	var lastInput = null;
 	var lastPrompt = null;
 	var lastResponse = null;
-	var getResponse = function(withOutput) {
-		return lastResponse;
-		/*var r = {
-			output: (withOutput ? Opal.GameficOpal.$static_user().$flush() : null),
-			//state: Opal.GameficOpal.$static_plot().$scenes().$fetch(Opal.GameficOpal.$static_character().$scene()).$type(),
-			state: Opal.GameficOpal.$static_character().$scene().$type(),
-			prompt: lastPrompt,
-			input: lastInput,
-			testing: (Opal.GameficOpal.$static_character().$queue().$length() > 0)
-		}
-		return r;*/
-	}
 	var doReady = function(response) {
 		startCallbacks.forEach(function(callback) {
 			callback(response);
@@ -29,10 +17,6 @@ var Gamefic = (function() {
 	}
 	return {
 		start: function() {
-			/*Opal.GameficOpal.$load_scripts();
-			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_character());
-			lastPrompt = Opal.GameficOpal.$static_character().$prompt();
-			this.update('');*/
 			console.log('Starting the game');
 			var that = this;
       $.post('/start', function(response) {
@@ -45,27 +29,17 @@ var Gamefic = (function() {
 		},
 		update: function(input) {
 			if (input != null) {
-				/*Opal.GameficOpal.$static_character().$queue().$push(input);*/
 				console.log('Updating with ' + input)
 				$.post('/update', {command: input}, function(response) {
-					console.log(response);
 					lastInput = input;
-					//var response = getResponse(false);
 					inputCallbacks.forEach(function(callback) {
 						callback(response);
 					});
-					//response = getResponse(true);
-					//var updateResponse = response;
 					doReady(response);
-					//response = getResponse(true);
-					//response.output = updateResponse.output + response.output;
 					handle(response);
 					finishCallbacks.forEach(function(callback) {
 						callback(response);
 					});
-					/*if (Opal.GameficOpal.$static_character().$queue().$length() > 0) {
-						setTimeout("Gamefic.update();", 1);
-					}*/
 				});
 			}
 		},
