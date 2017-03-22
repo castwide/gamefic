@@ -16,12 +16,10 @@ module Gamefic
         @@plot.script 'debug'
         sinatra = Gamefic::Sdk::Platform::Sinatra.new(settings.source_dir, config)
         sinatra.build
-        STDERR.puts "#{sinatra.config}"
         File.read File.join(sinatra.config['target_dir'], 'index.html')
       end
 
       post '/start' do
-        STDERR.puts "Server got start post!"
         content_type :json
         @@character = Character.new(name: 'player', synonyms: 'me myself self you yourself', description: 'As good-looking as ever.')
         @@character.connect User::Base.new
@@ -36,7 +34,6 @@ module Gamefic
       end
 
       post '/update' do
-        STDERR.puts "Processing #{params['command']}"
         content_type :json
         @@character.queue.push params['command']
         @@plot.update
