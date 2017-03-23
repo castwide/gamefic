@@ -10,7 +10,6 @@ class Gamefic::Suggestions
   def update
     current.clear
     current.concat future
-    puts current.join(',')
     future.clear
   end
 
@@ -28,6 +27,10 @@ module Gamefic::Suggestible
   def suggest command
     suggestions.future.push command unless suggestions.future.include? command
   end
+
+  def state
+    super.merge(suggestions: suggestions.current)
+  end
 end
 
 class Gamefic::Character
@@ -37,7 +40,7 @@ end
 
 on_ready do
   players.each { |player|
-    if player.scene == :active or player.next_scene == :active
+    if player.scene == default_scene or player.next_scene == default_scene
       player.suggestions.update
     else
       player.suggestions.clear
