@@ -33,7 +33,7 @@ module Gamefic
     # Determine whether the player is involved in a subplot.
     #
     # @return [Boolean]
-    def subbed? player
+    def in_subplot? player
       !subplot_for(player).nil?
     end
 

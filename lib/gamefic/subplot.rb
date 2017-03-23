@@ -8,10 +8,15 @@ module Gamefic
     attr_reader :plot
     attr_writer :denied_message
 
+    # @!parse include Plot::Entities
     mount Plot::Entities
+    # @!parse include Plot::CommandMount
     mount Plot::CommandMount
+    # @!parse include Plot::Callbacks
     mount Plot::Callbacks
+    # @!parse include Plot::SceneMount
     mount Plot::SceneMount
+    
     expose :plot, :conclude
 
     class << self
@@ -46,7 +51,7 @@ module Gamefic
       @playbook ||= plot.playbook.dup
     end
 
-    # HACK: Always assume subplots are running for the sake of entity destruction    
+    # HACK: Always assume subplots are running for the sake of entity destruction
     def running?
       true
     end
@@ -56,7 +61,7 @@ module Gamefic
     end
 
     def introduce player
-      if plot.subbed?(player)
+      if plot.in_subplot?(player)
         player.tell denied_message
       else
         super
