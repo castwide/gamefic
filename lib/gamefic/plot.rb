@@ -24,11 +24,8 @@ module Gamefic
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Stage
-    # @!parse include Gamefic, Tester, Players, SceneMount, CommandMount, Entities
-    mount Gamefic, Tester, Players, SceneMount, CommandMount, Entities
-    # @!parse include ArticleMount, YouMount, Snapshot, Host, Callbacks
-    mount ArticleMount, YouMount, Snapshot, Host, Callbacks
-    expose :script, :metadata
+    include Gamefic, Tester, Players, SceneMount, CommandMount, Entities
+    include ArticleMount, YouMount, Snapshot, Host, Callbacks
 
     # @param [Source::Base]
     def initialize(source = nil)

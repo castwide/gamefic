@@ -4,25 +4,18 @@ module Gamefic
 
   class Subplot
     include Stage
-    
+
     attr_reader :plot
     attr_writer :denied_message
 
-    # @!parse include Plot::Entities
-    mount Plot::Entities
-    # @!parse include Plot::CommandMount
-    mount Plot::CommandMount
-    # @!parse include Plot::Callbacks
-    mount Plot::Callbacks
-    # @!parse include Plot::SceneMount
-    mount Plot::SceneMount
-    
-    expose :plot, :conclude
+    include Plot::Entities
+    include Plot::CommandMount
+    include Plot::Callbacks
+    include Plot::SceneMount
+    include Plot::ArticleMount
 
     class << self
-      def start_proc
-        @start_proc
-      end
+      attr_reader :start_proc
 
       private
 
@@ -37,6 +30,10 @@ module Gamefic
       stage &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
       self.introduce introduce unless introduce.nil?
+    end
+
+    def subplot
+      self
     end
 
     def default_scene
@@ -100,5 +97,5 @@ module Gamefic
       call_update
     end
   end
-  
+
 end
