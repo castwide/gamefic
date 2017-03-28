@@ -27,6 +27,9 @@ module GameficOpal
     def script path
       # Stub
     end
+    def public_method sym
+      method(sym)
+    end
   end
 
   class WebUser < Gamefic::User::Base

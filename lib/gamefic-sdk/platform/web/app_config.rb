@@ -6,7 +6,7 @@ module Gamefic
 		class Gamefic::Sdk::Platform::Web::AppConfig
 		  include Stage
 		  attr_reader :javascripts, :stylesheets, :resource_paths, :source_dir, :config, :html_dir
-		  expose :javascripts, :stylesheets, :resource_paths
+		  #expose :javascripts, :stylesheets, :resource_paths
 		  
 		  # @param main_dir [String] The directory containing the resources (config file, HTML template, etc.) for this build
 		  def initialize source_dir, config

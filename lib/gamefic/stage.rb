@@ -4,7 +4,7 @@ module Gamefic
     # Execute a block of code in a subset of the object's scope.
     #
     # An object's stage is an isolated namespace that has its own instance
-    # variables and limited access to its parent's instance methods.
+    # variables and access to its container's public methods.
     def stage *args, &block
       s = generate_stage
       if block.nil?
