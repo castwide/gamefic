@@ -6,11 +6,13 @@ module Gamefic
 
   # Extend User::Base to convert HTML into ANSI text.
   #
+  # @note Due to their dependency on io/console, User::Tty and Engine::Tty are
+  #   not included in the core Gamefic library. `require gamefic/tty` if you
+  #   need them.
+  #
   class User::Tty < User::Base
     def save filename, snapshot
-      #data = snapshot.merge(:metadata => @character.plot.metadata)
-      data = snapshot
-      json = JSON.generate data
+      json = JSON.generate snapshot
       if json.nil?
         @character.tell "Nothing to save."
       end
@@ -22,7 +24,6 @@ module Gamefic
         File.open(filename, 'w') do |f|
           f.write json
         end
-        #@character.tell "Game saved."
       end
     end
 
