@@ -1,10 +1,9 @@
 require 'erb'
-require 'gamefic/stage'
 
 module Gamefic
   module Sdk
 		class Gamefic::Sdk::Platform::Web::AppConfig
-		  include Stage
+		  include Plot::Theater
 		  attr_reader :javascripts, :stylesheets, :resource_paths, :source_dir, :config, :html_dir
 		  #expose :javascripts, :stylesheets, :resource_paths
 		  

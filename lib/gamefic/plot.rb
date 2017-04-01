@@ -1,6 +1,5 @@
 # TODO: JSON support is currently experimental.
 #require 'gamefic/entityloader'
-require 'gamefic/stage'
 require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
@@ -19,11 +18,12 @@ module Gamefic
     autoload :Players,      'gamefic/plot/players'
     autoload :Playbook,     'gamefic/plot/playbook'
     autoload :Callbacks,    'gamefic/plot/callbacks'
+    autoload :Theater,      'gamefic/plot/theater'
 
     attr_reader :commands, :imported_scripts, :source
     # TODO: Metadata could use better protection
     attr_accessor :metadata
-    include Stage
+    include Theater
     include Gamefic, Tester, Players, SceneMount, CommandMount, Entities
     include ArticleMount, YouMount, Snapshot, Host, Callbacks
 

@@ -3,11 +3,11 @@ require 'gamefic/plot'
 module Gamefic
 
   class Subplot
-    include Stage
 
     attr_reader :plot
     attr_writer :denied_message
 
+    include Plot::Theater
     include Plot::Entities
     include Plot::CommandMount
     include Plot::Callbacks
