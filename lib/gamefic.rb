@@ -3,7 +3,6 @@ require 'gamefic/core_ext/string'
 
 require 'gamefic/grammar'
 require 'gamefic/keywords'
-require 'gamefic/serialized'
 require 'gamefic/entity'
 require 'gamefic/character'
 require "gamefic/scene"

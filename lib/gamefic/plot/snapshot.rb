@@ -20,7 +20,8 @@ module Gamefic
       end
       return {
         entities: store,
-        subplots: save_subplots
+        subplots: save_subplots,
+        metadata: metadata
       }
     end
     
@@ -47,36 +48,15 @@ module Gamefic
     
     def get_entity_hash
       store = []
-      index = 0
       entities.each { |e|
         hash = {}
-        e.serialized_attributes.each {|m|
-          con = m.to_s
-          if con.end_with?("?")
-            con = con[0..-2]
-          end
-          if e.respond_to?(m) == true
-            begin
-              val = e.send(m)
-              if val == false
-                hash[con] = false
-              elsif val
-                hash[con] = serialize_obj(val)
-              else
-                hash[con] = nil
-              end
-            rescue Exception => error
-              hash[con] = nil
-            end
-          end
+        e.instance_variables.each { |k|
+          next if k == :@children
+          v = e.instance_variable_get(k)
+          hash[k] = v
         }
         hash[:class] = e.class.to_s
-        hash[:session] = {}
-        e.session.each_pair { |k, v|
-          hash[:session][k] = serialize_obj(v)
-        }
-        store.push hash
-        index += 1
+        store.push serialize_object(hash)
       }
       store
     end
@@ -98,14 +78,15 @@ module Gamefic
       hash.each { |k, v|
         if k == :scene
           entities[index].cue v.to_sym
-        elsif (k != :session and k != :class)
-          entities[index].send("#{k}=", unserialize(v))
+        elsif (k != :class)
+          #entities[index].send("#{k}=", unserialize(v))
+          entities[index].instance_variable_set(k, unserialize(v))
         end
-        unless hash[:session].nil?
-          hash[:session].each_pair { |k, v|
-            entities[index].session[k.to_sym] = unserialize(v)
-          }
-        end
+        #unless hash[:session].nil?
+        #  hash[:session].each_pair { |k, v|
+        #    entities[index].session[k.to_sym] = unserialize(v)
+        #  }
+        #end
       }
       nil
     end
@@ -135,7 +116,7 @@ module Gamefic
       false
     end
 
-    def serialize_obj obj
+    def serialize_object obj
       return nil if obj.nil?
       return false if obj == false
       if obj.kind_of?(Hash)
@@ -156,7 +137,7 @@ module Gamefic
       hash = {}
       obj.each_pair { |k, v|
         if can_serialize?(k) and can_serialize?(v)
-          hash[serialize_obj(k)] = serialize_obj(v)
+          hash[serialize_object(k)] = serialize_object(v)
         end
       }
       return hash
@@ -166,7 +147,7 @@ module Gamefic
       arr = []
       obj.each_index { |i|
         if can_serialize?(obj[i])
-          arr[i] = serialize_obj(obj[i])
+          arr[i] = serialize_object(obj[i])
         else
           raise "Bad array in snapshot"
         end
@@ -215,7 +196,7 @@ module Gamefic
         s.instance_variables.each { |k|
           v = s.instance_variable_get(k)
           if can_serialize?(v)
-            hash[k] = serialize_obj(v)
+            hash[k] = serialize_object(v)
           end
         }
         arr.push hash

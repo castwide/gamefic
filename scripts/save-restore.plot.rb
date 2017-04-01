@@ -6,6 +6,7 @@ end
 
 meta :save, Query::Text.new() do |actor, filename|
   actor.user.save filename, save
+  actor.tell "Game saved."
 end
 
 meta :restore do |actor|

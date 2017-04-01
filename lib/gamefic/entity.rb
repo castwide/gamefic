@@ -1,18 +1,14 @@
 require "gamefic/node"
 require "gamefic/describable"
-require "gamefic/serialized"
 
 module Gamefic
 
   class Entity
     include Node
     include Describable
-    include Serialized
-    extend Serialized::ClassMethods
     include Grammar::WordAdapter
     
     attr_reader :session
-    serialize :name, :parent, :description
     
     def initialize(args = {})
       pre_initialize

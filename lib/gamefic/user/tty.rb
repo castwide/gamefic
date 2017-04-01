@@ -8,7 +8,8 @@ module Gamefic
   #
   class User::Tty < User::Base
     def save filename, snapshot
-      data = snapshot.merge(:metadata => @character.plot.metadata)
+      #data = snapshot.merge(:metadata => @character.plot.metadata)
+      data = snapshot
       json = JSON.generate data
       if json.nil?
         @character.tell "Nothing to save."
@@ -21,7 +22,7 @@ module Gamefic
         File.open(filename, 'w') do |f|
           f.write json
         end
-        @character.tell "Game saved."
+        #@character.tell "Game saved."
       end
     end
 
@@ -33,11 +34,11 @@ module Gamefic
       if filename != ''
         if File.exists?(filename)
           data = JSON.parse File.read(filename), symbolize_names: true
-          if (data[:metadata] != @character.plot.metadata)
-            @character.tell "The save file is not compatible with this version of the game."
-          else
+          #if (data[:metadata] != @character.plot.metadata)
+          #  @character.tell "The save file is not compatible with this version of the game."
+          #else
             return data
-          end
+          #end
         else
           @character.tell "File \"#{filename}\" not found."
         end

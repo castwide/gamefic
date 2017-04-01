@@ -1,9 +1,7 @@
 class Room < Gamefic::Entity
   include Darkenable
   include ExplicitExits
-  
-  serialize :dark?, :explicit_exits?
-  
+
   def connect(destination, direction = nil, type = Portal, two_way = true)
     if direction.kind_of?(Hash)
       connect2(destination, direction)
