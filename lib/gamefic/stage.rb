@@ -5,13 +5,9 @@ module Gamefic
     #
     # An object's stage is an isolated namespace that has its own instance
     # variables and access to its container's public methods.
-    def stage *args, &block
+    def stage code, file = '(eval)', line = 1
       s = generate_stage
-      if block.nil?
-        s.module_eval(*args)
-      else
-        s.module_exec(*args, &block)
-      end
+      s.module_eval(code, file, line)
     end
 
     private
