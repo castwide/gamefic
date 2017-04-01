@@ -15,7 +15,7 @@ module Gamefic::Sdk
     end
 
     def app_config
-      @app_config ||= AppConfig.new source_dir, config
+      @app_config ||= AppConfig.new source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"]
     end
 
     def build

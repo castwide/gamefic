@@ -8,7 +8,7 @@ module Gamefic
 		  #expose :javascripts, :stylesheets, :resource_paths
 		  
 		  # @param main_dir [String] The directory containing the resources (config file, HTML template, etc.) for this build
-		  def initialize source_dir, config
+		  def initialize source_dir, config, js
 		    @javascripts = []
 		    @stylesheets = []
 		    @source_dir = source_dir
@@ -18,7 +18,7 @@ module Gamefic
 		    @resource_paths = ["#{html_dir}", Gamefic::Sdk::HTML_TEMPLATE_PATH]
 		    config_file = "#{html_dir}/index.rb"
 		    stage File.read(config_file), config_file
-		    javascripts.push "core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"
+		    javascripts.concat js
 		  end
 		  
 		  # @return [BuildConfig::Data]

@@ -26,6 +26,10 @@ module Gamefic::Sdk
       puts "#{config['build_dir']} cleaned."
     end
 
+    def app_config
+      @app_config ||= AppConfig.new source_dir, config, ["core/engine.js"]
+    end
+
     private
 
     def resolve filename, paths
