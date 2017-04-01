@@ -1,6 +1,5 @@
 class Portal < Gamefic::Entity
   attr_accessor :destination
-  serialize :destination, :direction
 
   # Find the portal in the destination that returns to this portal's parent
   #

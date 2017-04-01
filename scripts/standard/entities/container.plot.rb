@@ -6,6 +6,4 @@ class Container < Receptacle
   include Lockable
   include Transparent
   
-  serialize :enterable?, :open?, :locked?, :lock_key, :transparent?
-  
 end
