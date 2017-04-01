@@ -11,7 +11,7 @@ module Gamefic
     autoload :SceneMount,   'gamefic/plot/scene_mount'
     autoload :CommandMount, 'gamefic/plot/command_mount'
     autoload :Entities,     'gamefic/plot/entities'
-    autoload :ArticleMount, 'gamefic/plot/article_mount'
+    autoload :Articles,     'gamefic/plot/articles'
     autoload :YouMount,     'gamefic/plot/you_mount'
     autoload :Snapshot,     'gamefic/plot/snapshot'
     autoload :Host,         'gamefic/plot/host'
@@ -25,7 +25,7 @@ module Gamefic
     attr_accessor :metadata
     include Theater
     include Gamefic, Tester, Players, SceneMount, CommandMount, Entities
-    include ArticleMount, YouMount, Snapshot, Host, Callbacks
+    include Articles, YouMount, Snapshot, Host, Callbacks
 
     # @param [Source::Base]
     def initialize(source = nil)

@@ -1,7 +1,7 @@
-describe Plot::ArticleMount do
+describe Plot::Articles do
   let(:container_class) {
     Class.new do
-      include Plot::ArticleMount
+      include Plot::Articles
     end
   }
   let(:described_class) {

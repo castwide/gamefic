@@ -12,7 +12,7 @@ module Gamefic
     include Plot::CommandMount
     include Plot::Callbacks
     include Plot::SceneMount
-    include Plot::ArticleMount
+    include Plot::Articles
 
     class << self
       attr_reader :start_proc
