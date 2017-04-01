@@ -9,7 +9,7 @@ module Gamefic
 
     include Plot::Theater
     include Plot::Entities
-    include Plot::CommandMount
+    include Plot::Commands
     include Plot::Callbacks
     include Plot::SceneMount
     include Plot::Articles

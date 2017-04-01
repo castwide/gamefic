@@ -9,7 +9,7 @@ module Gamefic
 
   class Plot
     autoload :SceneMount,   'gamefic/plot/scene_mount'
-    autoload :CommandMount, 'gamefic/plot/command_mount'
+    autoload :Commands,     'gamefic/plot/commands'
     autoload :Entities,     'gamefic/plot/entities'
     autoload :Articles,     'gamefic/plot/articles'
     autoload :YouMount,     'gamefic/plot/you_mount'
@@ -24,7 +24,7 @@ module Gamefic
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Theater
-    include Gamefic, Tester, Players, SceneMount, CommandMount, Entities
+    include Gamefic, Tester, Players, SceneMount, Commands, Entities
     include Articles, YouMount, Snapshot, Host, Callbacks
 
     # @param [Source::Base]
