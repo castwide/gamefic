@@ -3,7 +3,7 @@ module Gamefic
   module Plot::Theater
     # Execute a block of code in a subset of the object's scope. An object's
     # stage is an isolated namespace that has its own instance variables and
-    # access to its container's public methods.
+    # access to its owner's public methods.
     #
     # There are two ways to execute code on the stage. It will accept either a
     # string of code with an optional file name and line number, or a proc
@@ -58,6 +58,10 @@ module Gamefic
 
         define_singleton_method :stage do |*args|
           raise NoMethodError.new("The stage method is not available from inside staged scripts")
+        end
+
+        define_singleton_method :to_s do
+          "[Theater]"
         end
       end
 
