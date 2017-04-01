@@ -43,11 +43,12 @@ respond :look, Use.room do |actor, room|
     portals = room.children.that_are(Portal).that_are(:itemized?)
     if portals.length > 0
       if portals.length == 1
-        actor.tell "There is an exit #{portals[0].direction}."
+        p = portals[0]
+        actor.tell "There is an exit #{p.direction || p.name || "to #{the p.destination}"}."
       else
         dirs = []
         portals.each { |p|
-          dirs.push (p.direction || p.name)
+          dirs.push (p.direction || p.name || "to #{the p.destination}")
         }
         actor.tell "There are exits #{dirs.join_and(', ')}."
       end
