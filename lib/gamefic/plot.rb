@@ -8,23 +8,23 @@ require 'gamefic/query'
 module Gamefic
 
   class Plot
-    autoload :SceneMount,   'gamefic/plot/scene_mount'
-    autoload :Commands,     'gamefic/plot/commands'
-    autoload :Entities,     'gamefic/plot/entities'
-    autoload :Articles,     'gamefic/plot/articles'
-    autoload :YouMount,     'gamefic/plot/you_mount'
-    autoload :Snapshot,     'gamefic/plot/snapshot'
-    autoload :Host,         'gamefic/plot/host'
-    autoload :Players,      'gamefic/plot/players'
-    autoload :Playbook,     'gamefic/plot/playbook'
-    autoload :Callbacks,    'gamefic/plot/callbacks'
-    autoload :Theater,      'gamefic/plot/theater'
+    autoload :Scenes,    'gamefic/plot/scenes'
+    autoload :Commands,  'gamefic/plot/commands'
+    autoload :Entities,  'gamefic/plot/entities'
+    autoload :Articles,  'gamefic/plot/articles'
+    autoload :YouMount,  'gamefic/plot/you_mount'
+    autoload :Snapshot,  'gamefic/plot/snapshot'
+    autoload :Host,      'gamefic/plot/host'
+    autoload :Players,   'gamefic/plot/players'
+    autoload :Playbook,  'gamefic/plot/playbook'
+    autoload :Callbacks, 'gamefic/plot/callbacks'
+    autoload :Theater,   'gamefic/plot/theater'
 
     attr_reader :commands, :imported_scripts, :source
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Theater
-    include Gamefic, Tester, Players, SceneMount, Commands, Entities
+    include Gamefic, Tester, Players, Scenes, Commands, Entities
     include Articles, YouMount, Snapshot, Host, Callbacks
 
     # @param [Source::Base]

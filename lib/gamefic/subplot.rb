@@ -11,7 +11,7 @@ module Gamefic
     include Plot::Entities
     include Plot::Commands
     include Plot::Callbacks
-    include Plot::SceneMount
+    include Plot::Scenes
     include Plot::Articles
 
     class << self
