@@ -31,9 +31,9 @@ class Room < Gamefic::Entity
   private
   def connect2 destination, direction:nil, type:Portal, two_way:true
     if direction.nil?
-      portal = type.new :parent => self, :destination => destination, :name => destination.definitely
+      portal = type.new :parent => self, :destination => destination
       if two_way == true
-        portal2 = type.new :parent => destination, :destination => self, :name => self.definitely
+        portal2 = type.new :parent => destination, :destination => self
       end
     else
       if direction.kind_of?(String)
