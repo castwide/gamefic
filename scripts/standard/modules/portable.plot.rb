@@ -1,4 +1,4 @@
-module Gamefic::Portable
+module Portable
   attr_writer :portable
   attr_writer :sticky
   attr_accessor :sticky_message

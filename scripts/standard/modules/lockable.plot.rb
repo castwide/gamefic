@@ -1,6 +1,6 @@
 script 'standard/modules/openable'
 
-module Gamefic::Lockable
+module Lockable
   include Openable
   attr_reader :lock_key
   def locked=(bool)

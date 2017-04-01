@@ -1,6 +1,6 @@
 script 'standard/entities/portal'
 
-class Gamefic::Door < Gamefic::Portal
+class Door < Portal
   include Openable
   include Lockable
   

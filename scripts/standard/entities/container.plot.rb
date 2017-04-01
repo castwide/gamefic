@@ -1,6 +1,6 @@
 script 'standard/entities/receptacle'
 
-class Gamefic::Container < Gamefic::Receptacle
+class Container < Receptacle
   include Enterable
   include Openable
   include Lockable

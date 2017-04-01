@@ -1,4 +1,4 @@
-module Gamefic::Attachable
+module Attachable
   def attached?
     if @attached.nil?
       @attached = false

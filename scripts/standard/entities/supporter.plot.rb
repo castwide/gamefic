@@ -1,4 +1,4 @@
-class Gamefic::Supporter < Gamefic::Entity
+class Supporter < Gamefic::Entity
   include Enterable
   serialize :enterable?
   def initialize(args = {})

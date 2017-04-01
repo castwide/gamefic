@@ -35,7 +35,7 @@ respond :take, Use.reachable(Entity, :portable?) do |actor, thing|
   end
 end
 
-respond :take, Use.reachable(Gamefic::Rubble) do |actor, rubble|
+respond :take, Use.reachable(Rubble) do |actor, rubble|
   actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} have any use for #{the rubble}."
 end
 

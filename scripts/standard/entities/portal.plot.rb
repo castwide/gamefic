@@ -1,4 +1,4 @@
-class Gamefic::Portal < Gamefic::Entity
+class Portal < Gamefic::Entity
   attr_accessor :destination
   serialize :destination, :direction
 

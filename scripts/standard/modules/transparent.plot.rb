@@ -1,4 +1,4 @@
-module Gamefic::Transparent
+module Transparent
   attr_writer :transparent
   def transparent?
     @transparent ||= false

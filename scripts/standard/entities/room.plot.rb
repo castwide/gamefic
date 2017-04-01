@@ -1,4 +1,4 @@
-class Gamefic::Room < Gamefic::Entity
+class Room < Gamefic::Entity
   include Darkenable
   include ExplicitExits
   

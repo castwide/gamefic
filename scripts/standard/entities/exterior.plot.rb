@@ -1,5 +1,5 @@
 script 'standard/entities/room'
 
-class Gamefic::Exterior < Gamefic::Room
+class Exterior < Room
   
 end

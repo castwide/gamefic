@@ -1,5 +1,5 @@
 script 'clothing/entities/clothing'
 
-class Gamefic::Gloves < Gamefic::Clothing
+class Gloves < Clothing
 
 end

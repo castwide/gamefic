@@ -1,3 +1,3 @@
-class Gamefic::Fixture < Gamefic::Entity
+class Fixture < Gamefic::Entity
 
 end

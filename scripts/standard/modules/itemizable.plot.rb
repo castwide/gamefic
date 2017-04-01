@@ -1,4 +1,4 @@
-module Gamefic::Itemizable
+module Itemizable
   attr_writer :itemized
   def itemized?
     if @itemized.nil?

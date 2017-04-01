@@ -1,4 +1,4 @@
-class Gamefic::Item < Gamefic::Entity
+class Item < Gamefic::Entity
   def pre_initialize
     self.portable = true
   end
