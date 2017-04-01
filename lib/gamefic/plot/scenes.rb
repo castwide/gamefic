@@ -79,7 +79,6 @@ module Gamefic
     # This scene will execute the specified block and wait for input from the
     # the user (e.g., pressing Enter) to continue.
     #
-    # @param key [Symbol] A unique name for the scene.
     # @param prompt [String] The text to display when prompting the user to continue.
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
@@ -100,7 +99,6 @@ module Gamefic
     # The game (or the character's participation in it) will end after this
     # scene is complete.
     #
-    # @param key [Symbol] A unique name for the scene.
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
     def conclusion &block
@@ -141,8 +139,7 @@ module Gamefic
     #     end
     #   end
     #
-    # @param key [Symbol] A unique name for the scene.
-    # @param key [cls] The class of scene to be instantiated.
+    # @param cls [Class] The class of scene to be instantiated.
     # @yieldparam [Scene::Custom] The instantiated scene.
     def scene cls = Scene::Custom, &block
       s = cls.new
@@ -166,7 +163,6 @@ module Gamefic
     #     actor.cue :select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
     #   end
     #
-    # @param key [Symbol] A unique name for the scene.
     # @param map [Hash] A Hash of options and associated scene keys.
     def multiple_scene map
       s = Scene::MultipleScene.new
