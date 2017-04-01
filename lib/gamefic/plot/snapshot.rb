@@ -79,14 +79,8 @@ module Gamefic
         if k == :scene
           entities[index].cue v.to_sym
         elsif (k != :class)
-          #entities[index].send("#{k}=", unserialize(v))
           entities[index].instance_variable_set(k, unserialize(v))
         end
-        #unless hash[:session].nil?
-        #  hash[:session].each_pair { |k, v|
-        #    entities[index].session[k.to_sym] = unserialize(v)
-        #  }
-        #end
       }
       nil
     end
