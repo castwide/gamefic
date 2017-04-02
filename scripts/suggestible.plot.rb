@@ -29,23 +29,20 @@ module Gamefic::Suggestible
   end
 
   def state
-    super.merge(suggestions: suggestions.current)
+    super.merge(suggestions: suggestions.current.map{|s| s.cap_first})
   end
 end
 
 class Gamefic::Character
   include Suggestible
-  serialize :suggestions
 end
 
-on_ready do
-  players.each { |player|
-    if player.scene == default_scene or player.next_scene == default_scene
-      player.suggestions.update
-    else
-      player.suggestions.clear
-    end
-  }
+on_player_ready do |player|
+  if player.scene == default_scene or player.next_scene == default_scene
+    player.suggestions.update
+  else
+    player.suggestions.clear
+  end
 end
 
 respond :suggest do |actor|

@@ -22,57 +22,62 @@ class Gamefic::Character
   include Autosuggest
 end
 
-on_player_update do |actor|
-  if (actor.scene == default_scene and actor.next_scene.nil?) or actor.next_scene == default_scene
-    actor.suggest "look around"
-    actor.suggest "inventory"
-    actor.room.children.that_are(Portal).each { |entity|
-      if entity.direction
-        actor.suggest "go #{entity.direction}"
-      else
-        actor.suggest "go to #{the entity.destination}"
+# Suggestions get updated (future suggestions become current) in
+# on_player_ready. Autosuggest gathers suggestions in on_ready so it gets
+# done first.
+on_ready do
+  players.each { |actor|
+    if (actor.scene == default_scene and actor.next_scene.nil?) or actor.next_scene == default_scene
+      actor.suggest "look around"
+      actor.suggest "inventory"
+      actor.room.children.that_are(Portal).each { |entity|
+        if entity.direction
+          actor.suggest "go #{entity.direction}"
+        else
+          actor.suggest "go to #{the entity.destination}"
+        end
+      }
+      Use.visible.context_from(actor).that_are_not(Portal).each { |entity|
+        actor.suggest "examine #{the entity}"
+      }
+      Use.visible.context_from(actor).that_are(:portable?).each { |entity|
+        actor.suggest "take #{the entity}" unless entity.parent == actor
+      }
+      Use.visible.context_from(actor).that_are(Container).that_are_not(:open?).each { |entity|
+        actor.suggest "close #{the entity}"
+      }
+      Use.visible.context_from(actor).that_are(Container).that_are(:open?).each { |entity|
+        actor.suggest "search #{the entity}"
+        actor.suggest "close #{the entity}"
+      }
+      Use.siblings.context_from(actor).that_are(Enterable).that_are(:enterable?).each { |entity|
+        actor.suggest "#{entity.enter_verb} #{the entity}"
+      }
+      Use.siblings.context_from(actor).that_are(Character).that_are_not(actor).each { |entity|
+        actor.suggest "talk to #{the entity}"
+      }
+      if (actor.parent != actor.room)
+        actor.suggest "#{actor.parent.leave_verb} #{the actor.parent}"
       end
-    }
-    Use.visible.context_from(actor).that_are_not(Portal).each { |entity|
-      actor.suggest "examine #{the entity}"
-    }
-    Use.visible.context_from(actor).that_are(:portable?).each { |entity|
-      actor.suggest "take #{the entity}" unless entity.parent == actor
-    }
-    Use.visible.context_from(actor).that_are(Container).that_are_not(:open?).each { |entity|
-      actor.suggest "close #{the entity}"
-    }
-    Use.visible.context_from(actor).that_are(Container).that_are(:open?).each { |entity|
-      actor.suggest "search #{the entity}"
-      actor.suggest "close #{the entity}"
-    }
-    Use.siblings.context_from(actor).that_are(Enterable).that_are(:enterable?).each { |entity|
-      actor.suggest "#{entity.enter_verb} #{the entity}"
-    }
-    Use.siblings.context_from(actor).that_are(Character).that_are_not(actor).each { |entity|
-      actor.suggest "talk to #{the entity}"
-    }
-    if (actor.parent != actor.room)
-      actor.suggest "#{actor.parent.leave_verb} #{the actor.parent}"
-    end
-    actor.children.that_are_not(:attached?).each { |entity|
-      actor.suggest "drop #{the entity}"
-      Use.siblings.context_from(actor).that_are(Supporter).each { |supporter|
-        actor.suggest "put #{the entity} on #{the supporter}"
+      actor.children.that_are_not(:attached?).each { |entity|
+        actor.suggest "drop #{the entity}"
+        Use.siblings.context_from(actor).that_are(Supporter).each { |supporter|
+          actor.suggest "put #{the entity} on #{the supporter}"
+        }
+        Use.siblings.context_from(actor).that_are(Receptacle).each { |receptacle|
+          actor.suggest "put #{the entity} in #{the receptacle}"
+        }
       }
-      Use.siblings.context_from(actor).that_are(Receptacle).each { |receptacle|
-        actor.suggest "put #{the entity} in #{the receptacle}"
+      vicinity = actor.parent.children.that_are_not(Portal)
+      if actor.parent != actor.room
+        vicinity.concat actor.room.children.that_are_not(Portal)
+      end
+      vicinity = vicinity - [actor]
+      vicinity.each { |e|
+        actor.suggest "examine #{the e}"
       }
-    }
-    vicinity = actor.parent.children.that_are_not(Portal)
-    if actor.parent != actor.room
-      vicinity.concat actor.room.children.that_are_not(Portal)
     end
-    vicinity = vicinity - [actor]
-    vicinity.each { |e|
-      actor.suggest "examine #{the e}"
-    }
-  end
+  }
 end
 
 respond :look, Use.visible(Supporter) do |actor, supporter|
