@@ -21,12 +21,15 @@ module Gamefic
       option :standard, type: :boolean, default: true, desc: 'Include the standard script'
       option :scripts, type: :array, aliases: [:s, :script], desc: 'Additional scripts'
       option :webskin, default: 'standard', aliases: [:w], desc: 'Skin to use for the Web platform'
+      option :webdir, aliases: [:d], desc: 'HTML directory to copy. This option overrides the webskin.'
       option :title, type: :string, aliases: [:t], desc: "The game's title"
       option :author, type: :string, aliases: [:a], desc: "The game's author"
       def init(directory_name)
-        Gamefic::Sdk::Shell::Init.new(directory: directory_name,
-          quiet: options[:quiet], scripts: options[:scripts], webskin: options[:webskin],
-          title: options[:title], author: options[:author]).run
+        Gamefic::Sdk::Shell::Init.new(
+          directory: directory_name, quiet: options[:quiet], scripts: options[:scripts],
+          webskin: options[:webskin], title: options[:title], author: options[:author],
+          webdir: options[:webdir]
+        ).run
       end
 
       desc 'test DIRECTORY_NAME', 'Play the game in DIRECTORY_NAME'

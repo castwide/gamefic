@@ -5,10 +5,11 @@ module Gamefic
   module Sdk
     class Shell
       class Init
-        def initialize(directory:, standard: true, quiet: false, scripts: [], webskin: 'standard', title: nil, author: nil)
+        def initialize(directory:, standard: true, quiet: false, scripts: [], webskin: 'standard', webdir: nil, title: nil, author: nil)
           @quiet = quiet
           @directory = directory
           @html = webskin
+          @webdir = webdir
           @scripts = []
           @scripts.push('standard') if standard
           @scripts += scripts if scripts
@@ -86,7 +87,11 @@ module Gamefic
 
         def copy_html_skin
           Dir.mkdir("#{@directory}/html")
-          FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + @html + '/*'], "#{@directory}/html")
+          if @webdir.nil?
+            FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + @html + '/*'], "#{@directory}/html")
+          else
+            FileUtils.cp_r(Dir[File.join(File.realpath(@webdir), '*')], "#{@directory}/html")
+          end
         end
       end
     end
