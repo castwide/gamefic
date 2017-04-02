@@ -17,7 +17,7 @@ module Gamefic
     class << self
       attr_reader :start_proc
 
-      private
+      protected
 
       def on_start &block
         @start_proc = block
