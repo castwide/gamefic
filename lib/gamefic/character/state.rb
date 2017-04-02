@@ -11,7 +11,8 @@ class Gamefic::Character
       {
         output: (user.nil? ? nil : user.flush),
         prompt: prompt,
-        scene: scene.type
+        scene: scene.type,
+        busy: !queue.empty?
       }
     end
   end

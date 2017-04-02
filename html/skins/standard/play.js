@@ -18,7 +18,7 @@ $(function() {
 		$('#gamefic_controls').addClass('working');
 	});
 	Gamefic.onFinish(function(response) {
-		if (!response.testing) {
+		if (!response.busy) {
 			$('#gamefic_controls').removeClass('working');
 		}
 		$('#gamefic_command').val('');

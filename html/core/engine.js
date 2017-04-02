@@ -32,9 +32,6 @@ var Gamefic = (function() {
 			Opal.GameficOpal.$static_plot().$ready();
 			var response = JSON.parse(Opal.GameficOpal.$static_character().$state().$to_json());
 			response.input = input;
-			if (Opal.GameficOpal.$static_character().$queue().$length() > 0) {
-				response.testing = true;
-			}
 			inputCallbacks.forEach(function(callback) {
 				callback(response);
 			});
@@ -43,7 +40,7 @@ var Gamefic = (function() {
 			finishCallbacks.forEach(function(callback) {
 				callback(response);
 			});
-			if (Opal.GameficOpal.$static_character().$queue().$length() > 0) {
+			if (response.busy) {
 				setTimeout("Gamefic.update();", 1);
 			}
 		},
