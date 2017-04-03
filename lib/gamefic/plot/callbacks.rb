@@ -1,6 +1,6 @@
 module Gamefic
 
-  module Plot::Callbacks
+  module Plot::Callbacks    
     # Add a block to be executed on preparation of every turn.
     #
     # @example Increment a turn counter
@@ -35,6 +35,13 @@ module Gamefic
       p_player_ready_procs.push block
     end
 
+    # Add a block to be executed for each player before an update.
+    #
+    # @yieldparam[Character]
+    def before_player_update &block
+      p_before_player_update_procs.push block
+    end
+
     # Add a block to be executed for each player at the end of a turn.
     #
     # @yieldparam [Character]
@@ -56,6 +63,16 @@ module Gamefic
     #
     def call_update
       p_update_procs.each { |p| p.call }
+    end
+
+    # Execute the before_player_ready blocks for each player. This method is
+    # typically called by the Plot while beginning a turn, immediately before
+    # processing player input.
+    #
+    def call_before_player_update
+      p_players.each { |player|
+        p_before_player_update_procs.each { |block| block.call player }
+      }
     end
 
     # Execute the on_player_ready blocks for each player. This method is
@@ -87,6 +104,10 @@ module Gamefic
 
     def p_update_procs
       @p_update_procs ||= []
+    end
+
+    def p_before_player_update_procs
+      @p_before_player_update_procs ||= []
     end
 
     def p_player_ready_procs

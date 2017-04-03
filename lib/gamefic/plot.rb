@@ -76,6 +76,7 @@ module Gamefic
     # Update the Plot's current turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def update
+      call_before_player_update
       p_players.each { |p| process_input p }
       p_entities.each { |e| e.update }
       call_player_update

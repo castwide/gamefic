@@ -34,7 +34,7 @@ module Gamefic
     private
     
     def get_choice data
-      if data.input.strip =~ /[0-9]+/ and data.input.to_i > 0
+      if data.input.strip =~ /^[0-9]+$/ and data.input.to_i > 0
         data.number = data.input.to_i
         data.index = data.number - 1
         data.selection = data.options[data.number - 1]

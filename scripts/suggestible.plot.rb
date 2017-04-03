@@ -3,19 +3,19 @@ class Gamefic::Suggestions
     @current ||= []
   end
 
-  def future
-    @future ||= []
+  def previous
+    @previous ||= []
   end
 
   def update
+    previous.clear
+    previous.concat current
     current.clear
-    current.concat future
-    future.clear
   end
 
   def clear
+    previous.clear
     current.clear
-    future.clear
   end
 end
 
@@ -25,7 +25,7 @@ module Gamefic::Suggestible
   end
 
   def suggest command
-    suggestions.future.push command unless suggestions.future.include? command
+    suggestions.current.push command unless suggestions.current.include? command
   end
 
   def state
@@ -37,7 +37,7 @@ class Gamefic::Character
   include Suggestible
 end
 
-on_player_ready do |player|
+before_player_update do |player|
   if player.scene == default_scene or player.next_scene == default_scene
     player.suggestions.update
   else
@@ -47,7 +47,7 @@ end
 
 respond :suggest do |actor|
   actor.stream '<ul>'
-  actor.suggestions.current.sort.each { |s|
+  actor.suggestions.previous.sort.each { |s|
     actor.stream "<li>#{s}</li>"
   }
   actor.stream '</ul>'

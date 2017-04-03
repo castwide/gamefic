@@ -3,9 +3,6 @@ var Gamefic = (function() {
 	var inputCallbacks = [];
 	var finishCallbacks = [];
 	var responseCallbacks = {};
-	var lastInput = null;
-	var lastPrompt = null;
-	var lastResponse = null;
 	var doReady = function(response) {
 		startCallbacks.forEach(function(callback) {
 			callback(response);
@@ -17,7 +14,6 @@ var Gamefic = (function() {
 	}
 	return {
 		start: function() {
-			console.log('Starting the game');
 			var that = this;
       $.post('/start', function(response) {
 				doReady(response);
@@ -29,9 +25,7 @@ var Gamefic = (function() {
 		},
 		update: function(input) {
 			if (input != null) {
-				console.log('Updating with ' + input)
 				$.post('/update', {command: input}, function(response) {
-					lastInput = input;
 					inputCallbacks.forEach(function(callback) {
 						callback(response);
 					});
@@ -52,8 +46,16 @@ var Gamefic = (function() {
 		onFinish: function(callback) {
 			finishCallbacks.push(callback);
 		},
-		handleResponse: function(state, callback) {
-			responseCallbacks[state] = callback;
+		handleResponse: function() {
+			var states = [];
+			var args = Array.prototype.slice.call(arguments);
+			while (args.length > 1) {
+				states.push(args.shift());
+			}
+			if (states.length == 0) states.push('Active');
+			states.forEach(function (state) {
+				responseCallbacks[state] = args[0];
+			});
 		},
 		save: function(filename, data) {
 			var json = Opal.JSON.$generate(data);

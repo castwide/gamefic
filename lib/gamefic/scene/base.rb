@@ -4,6 +4,8 @@ module Gamefic
   # should inherit from it.
   #
   class Scene::Base
+    attr_writer :type
+    
     def start actor
     end
 
@@ -18,7 +20,7 @@ module Gamefic
     end
 
     def type
-      self.class.to_s.split('::').last
+      @type ||= self.class.to_s.split('::').last
     end
   end
 

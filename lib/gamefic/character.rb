@@ -141,6 +141,14 @@ module Gamefic
       @next_scene = scene
     end
 
+    # Return true if the character is expected to be in the specified scene on
+    # the next turn.
+    #
+    # @return [Boolean]
+    def will_cue? scene
+      (@scene == scene and @next_scene.nil?) or @next_scene == scene
+    end
+
     # Cue a conclusion. This method works like #cue, except it will raise a
     # NotConclusionError if the scene is not a Scene::Conclusion.
     #

@@ -48,12 +48,7 @@ module Gamefic
 
       @theater = Module.new do
         define_singleton_method :method_missing do |symbol, *args, &block|
-          m = instance.public_method(symbol)
-          if m.nil?
-            super
-          else
-            m.call(*args, &block)
-          end
+          instance.public_send :public_send, symbol, *args, &block
         end
 
         define_singleton_method :stage do |*args|

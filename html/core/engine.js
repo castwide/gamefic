@@ -53,8 +53,16 @@ var Gamefic = (function() {
 		onFinish: function(callback) {
 			finishCallbacks.push(callback);
 		},
-		handleResponse: function(state, callback) {
-			responseCallbacks[state] = callback;
+		handleResponse: function() {
+			var states = [];
+			var args = Array.prototype.slice.call(arguments);
+			while (args.length > 1) {
+				states.push(args.shift());
+			}
+			if (states.length == 0) states.push('Active');
+			states.forEach(function (state) {
+				responseCallbacks[state] = args[0];
+			});
 		},
 		save: function(filename, data) {
 			var json = Opal.JSON.$generate(data);
