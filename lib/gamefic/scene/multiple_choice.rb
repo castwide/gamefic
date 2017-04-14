@@ -14,7 +14,7 @@ module Gamefic
 
     def start actor
       data = start_data_for(actor)
-      data.options.clear
+      data.clear
       do_start_block actor, data
       tell_options actor, data
     end
@@ -55,7 +55,7 @@ module Gamefic
     def tell_options actor, data
       list = '<ol class="multiple_choice">'
       data.options.each { |o|
-        list += "<li>#{o}</li>"
+        list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
       }
       list += "</ol>"
       actor.tell list
