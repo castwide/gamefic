@@ -164,13 +164,14 @@ module Gamefic
     #   end
     #
     # @param map [Hash] A Hash of options and associated scene keys.
-    def multiple_scene map
+    def multiple_scene map = {}
       s = Scene::MultipleScene.new
       s.on_start do |actor, data|
         map.each { |k, v|
           data.map k, v
         }
       end
+      yield(s) if block_given?
       s
     end
   end
