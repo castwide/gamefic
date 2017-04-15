@@ -8,6 +8,9 @@ module Gamefic
     def options
       @options ||= []
     end
+    def clear
+      options.clear
+    end
     def prompt
       @prompt ||= 'Enter a choice:'
     end
