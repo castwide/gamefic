@@ -9,6 +9,9 @@ var Gamefic = (function() {
 		});
 	}
 	var handle = function(response) {
+		if (!responseCallbacks[response.scene]) {
+			console.warn('No response for ' + response.scene + '. Defaulting to Active');
+		}
 		var handler = responseCallbacks[response.scene] || responseCallbacks['Active'];
 		handler(response);
 	}
