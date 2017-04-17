@@ -57,7 +57,28 @@ module Gamefic
       def clean(directory_name)
         Gamefic::Sdk::Build.clean(directory_name)
       end
-      
+
+      desc 'import-scripts DIRECTORY_NAME', 'Copy external scripts to the local scripts directory'
+      def import_scripts(directory_name)
+        config_yaml = File.join(directory_name, 'config.yaml')
+        if File.exist?(config_yaml)
+          config_path = PlotConfig.new config_yaml
+        else
+          config_path = PlotConfig.new
+        end
+        FileUtils.mkdir_p(File.join(directory_name, 'scripts'))
+        paths = config_path.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
+        plot.script 'main'
+        plot.imported_scripts.each { |s|
+          src = File.absolute_path(s.absolute_path)
+          dst = File.absolute_path(File.join(directory_name, 'scripts', "#{s.path}.plot.rb"))
+          next if src == dst
+          FileUtils.mkdir_p(File.dirname(dst))
+          FileUtils.cp_r(src, dst)
+        }
+      end
+
       desc 'webskins', 'List the available skins for the Web platform'
       def webskins
         Dir[File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'skins', '*')].sort.each { |d|
