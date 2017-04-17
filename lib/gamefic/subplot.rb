@@ -3,7 +3,6 @@ require 'gamefic/plot'
 module Gamefic
 
   class Subplot
-
     attr_reader :plot
     attr_writer :denied_message
 
@@ -24,8 +23,9 @@ module Gamefic
       end
     end
 
-    def initialize plot, introduce: nil
+    def initialize plot, introduce: nil, next_cue: nil
       @plot = plot
+      @next_cue = next_cue
       @concluded = false
       stage &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
@@ -67,6 +67,7 @@ module Gamefic
 
     def exeunt player
       player.playbook = plot.playbook
+      player.cue (@next_cue || default_scene)
       p_players.delete player
     end
 
