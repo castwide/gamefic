@@ -33,7 +33,7 @@ module Gamefic
       end
 
       desc 'test DIRECTORY_NAME', 'Play the game in DIRECTORY_NAME'
-      def test(directory_name)
+      def test(directory_name = '.')
         Gamefic::Sdk::Shell::Test.new(directory: directory_name).run
       end
 
@@ -49,7 +49,7 @@ module Gamefic
 
       desc 'build DIRECTORY_NAME', 'Build the game for specified platforms in DIRECTORY_NAME'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
-      def build(directory_name)
+      def build(directory_name = '.')
         Gamefic::Sdk::Build.release(directory_name, options[:quiet])
       end
 
@@ -59,7 +59,7 @@ module Gamefic
       end
 
       desc 'import-scripts DIRECTORY_NAME', 'Copy external scripts to the local scripts directory'
-      def import_scripts(directory_name)
+      def import_scripts(directory_name = '.')
         config_yaml = File.join(directory_name, 'config.yaml')
         if File.exist?(config_yaml)
           config_path = PlotConfig.new config_yaml
