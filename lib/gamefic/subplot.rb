@@ -23,9 +23,10 @@ module Gamefic
       end
     end
 
-    def initialize plot, introduce: nil, next_cue: nil
+    def initialize plot, introduce: nil, next_cue: nil, busy_cue: nil
       @plot = plot
       @next_cue = next_cue
+      @busy_cue = busy_cue
       @concluded = false
       stage &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
@@ -59,7 +60,11 @@ module Gamefic
 
     def introduce player
       if plot.in_subplot?(player)
-        player.tell denied_message
+        if @busy_cue.nil?
+          player.tell denied_message
+        else
+          player.cue @busy_cue
+        end
       else
         super
       end
