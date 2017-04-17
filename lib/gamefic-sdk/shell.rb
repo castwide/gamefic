@@ -74,6 +74,7 @@ module Gamefic
           src = File.absolute_path(s.absolute_path)
           dst = File.absolute_path(File.join(directory_name, 'scripts', "#{s.path}.plot.rb"))
           next if src == dst
+          puts "Importing #{s.path}"
           FileUtils.mkdir_p(File.dirname(dst))
           FileUtils.cp_r(src, dst)
         }
