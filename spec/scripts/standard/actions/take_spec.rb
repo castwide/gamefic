@@ -1,6 +1,6 @@
 describe "Take Action" do
   before :each do
-    @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
   end
   it "takes a portable sibling" do

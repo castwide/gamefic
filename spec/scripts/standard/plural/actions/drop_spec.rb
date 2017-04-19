@@ -1,6 +1,6 @@
 describe "Plural Drop Action" do
   it "drops multiple items in the character's inventory" do
-    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/plural'
     room = plot.make Room, :name => 'room'
@@ -12,7 +12,7 @@ describe "Plural Drop Action" do
     expect(item2.parent).to eq(room)
   end
   it "drops all from the character's inventory" do
-    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/plural'
     room = plot.make Room, :name => 'room'
@@ -24,7 +24,7 @@ describe "Plural Drop Action" do
     expect(item2.parent).to eq(room)    
   end
   it "drops all described" do
-    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/plural'
     room = plot.make Room, :name => 'room'
@@ -38,7 +38,7 @@ describe "Plural Drop Action" do
     expect(item3.parent).to be(character)
   end
   it "drops all described with not" do
-    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/plural'
     room = plot.make Room, :name => 'room'
@@ -52,7 +52,7 @@ describe "Plural Drop Action" do
     expect(item3.parent).to be(room)
   end
   it "does not execute with an unrecognized phrase" do
-    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/plural'
     room = plot.make Room, :name => 'room'
@@ -66,7 +66,7 @@ describe "Plural Drop Action" do
     expect(item3.parent).to be(character)
   end
   it "drops all except described" do
-    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/plural'
     room = plot.make Room, :name => 'room'

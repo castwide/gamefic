@@ -1,6 +1,6 @@
 describe "Quit Action" do
   before :each do
-    @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_IMPORT_PATH))
+    @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
     @character = @plot.make Character, :name => 'character'
     @plot.introduce @character
