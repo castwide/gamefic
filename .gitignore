@@ -4,3 +4,5 @@ Gemfile.lock
 .settings
 .DS_Store
 coverage
+examples/*/build
+examples/*/release
