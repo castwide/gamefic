@@ -152,15 +152,18 @@ module Gamefic
     # which scene to cue based on a Hash of choices and scene keys.
     #
     # @example Select a scene
-    #   multiple_scene :select_one_or_two, { "one" => :scene_one, "two" => :scene_two }
-    #   scene :scene_one do |actor|
+    #   scene_one = pause do |actor|
     #     actor.tell "You went to scene one"
     #   end
-    #   scene :scene_two do |actor|
+    #
+    #   scene_two = pause do |actor|
     #     actor.tell "You went to scene two"
     #   end
+    #
+    #   select_one_or_two = multiple_scene "One" => scene_one, "Two" => scene_two
+    #
     #   introduction do |actor|
-    #     actor.cue :select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
+    #     actor.cue select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
     #   end
     #
     # @param map [Hash] A Hash of options and associated scene keys.
