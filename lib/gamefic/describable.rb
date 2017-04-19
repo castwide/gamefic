@@ -7,10 +7,19 @@ module Gamefic
   # referencing objects.
   module Describable
     include Grammar::Person, Grammar::Plural
+
+    # @return [String]
     attr_reader :name
-    attr_accessor :synonyms, :indefinite_article
+
+    # @return [String]
+    attr_accessor :synonyms
+
+    # @return [String]
+    attr_accessor :indefinite_article
+
+    # @return [String]
     attr_writer :definite_article
-    
+
     # Get a set of Keywords associated with the object.
     # Keywords are typically the words in the object's name plus its synonyms.
     #
@@ -18,7 +27,7 @@ module Gamefic
     def keywords
       Keywords.new "#{name} #{synonyms}"
     end
-    
+
     # Get the name of the object with an indefinite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
