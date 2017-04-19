@@ -62,7 +62,7 @@ module Gamefic
 
       # HACK: Include the theater module in Object so that classes and modules
       # defined in scripts are accessible from procs passed to the stage.
-      Object.class_exec (@theater) do |t|
+      Object.class_exec(@theater) do |t|
         include t
       end
       
