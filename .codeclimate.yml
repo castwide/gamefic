@@ -1,4 +1,4 @@
 exclude_paths:
-- spec/**/*
-- scripts/**/*
+- "spec/**/*"
+- "scripts/**/*"
 
