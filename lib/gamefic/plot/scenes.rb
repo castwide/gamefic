@@ -61,7 +61,6 @@ module Gamefic
       end
       s.on_finish do |actor, data|
         block.call actor, data unless block.nil?
-        actor.cue default_scene if actor.scene == s and actor.next_scene.nil?
       end
       s
     end
@@ -89,8 +88,7 @@ module Gamefic
         block.call actor, data unless block.nil?
       end
       s.on_finish do |actor, data|
-        #actor.cue :active if actor.scene == key and actor.next_scene.nil?
-        actor.cue default_scene if actor.scene == s and actor.next_scene.nil?
+        actor.cue default_scene if actor.will_cue?(s)
       end
       s
     end
