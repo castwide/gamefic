@@ -1,4 +1,4 @@
-require 'gamefic/director'
+#require 'gamefic/director'
 
 class NotConclusionError < Exception
 end
@@ -9,7 +9,7 @@ module Gamefic
 
     attr_reader :queue, :user
     # @return [Gamefic::Director::Order]
-    attr_reader :last_order
+    attr_reader :last_action
     # @return [Entity,nil]
     attr_reader :last_object
     attr_accessor :object_of_pronoun
@@ -53,7 +53,13 @@ module Gamefic
     #   character.perform :take, @key
     #
     def perform(*command)
-      Director.dispatch(self, *command)
+      #Director.dispatch(self, *command)
+      actions = playbook.dispatch(self, *command)
+      a = actions.last
+      performance_stack.push actions
+      proceed
+      performance_stack.pop
+      a
     end
     
     # Quietly perform a command.
@@ -121,7 +127,10 @@ module Gamefic
     #   end
     #
     def proceed
-      Director::Delegate.proceed_for self
+      #Director::Delegate.proceed_for self
+      return if performance_stack.empty?
+      a = performance_stack.last.shift
+      a.execute unless a.nil?
     end
 
     # Immediately start a new scene for the character.
@@ -165,7 +174,7 @@ module Gamefic
     end
 
     def performed order
-      @last_order = order
+      @last_action = order
     end
 
     # Get the prompt that the user should see for the current scene.
@@ -175,19 +184,27 @@ module Gamefic
       scene.nil? ? '>' : scene.prompt_for(self)
     end
 
+    def inspect
+      to_s
+    end
+
     private
 
     def delegate_stack
       @delegate_stack ||= []
     end
 
-    def last_order=(order)
-      return if order.nil?
-      @last_order = order
-      if !order.action.meta? and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
-        @last_object = order.arguments[0][0]
-      end
+    def performance_stack
+      @performance_stack ||= []
     end
+
+    #def last_action=(order)
+    #  return if order.nil?
+    #  @last_order = order
+    #  if !order.action.meta? and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
+    #    @last_object = order.arguments[0][0]
+    #  end
+    #end
   end
 
 end

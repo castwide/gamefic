@@ -11,7 +11,7 @@ describe Plot::Playbook do
     action = playbook.respond :increment do
       num += 1
     end
-    action.execute
+    action.new(nil, nil).execute
     expect(num).to eq 1
   end
 

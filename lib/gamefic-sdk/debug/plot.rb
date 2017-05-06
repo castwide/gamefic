@@ -4,7 +4,7 @@ module Gamefic::Sdk::Debug
   class Plot < Gamefic::Plot
     attr_reader :main_dir
     def post_initialize
-      meta :debug, Query::Text.new("unused") do |actor, text|
+      meta :debug, Query::Text.new(/^unused$/) do |actor, text|
         unused = []
         actions.each { |a|
           if !a.standard? and !a.executed?

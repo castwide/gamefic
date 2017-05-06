@@ -11,34 +11,7 @@
 #   * Entities inside closed transparent containers
 #   * Entities that share the same room as the subject, but not the same parent.
 
-module Gamefic::Query
-  class Reachable < Family
-    def context_from(subject)
-      array = super
-      if subject.parent.kind_of?(Container) || subject.parent.kind_of?(Supporter)
-        array.push subject.parent
-      end
-      if subject.parent != subject.room
-        array += subject.room.children
-      end
-      array.each { |thing|
-        if thing.kind_of?(Container)
-          if thing.open?
-            array += thing.children.that_are_not(:attached?)
-          end
-        elsif thing.kind_of?(Supporter) or thing.kind_of?(Receptacle) or thing == subject
-          array += thing.children.that_are_not(:attached?)
-        end
-        thing.children.that_are(:attached?).each { |att|
-          array.push att
-          if att.kind_of?(Supporter) or (att.kind_of?(Container) and att.open?)
-            array += att.children
-          end
-        }
-      }
-      array.uniq - [subject]
-    end
-  end
+class Gamefic::Query::Reachable < Gamefic::Query::Family
 end
 
 module Gamefic::Use

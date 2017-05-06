@@ -35,11 +35,11 @@ module Gamefic
         end
       end
 
-      def disambiguate &block
-        @disambiguator = Action.new(nil, Query::Base.new, &block)
-        @disambiguator.meta = true
-        @disambiguator
-      end
+      #def disambiguate &block
+      #  @disambiguator = Action.new(nil, Query::Base.new, &block)
+      #  @disambiguator.meta = true
+      #  @disambiguator
+      #end
 
       def validate &block
         @validators.push block
@@ -75,8 +75,8 @@ module Gamefic
       # @param command [Symbol] An imperative verb for the command
       # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
       # @yieldparam [Character]
-      def respond(command, *queries, &proc)
-        act = Action.new(command, *queries, &proc)
+      def respond(verb, *queries, &proc)
+        act = Action.subclass verb, *queries, &proc
         add_action act
         act
       end
@@ -96,9 +96,9 @@ module Gamefic
       # @param command [Symbol] An imperative verb for the command
       # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
       # @yieldparam [Character]
-      def meta(command, *queries, &proc)
-        act = respond(command, *queries, &proc)
-        act.meta = true
+      def meta(verb, *queries, &proc)
+        act = Action.subclass verb, *queries, meta: true, &proc
+        add_action act
         act
       end
 
@@ -122,6 +122,41 @@ module Gamefic
         syn
       end
 
+      def dispatch(actor, *command)
+        result = []
+        if command.length > 1
+          result.concat dispatch_from_params(actor, command[0], command[1..-1])
+        end
+        if result.empty?
+          result.concat dispatch_from_string(actor, command.join(' '))
+        end
+        result
+      end
+
+      def dispatch_from_string actor, text
+        result = []
+        commands = Syntax.tokenize(text, syntaxes)
+        commands.each { |c|
+          available = actions_for(c.verb)
+          available.each { |a|
+            o = a.attempt(actor, c.arguments)
+            result.push o unless o.nil?
+          }
+        }
+        result.sort! { |a,b| b.rank <=> a.rank }
+        result
+      end
+
+      def dispatch_from_params actor, verb, params
+        result = []
+        available = actions_for(verb)
+        available.each { |a|
+          result.push a.new(actor, params) if a.valid?(actor, params)
+        }
+        result.sort! { |a,b| b.rank <=> a.rank }
+        result
+      end
+
       # Duplicate the playbook.
       # This method will duplicate the commands hash and the syntax array so
       # the new playbook can be modified without affecting the original.
@@ -142,13 +177,7 @@ module Gamefic
         @commands[action.verb] ||= []
         @commands[action.verb].unshift action
         @commands[action.verb].sort! { |a, b|
-          if a.specificity == b.specificity
-            # Newer action takes precedence
-            b.order_key <=> a.order_key
-          else
-            # Higher specificity takes precedence
-            b.specificity <=> a.specificity
-          end
+          b.rank <=> a.rank
         }
         generate_default_syntax action
       end

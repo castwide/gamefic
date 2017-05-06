@@ -1,10 +1,17 @@
-module Gamefic::Query
-  class Siblings < Base
-    def base_specificity
-      40
-    end
-    def context_from(subject)
-      (subject.parent.children - [subject])
+module Gamefic
+  module Query
+    class Siblings < Base
+      def context_from(subject)
+        result = []
+        unless subject.parent.nil?
+          result.concat(subject.parent.children - [subject])
+        end
+        result
+      end
+
+      def breadth
+        3
+      end
     end
   end
 end

@@ -1,31 +1,32 @@
-require 'gamefic/keywords'
+#require 'gamefic/keywords'
 require 'gamefic/grammar'
 
 module Gamefic
 
-  # Add a variety of text properties for naming, describing, and properly
-  # referencing objects.
+  # Add a variety of text properties for naming, describing, and referencing
+  # objects.
   module Describable
     include Grammar::Person, Grammar::Plural
+    include Matchable
 
     # @return [String]
     attr_reader :name
 
     # @return [String]
-    attr_accessor :synonyms
+    attr_reader :synonyms
 
     # @return [String]
-    attr_accessor :indefinite_article
+    attr_reader :indefinite_article
 
     # @return [String]
-    attr_writer :definite_article
+    attr_reader :definite_article
 
     # Get a set of Keywords associated with the object.
     # Keywords are typically the words in the object's name plus its synonyms.
     #
     # @return [Keywords]
     def keywords
-      Keywords.new "#{name} #{synonyms}"
+      @keywords ||= "#{definite_article} #{indefinite_article} #{name} #{synonyms}".downcase.split(Matchable::SPLIT_REGEXP).uniq
     end
 
     # Get the name of the object with an indefinite article.
@@ -49,6 +50,16 @@ module Gamefic
     # @return [String]
     def definite_article
       @definite_article || "the"
+    end
+    
+    def definite_article= article
+      @keywords = nil
+      @definite_article = article
+    end
+
+    def indefinite_article= article
+      @keywords = nil
+      @indefinite_article = article
     end
     
     # Is the object proper-named?
@@ -80,6 +91,7 @@ module Gamefic
     #
     # @param value [String]
     def name=(value)
+      @keywords = nil
       words = value.split_words
       if ['a','an'].include?(words[0].downcase)
         @indefinite_article = words[0].downcase
@@ -129,6 +141,11 @@ module Gamefic
       end
     end
     
+    def synonyms= text
+      @keywords = nil
+      @synonyms = text
+    end
+
     # Set the object's default description.
     # The default description is typically set in an object's initialization
     # to ensure that a non-empty string is available when a instance-specific

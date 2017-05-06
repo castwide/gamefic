@@ -10,7 +10,7 @@ module Gamefic
       #
       # @param cls [Class] The Class of the Entity to be created.
       # @param args [Hash] The entity's properties.
-      # @return [Entity]
+      # @return [Gamefic::Entity]
       def make cls, args = {}, &block
         ent = cls.new args, &block
         if ent.kind_of?(Entity) == false

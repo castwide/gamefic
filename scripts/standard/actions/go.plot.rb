@@ -44,9 +44,10 @@ respond :go, Use.text do |actor, text|
     destinations.push portal.destination
     d_map[portal.destination] = portal
   }
-  matches = Query::Base.new.execute(destinations, text)
-  if matches.objects.length == 1
-    actor.perform :go, d_map[matches.objects[0]]
+  matches = destinations.select{|o| o.match? text }
+  matches = destinations.select{|o| o.match? text, fuzzy: true } if matches.empty?
+  if matches.length == 1
+    actor.perform :go, d_map[matches[0]]
   else
     actor.proceed
   end

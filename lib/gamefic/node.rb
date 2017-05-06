@@ -43,6 +43,9 @@ module Gamefic
         end
       end
     end
+    def neighborly?
+      true
+    end
     protected
     def add_child(node)
       children

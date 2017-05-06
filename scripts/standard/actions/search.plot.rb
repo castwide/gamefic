@@ -9,6 +9,7 @@ respond :search, Use.reachable(Receptacle) do |actor, receptacle|
 end
 
 respond :search, Use.reachable(Container) do |actor, container|
+  next unless container.kind_of?(Container)
   if container.open? or container.transparent?
     actor.proceed
   else

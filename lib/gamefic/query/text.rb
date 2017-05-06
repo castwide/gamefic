@@ -1,43 +1,32 @@
-module Gamefic::Query
-  class Text < Base
-    def base_specificity
-      10
-    end
-    def validate(subject, description)
-      return false unless description.kind_of?(String)
-      valid = false
-      words = description.split_words
-      words.each { |word|
-        if description.include?(word)
-          valid = true
-          break
-        end
-      }
-      valid
-    end
-    def execute(subject, description)
-      if @arguments.length == 0
-        return Matches.new([description], description, '')
+module Gamefic
+  module Query
+    class Text < Base
+      def initialize *arguments
+        arguments.each { |a|
+          if (a.kind_of?(Symbol) or a.kind_of?(String)) and !a.to_s.end_with?('?')
+            raise ArgumentError.new("Text query arguments can only be boolean method names (:method?) or regular expressions")
+          end
+        }
+        super
       end
-      keywords = Keywords.new(description)
-      args = Keywords.new(@arguments)
-      found = Array.new
-      remainder = keywords.clone
-      while remainder.length > 0
-        if args.include?(remainder.first)
-          found.push remainder.shift
-        else
-          break
-        end
+      def resolve(subject, token)
+        result = []
+        result.push(token) if accept?(token)
+        result
       end
-      if found.length > 0
-        return Matches.new(found, found.join(' '), remainder.join(' '))
-      else
-        return Matches.new([], '', description)
+
+      def include?(subject, token)
+        accept?(token)
       end
-    end
-    def test_arguments arguments
-      # No test for text
+
+      def accept?(entity)
+        return false unless entity.kind_of?(String)
+        super
+      end
+
+      def precision
+        arguments.length
+      end
     end
   end
 end

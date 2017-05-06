@@ -72,7 +72,11 @@ respond :look, Query::Visible.new() do |actor, thing|
 end
 
 respond :look, Use.text do |actor, string|
-  actor.tell "You don't see any \"#{string}\" here."
+  if string == 'around'
+    actor.perform :look, actor.parent
+  else
+    actor.tell "You don't see any \"#{string}\" here."
+  end
 end
 
 respond :look, Use.reachable(Receptacle) do |actor, receptacle|

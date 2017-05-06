@@ -1,10 +1,13 @@
-module Gamefic::Query
-  class Parent < Base
-    def base_specificity
-      30
-    end
-    def context_from(subject)
-      [subject.parent]
+module Gamefic
+  module Query
+    class Parent < Base
+      def context_from(subject)
+        subject.parent.nil? ? [] : [subject.parent]
+      end
+
+      def breadth
+        1
+      end
     end
   end
 end
