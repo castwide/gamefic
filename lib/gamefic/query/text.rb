@@ -9,10 +9,25 @@ module Gamefic
         }
         super
       end
-      def resolve(subject, token)
-        result = []
-        result.push(token) if accept?(token)
-        result
+      def resolve(subject, token, continued: false)
+        parts = token.split(Matchable::SPLIT_REGEXP)
+        cursor = []
+        matches = []
+        i = 0
+        parts.each { |w|
+          cursor.push w
+          matches = cursor if accept?(cursor.join(' '))
+          i += 1
+        }
+        if continued
+          Matches.new([matches.join(' ')], matches.join(' '), parts[i..-1].join(' '))
+        else
+          if matches.length == parts.length
+            Matches.new([matches.join(' ')], matches.join(' '), '')
+          else
+            Matches.new([], '', parts.join(' '))
+          end
+        end
       end
 
       def include?(subject, token)

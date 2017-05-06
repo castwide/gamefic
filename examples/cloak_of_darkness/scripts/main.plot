@@ -58,7 +58,7 @@ respond :look, Query::Family.new(hook) do |actor, hook|
   end
 end
 
-xlate "hang :item on :hook", "place :item :hook"
+interpret "hang :item on :hook", "place :item :hook"
 
 # The eponymous Cloak of Darkness: when the player takes it to the bar, everything is dark.
 # We don't handle wearing it different from carrying it. 

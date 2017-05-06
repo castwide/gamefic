@@ -7,7 +7,8 @@ respond :place, Use.visible, Use.reachable(Supporter) do |actor, thing, supporte
     actor.perform :take, thing
   end
   if thing.parent == actor
-    actor.perform :place, thing
+    thing.parent = supporter
+    actor.tell "You put #{the thing} on #{the supporter}."
   end
 end
 

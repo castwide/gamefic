@@ -8,7 +8,7 @@ module Gamefic
     autoload :Descendants, 'gamefic/query/descendants'
     autoload :Family, 'gamefic/query/family'
     autoload :Itself, 'gamefic/query/itself'
-    #autoload :Neighbors, 'gamefic/query/neighbors'
+    autoload :Matches, 'gamefic/query/matches'
     autoload :Parent, 'gamefic/query/parent'
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Text, 'gamefic/query/text'

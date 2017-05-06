@@ -1,6 +1,8 @@
 module Gamefic
   module Query
     class Base
+      NEST_REGEXP = / in | on | of | from | inside /
+
       attr_reader :arguments
 
       def initialize *arguments
@@ -22,11 +24,33 @@ module Gamefic
       # Get an array of objects that exist in the subject's context and match
       # the provided token.
       #
-      def resolve(subject, token)
+      def resolve(subject, token, continued: false)
         available = context_from(subject).keep_if{ |e| accept?(e) }
-        result = available.select{ |e| e.match?(token) }
-        result = available.select{ |e| e.match?(token, fuzzy: true) } if result.empty?
-        result
+        if continued
+          Matches.execute(available, token, continued: continued)
+        else
+          if nested?(token)
+            drill = denest(available, token)
+            return drill unless drill.length != 1
+          end
+          result = available.select{ |e| e.match?(token) }
+          result = available.select{ |e| e.match?(token, fuzzy: true) } if result.empty?
+          Matches.new(result, (result.empty? ? '' : token), (result.empty? ? token : ''))
+        end
+      end
+
+      def nested?(token)
+        !token.match(NEST_REGEXP).nil?
+      end
+
+      def denest(objects, token)
+        parts = token.split(NEST_REGEXP)
+        current = parts.pop
+        result = objects.select{ |e| e.match?(current) }
+        result = objects.select{ |e| e.match?(current, fuzzy: true) } if result.empty?
+        return [] if result.empty? or result.length > 1
+        return result if parts.empty?
+        denest(result[0].children, parts.join(' '))
       end
 
       def include?(subject, object)
@@ -41,7 +65,7 @@ module Gamefic
 
       def precision
         #if @specificity.nil?
-          @specificity = 0
+          @specificity = 1
           arguments.each { |a|
             if a.kind_of?(Symbol) or a.kind_of?(Regexp)
               @specificity += 1

@@ -10,16 +10,11 @@ module Gamefic
     def initialize actor, parameters
       @actor = actor
       @parameters = parameters
-      @executed = false
     end
 
     def execute
-      if @executed
-        raise "Action was already executed"
-      else
-        self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
-        @executed = true
-      end
+      self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
+      @executed = true
     end
 
     def verb
@@ -109,15 +104,16 @@ module Gamefic
       def attempt actor, tokens
         i = 0
         result = []
+        matches = Gamefic::Query::Matches.new([], '', '')
         queries.each { |p|
-          return nil if tokens[i].nil?
-          available = p.resolve(actor, tokens[i])
-          return nil if available.empty?
+          return nil if tokens[i].nil? and matches.remaining == ''
+          matches = p.resolve(actor, "#{matches.remaining} #{tokens[i]}".strip, continued: (i < queries.length - 1))
+          return nil if matches.objects.empty?
           if p.ambiguous?
-            result.push available
+            result.push matches.objects
           else
-            return nil if available.length > 1
-            result.push available[0]
+            return nil if matches.objects.length > 1
+            result.push matches.objects[0]
           end
           i += 1
         }
