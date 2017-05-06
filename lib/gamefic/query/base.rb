@@ -31,7 +31,7 @@ module Gamefic
         else
           if nested?(token)
             drill = denest(available, token)
-            return drill unless drill.length != 1
+            return Matches.new(drill, token, '') unless drill.length != 1
           end
           result = available.select{ |e| e.match?(token) }
           result = available.select{ |e| e.match?(token, fuzzy: true) } if result.empty?
