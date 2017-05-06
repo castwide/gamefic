@@ -35,14 +35,14 @@ module Gamefic
     #
     # @return [String]
     def indefinitely
-      ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name
+      ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name.to_s
     end
     
     # Get the name of the object with a definite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
     def definitely
-      ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name
+      ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name.to_s
     end
     
     # Get the definite article for this object.
