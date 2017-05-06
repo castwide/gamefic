@@ -52,8 +52,8 @@ describe Plot::Playbook do
   end
 
   it "validates an order" do
-    playbook.validate do |order|
-      order.cancel unless order.action.verb == :legal
+    playbook.validate do |actor, verb, arguments|
+      false unless verb == :legal
     end
     playbook.respond :legal do |actor|
       actor[:legal] = true

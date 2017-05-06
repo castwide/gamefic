@@ -111,9 +111,7 @@ xlate "read :message", "look :message"
 
 # Customize the :has_enough_light rule to check if the player has the cloak.
 
-validate do |order|
-  actor = order.actor
-  verb = order.action.verb
+validate do |actor, verb, arguments|
   if cloak.parent == actor
     bar.dark = true
   else
@@ -122,13 +120,14 @@ validate do |order|
   if actor.room.dark?
     if verb == :look
       actor.tell "It's too dark in here."
-      order.cancel
+      next false
     elsif verb != :go
       actor.tell "Uh oh, you're wandering around in the dark!"
       actor.session[:disturbed] = true
-      order.cancel
+      next false
     end
   end
+  true
 end
 
 # The player

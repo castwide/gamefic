@@ -5,13 +5,25 @@ module Gamefic
   end
 
   class Action
+    attr_reader :parameters
+
     def initialize actor, parameters
       @actor = actor
       @parameters = parameters
+      @executed = false
     end
 
     def execute
-      self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
+      if @executed
+        raise "Action was already executed"
+      else
+        self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
+        @executed = true
+      end
+    end
+
+    def verb
+      self.class.verb
     end
 
     def signature

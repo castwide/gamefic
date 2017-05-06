@@ -55,10 +55,20 @@ module Gamefic
     def perform(*command)
       #Director.dispatch(self, *command)
       actions = playbook.dispatch(self, *command)
-      a = actions.last
-      performance_stack.push actions
-      proceed
-      performance_stack.pop
+      a = actions.first
+      okay = true
+      unless a.meta?
+        playbook.validators.each { |v|
+          result = v.call(self, a.verb, a.parameters)
+          okay = (result != false)
+          break if not okay
+        }
+      end
+      if okay
+        performance_stack.push actions
+        proceed
+        performance_stack.pop
+      end
       a
     end
     
