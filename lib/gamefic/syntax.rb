@@ -99,6 +99,13 @@ module Gamefic
         result = syntax.tokenize text
         matches.push(result) if !result.nil?
       }
+      matches.sort! { |a,b|
+        if a.arguments.length == b.arguments.length
+          b.verb.to_s <=> a.verb.to_s
+        else
+          b.arguments.length <=> a.arguments.length
+        end
+      }
       matches
     end
   end

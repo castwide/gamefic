@@ -1,4 +1,4 @@
-respond :drop, Query::Visible.new() do |actor, thing|
+respond :drop, Use.family() do |actor, thing|
   if thing.parent != actor
     actor.tell "#{you.contract you.pronoun.Subj + ' ' + you.verb.be} not carrying #{the thing}."
   else

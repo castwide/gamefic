@@ -176,6 +176,7 @@ module Gamefic
       def add_action(action)
         @commands[action.verb] ||= []
         @commands[action.verb].unshift action
+        @commands[action.verb].uniq!
         @commands[action.verb].sort! { |a, b|
           b.rank <=> a.rank
         }
@@ -205,7 +206,7 @@ module Gamefic
           raise "No actions exist for \"#{syntax.verb}\""
         end
         @syntaxes.unshift syntax
-        @syntaxes.uniq
+        @syntaxes.uniq!
         @syntaxes.sort! { |a, b|
           if a.token_count == b.token_count
             # For syntaxes of the same length, length of action takes precedence

@@ -1,4 +1,4 @@
-respond :go, Query::Reachable.new(Portal) do |actor, portal|
+respond :go, Use.family(Portal) do |actor, portal|
   if actor.parent != actor.room
     actor.perform :leave
   end
@@ -15,11 +15,11 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
   end
 end
 
-respond :go, Query::Reachable.new(Door, :locked?) do |actor, door|
+respond :go, Use.family(Door, :locked?) do |actor, door|
   actor.tell "#{The door} is locked."
 end
 
-respond :go, Query::Reachable.new(Door, :closed?) do |actor, door|
+respond :go, Use.family(Door, :closed?) do |actor, door|
   if door.automatic?
     actor.perform :open, door
     if door.open?

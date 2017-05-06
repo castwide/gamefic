@@ -2,11 +2,11 @@ respond :unlock, Query::Text.new() do |actor, string|
   actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any \"#{string}\" here."
 end
 
-respond :unlock, Query::Reachable.new() do |actor, thing|
+respond :unlock, Use.family() do |actor, thing|
   actor.tell "#{you.pronoun.Subj} can't unlock #{the thing}."
 end
 
-respond :unlock, Query::Reachable.new(Lockable) do |actor, container|
+respond :unlock, Use.family(Lockable) do |actor, container|
   # Portable containers need to be picked up before they are unlocked.
   if container.portable? and container.parent != actor
     actor.perform :take, container
@@ -36,11 +36,11 @@ respond :unlock, Query::Reachable.new(Lockable) do |actor, container|
   end
 end
 
-respond :unlock, Query::Reachable.new(Lockable), Query::Text.new do |actor, container, thing|
+respond :unlock, Use.family(Lockable), Query::Text.new do |actor, container, thing|
   actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} have anything called '#{thing}.'"
 end
 
-respond :unlock, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
+respond :unlock, Use.family(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
   if container.is?(:locked)
     if container.key == key
       #if container.is?(:not_auto_lockable)
@@ -58,7 +58,7 @@ respond :unlock, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children
   end
 end
 
-respond :open, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
+respond :open, Use.family(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
   if container.is?(:locked)
     actor.perform :unlock, container, key
     if !container.is?(:locked)
@@ -69,7 +69,7 @@ respond :open, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children.n
   end
 end
 
-respond :use, Query::Children.new, Query::Reachable.new(Lockable, :has_lock_key?) do |actor, key, container|
+respond :use, Query::Children.new, Use.family(Lockable, :has_lock_key?) do |actor, key, container|
   actor.perform :unlock, container, key
 end
 

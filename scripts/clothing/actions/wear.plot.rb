@@ -1,4 +1,4 @@
-respond :wear, Query::Reachable.new(Clothing) do |actor, clothing|
+respond :wear, Use.family(Clothing) do |actor, clothing|
   if actor.auto_takes?(clothing)
     if clothing.attached?
       actor.tell "You're already wearing #{the clothing}."

@@ -1,4 +1,12 @@
 module Gamefic::Use
+  class RoomQuery < Gamefic::Query::Base
+    def context_from(subject)
+      [subject.room]
+    end
+    def breadth
+      2
+    end
+  end
   def self.children *args
     Gamefic::Query::Children.new *args
   end
@@ -14,16 +22,16 @@ module Gamefic::Use
   def self.text *args
     Gamefic::Query::Text.new *args
   end
-  def self.expression *args
-    Gamefic::Query::Expression.new *args
+  def self.visible *args
+    Gamefic::Query::Family.new *args
   end
-  def self.many_children *args
-    Gamefic::Query::ManyChildren.new *args
+  def self.reachable *args
+    Gamefic::Query::Family.new *args
   end
-  def self.ambiguous_children *args
-    Gamefic::Query::AmbiguousChildren.new *args
+  def self.available *args
+    Gamefic::Query::Available.new *args
   end
-  def self.plural_children *args
-    Gamefic::Query::PluralChildren.new *args
+  def self.room *args
+    RoomQuery.new *args
   end
 end

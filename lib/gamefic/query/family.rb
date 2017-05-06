@@ -5,9 +5,9 @@ module Gamefic
         result = []
         top = subject.parent
         unless top.nil?
-          until top.parent.nil?
-            top = top.parent
-          end
+          #until top.parent.nil?
+          #  top = top.parent
+          #end
           result.concat subquery_neighborly(top)
         end
         result - [subject]

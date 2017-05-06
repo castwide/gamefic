@@ -2,6 +2,7 @@ script 'standard/test'
 
 on_test :me do |actor, queue|
   queue.push "look around"
+  queue.push "get off chair"
   queue.push "look desk"
   queue.push "take key"
   queue.push "n"

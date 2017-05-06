@@ -33,16 +33,16 @@ module Gamefic
       self.class.meta?
     end
 
-    def self.subclass verb, *queries, meta: false, &block
+    def self.subclass verb, *q, meta: false, &block
       act = Class.new(self) do
         self.verb = verb
         self.meta = meta
-        queries.each { |q|
+        q.each { |q|
           add_query q
         }
         on_execute &block
       end
-      if !block.nil? and queries.length + 1 != block.arity and block.arity > 0
+      if !block.nil? and act.queries.length + 1 != block.arity and block.arity > 0
         raise ActionArgumentError.new("Number of parameters is not compatible with proc arguments")
       end
       act

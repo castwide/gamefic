@@ -2,11 +2,11 @@ respond :lock, Query::Text.new() do |actor, string|
   actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any \"#{string}\" here."
 end
 
-respond :lock, Query::Reachable.new() do |actor, thing|
+respond :lock, Use.family() do |actor, thing|
   actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} lock #{the thing}."
 end
 
-respond :lock, Query::Reachable.new(Lockable, :has_lock_key?) do |actor, container|
+respond :lock, Use.family(Lockable, :has_lock_key?) do |actor, container|
   # Portable containers need to be picked up before they are locked.
   if container.portable? and container.parent != actor
     actor.perform :take, container
@@ -36,7 +36,7 @@ respond :lock, Query::Reachable.new(Lockable, :has_lock_key?) do |actor, contain
   end
 end
 
-respond :lock, Query::Reachable.new(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
+respond :lock, Use.family(Lockable, :has_lock_key?), Query::Children.new do |actor, container, key|
   if container.locked == false
     if container.lock_key == key
       #if container.is?(:not_auto_lockable)
