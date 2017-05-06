@@ -39,13 +39,7 @@ module Gamefic
           i = 0
           #cursor = []
           words.each { |w|
-            cursor = []
-            matching_objects.each { |o|
-              if o.match?(w, fuzzy: true)
-                cursor.push o
-                matching_text.push w
-              end
-            }
+            cursor = inner_match matching_objects, words, matching_text, i, w
             break if cursor.empty?
             matching_objects = cursor
             i += 1
@@ -55,6 +49,17 @@ module Gamefic
           remaining = words[i..-1].join(' ')
           m = Matches.new(objects, matching, remaining)
           m
+        end
+
+        def inner_match matching_objects, words, matching_text, i, w
+          cursor = []
+          matching_objects.each { |o|
+            if o.match?(words[0..i+1].join(' '), fuzzy: true)
+              cursor.push o
+              matching_text.push w
+            end
+          }
+          cursor
         end
       end
     end

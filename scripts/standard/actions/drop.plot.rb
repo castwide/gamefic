@@ -1,5 +1,9 @@
 respond :drop, Query::Visible.new() do |actor, thing|
-  actor.tell "#{you.contract you.pronoun.Subj + ' ' + you.verb.be} not carrying #{the thing}."
+  if thing.parent != actor
+    actor.tell "#{you.contract you.pronoun.Subj + ' ' + you.verb.be} not carrying #{the thing}."
+  else
+    actor.proceed
+  end
 end
 
 respond :drop, Query::Children.new() do |actor, thing|
