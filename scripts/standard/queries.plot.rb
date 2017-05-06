@@ -1,8 +1,3 @@
-#script 'standard/queries/reachable'
-#script 'standard/queries/room'
-#script 'standard/queries/visible'
-#script 'standard/queries/from_expression'
-
 class Gamefic::Query::Available < Gamefic::Query::Base
   def context_from(subject)
     result = []
@@ -15,5 +10,15 @@ class Gamefic::Query::Available < Gamefic::Query::Base
 
   def breadth
     5
+  end
+end
+
+class Gamefic::Query::Room < Gamefic::Query::Base
+  def context_from(subject)
+    [subject.room]
+  end
+
+  def breadth
+    2
   end
 end
