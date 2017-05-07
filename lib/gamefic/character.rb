@@ -1,9 +1,10 @@
 #require 'gamefic/director'
 
-class NotConclusionError < Exception
-end
 
 module Gamefic
+  class NotConclusionError < Exception
+  end
+
   class Character < Entity
     autoload :State, 'gamefic/character/state'
 
