@@ -9,7 +9,7 @@ module Gamefic
     autoload :State, 'gamefic/character/state'
 
     attr_reader :queue, :user
-    # @return [Gamefic::Director::Order]
+    # @return [Gamefic::Action]
     attr_reader :last_action
     # @return [Entity,nil]
     attr_reader :last_object
@@ -185,6 +185,7 @@ module Gamefic
     end
 
     def performed order
+      order.freeze
       @last_action = order
     end
 
@@ -193,6 +194,10 @@ module Gamefic
     # @return [String]
     def prompt
       scene.nil? ? '>' : scene.prompt_for(self)
+    end
+
+    def neighborly?
+      false
     end
 
     def inspect

@@ -10,11 +10,21 @@ module Gamefic
     def initialize actor, parameters
       @actor = actor
       @parameters = parameters
+      @executed = false
+    end
+
+    # @todo Determine whether to call them parameters, arguments, or both.
+    def arguments
+      parameters
     end
 
     def execute
-      self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
       @executed = true
+      self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
+    end
+
+    def executed?
+      @executed
     end
 
     def verb
@@ -87,7 +97,6 @@ module Gamefic
           }
           @rank -= 1000 if verb.nil?
         #end
-        #puts "Got specificity for #{signature} #{@specificity} on #{queries.length}"
         @rank
       end
 
