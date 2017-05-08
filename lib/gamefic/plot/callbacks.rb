@@ -85,7 +85,6 @@ module Gamefic
         player.prepare nil
         player.cue this_scene unless player.scene == this_scene
         p_player_ready_procs.each { |block| block.call player }
-        player.performed nil
       }
     end
 
@@ -95,6 +94,7 @@ module Gamefic
     #
     def call_player_update
       p_players.each { |player|
+        #player.performed nil
         p_player_update_procs.each { |block| block.call player }
       }
     end
