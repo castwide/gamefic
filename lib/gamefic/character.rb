@@ -137,11 +137,23 @@ module Gamefic
     #     end
     #   end
     #
-    def proceed
+    def proceed quietly: false
       #Director::Delegate.proceed_for self
       return if performance_stack.empty?
       a = performance_stack.last.shift
-      a.execute unless a.nil?
+      unless a.nil?
+        if quietly
+          if @buffer_stack == 0
+            @buffer = ""
+          end
+          @buffer_stack += 1
+        end
+        a.execute
+        if quietly
+          @buffer_stack -= 1
+          @buffer
+        end
+        end
     end
 
     # Immediately start a new scene for the character.
