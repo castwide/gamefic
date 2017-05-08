@@ -9,14 +9,14 @@ describe "Give action" do
   end
   it "responds to the default syntax for give" do
     response = @giver.perform "give receiver item"
-    expect(response.action.verb).to eq(:give)
-    expect(response.arguments[0]).to eq([@receiver])
-    expect(response.arguments[1]).to eq([@item])
+    expect(response.verb).to eq(:give)
+    expect(response.arguments[0]).to eq(@receiver)
+    expect(response.arguments[1]).to eq(@item)
   end
   it "responds to the extended syntax for give" do
     response = @giver.perform "give item to receiver"
-    expect(response.action.verb).to eq(:give)
-    expect(response.arguments[0]).to eq([@receiver])
-    expect(response.arguments[1]).to eq([@item])
+    expect(response.verb).to eq(:give)
+    expect(response.arguments[0]).to eq(@receiver)
+    expect(response.arguments[1]).to eq(@item)
   end
 end
