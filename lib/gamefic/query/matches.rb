@@ -40,8 +40,8 @@ module Gamefic
           #cursor = []
           words.each { |w|
             cursor = inner_match matching_objects, words, matching_text, i, w
-            break if cursor.empty?
-            matching_objects = cursor
+            break if cursor.empty? or (cursor & matching_objects).empty?
+            matching_objects = (cursor & matching_objects)
             i += 1
           }
           objects = matching_objects
@@ -54,7 +54,7 @@ module Gamefic
         def inner_match matching_objects, words, matching_text, i, w
           cursor = []
           matching_objects.each { |o|
-            if o.match?(words[0..i+1].join(' '), fuzzy: true)
+            if o.match?(words[0..i].join(' '), fuzzy: true)
               cursor.push o
               matching_text.push w
             end
