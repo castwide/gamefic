@@ -1,14 +1,14 @@
 describe Syntax do
 	it "acceps a valid syntax" do
-		syn = Syntax.new "command", :command
+		syn = Syntax.new "command", "command"
 		expect(syn.accept? "command" ).to be true
 	end
 	it "does not accept an invalid syntax" do
-		syn = Syntax.new "command", :command
+		syn = Syntax.new "command", "command"
 		expect(syn.accept? "invalid" ).to be false
 	end
   it "does not accept extra text sent to a one-word command" do
-    syn = Syntax.new "one", :one
+    syn = Syntax.new "one", "one"
     expect(syn.accept? "one").to be true
     expect(syn.accept? "one two").to be false
   end
