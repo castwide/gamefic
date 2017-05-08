@@ -85,6 +85,7 @@ module Gamefic
         player.prepare nil
         player.cue this_scene unless player.scene == this_scene
         p_player_ready_procs.each { |block| block.call player }
+        player.performed nil
       }
     end
 
