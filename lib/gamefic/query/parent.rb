@@ -5,8 +5,8 @@ module Gamefic
         subject.parent.nil? ? [] : [subject.parent]
       end
 
-      def breadth
-        1
+      def magnification
+        4
       end
     end
   end

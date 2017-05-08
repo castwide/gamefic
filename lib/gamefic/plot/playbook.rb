@@ -76,7 +76,7 @@ module Gamefic
       # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
       # @yieldparam [Character]
       def respond(verb, *queries, &proc)
-        act = Action.subclass verb, *queries, &proc
+        act = Action.subclass verb, *queries, order_key: raise_order_key, &proc
         add_action act
         act
       end
@@ -130,7 +130,14 @@ module Gamefic
         if result.empty?
           result.concat dispatch_from_string(actor, command.join(' '))
         end
-        result
+        result.sort! { |a,b|
+          if a.rank == b.rank
+            b.order_key <=> a.order_key
+          else
+            b.rank <=> a.rank
+          end
+        }
+        result.uniq{|a| a.class}
       end
 
       def dispatch_from_string actor, text
@@ -140,10 +147,9 @@ module Gamefic
           available = actions_for(c.verb)
           available.each { |a|
             o = a.attempt(actor, c.arguments)
-            result.push o unless o.nil?
+            result.unshift o unless o.nil?
           }
         }
-        result.sort! { |a,b| b.rank <=> a.rank }
         result
       end
 
@@ -151,9 +157,8 @@ module Gamefic
         result = []
         available = actions_for(verb)
         available.each { |a|
-          result.push a.new(actor, params) if a.valid?(actor, params)
+          result.unshift a.new(actor, params) if a.valid?(actor, params)
         }
-        result.sort! { |a,b| b.rank <=> a.rank }
         result
       end
 
@@ -175,11 +180,11 @@ module Gamefic
 
       def add_action(action)
         @commands[action.verb] ||= []
-        @commands[action.verb].unshift action
-        @commands[action.verb].uniq!
-        @commands[action.verb].sort! { |a, b|
-          b.rank <=> a.rank
-        }
+        @commands[action.verb].push action
+        #@commands[action.verb].uniq!
+        #@commands[action.verb].sort! { |a, b|
+        #  b.rank <=> a.rank
+        #}
         generate_default_syntax action
       end
 
@@ -216,6 +221,14 @@ module Gamefic
           end
         }
       end
+
+      def raise_order_key
+        @order_key ||= 0
+        tmp = @order_key
+        @order_key += 1
+        tmp
+      end
+
     end
   end
 

@@ -9,7 +9,7 @@ module Gamefic
         result
       end
 
-      def breadth
+      def magnification
         3
       end
     end

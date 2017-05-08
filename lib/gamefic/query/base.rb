@@ -47,35 +47,35 @@ module Gamefic
         result.include?(object)
       end
 
-      def breadth
+      def magnification
         1
       end
 
       def precision
-        #if @specificity.nil?
-          @specificity = 1
+        if @precision.nil?
+          @precision = 1
           arguments.each { |a|
             if a.kind_of?(Symbol) or a.kind_of?(Regexp)
-              @specificity += 1
+              @precision += 1
             elsif a.kind_of?(Class)
-              @specificity += (count_superclasses(a) * 10)
+              @precision += (count_superclasses(a) * 100)
             elsif a.kind_of?(Module)
-              @specificity += 10
+              @precision += 10
             elsif a.kind_of?(Object)
-              @specificity += 1000
+              @precision += 1000
             end
           }
-          @specificity
-        #end
-        @specificity
+          @precision
+        end
+        @precision
       end
 
       def rank
-        breadth * precision
+        (magnification * 100) + precision
       end
 
       def signature
-        "#{self.class.to_s.downcase}(#{@arguments.length})"
+        "#{self.class.to_s.downcase}(#{@arguments.join(',')})"
       end
 
       def accept?(entity)
@@ -102,12 +102,12 @@ module Gamefic
       # The result will NOT include the original entity itself.
       #
       # @return [Array<Object>]
-      def subquery_neighborly entity
+      def subquery_accessible entity
         result = []
-        if entity.neighborly?
+        if entity.accessible?
           entity.children.each { |c|
             result.push c
-            result.concat subquery_neighborly(c)
+            result.concat subquery_accessible(c)
           }
         end
         result

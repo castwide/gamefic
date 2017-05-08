@@ -196,7 +196,7 @@ module Gamefic
       scene.nil? ? '>' : scene.prompt_for(self)
     end
 
-    def neighborly?
+    def accessible?
       false
     end
 

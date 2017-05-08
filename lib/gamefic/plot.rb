@@ -37,6 +37,7 @@ module Gamefic
       post_initialize
     end
 
+    # @return [Gamefic::Plot::Playbook]
     def playbook
       @playbook ||= Playbook.new
     end

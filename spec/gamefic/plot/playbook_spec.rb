@@ -81,4 +81,24 @@ describe Plot::Playbook do
     actor.perform 'illegal'
     expect(actor[:illegal]).to be true
   end
+
+  it "dispatches the most recently declared action first" do
+    num = 0
+    playbook.respond :command do
+      num = 1
+    end
+    playbook.respond :command do
+      num = 2
+    end
+    playbook.respond :dummy, Query::Base.new do
+      # noop
+    end
+    playbook.respond :command do
+      num = 3
+    end
+    character = Gamefic::Character.new
+    character.playbook = playbook
+    character.perform 'command'
+    expect(num).to eq(3)
+  end
 end

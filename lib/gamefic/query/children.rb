@@ -5,8 +5,8 @@ module Gamefic
         subject.children
       end
 
-      def breadth
-        2
+      def magnification
+        3
       end
     end
   end

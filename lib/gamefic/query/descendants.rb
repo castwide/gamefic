@@ -6,13 +6,13 @@ module Gamefic
         children = super
         result.concat children
         children.each { |c|
-          result.concat subquery_neighborly(c)
+          result.concat subquery_accessible(c)
         }
         result
       end
 
-      def breadth
-        3
+      def magnification
+        2
       end
     end
   end

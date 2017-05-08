@@ -43,10 +43,15 @@ module Gamefic
       self.class.meta?
     end
 
-    def self.subclass verb, *q, meta: false, &block
+    def order_key
+      self.class.order_key
+    end
+
+    def self.subclass verb, *q, meta: false, order_key: 0, &block
       act = Class.new(self) do
         self.verb = verb
         self.meta = meta
+        self.order_key = order_key
         q.each { |q|
           add_query q
         }
@@ -89,14 +94,18 @@ module Gamefic
         @executor
       end
 
+      def order_key
+        @order_key ||= 0
+      end
+
       def rank
-        #if @specificity.nil?
+        if @rank.nil?
           @rank = 0
           queries.each { |q|
             @rank += (q.rank + 1)
           }
           @rank -= 1000 if verb.nil?
-        #end
+        end
         @rank
       end
 
@@ -137,6 +146,10 @@ module Gamefic
 
       def meta= bool
         @meta = bool
+      end
+
+      def order_key= num
+        @order_key = num
       end
     end
   end

@@ -5,8 +5,8 @@ module Gamefic
         [subject]
       end
 
-      def breadth
-        1
+      def magnification
+        4
       end
     end
   end

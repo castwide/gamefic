@@ -8,13 +8,18 @@ module Gamefic
           #until top.parent.nil?
           #  top = top.parent
           #end
-          result.concat subquery_neighborly(top)
+          result.concat subquery_accessible(top)
         end
-        result - [subject]
+        result.delete subject
+        subject.children.each { |c|
+          result.push c
+          result.concat subquery_accessible(c)
+        }
+        result
       end
 
-      def breadth
-        4
+      def magnification
+        1
       end
     end
   end
