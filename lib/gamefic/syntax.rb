@@ -6,8 +6,7 @@ module Gamefic
     attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
     
-    def initialize template, *command
-      command = command.join(' ')
+    def initialize template, command
       words = template.split_words
       @token_count = words.length
       command_words = command.split_words

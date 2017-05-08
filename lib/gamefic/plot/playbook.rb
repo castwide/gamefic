@@ -72,9 +72,10 @@ module Gamefic
       #     actor.tell "#{The character} returns your salute."
       #   end
       #
-      # @param command [Symbol] An imperative verb for the command
-      # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
-      # @yieldparam [Character]
+      # @param verb [Symbol] An imperative verb for the command
+      # @param queries [Array<Query::Base>] Filters for the command's tokens
+      # @yieldparam [Gamefic::Character]
+      # @return [Gamefic::Action]
       def respond(verb, *queries, &proc)
         act = Action.subclass verb, *queries, order_key: raise_order_key, &proc
         add_action act
@@ -93,9 +94,9 @@ module Gamefic
       #     actor.tell "This game was written by John Smith."
       #   end
       #
-      # @param command [Symbol] An imperative verb for the command
-      # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
-      # @yieldparam [Character]
+      # @param verb [Symbol] An imperative verb for the command
+      # @param queries [Array<Query::Base>] Filters for the command's tokens
+      # @yieldparam [Gamefic::Character]
       def meta(verb, *queries, &proc)
         act = Action.subclass verb, *queries, meta: true, &proc
         add_action act
@@ -113,11 +114,11 @@ module Gamefic
       #   interpret "scrutinize :entity", "look :entity"
       #   # The command "scrutinize chair" will be translated to "look chair"
       #
-      # @param command [String] The format of the original command
+      # @param input [String] The format of the original command
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
-      def interpret(*args)
-        syn = Syntax.new(*args)
+      def interpret(input, translation)
+        syn = Syntax.new(input, translation)
         add_syntax syn
         syn
       end

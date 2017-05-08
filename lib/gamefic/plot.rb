@@ -27,7 +27,7 @@ module Gamefic
     include Gamefic, Tester, Players, Scenes, Commands, Entities
     include Articles, YouMount, Snapshot, Host, Callbacks
 
-    # @param [Source::Base]
+    # @param source [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
       @working_scripts = []

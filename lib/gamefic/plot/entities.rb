@@ -42,8 +42,8 @@ module Gamefic
       #   pick "blue chair" #=> blue_chair
       #   pick "chair" #=> IndexError: description is ambiguous
       #
-      # @param @description [String] The description of the entity
-      # @return [Entity] The entity that matches the description
+      # @param  description [String] The description of the entity
+      # @return [Gamefic::Entity] The entity that matches the description
       def pick(description)
         query = Gamefic::Query::Base.new
         result = query.match(description, entities)

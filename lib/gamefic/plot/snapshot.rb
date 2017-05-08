@@ -27,7 +27,7 @@ module Gamefic
     
     # Restore the plot to the state of the provided snapshot.
     #
-    # @param [Hash]
+    # @param snapshot [Hash]
     def restore snapshot
       restore_initial_state
       internal_restore snapshot[:entities]

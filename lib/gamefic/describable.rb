@@ -74,7 +74,7 @@ module Gamefic
     
     # Set whether the object has a proper name.
     #
-    # @param [Boolean]
+    # @param bool [Boolean]
     def proper_named=(bool)
       if bool == true
         if @definite_article != nil
