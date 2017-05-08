@@ -40,4 +40,8 @@ module Gamefic::Use
   def self.room *args
     Gamefic::Query::Room.new *args
   end
+
+  def self.itself *args
+    Gamefic::Query::Room.new *args
+  end
 end

@@ -3,7 +3,7 @@ respond :look, Use.parent(Supporter) do |actor, supporter|
   actor.tell "#{you.pronoun.Subj} are currently on #{the supporter}."
 end
 
-respond :look, Query::Self.new do |actor, _|
+respond :look, Use.itself do |actor, _|
   actor.tell actor.description
   actor.perform :inventory
 end

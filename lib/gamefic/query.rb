@@ -12,9 +12,6 @@ module Gamefic
     autoload :Parent, 'gamefic/query/parent'
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Text, 'gamefic/query/text'
-
-    # @todo Get rid of this
-    class Self < Itself;end
   end
 
 end
