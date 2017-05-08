@@ -1,7 +1,7 @@
 script 'standard/actions/close'
 script 'standard/actions/drop'
 script 'standard/actions/enter'
-#script 'standard/actions/give' # @todo fix
+script 'standard/actions/give'
 script 'standard/actions/go'
 script 'standard/actions/insert'
 script 'standard/actions/inventory'
