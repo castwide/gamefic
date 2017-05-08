@@ -4,10 +4,6 @@ module Gamefic
       def context_from(subject)
         [subject]
       end
-
-      def magnification
-        4
-      end
     end
   end
 end

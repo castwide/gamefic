@@ -12,18 +12,10 @@ class Gamefic::Query::Available < Gamefic::Query::Base
     }
     result
   end
-
-  def magnification
-    1
-  end
 end
 
 class Gamefic::Query::Room < Gamefic::Query::Base
   def context_from(subject)
     subject.room ? [subject.room] : []
-  end
-
-  def magnification
-    4
   end
 end

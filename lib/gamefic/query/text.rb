@@ -40,7 +40,7 @@ module Gamefic
       end
 
       def precision
-        arguments.length
+        0
       end
     end
   end

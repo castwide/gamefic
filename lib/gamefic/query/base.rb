@@ -47,10 +47,6 @@ module Gamefic
         result.include?(object)
       end
 
-      def magnification
-        1
-      end
-
       def precision
         if @precision.nil?
           @precision = 1
@@ -71,7 +67,7 @@ module Gamefic
       end
 
       def rank
-        (magnification * 100) + precision
+        precision
       end
 
       def signature

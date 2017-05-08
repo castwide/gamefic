@@ -17,10 +17,6 @@ module Gamefic
         }
         result
       end
-
-      def magnification
-        1
-      end
     end
   end
 end
