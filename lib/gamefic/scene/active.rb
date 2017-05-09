@@ -11,6 +11,12 @@ module Gamefic
       o = actor.perform input.strip unless input.nil?
       actor.performed o
     end
+
+    class << self
+      def type
+        'Active'
+      end
+    end
   end
   
 end

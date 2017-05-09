@@ -6,7 +6,7 @@ module Gamefic
     end
 
     def default_conclusion
-      @default_conclusion ||= Scene::Conclusion.new
+      @default_conclusion ||= Scene::Conclusion
     end
 
     # Add a block to be executed when a player is added to the game.
@@ -59,8 +59,8 @@ module Gamefic
     # @yieldparam [String] "yes" or "no"
     def yes_or_no prompt = nil, &block
       Scene::YesOrNo.subclass do |actor, scene|
-        self.prompt = prompt
-        block.call actor, scene
+        scene.prompt = prompt
+        scene.on_finish &block
       end
     end
     
@@ -168,14 +168,19 @@ module Gamefic
     #
     # @param map [Hash] A Hash of options and associated scene keys.
     def multiple_scene map = {}
-      s = Scene::MultipleScene.new
-      s.on_start do |actor, data|
-        map.each { |k, v|
-          data.map k, v
+      #s = Scene::MultipleScene.new
+      #s.on_start do |actor, data|
+      #  map.each { |k, v|
+      #    data.map k, v
+      #  }
+      #end
+      #yield(s) if block_given?
+      #s
+      Scene::MultipleScene.subclass do |actor, scene|
+        map.each_pair { |k, v|
+          scene.map k, v
         }
       end
-      yield(s) if block_given?
-      s
     end
   end
 

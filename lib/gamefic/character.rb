@@ -162,7 +162,11 @@ module Gamefic
     #
     def cue new_scene
       @next_scene = nil
-      @scene = new_scene.new(self) unless new_scene.nil?
+      if new_scene.nil?
+        @scene = nil
+      else
+        @scene = new_scene.new(self)
+      end
     end
 
     # Prepare a scene to be started for this character at the beginning of the

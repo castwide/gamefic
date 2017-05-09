@@ -6,18 +6,27 @@ module Gamefic
   # other scene has been prepared or cued.
   #
   class Scene::YesOrNo < Scene::Custom
-    def data_class
-      SceneData::YesOrNo
+    def yes?
+      input.to_s[0,1].downcase == 'y'
     end
 
-    def finish actor, input
-      data = finish_data_for(actor, input)
-      if data.yes? or data.no?
-        this_scene = actor.scene
-        do_finish_block actor, data
-        #actor.cue :active if (actor.scene == this_scene and actor.next_scene.nil?)
+    def no?
+      input.to_s[0,1].downcase == 'n'
+    end
+
+    def invalid_message
+      @invalid_message ||= 'Please enter Yes or No.'
+    end
+
+    def prompt
+      @prompt ||= 'Yes or No?'
+    end
+
+    def finish
+      if yes? or no?
+        super
       else
-        actor.tell data.invalid_message
+        actor.tell invalid_message
       end
     end
   end

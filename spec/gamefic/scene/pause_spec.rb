@@ -9,12 +9,13 @@ describe Scene::Pause do
     end
     plot.introduce character
     character.cue paused
-    expect(character.scene).to eq(paused)
+    expect(character.scene.class).to eq(paused)
     character.queue.push ""
     plot.ready
-    expect(character.scene).to eq(paused)
+    expect(character.scene.class).to eq(paused)
     plot.update
-    expect(character.scene).to eq(plot.default_scene)
+    plot.ready
+    expect(character.scene.class).to eq(plot.default_scene)
     expect(character[:has_paused]).to eq(true)
   end
 end

@@ -3,8 +3,8 @@ describe Scene::YesOrNo do
     @plot = Plot.new
     @character = @plot.make Character, :name => 'character'
     @character[:answered] = nil
-    @scene = @plot.yes_or_no "Yes or no?" do |actor, data|
-      actor[:answered] = data.yes? ? 'yes' : 'no'
+    @scene = @plot.yes_or_no "Yes or no?" do |actor, scene|
+      actor[:answered] = scene.yes? ? 'yes' : 'no'
       # @todo Can yes_or_no proceed to default_scene automatically if no other
       #   scene is specified?
       actor.cue @plot.default_scene
@@ -17,7 +17,7 @@ describe Scene::YesOrNo do
       @character.queue.push answer
       @plot.update
       expect(@character[:answered]).to eq("yes")
-      expect(@character.scene).to eq(@plot.default_scene)
+      expect(@character.scene.class).to eq(@plot.default_scene)
     }
   end
   it "detects no and advances to next scene" do
@@ -26,7 +26,7 @@ describe Scene::YesOrNo do
       @character.queue.push answer
       @plot.update
       expect(@character[:answered]).to eq("no")
-      expect(@character.scene).to eq(@plot.default_scene)
+      expect(@character.scene.class).to eq(@plot.default_scene)
     }
   end
   it "detects invalid answer and stays in current scene" do
@@ -34,6 +34,6 @@ describe Scene::YesOrNo do
     @character.queue.push "undecided"
     @plot.update
     expect(@character[:answered]).to eq(nil)
-    expect(@character.scene).to eq(@scene)
+    expect(@character.scene.class).to eq(@scene)
   end
 end
