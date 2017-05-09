@@ -117,10 +117,7 @@ module Gamefic
     private
 
     def process_input player
-      line = player.queue.shift
-      if !line.nil?
-        player.scene.finish player, line
-      end
+      player.scene.finish
     end
 
   end

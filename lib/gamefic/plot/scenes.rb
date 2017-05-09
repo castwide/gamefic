@@ -2,7 +2,7 @@ module Gamefic
 
   module Plot::Scenes
     def default_scene
-      @default_scene ||= Scene::Active.new(self)
+      @default_scene ||= Scene::Active
     end
 
     def default_conclusion
@@ -53,25 +53,17 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [String] "yes" or "no"
     def yes_or_no prompt = nil, &block
-      s = Scene::YesOrNo.new
-      unless prompt.nil?
-        s.on_start do |actor, data|
-          data.prompt = prompt
-        end
+      Scene::YesOrNo.subclass do |actor, scene|
+        self.prompt = prompt
+        block.call actor, scene
       end
-      s.on_finish do |actor, data|
-        block.call actor, data unless block.nil?
-      end
-      s
     end
     
     def question prompt = 'What is your answer?', &block
-      s = Scene::Custom.new
-      s.on_start do |actor, data|
-        data.prompt = prompt
+      Scene::Custom.subclass do |actor, scene|
+        scene.prompt = prompt
+        scene.on_finish &block
       end
-      s.on_finish &block
-      s
     end
 
     # Create a scene that pauses the game.
@@ -100,9 +92,10 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
     def conclusion &block
-      s = Scene::Conclusion.new
-      s.on_start &block
-      s
+      #s = Scene::Conclusion.new
+      #s.on_start &block
+      #s
+      Scene::Conclusion.subclass &block
     end
     
     # Create a custom scene.

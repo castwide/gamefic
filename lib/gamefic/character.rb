@@ -160,17 +160,16 @@ module Gamefic
     # Use #prepare if you want to declare a scene to be started at the
     # beginning of the next turn.
     #
-    def cue scene
+    def cue new_scene
       @next_scene = nil
-      @scene = scene
-      @scene.start self unless @scene.nil?
+      @scene = new_scene.new(self) unless new_scene.nil?
     end
 
     # Prepare a scene to be started for this character at the beginning of the
     # next turn.
     #
-    def prepare scene
-      @next_scene = scene
+    def prepare s
+      @next_scene = s
     end
 
     # Return true if the character is expected to be in the specified scene on
@@ -185,7 +184,7 @@ module Gamefic
     # NotConclusionError if the scene is not a Scene::Conclusion.
     #
     def conclude scene
-      raise NotConclusionError if !scene.kind_of?(Scene::Conclusion)
+      raise NotConclusionError unless scene <= Scene::Conclusion
       cue scene
     end
 
@@ -205,12 +204,12 @@ module Gamefic
     #
     # @return [String]
     def prompt
-      scene.nil? ? '>' : scene.prompt_for(self)
+      scene.nil? ? '>' : scene.prompt
     end
 
-    def scene_data
-      scene.prompt_for(self)
-    end
+    #def scene_data
+    #  scene.prompt_for(self)
+    #end
 
     def accessible?
       false
