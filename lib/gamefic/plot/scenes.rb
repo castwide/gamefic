@@ -141,10 +141,8 @@ module Gamefic
     #
     # @param cls [Class] The class of scene to be instantiated.
     # @yieldparam [Scene::Custom] The instantiated scene.
-    def scene cls = Scene::Custom, &block
-      s = cls.new
-      yield s if block_given?
-      s
+    def custom cls = Scene::Custom, &block
+      cls.subclass &block
     end
 
     # Choose a new scene based on a list of options.
@@ -167,7 +165,7 @@ module Gamefic
     #   end
     #
     # @param map [Hash] A Hash of options and associated scene keys.
-    def multiple_scene map = {}
+    def multiple_scene map = {}, &block
       #s = Scene::MultipleScene.new
       #s.on_start do |actor, data|
       #  map.each { |k, v|
@@ -180,6 +178,7 @@ module Gamefic
         map.each_pair { |k, v|
           scene.map k, v
         }
+        block.call actor, scene unless block.nil?
       end
     end
   end

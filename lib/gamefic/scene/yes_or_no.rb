@@ -6,6 +6,11 @@ module Gamefic
   # other scene has been prepared or cued.
   #
   class Scene::YesOrNo < Scene::Custom
+    def post_initialize
+      self.type = 'YesOrNo'
+      self.prompt = 'Yes or No?'
+    end
+
     def yes?
       input.to_s[0,1].downcase == 'y'
     end

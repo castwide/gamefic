@@ -35,6 +35,14 @@ module Gamefic
 
     def turn
       @plot.ready
+      unless @character.state[:options].nil?
+        list = '<ol class="multiple_choice">'
+        @character.state[:options].each { |o|
+          list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
+        }
+        list += "</ol>"
+        @character.tell list
+      end
       print @user.flush
       if @character.queue.empty?
         receive

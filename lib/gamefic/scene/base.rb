@@ -11,17 +11,12 @@ module Gamefic
 
     def initialize actor
       @actor = actor
+      post_initialize
       self.class.initialize_block.call @actor, self unless self.class.initialize_block.nil?
-      @called_input = false
     end
 
-    #def on_start &block
-    #  @start_block = block
-    #end
-
-    #def start
-    #  @start_block.call @actor, self unless @start_block.nil?
-    #end
+    def post_initialize
+    end
 
     def on_finish &block
       @finish_block = block
@@ -36,7 +31,12 @@ module Gamefic
       @finish_block.call @actor, self unless @finish_block.nil?
     end
 
+    def state
+      { scene: type, prompt: prompt, input: input }
+    end
+
     def self.subclass &block
+      STDERR.puts "Self in subclass: #{self}"
       c = Class.new(self) do
         on_initialize &block
       end
@@ -51,7 +51,7 @@ module Gamefic
     end
 
     def type
-      @type ||= self.class.type
+      @type ||= 'Scene'
     end
 
     def self.on_initialize &block
@@ -61,10 +61,6 @@ module Gamefic
     class << self
       def initialize_block
         @initialize_block
-      end
-
-      def type
-        'Base'
       end
     end
   end

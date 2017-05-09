@@ -5,6 +5,10 @@ module Gamefic
   # a Plot.
   #
   class Scene::Active < Scene::Base
+    def post_initialize
+      self.type = 'Active'
+    end
+
     def finish
       super
       o = nil

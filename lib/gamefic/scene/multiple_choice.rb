@@ -13,6 +13,11 @@ module Gamefic
     attr_reader :selection
     attr_writer :invalid_message
 
+    def post_initialize
+      self.type = 'MultipleChoice'
+      self.prompt = 'Enter a choice:'
+    end
+
     def start actor
       data = start_data_for(actor)
       data.clear
@@ -37,6 +42,10 @@ module Gamefic
 
     def invalid_message
       @invalid_message ||= 'That is not a valid choice.'
+    end
+
+    def state
+      super.merge options: options
     end
 
     private

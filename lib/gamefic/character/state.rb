@@ -9,11 +9,9 @@ class Gamefic::Character
     # @return [Hash]
     def state
       {
-        output: (user.nil? ? nil : user.flush),
-        prompt: prompt,
-        scene: scene.type,
+        output: (user.nil? ? nil : user.peek),
         busy: !queue.empty?
-      }
+      }.merge(scene.state)
     end
   end
 end
