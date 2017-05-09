@@ -208,6 +208,10 @@ module Gamefic
       scene.nil? ? '>' : scene.prompt_for(self)
     end
 
+    def scene_data
+      scene.prompt_for(self)
+    end
+
     def accessible?
       false
     end
