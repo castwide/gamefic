@@ -16,9 +16,9 @@ describe Character do
     plot = Plot.new
     user = User::Base.new
     character = plot.make Character
-    character.connect user
+    #character.connect user
     character.tell "This is one paragraph."
-    expect(user.flush).to eq("<p>This is one paragraph.</p>")
+    expect(character.messages).to eq("<p>This is one paragraph.</p>")
   end
   it "splits #tell messages into multiple paragraphs" do
     plot = Plot.new
@@ -26,6 +26,6 @@ describe Character do
     character = plot.make Character
     character.connect user
     character.tell "This is paragraph 1.\n\nThis is paragraph 2.\r\n\r\nThis is paragraph 3."
-    expect(user.flush).to eq("<p>This is paragraph 1.</p><p>This is paragraph 2.</p><p>This is paragraph 3.</p>")
+    expect(character.messages).to eq("<p>This is paragraph 1.</p><p>This is paragraph 2.</p><p>This is paragraph 3.</p>")
   end
 end

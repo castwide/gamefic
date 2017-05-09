@@ -31,8 +31,14 @@ module Gamefic
       @finish_block.call @actor, self unless @finish_block.nil?
     end
 
+    def flush
+      @state.clear
+    end
+
     def state
-      { scene: type, prompt: prompt, input: input }
+      {
+        scene: type, prompt: prompt, input: input #, output: actor.messages, busy: !actor.queue.empty?
+      }
     end
 
     def self.subclass &block

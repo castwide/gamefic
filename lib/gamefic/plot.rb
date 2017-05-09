@@ -69,6 +69,7 @@ module Gamefic
     def ready
       playbook.freeze
       @running = true
+      entities.each { |e| e.flush }
       call_ready
       call_player_ready
       p_subplots.each { |s| s.ready }

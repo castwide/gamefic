@@ -65,12 +65,13 @@ module Gamefic
       p_update_procs.each { |p| p.call }
     end
 
-    # Execute the before_player_ready blocks for each player. This method is
-    # typically called by the Plot while beginning a turn, immediately before
+    # Execute the before_player_update blocks for each player. This method is
+    # typically called by the Plot while updating a turn, immediately before
     # processing player input.
     #
     def call_before_player_update
       p_players.each { |player|
+        player.flush
         p_before_player_update_procs.each { |block| block.call player }
       }
     end

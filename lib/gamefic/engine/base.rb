@@ -30,7 +30,7 @@ module Gamefic
       connect
       @plot.introduce @character
       turn until @character.concluded?
-      print @user.flush
+      #print @user.flush
     end
 
     def turn
@@ -43,12 +43,16 @@ module Gamefic
         list += "</ol>"
         @character.tell list
       end
-      print @user.flush
+      #print @user.flush
+      print @character.messages
+      #@character.flush
       if @character.queue.empty?
         receive
       end
       @plot.update
-      print @user.flush
+      #print @user.flush
+      print @character.messages
+      #@character.flush
     end
 
     def receive

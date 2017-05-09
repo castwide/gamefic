@@ -6,7 +6,7 @@ module Gamefic
   end
 
   class Character < Entity
-    autoload :State, 'gamefic/character/state'
+    #autoload :State, 'gamefic/character/state'
 
     attr_reader :queue, :user
     # @return [Gamefic::Action]
@@ -17,12 +17,13 @@ module Gamefic
     attr_reader :scene
     attr_reader :next_scene
     attr_accessor :playbook
-
-    include Character::State
+    
+    #include Character::State
 
     def initialize(args = {})
-      @queue = Array.new
       super
+      @queue = Array.new
+      @messages = ''
       @buffer_stack = 0
       @buffer = ""
     end
@@ -39,7 +40,32 @@ module Gamefic
     def disconnect
       @user = nil
     end
-    
+
+    # Send a message to the entity.
+    # This method will automatically wrap the message in HTML paragraphs.
+    # To send a message without paragraph formatting, use #stream instead.
+    #
+    # @param message [String]
+    def tell(message)
+      if @buffer_stack > 0
+        @buffer += message
+      else
+        super
+      end
+    end
+
+    # Send a message to the Character as raw text.
+    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
+    #
+    # @param message [String]
+    def stream(message)
+      if @buffer_stack > 0
+        @buffer += message
+      else
+        super
+      end
+    end
+
     # Perform a command.
     # The command can be specified as a String or a set of tokens. Either form
     # should yield the same result, but using tokens can yield better
@@ -73,6 +99,11 @@ module Gamefic
       a
     end
     
+    def flush
+      super
+      state.clear
+    end
+
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
@@ -86,34 +117,6 @@ module Gamefic
       self.perform *command
       @buffer_stack -= 1
       @buffer
-    end
-    
-    # Send a message to the Character.
-    # This method will automatically wrap the message in HTML paragraphs.
-    # To send a message without paragraph formatting, use #stream instead.
-    #
-    # @param message [String]
-    def tell(message)
-      if user != nil and message.to_s != ''
-        if @buffer_stack > 0
-          @buffer += message
-        else
-          message = "<p>#{message.strip}</p>"
-          # This method uses String#gsub instead of String#gsub! for
-          # compatibility with Opal.
-          message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
-          message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
-          user.send message
-        end
-      end
-    end
-    
-    # Send a message to the Character as raw text.
-    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
-    #
-    # @param message [String]
-    def stream(message)
-      user.send message.strip unless user.nil?
     end
 
     # Proceed to the next Action in the current stack.
@@ -153,7 +156,7 @@ module Gamefic
           @buffer_stack -= 1
           @buffer
         end
-        end
+      end
     end
 
     # Immediately start a new scene for the character.
@@ -207,13 +210,15 @@ module Gamefic
     # Get the prompt that the user should see for the current scene.
     #
     # @return [String]
-    def prompt
-      scene.nil? ? '>' : scene.prompt
-    end
-
-    #def scene_data
-    #  scene.prompt_for(self)
+    #def prompt
+    #  scene.nil? ? '>' : scene.prompt
     #end
+
+    def state
+      @state ||= {}
+      @state.merge! scene.state unless scene.nil?
+      @state.merge! output: messages
+    end
 
     def accessible?
       false
@@ -232,14 +237,6 @@ module Gamefic
     def performance_stack
       @performance_stack ||= []
     end
-
-    #def last_action=(order)
-    #  return if order.nil?
-    #  @last_order = order
-    #  if !order.action.meta? and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
-    #    @last_object = order.arguments[0][0]
-    #  end
-    #end
   end
 
 end
