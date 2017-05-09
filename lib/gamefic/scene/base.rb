@@ -36,7 +36,6 @@ module Gamefic
     end
 
     def self.subclass &block
-      STDERR.puts "Self in subclass: #{self}"
       c = Class.new(self) do
         on_initialize &block
       end
