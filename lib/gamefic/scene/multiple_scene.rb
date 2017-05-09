@@ -1,14 +1,19 @@
 module Gamefic
 
   class Scene::MultipleScene < Scene::MultipleChoice
-    def data_class
-      SceneData::MultipleScene
+    def option_map
+      @option_map ||= {}
     end
 
-    def finish actor, input
-      data = super
-      unless data.selection.nil?
-        actor.cue data.scene_for(data.selection)
+    def map option, scene
+      options.push option
+      option_map[option] = scene
+    end
+
+    def finish
+      get_choice
+      unless selection.nil?
+        actor.cue option_map[selection]
       end
     end
   end
