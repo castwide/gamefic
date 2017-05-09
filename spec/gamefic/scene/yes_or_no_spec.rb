@@ -5,6 +5,7 @@ describe Scene::YesOrNo do
     @character[:answered] = nil
     @scene = @plot.yes_or_no "Yes or no?" do |actor, data|
       actor[:answered] = data.yes? ? 'yes' : 'no'
+      actor.cue @plot.default_scene
     end
     @plot.introduce @character
   end
