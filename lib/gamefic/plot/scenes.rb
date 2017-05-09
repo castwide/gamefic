@@ -89,7 +89,7 @@ module Gamefic
       #end
       #s
       Scene::Pause.subclass do |actor, scene|
-        scene.prompt = prompt
+        scene.prompt = prompt unless prompt.nil?
         block.call(actor, scene) unless block.nil?
       end
     end
