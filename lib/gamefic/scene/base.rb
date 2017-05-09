@@ -5,21 +5,34 @@ module Gamefic
   #
   class Scene::Base
     attr_reader :actor
-    attr_reader :input
     attr_writer :type
     attr_writer :prompt
+    attr_reader :input
 
     def initialize actor
       @actor = actor
       self.class.initialize_block.call @actor, self unless self.class.initialize_block.nil?
+      @called_input = false
     end
+
+    #def on_start &block
+    #  @start_block = block
+    #end
+
+    #def start
+    #  @start_block.call @actor, self unless @start_block.nil?
+    #end
 
     def on_finish &block
       @finish_block = block
     end
 
+    def update
+      @input = actor.queue.shift
+      finish
+    end
+
     def finish
-      @input = @actor.queue.shift
       @finish_block.call @actor, self unless @finish_block.nil?
     end
 

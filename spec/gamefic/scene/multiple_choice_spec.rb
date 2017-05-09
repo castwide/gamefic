@@ -24,9 +24,9 @@ describe Scene::MultipleChoice do
       @plot.update
       expect(@character[:index]).to eq(answer.to_i - 1)
       if answer == '4'
-        expect(@character.scene).to eq(@after)
+        expect(@character.scene.class).to eq(@after)
       else
-        expect(@character.scene).to eq(@plot.default_scene)
+        expect(@character.scene.type).to eq('Active')
       end
     }
   end
@@ -39,7 +39,7 @@ describe Scene::MultipleChoice do
       @plot.ready
       @plot.update
       expect(@character[:selection]).to eq(answer)
-      expect(@character.scene).to eq(@plot.default_scene)
+      expect(@character.scene.type).to eq('Active')
     }
   end
   it "detects an invalid answer and stays in the current scene" do
@@ -53,7 +53,7 @@ describe Scene::MultipleChoice do
       @plot.update
       expect(@character[:index]).to eq(nil)
       expect(@character[:selection]).to eq(nil)
-      expect(@character.scene).to eq(@chooser)
+      expect(@character.scene.class).to eq(@chooser)
     }
   end
   it "detects a valid answer and advances to a specified scene" do
@@ -66,7 +66,7 @@ describe Scene::MultipleChoice do
       @plot.update
       expect(@character[:index]).to eq(3)
       expect(@character[:selection]).to eq('next')
-      expect(@character.scene).to eq(@after)
+      expect(@character.scene.class).to eq(@after)
     }
   end
 end

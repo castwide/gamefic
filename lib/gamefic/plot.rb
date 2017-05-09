@@ -117,7 +117,7 @@ module Gamefic
     private
 
     def process_input player
-      player.scene.finish
+      player.scene.update
     end
 
   end

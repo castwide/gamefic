@@ -38,13 +38,18 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::MultipleChoice]
     def multiple_choice *choices, &block
-      s = Scene::MultipleChoice.new
-      s.on_start do |actor, data|
-        data.options.clear
-        data.options.push *choices
+      #s = Scene::MultipleChoice.new
+      #s.on_start do |actor, data|
+      #  data.options.clear
+      #  data.options.push *choices
+      #end
+      #s.on_finish &block
+      #s
+      #Scene::MultipleChoice.subclass &block
+      Scene::MultipleChoice.subclass do |actor, scene|
+        scene.options.concat choices
+        scene.on_finish &block
       end
-      s.on_finish &block
-      s
     end
     
     # Create a yes-or-no scene.
@@ -74,15 +79,19 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
     def pause prompt = nil, &block
-      s = Scene::Pause.new
-      s.on_start do |actor, data|
-        data.prompt = prompt unless prompt.nil?
-        block.call actor, data unless block.nil?
+      #s = Scene::Pause.new
+      #s.on_start do |actor, data|
+      #  data.prompt = prompt unless prompt.nil?
+      #  block.call actor, data unless block.nil?
+      #end
+      #s.on_finish do |actor, data|
+      #  actor.cue default_scene if actor.will_cue?(s)
+      #end
+      #s
+      Scene::Pause.subclass do |actor, scene|
+        scene.prompt = prompt
+        block.call(actor, scene) unless block.nil?
       end
-      s.on_finish do |actor, data|
-        actor.cue default_scene if actor.will_cue?(s)
-      end
-      s
     end
     
     # Create a conclusion.
