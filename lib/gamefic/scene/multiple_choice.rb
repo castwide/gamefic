@@ -25,6 +25,11 @@ module Gamefic
     #  tell_options
     #end
     
+    def start
+      super
+      raise "MultipleChoice scene has zero options" if options.empty?
+    end
+
     def finish
       #data = finish_data_for(actor, input)
       get_choice
