@@ -1,7 +1,11 @@
 var Gamefic = (function() {
 	var updateCallbacks = [];
+	var startCallbacks = [];
 	return {
 		start: function() {
+			startCallbacks.forEach((callback) => {
+				callback();
+			});
 			Opal.gvars.engine.$run();
 		},
 		update: function(response) {
@@ -14,6 +18,9 @@ var Gamefic = (function() {
 		},
 		receive: function(input) {
 			Opal.gvars.engine.$receive(input);
+		},
+		onStart: function(callback) {
+			startCallbacks.push(callback);
 		},
 		onUpdate: function(callback) {
 			updateCallbacks.push(callback);

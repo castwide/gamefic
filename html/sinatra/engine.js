@@ -5,10 +5,10 @@ var Gamefic = (function() {
 		start: function() {
 			var that = this;
       $.post('/start', function(response) {
-				that.update(response);
 				startCallbacks.forEach(function(callback) {
-					callback(response);
+					callback();
 				});
+				that.update(response);
       });
 		},
 		update: function(response) {
