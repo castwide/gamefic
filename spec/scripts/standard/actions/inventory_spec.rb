@@ -11,6 +11,6 @@ describe "Inventory Action" do
     item_name = SecureRandom.hex
     item = plot.make Item, :name => item_name, :parent => character
     character.perform 'inventory'
-    expect(character.user.flush).to include(item_name)
+    expect(character.messages).to include(item_name)
   end
 end

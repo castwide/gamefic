@@ -9,7 +9,7 @@ describe "Look Action" do
     character = @plot.make Character, :name => 'character', :parent => room
     character.connect User::Base.new
     character.perform 'look item'
-    expect(character.user.flush).to include(item.description)
+    expect(character.messages).to include(item.description)
   end
   it "responds to looking at an entity in a sibling container" do
     room = @plot.make Room, :name => 'room'
@@ -18,7 +18,7 @@ describe "Look Action" do
     character = @plot.make Character, :name => 'character', :parent => room
     character.connect User::Base.new
     character.perform 'look item'
-    expect(character.user.flush).to include(item.description)
+    expect(character.messages).to include(item.description)
   end
   it "responds to looking at an entity in a sibling supporter" do
     room = @plot.make Room, :name => 'room'
@@ -27,7 +27,7 @@ describe "Look Action" do
     character = @plot.make Character, :name => 'character', :parent => room
     character.connect User::Base.new
     character.perform 'look item'
-    expect(character.user.flush).to include(item.description)
+    expect(character.messages).to include(item.description)
   end
   it "responds to looking at an entity attached to a sibling" do
     room = @plot.make Room, :name => 'room'
@@ -37,7 +37,7 @@ describe "Look Action" do
     character = @plot.make Character, :name => 'character', :parent => room
     character.connect User::Base.new
     character.perform 'look item'
-    expect(character.user.flush).to include(item.description)
+    expect(character.messages).to include(item.description)
   end
   it "responds to looking at an entity in an explicit open container" do
     room = @plot.make Room, :name => 'room'
@@ -46,6 +46,6 @@ describe "Look Action" do
     character = @plot.make Character, :name => 'character', :parent => room
     character.connect User::Base.new
     character.perform 'look at item in container'
-    expect(character.user.flush).to include(item.description)
+    expect(character.messages).to include(item.description)
   end
 end
