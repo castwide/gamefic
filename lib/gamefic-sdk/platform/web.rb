@@ -103,23 +103,6 @@ module Gamefic::Sdk
     end
 
     def build_scripts_js build_dir
-      # Plot scripts
-=begin
-      File.open("#{build_dir}/scripts.rb", 'w') do |file|
-        file << "def GameficOpal.load_scripts\n"
-        plot.imported_scripts.each { |script|
-          file << "GameficOpal.static_plot.stage do\n"
-          file << script.read
-          file << "\nend\n"
-        }
-        file << "end\n"
-        file << metadata_code
-      end
-      Opal.append_path build_dir
-      File.open(build_dir + "/core/scripts.js", 'w') do |file|
-        file << Opal::Builder.build('scripts')
-      end
-=end
       File.open("#{build_dir}/scripts.rb", 'w') do |file|
         file << "module Gamefic\n"
         file << "$scripts = {}\n"
