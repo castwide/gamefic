@@ -18,13 +18,15 @@ module Gamefic
     #     actor.tell "Welcome to the game!"
     #   end
     #
-    # @yieldparam [Character]
+    # @yieldparam [Gamefic::Character]
     def introduction (&proc)
       @introduction = proc
     end
 
     # Introduce a player to the game.
     # This method is typically called by the Engine that manages game execution.
+    #
+    # @param [Gamefic::Character]
     def introduce(player)
       player.playbook = playbook
       player.cue default_scene
@@ -35,17 +37,9 @@ module Gamefic
     # Create a multiple-choice scene.
     # The user will be required to make a valid choice to continue.
     #
-    # @yieldparam [Character]
-    # @yieldparam [Scene::Data::MultipleChoice]
+    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Scene::Data::MultipleChoice]
     def multiple_choice *choices, &block
-      #s = Scene::MultipleChoice.new
-      #s.on_start do |actor, data|
-      #  data.options.clear
-      #  data.options.push *choices
-      #end
-      #s.on_finish &block
-      #s
-      #Scene::MultipleChoice.subclass &block
       Scene::MultipleChoice.subclass do |actor, scene|
         scene.options.concat choices
         scene.on_finish &block
@@ -55,8 +49,8 @@ module Gamefic
     # Create a yes-or-no scene.
     # The user will be required to answer Yes or No to continue.
     #
-    # @yieldparam [Character]
-    # @yieldparam [String] "yes" or "no"
+    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Scene::YesOrNo]
     def yes_or_no prompt = nil, &block
       Scene::YesOrNo.subclass do |actor, scene|
         scene.prompt = prompt
@@ -76,18 +70,9 @@ module Gamefic
     # the user (e.g., pressing Enter) to continue.
     #
     # @param prompt [String] The text to display when prompting the user to continue.
-    # @yieldparam [Character]
-    # @yieldparam [Scene::Data::Base]
+    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Scene::Pause]
     def pause prompt = nil, &block
-      #s = Scene::Pause.new
-      #s.on_start do |actor, data|
-      #  data.prompt = prompt unless prompt.nil?
-      #  block.call actor, data unless block.nil?
-      #end
-      #s.on_finish do |actor, data|
-      #  actor.cue default_scene if actor.will_cue?(s)
-      #end
-      #s
       Scene::Pause.subclass do |actor, scene|
         scene.prompt = prompt unless prompt.nil?
         block.call(actor, scene) unless block.nil?
@@ -98,12 +83,9 @@ module Gamefic
     # The game (or the character's participation in it) will end after this
     # scene is complete.
     #
-    # @yieldparam [Character]
-    # @yieldparam [Scene::Data::Base]
+    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Scene::Conclusion]
     def conclusion &block
-      #s = Scene::Conclusion.new
-      #s.on_start &block
-      #s
       Scene::Conclusion.subclass &block
     end
     
@@ -116,10 +98,8 @@ module Gamefic
     # scene types by specifying the class to create.
     #
     # @example Ask the user for a name
-    #   scene :ask_for_name do |scene|
-    #     scene.on_start do |actor, data|
-    #       data.prompt = "What's your name?"
-    #     end
+    #   @scene = custom do |scene|
+    #     data.prompt = "What's your name?"
     #     scene.on_finish do |actor, data|
     #       actor.name = data.input
     #       actor.tell "Hello, #{actor.name}!"
@@ -127,19 +107,8 @@ module Gamefic
     #     end
     #   end
     #
-    # @example Customize the prompt for a MultipleChoice scene
-    #   scene :ask_for_choice, Scene::MultipleChoice do |scene|
-    #     scene.on_start do |actor, data|
-    #       data.options.push 'red', 'green', 'blue'
-    #       data.prompt = "Which color?"
-    #     end
-    #     scene.on_finish do |actor, data|
-    #       actor.tell "You chose #{data.selection}"
-    #       actor.cue :active
-    #     end
-    #   end
-    #
     # @param cls [Class] The class of scene to be instantiated.
+    # @yieldparam [Gamefic::Character]
     # @yieldparam [Scene::Custom] The instantiated scene.
     def custom cls = Scene::Custom, &block
       cls.subclass &block
@@ -165,15 +134,9 @@ module Gamefic
     #   end
     #
     # @param map [Hash] A Hash of options and associated scene keys.
+    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Scene::MultipleScene]
     def multiple_scene map = {}, &block
-      #s = Scene::MultipleScene.new
-      #s.on_start do |actor, data|
-      #  map.each { |k, v|
-      #    data.map k, v
-      #  }
-      #end
-      #yield(s) if block_given?
-      #s
       Scene::MultipleScene.subclass do |actor, scene|
         map.each_pair { |k, v|
           scene.map k, v
