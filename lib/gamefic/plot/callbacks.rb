@@ -82,9 +82,12 @@ module Gamefic
     #
     def call_player_ready
       p_players.each { |player|
-        this_scene = player.next_scene || (player.scene.nil? ? nil : player.scene.class) || default_scene
-        player.prepare nil
-        player.cue this_scene unless player.scene.class == this_scene
+        unless player.next_scene.nil?
+          player.cue player.next_scene
+        end
+        player.cue default_scene if player.scene.nil?
+        #player.prepare nil
+        #player.cue this_scene #unless player.scene.class == this_scene
         p_player_ready_procs.each { |block| block.call player }
       }
     end

@@ -12,7 +12,6 @@ module Gamefic
     def initialize actor
       @actor = actor
       post_initialize
-      self.class.initialize_block.call @actor, self unless self.class.initialize_block.nil?
     end
 
     def post_initialize
@@ -25,6 +24,10 @@ module Gamefic
     def update
       @input = actor.queue.shift
       finish
+    end
+
+    def start
+      self.class.initialize_block.call @actor, self unless self.class.initialize_block.nil?
     end
 
     def finish

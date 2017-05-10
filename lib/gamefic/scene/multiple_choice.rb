@@ -18,12 +18,12 @@ module Gamefic
       self.prompt = 'Enter a choice:'
     end
 
-    def start actor
-      data = start_data_for(actor)
-      data.clear
-      do_start_block actor, data
-      tell_options
-    end
+    #def start actor
+    #  data = start_data_for(actor)
+    #  data.clear
+    #  do_start_block actor, data
+    #  tell_options
+    #end
     
     def finish
       #data = finish_data_for(actor, input)

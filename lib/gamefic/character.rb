@@ -99,11 +99,6 @@ module Gamefic
       a
     end
     
-    def flush
-      super
-      state.clear
-    end
-
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
@@ -169,6 +164,7 @@ module Gamefic
         @scene = nil
       else
         @scene = new_scene.new(self)
+        @scene.start
       end
     end
 
