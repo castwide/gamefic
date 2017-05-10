@@ -1,9 +1,13 @@
 $(function() {
+	console.log('starting play');
 	$('#gamefic_controls form').submit(function(event) {
+		$('#gamefic_controls').addClass('working');
 		event.preventDefault();
-		Gamefic.update($('#gamefic_command').val());
+		Gamefic.receive($('#gamefic_command').val());
+		$('#gamefic_command').val('');
+		$('#gamefic_controls').removeClass('working');
 	});
-	Gamefic.onStart(function(response) {
+	/*Gamefic.onStart(function(response) {
 		var prompt = response.prompt;
 		if (prompt == '>') {
 			prompt = 'What do you want to do?'
@@ -62,7 +66,19 @@ $(function() {
 		if (!$(this).hasClass('disabled')) {
 			Gamefic.update($(this).attr('data-command'));
 		}
+	});*/
+	Gamefic.onUpdate((state) => {
+		console.log('Doing the update with ' + state['output']);
+		console.log(JSON.stringify(state));
+		$('#gamefic_output').append(state['output']);
+		if (state.scene == 'Conclusion') {
+			$('#gamefic_console').addClass('concluded');
+		}
 	});
+	console.log('Starting Gamefic');
 	Gamefic.start();
-	$('#gamefic_command').focus();
+	//console.log('Started!');
+	$('#gamefic_controls').removeClass('working');
+	//$('#gamefic_command').focus();
+	console.log('finished play');
 });

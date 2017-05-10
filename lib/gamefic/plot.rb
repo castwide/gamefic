@@ -33,13 +33,12 @@ module Gamefic
       @working_scripts = []
       @imported_scripts = []
       @running = false
-      @playbook = Playbook.new
       post_initialize
     end
 
     # @return [Gamefic::Plot::Playbook]
     def playbook
-      @playbook ||= Playbook.new
+      @playbook ||= Gamefic::Plot::Playbook.new
     end
 
     def running?
@@ -69,7 +68,6 @@ module Gamefic
     def ready
       playbook.freeze
       @running = true
-      entities.each { |e| e.flush }
       call_ready
       call_player_ready
       p_subplots.each { |s| s.ready }
@@ -78,6 +76,7 @@ module Gamefic
     # Update the Plot's current turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def update
+      entities.each { |e| e.flush }
       call_before_player_update
       p_players.each { |p| p.scene.update }
       p_entities.each { |e| e.update }
@@ -106,7 +105,12 @@ module Gamefic
       end
       if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
         @working_scripts.push imported_script
-        stage imported_script.read, imported_script.absolute_path
+        # @hack Arguments need to be in different order if source returns proc
+        if imported_script.read.kind_of?(Proc)
+          stage path, &imported_script.read
+        else
+          stage imported_script.read, imported_script.absolute_path
+        end
         @working_scripts.pop
         imported_scripts.push imported_script
         true

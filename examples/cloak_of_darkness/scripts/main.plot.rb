@@ -137,7 +137,7 @@ introduction do |player|
   player.parent = foyer
   cloak.parent = player
   player[:disturbed] = false
-  #player.perform "look"
+  player.perform :look
 end
 
 # Two different endings

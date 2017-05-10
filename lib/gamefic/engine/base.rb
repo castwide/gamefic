@@ -29,6 +29,7 @@ module Gamefic
     def run
       connect
       @plot.introduce @character
+      @user.update @character.state
       turn until @character.concluded?
       #print @user.flush
     end
@@ -44,14 +45,14 @@ module Gamefic
         @character.tell list
       end
       #print @user.flush
-      print @character.messages
+      @user.update @character.state
       #@character.flush
       if @character.queue.empty?
         receive
       end
       @plot.update
       #print @user.flush
-      print @character.messages
+      @user.update @character.state
       #@character.flush
     end
 

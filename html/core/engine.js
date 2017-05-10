@@ -1,71 +1,22 @@
 var Gamefic = (function() {
-	var startCallbacks = [];
-	var inputCallbacks = [];
-	var finishCallbacks = [];
-	var responseCallbacks = {};
-	var doReady = function(response) {
-		startCallbacks.forEach(function(callback) {
-			callback(response);
-		});
-	}
-	var handle = function(response) {
-		if (!responseCallbacks[response.scene]) {
-			console.warn('No response for ' + response.scene + '. Defaulting to Active');
-		}
-		var handler = responseCallbacks[response.scene] || responseCallbacks['Active'];
-		handler(response);
-	}
+	var updateCallbacks = [];
 	return {
 		start: function() {
-			Opal.GameficOpal.$load_scripts();
-			Opal.GameficOpal.$static_plot().$introduce(Opal.GameficOpal.$static_character());
-			Opal.GameficOpal.$static_plot().$ready();
-			var response = JSON.parse(Opal.GameficOpal.$static_character().$state().$to_json());
-			doReady(response);
-			handle(response);
-			finishCallbacks.forEach(function(callback) {
-				callback(response);
+			Opal.gvars.engine.$run();
+		},
+		update: function(response) {
+			console.log('Called the Gamefic update');
+			var state = JSON.parse(response);
+			console.log('Output: ' + state.output);
+			updateCallbacks.forEach(function(callback) {
+				callback(state);
 			});
 		},
-		update: function(input) {
-			if (input != null) {
-				Opal.GameficOpal.$static_character().$queue().$push(input);
-			}
-			Opal.GameficOpal.$static_plot().$update();
-			Opal.GameficOpal.$static_plot().$ready();
-			var response = JSON.parse(Opal.GameficOpal.$static_character().$state().$to_json());
-			response.input = input;
-			inputCallbacks.forEach(function(callback) {
-				callback(response);
-			});
-			doReady(response);
-			handle(response);
-			finishCallbacks.forEach(function(callback) {
-				callback(response);
-			});
-			if (response.busy) {
-				setTimeout("Gamefic.update();", 1);
-			}
+		receive: function(input) {
+			Opal.gvars.engine.$receive(input);
 		},
-		onStart: function(callback) {
-			startCallbacks.push(callback);
-		},
-		onInput: function(callback) {
-			inputCallbacks.push(callback);
-		},
-		onFinish: function(callback) {
-			finishCallbacks.push(callback);
-		},
-		handleResponse: function() {
-			var states = [];
-			var args = Array.prototype.slice.call(arguments);
-			while (args.length > 1) {
-				states.push(args.shift());
-			}
-			if (states.length == 0) states.push('Active');
-			states.forEach(function (state) {
-				responseCallbacks[state] = args[0];
-			});
+		onUpdate: function(callback) {
+			updateCallbacks.push(callback);
 		},
 		save: function(filename, data) {
 			var json = Opal.JSON.$generate(data);
