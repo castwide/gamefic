@@ -1,61 +1,35 @@
 var Gamefic = (function() {
 	var startCallbacks = [];
-	var inputCallbacks = [];
-	var finishCallbacks = [];
-	var responseCallbacks = {};
-	var doReady = function(response) {
-		startCallbacks.forEach(function(callback) {
-			callback(response);
-		});
-	}
-	var handle = function(response) {
-		var handler = responseCallbacks[response.scene] || responseCallbacks['Active'];
-		handler(response);
-	}
+	var updateCallbacks = [];
 	return {
 		start: function() {
 			var that = this;
       $.post('/start', function(response) {
-				doReady(response);
-				handle(response);
-				finishCallbacks.forEach(function(callback) {
+				that.update(response);
+				startCallbacks.forEach(function(callback) {
 					callback(response);
 				});
       });
 		},
-		update: function(input) {
-			if (input != null) {
-				$.post('/update', {command: input}, function(response) {
-					inputCallbacks.forEach(function(callback) {
-						callback(response);
-					});
-					doReady(response);
-					handle(response);
-					finishCallbacks.forEach(function(callback) {
-						callback(response);
-					});
-				});
-			}
+		update: function(response) {
+			updateCallbacks.forEach(function(callback) {
+				callback(response);
+			});
+		},
+		receive: function(input) {
+			var that = this;
+			$.post('/update', {command: input}, function(response) {
+				console.log(JSON.stringify(response));
+				that.update(response);
+			}).fail(function(response) {
+				console.log('An error occurred');
+			});
+		},
+		onUpdate: function(callback) {
+			updateCallbacks.push(callback);
 		},
 		onStart: function(callback) {
-			startCallbacks.push(callback);
-		},
-		onInput: function(callback) {
-			inputCallbacks.push(callback);
-		},
-		onFinish: function(callback) {
-			finishCallbacks.push(callback);
-		},
-		handleResponse: function() {
-			var states = [];
-			var args = Array.prototype.slice.call(arguments);
-			while (args.length > 1) {
-				states.push(args.shift());
-			}
-			if (states.length == 0) states.push('Active');
-			states.forEach(function (state) {
-				responseCallbacks[state] = args[0];
-			});
+			updateCallbacks.push(callback);
 		},
 		save: function(filename, data) {
 			var json = Opal.JSON.$generate(data);
