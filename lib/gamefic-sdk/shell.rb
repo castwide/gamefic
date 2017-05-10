@@ -32,14 +32,14 @@ module Gamefic
         ).run
       end
 
-      desc 'test DIRECTORY_NAME', 'Play the game in DIRECTORY_NAME'
+      desc 'test [DIRECTORY_NAME]', 'Play the game in DIRECTORY_NAME'
       def test(directory_name = '.')
         Gamefic::Sdk::Shell::Test.new(directory: directory_name).run
       end
 
-      desc 'server DIRECTORY_NAME', 'Run the game in DIRECTORY_NAME in a web server'
+      desc 'server [DIRECTORY_NAME]', 'Run the game in DIRECTORY_NAME in a web server'
       option :browser, type: :boolean, aliases: :b, desc: 'Open a browser when the server starts'
-      def server(directory_name)
+      def server(directory_name = '.')
         Gamefic::Sdk::Server.set :source_dir, directory_name
         Gamefic::Sdk::Server.set :browser, options[:browser]
         pub = File.join(directory_name, 'release', 'sinatra').gsub(/\\/, '/')
@@ -47,18 +47,18 @@ module Gamefic
         Gamefic::Sdk::Server.run!
       end
 
-      desc 'build DIRECTORY_NAME', 'Build the game for specified platforms in DIRECTORY_NAME'
+      desc 'build [DIRECTORY_NAME]', 'Build the game for specified platforms in DIRECTORY_NAME'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       def build(directory_name = '.')
         Gamefic::Sdk::Build.release(directory_name, options[:quiet])
       end
 
-      desc 'clean DIRECTORY_NAME', 'Perform cleanup of DIRECTORY_NAME'
-      def clean(directory_name)
+      desc 'clean [DIRECTORY_NAME]', 'Perform cleanup of DIRECTORY_NAME'
+      def clean(directory_name = '.')
         Gamefic::Sdk::Build.clean(directory_name)
       end
 
-      desc 'import-scripts DIRECTORY_NAME', 'Copy external scripts to the local scripts directory'
+      desc 'import-scripts [DIRECTORY_NAME]', 'Copy external scripts to the local scripts directory'
       def import_scripts(directory_name = '.')
         config_yaml = File.join(directory_name, 'config.yaml')
         if File.exist?(config_yaml)
@@ -78,6 +78,11 @@ module Gamefic
           FileUtils.mkdir_p(File.dirname(dst))
           FileUtils.cp_r(src, dst)
         }
+      end
+
+      desc 'reset-package [DIRECTORY_NAME]', 'Reset package.yaml to the default values'
+      def reset_config(directory_name = '.')
+
       end
 
       desc 'webskins', 'List the available skins for the Web platform'
