@@ -35,7 +35,7 @@ module Gamefic
       end
 
       def accept?(entity)
-        return false unless entity.kind_of?(String)
+        return false unless entity.kind_of?(String) and !entity.empty?
         super
       end
 
