@@ -6,8 +6,7 @@ module Gamefic
     attr_reader :token_count, :first_word, :verb, :template, :command
     @@phrase = '([\w\W\s\S]*?)'
     
-    def initialize template, *command
-      command = command.join(' ')
+    def initialize template, command
       words = template.split_words
       @token_count = words.length
       command_words = command.split_words
@@ -99,19 +98,12 @@ module Gamefic
         result = syntax.tokenize text
         matches.push(result) if !result.nil?
       }
-      # Sort matches having the most populated arguments first
-      matches.sort! { |a, b|
-        ca = 0
-        cb = 0
-        a.arguments.each { |t|
-          break if t.nil?
-          ca += 1
-        }
-        b.arguments.each { |t|
-          break if t.nil?
-          cb += 1
-        }
-        cb <=> ca
+      matches.sort! { |a,b|
+        if a.arguments.length == b.arguments.length
+          b.verb.to_s <=> a.verb.to_s
+        else
+          b.arguments.length <=> a.arguments.length
+        end
       }
       matches
     end

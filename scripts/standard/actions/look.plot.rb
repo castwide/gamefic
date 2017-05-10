@@ -3,7 +3,7 @@ respond :look, Use.parent(Supporter) do |actor, supporter|
   actor.tell "#{you.pronoun.Subj} are currently on #{the supporter}."
 end
 
-respond :look, Query::Self.new do |actor, _|
+respond :look, Use.itself do |actor, _|
   actor.tell actor.description
   actor.perform :inventory
 end
@@ -64,7 +64,7 @@ end
 xlate "look", "look around"
 xlate "l", "look around"
 
-respond :look, Query::Visible.new() do |actor, thing|
+respond :look, Use.available() do |actor, thing|
   actor.tell thing.description
   thing.children.that_are(:attached?).that_are(:itemized?).each { |item|
     actor.tell "#{An item} is attached to #{the thing}."
@@ -72,17 +72,21 @@ respond :look, Query::Visible.new() do |actor, thing|
 end
 
 respond :look, Use.text do |actor, string|
-  actor.tell "You don't see any \"#{string}\" here."
+  if string == 'around'
+    actor.perform :look, actor.parent
+  else
+    actor.tell "You don't see any \"#{string}\" here."
+  end
 end
 
-respond :look, Use.reachable(Receptacle) do |actor, receptacle|
+respond :look, Use.available(Receptacle) do |actor, receptacle|
   if receptacle.has_description?
     actor.tell receptacle.description
   end
   actor.perform :search, receptacle
 end
 
-respond :look, Query::Visible.new(Supporter) do |actor, supporter|
+respond :look, Use.available(Supporter) do |actor, supporter|
   actor.proceed
   supported = supporter.children.that_are_not(:attached?)
   if supported.length > 0
@@ -90,7 +94,7 @@ respond :look, Query::Visible.new(Supporter) do |actor, supporter|
   end
 end
 
-respond :look, Query::Reachable.new(Door) do |actor, door|
+respond :look, Use.available(Door) do |actor, door|
   if door.has_description?
     actor.proceed
   end

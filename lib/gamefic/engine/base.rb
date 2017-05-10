@@ -29,22 +29,35 @@ module Gamefic
     def run
       connect
       @plot.introduce @character
+      @user.update @character.state
       turn until @character.concluded?
-      print @user.flush
+      #print @user.flush
     end
 
     def turn
       @plot.ready
-      print @user.flush
+      unless @character.state[:options].nil?
+        list = '<ol class="multiple_choice">'
+        @character.state[:options].each { |o|
+          list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
+        }
+        list += "</ol>"
+        @character.tell list
+      end
+      #print @user.flush
+      @user.update @character.state
+      #@character.flush
       if @character.queue.empty?
         receive
       end
       @plot.update
-      print @user.flush
+      #print @user.flush
+      @user.update @character.state
+      #@character.flush
     end
 
     def receive
-      print @character.scene.prompt_for(@character) + ' '
+      print @character.scene.prompt + ' '
       input = STDIN.gets
       @character.queue.push input unless input.nil?
     end

@@ -10,7 +10,7 @@ module Gamefic
       #
       # @param cls [Class] The Class of the Entity to be created.
       # @param args [Hash] The entity's properties.
-      # @return [Entity]
+      # @return [Gamefic::Entity]
       def make cls, args = {}, &block
         ent = cls.new args, &block
         if ent.kind_of?(Entity) == false
@@ -42,8 +42,8 @@ module Gamefic
       #   pick "blue chair" #=> blue_chair
       #   pick "chair" #=> IndexError: description is ambiguous
       #
-      # @param @description [String] The description of the entity
-      # @return [Entity] The entity that matches the description
+      # @param  description [String] The description of the entity
+      # @return [Gamefic::Entity] The entity that matches the description
       def pick(description)
         query = Gamefic::Query::Base.new
         result = query.match(description, entities)

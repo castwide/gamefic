@@ -1,6 +1,6 @@
 script 'standard/actions/look'
 
-respond :look_under, Query::Reachable.new() do |actor, thing|
+respond :look_under, Use.family() do |actor, thing|
   actor.tell "There's nothing to see under #{the thing}."
 end
 

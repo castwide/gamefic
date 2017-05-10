@@ -8,53 +8,75 @@ module Gamefic
   # instead of a String.
   #
   class Scene::MultipleChoice < Scene::Custom
-    def data_class
-      SceneData::MultipleChoice
+    attr_reader :index
+    attr_reader :number
+    attr_reader :selection
+    attr_writer :invalid_message
+
+    def post_initialize
+      self.type = 'MultipleChoice'
+      self.prompt = 'Enter a choice:'
     end
 
-    def start actor
-      data = start_data_for(actor)
-      data.clear
-      do_start_block actor, data
-      tell_options actor, data
-    end
+    #def start actor
+    #  data = start_data_for(actor)
+    #  data.clear
+    #  do_start_block actor, data
+    #  tell_options
+    #end
     
-    def finish actor, input
-      data = finish_data_for(actor, input)
-      get_choice data
-      if data.selection.nil?
-        actor.tell data.invalid_message
-        tell_options actor, data
+    def start
+      super
+      raise "MultipleChoice scene has zero options" if options.empty?
+    end
+
+    def finish
+      #data = finish_data_for(actor, input)
+      get_choice
+      if selection.nil?
+        actor.tell invalid_message
+        tell_options
       else
-        do_finish_block actor, data
+        super
       end
-      data
+    end
+
+    def options
+      @options ||= []
+    end
+
+    def invalid_message
+      @invalid_message ||= 'That is not a valid choice.'
+    end
+
+    def state
+      super.merge options: options
     end
 
     private
-    
-    def get_choice data
-      if data.input.strip =~ /^[0-9]+$/ and data.input.to_i > 0
-        data.number = data.input.to_i
-        data.index = data.number - 1
-        data.selection = data.options[data.number - 1]
+
+    def get_choice
+      if input.strip =~ /^[0-9]+$/ and input.to_i > 0
+        @number = input.to_i
+        @index = number - 1
+        @selection = options[index]
       else
-        index = 0
-        data.options.each { |o|
-          if o.casecmp(data.input).zero?
-            data.selection = o
-            data.index = index
-            data.number = index + 1
+        i = 0
+        options.each { |o|
+          if o.casecmp(input).zero?
+            @selection = o
+            @index = i
+            @number = index + 1
             break
           end
-          index += 1
+          i += 1
         }
       end
     end
 
-    def tell_options actor, data
+    def tell_options
       list = '<ol class="multiple_choice">'
-      data.options.each { |o|
+      options.each { |o|
         list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
       }
       list += "</ol>"

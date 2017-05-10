@@ -35,11 +35,11 @@ module Gamefic
         end
       end
 
-      def disambiguate &block
-        @disambiguator = Action.new(nil, Query::Base.new, &block)
-        @disambiguator.meta = true
-        @disambiguator
-      end
+      #def disambiguate &block
+      #  @disambiguator = Action.new(nil, Query::Base.new, &block)
+      #  @disambiguator.meta = true
+      #  @disambiguator
+      #end
 
       def validate &block
         @validators.push block
@@ -72,11 +72,12 @@ module Gamefic
       #     actor.tell "#{The character} returns your salute."
       #   end
       #
-      # @param command [Symbol] An imperative verb for the command
-      # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
-      # @yieldparam [Character]
-      def respond(command, *queries, &proc)
-        act = Action.new(command, *queries, &proc)
+      # @param verb [Symbol] An imperative verb for the command
+      # @param queries [Array<Query::Base>] Filters for the command's tokens
+      # @yieldparam [Gamefic::Character]
+      # @return [Gamefic::Action]
+      def respond(verb, *queries, &proc)
+        act = Action.subclass verb, *queries, order_key: raise_order_key, &proc
         add_action act
         act
       end
@@ -93,12 +94,12 @@ module Gamefic
       #     actor.tell "This game was written by John Smith."
       #   end
       #
-      # @param command [Symbol] An imperative verb for the command
-      # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
-      # @yieldparam [Character]
-      def meta(command, *queries, &proc)
-        act = respond(command, *queries, &proc)
-        act.meta = true
+      # @param verb [Symbol] An imperative verb for the command
+      # @param queries [Array<Query::Base>] Filters for the command's tokens
+      # @yieldparam [Gamefic::Character]
+      def meta(verb, *queries, &proc)
+        act = Action.subclass verb, *queries, meta: true, &proc
+        add_action act
         act
       end
 
@@ -113,13 +114,53 @@ module Gamefic
       #   interpret "scrutinize :entity", "look :entity"
       #   # The command "scrutinize chair" will be translated to "look chair"
       #
-      # @param command [String] The format of the original command
+      # @param input [String] The format of the original command
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
-      def interpret(*args)
-        syn = Syntax.new(*args)
+      def interpret(input, translation)
+        syn = Syntax.new(input, translation)
         add_syntax syn
         syn
+      end
+
+      def dispatch(actor, *command)
+        result = []
+        if command.length > 1
+          result.concat dispatch_from_params(actor, command[0], command[1..-1])
+        end
+        if result.empty?
+          result.concat dispatch_from_string(actor, command.join(' '))
+        end
+        result.sort! { |a,b|
+          if a.rank == b.rank
+            b.order_key <=> a.order_key
+          else
+            b.rank <=> a.rank
+          end
+        }
+        result.uniq{|a| a.class}
+      end
+
+      def dispatch_from_string actor, text
+        result = []
+        commands = Syntax.tokenize(text, syntaxes)
+        commands.each { |c|
+          available = actions_for(c.verb)
+          available.each { |a|
+            o = a.attempt(actor, c.arguments)
+            result.unshift o unless o.nil?
+          }
+        }
+        result
+      end
+
+      def dispatch_from_params actor, verb, params
+        result = []
+        available = actions_for(verb)
+        available.each { |a|
+          result.unshift a.new(actor, params) if a.valid?(actor, params)
+        }
+        result
       end
 
       # Duplicate the playbook.
@@ -140,16 +181,11 @@ module Gamefic
 
       def add_action(action)
         @commands[action.verb] ||= []
-        @commands[action.verb].unshift action
-        @commands[action.verb].sort! { |a, b|
-          if a.specificity == b.specificity
-            # Newer action takes precedence
-            b.order_key <=> a.order_key
-          else
-            # Higher specificity takes precedence
-            b.specificity <=> a.specificity
-          end
-        }
+        @commands[action.verb].push action
+        #@commands[action.verb].uniq!
+        #@commands[action.verb].sort! { |a, b|
+        #  b.rank <=> a.rank
+        #}
         generate_default_syntax action
       end
 
@@ -176,7 +212,7 @@ module Gamefic
           raise "No actions exist for \"#{syntax.verb}\""
         end
         @syntaxes.unshift syntax
-        @syntaxes.uniq
+        @syntaxes.uniq!
         @syntaxes.sort! { |a, b|
           if a.token_count == b.token_count
             # For syntaxes of the same length, length of action takes precedence
@@ -186,6 +222,14 @@ module Gamefic
           end
         }
       end
+
+      def raise_order_key
+        @order_key ||= 0
+        tmp = @order_key
+        @order_key += 1
+        tmp
+      end
+
     end
   end
 

@@ -27,18 +27,18 @@ module Gamefic
     include Gamefic, Tester, Players, Scenes, Commands, Entities
     include Articles, YouMount, Snapshot, Host, Callbacks
 
-    # @param [Source::Base]
+    # @param source [Source::Base]
     def initialize(source = nil)
       @source = source || Source::Text.new({})
       @working_scripts = []
       @imported_scripts = []
       @running = false
-      @playbook = Playbook.new
       post_initialize
     end
 
+    # @return [Gamefic::Plot::Playbook]
     def playbook
-      @playbook ||= Playbook.new
+      @playbook ||= Gamefic::Plot::Playbook.new
     end
 
     def running?
@@ -76,8 +76,9 @@ module Gamefic
     # Update the Plot's current turn of gameplay.
     # This method is typically called by the Engine that manages game execution.
     def update
+      entities.each { |e| e.flush }
       call_before_player_update
-      p_players.each { |p| process_input p }
+      p_players.each { |p| p.scene.update }
       p_entities.each { |e| e.update }
       call_player_update
       call_update
@@ -104,24 +105,19 @@ module Gamefic
       end
       if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
         @working_scripts.push imported_script
-        stage imported_script.read, imported_script.absolute_path
+        # @hack Arguments need to be in different order if source returns proc
+        if imported_script.read.kind_of?(Proc)
+          stage &imported_script.read
+        else
+          stage imported_script.read, imported_script.absolute_path
+        end
         @working_scripts.pop
         imported_scripts.push imported_script
         true
       else
         false
       end
-    end
-    
-    private
-
-    def process_input player
-      line = player.queue.shift
-      if !line.nil?
-        player.scene.finish player, line
-      end
-    end
-
+    end    
   end
 
 end

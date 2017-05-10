@@ -1,25 +1,15 @@
 module Gamefic
-
-  # The base user provides methods for handling messages received from plots.
-  #
-  class User::Base
-    def send message
-      buffer.send message
+  class User::Base    
+    def update state
+      raise 'Unimplemented'
     end
 
-    def flush
-      buffer.flush
+    def save filename, snapshot
+      raise 'Unimplemented'
     end
 
-    def peek
-      buffer.peek
-    end
-    
-    private
-
-    def buffer
-      @buffer ||= User::Buffer.new
+    def restore filename
+      raise 'Unimplemented'
     end
   end
-
 end

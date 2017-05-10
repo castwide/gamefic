@@ -9,4 +9,7 @@ module Openable
   def closed?
     !open?
   end
+  def accessible?
+    open?
+  end
 end

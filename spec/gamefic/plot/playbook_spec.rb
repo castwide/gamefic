@@ -11,7 +11,7 @@ describe Plot::Playbook do
     action = playbook.respond :increment do
       num += 1
     end
-    action.execute
+    action.new(nil, nil).execute
     expect(num).to eq 1
   end
 
@@ -52,8 +52,8 @@ describe Plot::Playbook do
   end
 
   it "validates an order" do
-    playbook.validate do |order|
-      order.cancel unless order.action.verb == :legal
+    playbook.validate do |actor, verb, arguments|
+      false unless verb == :legal
     end
     playbook.respond :legal do |actor|
       actor[:legal] = true
@@ -80,5 +80,25 @@ describe Plot::Playbook do
     actor.playbook = playbook
     actor.perform 'illegal'
     expect(actor[:illegal]).to be true
+  end
+
+  it "dispatches the most recently declared action first" do
+    num = 0
+    playbook.respond :command do
+      num = 1
+    end
+    playbook.respond :command do
+      num = 2
+    end
+    playbook.respond :dummy, Query::Base.new do
+      # noop
+    end
+    playbook.respond :command do
+      num = 3
+    end
+    character = Gamefic::Character.new
+    character.playbook = playbook
+    character.perform 'command'
+    expect(num).to eq(3)
   end
 end

@@ -1,95 +1,156 @@
 module Gamefic
-
   # Exception raised when the Action's proc arity is not compatible with the
   # number of queries
   class ActionArgumentError < ArgumentError
   end
-  
-  # Actions manage the execution of commands that Characters can perform.
-  # 
-  class Action
-    attr_reader :order_key, :queries
-    attr_writer :meta
-    @@order_key_seed = 0
-    
-    def initialize(verb, *queries, &proc)
-      if !verb.kind_of?(Symbol)
-        verb = verb.to_s
-        verb = nil if verb == ''
-      end
-      @order_key = @@order_key_seed
-      @@order_key_seed += 1
-      @proc = proc
-      if (verb.kind_of?(Symbol) == false and !verb.nil?)
-        raise "Action verbs must be symbols #{verb}"
-      end
-      if !@proc.nil?
-        if (queries.length + 1 != @proc.arity) and (@proc.arity > 0)
-          raise ActionArgumentError.new("Number of queries is not compatible with proc arguments")
-        end
-      end
-      @verb = verb
-      @queries = queries
-    end
-    
-    # Get the specificity of the Action.
-    # Specificity indicates how narrowly the Action's queries filter matches.
-    # Actions with higher specificity are given higher priority when searching
-    # for the Action that matches a character command. For example, an Action
-    # with a Query that filters for a specific class of Entity has a higher
-    # specificity than an Action with a Query that accepts arbitrary text.
-    #
-    # @return [Fixnum]
-    def specificity
-      spec = 0
-      if verb.nil?
-        spec = -100
-      end
-      @queries.each { |q|
-        if q.kind_of?(Query::Base)
-          spec += q.specificity
-        else
-          spec += 1
-        end
-      }
-      return spec
-    end
-    
-    # Get the verb associated with this Action.
-    # The verb is represented by a Symbol in the imperative form, such as
-    # :take or :look_under.
-    #
-    # @return [Symbol] The Symbol representing the verb.
-    def verb
-      @verb
-    end
-    
-    # Execute this Action. This method is typically called by the Plot when
-    # a Character performs a command.
-    def execute *args
-      @proc.call(*args)
-    end
-    
-    def signature
-      sig = ["#{@verb}"]
-      @queries.each { |q|
-        sig.push q.signature
-      }
-      "#{sig.join(', ').gsub(/Gamefic::(Query::)?/, '')}(#{specificity})"
-    end
-    
-    # Is this a meta Action?
-    # If an Action is flagged meta, it usually means that it provides
-    # information about the game or manages some aspect of the user interface.
-    # It shouldn't represent an Action that the player's character performs in
-    # the game world. Examples include Actions to display credits or
-    # instructions.
-    #
-    # @return [Boolean]
-    def meta?
-      @meta ||= false
-    end
-    
-  end
 
+  class Action
+    attr_reader :parameters
+
+    def initialize actor, parameters
+      @actor = actor
+      @parameters = parameters
+      @executed = false
+    end
+
+    # @todo Determine whether to call them parameters, arguments, or both.
+    def arguments
+      parameters
+    end
+
+    def execute
+      @executed = true
+      self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
+    end
+
+    def executed?
+      @executed
+    end
+
+    def verb
+      self.class.verb
+    end
+
+    def signature
+      self.class.signature
+    end
+
+    def rank
+      self.class.rank
+    end
+
+    def meta?
+      self.class.meta?
+    end
+
+    def order_key
+      self.class.order_key
+    end
+
+    def self.subclass verb, *q, meta: false, order_key: 0, &block
+      act = Class.new(self) do
+        self.verb = verb
+        self.meta = meta
+        self.order_key = order_key
+        q.each { |q|
+          add_query q
+        }
+        on_execute &block
+      end
+      if !block.nil? and act.queries.length + 1 != block.arity and block.arity > 0
+        raise ActionArgumentError.new("Number of parameters is not compatible with proc arguments")
+      end
+      act
+    end
+
+    class << self
+      def verb
+        @verb
+      end
+
+      def meta?
+        @meta ||= false
+      end
+
+      def add_query q
+        @specificity = nil
+        queries.push q
+      end
+
+      def queries
+        @queries ||= []
+      end
+
+      def on_execute &block
+        @executor = block
+      end
+
+      def signature
+        # @todo This is clearly unfinished
+        "#{verb} #{queries.map{|m| m.signature}.join(',')}"
+      end
+
+      def executor
+        @executor
+      end
+
+      def order_key
+        @order_key ||= 0
+      end
+
+      def rank
+        if @rank.nil?
+          @rank = 0
+          queries.each { |q|
+            @rank += (q.rank + 1)
+          }
+          @rank -= 1000 if verb.nil?
+        end
+        @rank
+      end
+
+      def valid? actor, objects
+        return false if objects.length != queries.length
+        i = 0
+        queries.each { |p|
+          return false unless p.include?(actor, objects[i])
+          i += 1
+        }
+        true
+      end
+
+      def attempt actor, tokens
+        i = 0
+        result = []
+        matches = Gamefic::Query::Matches.new([], '', '')
+        queries.each { |p|
+          return nil if tokens[i].nil? and matches.remaining == ''
+          matches = p.resolve(actor, "#{matches.remaining} #{tokens[i]}".strip, continued: (i < queries.length - 1))
+          return nil if matches.objects.empty?
+          if p.ambiguous?
+            result.push matches.objects
+          else
+            return nil if matches.objects.length > 1
+            result.push matches.objects[0]
+          end
+          i += 1
+        }
+        self.new(actor, result)
+      end
+
+      protected
+
+      def verb= sym
+        @verb = sym
+      end
+
+      def meta= bool
+        @meta = bool
+      end
+
+      def order_key= num
+        @order_key = num
+      end
+    end
+  end
 end

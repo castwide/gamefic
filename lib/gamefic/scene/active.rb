@@ -5,15 +5,21 @@ module Gamefic
   # a Plot.
   #
   class Scene::Active < Scene::Base
-    attr_reader :plot
-
-    def initialize plot
-      @plot = plot
+    def post_initialize
+      self.type = 'Active'
     end
 
-    def finish actor, input
-      o = actor.perform input.strip
+    def finish
+      super
+      o = nil
+      o = actor.perform input.strip unless input.nil?
       actor.performed o
+    end
+
+    class << self
+      def type
+        'Active'
+      end
     end
   end
   

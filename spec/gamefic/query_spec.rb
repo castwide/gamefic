@@ -2,6 +2,9 @@ module LastObjectTest
   attr_accessor :last_object
 end
 
+# @todo This is likely to be deprecated, with a directory of query specs to replace it.
+
+=begin
 describe Query::Base do
   it "finds an object by a word in its name" do
     plot = Plot.new
@@ -123,3 +126,4 @@ describe Query::Text do
     expect(result.remainder).to eq('fifth')
   end
 end
+=end

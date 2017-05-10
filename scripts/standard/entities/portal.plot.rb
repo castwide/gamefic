@@ -31,7 +31,7 @@ class Portal < Gamefic::Entity
   end
 
   def name
-    @name || (direction.nil? ? nil : direction.name)
+    @name || (direction.nil? ? destination.name : direction.name)
   end
   
   def synonyms

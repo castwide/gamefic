@@ -2,11 +2,11 @@ module Gamefic
 
   module Plot::Scenes
     def default_scene
-      @default_scene ||= Scene::Active.new(self)
+      @default_scene ||= Scene::Active
     end
 
     def default_conclusion
-      @default_conclusion ||= Scene::Conclusion.new
+      @default_conclusion ||= Scene::Conclusion
     end
 
     # Add a block to be executed when a player is added to the game.
@@ -38,13 +38,18 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::MultipleChoice]
     def multiple_choice *choices, &block
-      s = Scene::MultipleChoice.new
-      s.on_start do |actor, data|
-        data.options.clear
-        data.options.push *choices
+      #s = Scene::MultipleChoice.new
+      #s.on_start do |actor, data|
+      #  data.options.clear
+      #  data.options.push *choices
+      #end
+      #s.on_finish &block
+      #s
+      #Scene::MultipleChoice.subclass &block
+      Scene::MultipleChoice.subclass do |actor, scene|
+        scene.options.concat choices
+        scene.on_finish &block
       end
-      s.on_finish &block
-      s
     end
     
     # Create a yes-or-no scene.
@@ -53,25 +58,17 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [String] "yes" or "no"
     def yes_or_no prompt = nil, &block
-      s = Scene::YesOrNo.new
-      unless prompt.nil?
-        s.on_start do |actor, data|
-          data.prompt = prompt
-        end
+      Scene::YesOrNo.subclass do |actor, scene|
+        scene.prompt = prompt
+        scene.on_finish &block
       end
-      s.on_finish do |actor, data|
-        block.call actor, data unless block.nil?
-      end
-      s
     end
     
     def question prompt = 'What is your answer?', &block
-      s = Scene::Custom.new
-      s.on_start do |actor, data|
-        data.prompt = prompt
+      Scene::Custom.subclass do |actor, scene|
+        scene.prompt = prompt
+        scene.on_finish &block
       end
-      s.on_finish &block
-      s
     end
 
     # Create a scene that pauses the game.
@@ -82,15 +79,19 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
     def pause prompt = nil, &block
-      s = Scene::Pause.new
-      s.on_start do |actor, data|
-        data.prompt = prompt unless prompt.nil?
-        block.call actor, data unless block.nil?
+      #s = Scene::Pause.new
+      #s.on_start do |actor, data|
+      #  data.prompt = prompt unless prompt.nil?
+      #  block.call actor, data unless block.nil?
+      #end
+      #s.on_finish do |actor, data|
+      #  actor.cue default_scene if actor.will_cue?(s)
+      #end
+      #s
+      Scene::Pause.subclass do |actor, scene|
+        scene.prompt = prompt unless prompt.nil?
+        block.call(actor, scene) unless block.nil?
       end
-      s.on_finish do |actor, data|
-        actor.cue default_scene if actor.will_cue?(s)
-      end
-      s
     end
     
     # Create a conclusion.
@@ -100,9 +101,10 @@ module Gamefic
     # @yieldparam [Character]
     # @yieldparam [Scene::Data::Base]
     def conclusion &block
-      s = Scene::Conclusion.new
-      s.on_start &block
-      s
+      #s = Scene::Conclusion.new
+      #s.on_start &block
+      #s
+      Scene::Conclusion.subclass &block
     end
     
     # Create a custom scene.
@@ -139,10 +141,8 @@ module Gamefic
     #
     # @param cls [Class] The class of scene to be instantiated.
     # @yieldparam [Scene::Custom] The instantiated scene.
-    def scene cls = Scene::Custom, &block
-      s = cls.new
-      yield s if block_given?
-      s
+    def custom cls = Scene::Custom, &block
+      cls.subclass &block
     end
 
     # Choose a new scene based on a list of options.
@@ -165,15 +165,21 @@ module Gamefic
     #   end
     #
     # @param map [Hash] A Hash of options and associated scene keys.
-    def multiple_scene map = {}
-      s = Scene::MultipleScene.new
-      s.on_start do |actor, data|
-        map.each { |k, v|
-          data.map k, v
+    def multiple_scene map = {}, &block
+      #s = Scene::MultipleScene.new
+      #s.on_start do |actor, data|
+      #  map.each { |k, v|
+      #    data.map k, v
+      #  }
+      #end
+      #yield(s) if block_given?
+      #s
+      Scene::MultipleScene.subclass do |actor, scene|
+        map.each_pair { |k, v|
+          scene.map k, v
         }
+        block.call actor, scene unless block.nil?
       end
-      yield(s) if block_given?
-      s
     end
   end
 

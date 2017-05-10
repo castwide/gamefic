@@ -2,15 +2,15 @@ respond :talk do |actor|
   actor.tell "#{you.pronoun.Subj} #{you.verb.talk} to #{you.pronoun.reflex}."
 end
 
-respond :talk, Query::Self.new do |actor, yourself|
+respond :talk, Use.itself do |actor, yourself|
   actor.perform :talk
 end
 
-respond :talk, Query::Reachable.new do |actor, thing|
+respond :talk, Use.family do |actor, thing|
   actor.tell "Nothing happens."
 end
 
-respond :talk, Query::Reachable.new(Character) do |actor, character|
+respond :talk, Use.family(Character) do |actor, character|
   if actor == character
     actor.perform :talk
   else
@@ -18,7 +18,7 @@ respond :talk, Query::Reachable.new(Character) do |actor, character|
   end
 end
 
-respond :talk, Query::Reachable.new(Character), Query::Text.new do |actor, character, text|
+respond :talk, Use.family(Character), Query::Text.new do |actor, character, text|
   actor.perform :talk, character
 end
 

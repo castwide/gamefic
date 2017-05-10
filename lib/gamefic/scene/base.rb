@@ -4,23 +4,72 @@ module Gamefic
   # should inherit from it.
   #
   class Scene::Base
+    attr_reader :actor
     attr_writer :type
-    
-    def start actor
+    attr_writer :prompt
+    attr_reader :input
+
+    def initialize actor
+      @actor = actor
+      post_initialize
     end
 
-    def finish actor, input
+    def post_initialize
+    end
+
+    def on_finish &block
+      @finish_block = block
+    end
+
+    def update
+      @input = actor.queue.shift
+      finish
+    end
+
+    def start
+      self.class.initialize_block.call @actor, self unless self.class.initialize_block.nil?
+    end
+
+    def finish
+      @finish_block.call @actor, self unless @finish_block.nil?
+    end
+
+    def flush
+      @state.clear
+    end
+
+    def state
+      {
+        scene: type, prompt: prompt, input: input #, output: actor.messages, busy: !actor.queue.empty?
+      }
+    end
+
+    def self.subclass &block
+      c = Class.new(self) do
+        on_initialize &block
+      end
+      c
     end
     
     # Get the prompt to be displayed to the user when accepting input.
     #
     # @return [String] The text to be displayed.
-    def prompt_for actor
-      '>'
+    def prompt
+      @prompt ||= '>'
     end
 
     def type
-      @type ||= self.class.to_s.split('::').last
+      @type ||= 'Scene'
+    end
+
+    def self.on_initialize &block
+      @initialize_block = block
+    end
+
+    class << self
+      def initialize_block
+        @initialize_block
+      end
     end
   end
 

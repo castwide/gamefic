@@ -10,6 +10,6 @@ describe Scene::MultipleScene do
     character.queue.push "one"
     plot.ready
     plot.update
-    expect(character.scene).to eq(scene1)
+    expect(character.scene.class).to eq(scene1)
   end
 end

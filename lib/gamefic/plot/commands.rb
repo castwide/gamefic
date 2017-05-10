@@ -23,7 +23,7 @@ module Gamefic
     #   end
     #
     # @param command [Symbol] An imperative verb for the command
-    # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
+    # @param queries [Array<Query::Base>] Filters for the command's tokens
     # @yieldparam [Character]
     def respond(command, *queries, &proc)
       playbook.respond(command, *queries, &proc)
@@ -42,7 +42,7 @@ module Gamefic
     #   end
     #
     # @param command [Symbol] An imperative verb for the command
-    # @param *queries [Array<Query::Base>] Queries to filter the command's tokens
+    # @param queries [Array<Query::Base>] Filters for the command's tokens
     # @yieldparam [Character]
     def meta(command, *queries, &proc)
       playbook.meta command, *queries, &proc

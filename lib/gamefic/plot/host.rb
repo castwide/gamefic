@@ -12,7 +12,7 @@ module Gamefic
     
     # Start a new subplot based on the provided class.
     #
-    # @param [Class] The class of the subplot to be created (Subplot by default)
+    # @param subplot_class [Class] The class of the subplot to be created (Subplot by default)
     # @return [Subplot]
     def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, busy_cue: nil
       subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, busy_cue: busy_cue)

@@ -1,27 +1,29 @@
-require 'gamefic/director'
+#require 'gamefic/director'
 
-class NotConclusionError < Exception
-end
 
 module Gamefic
+  class NotConclusionError < Exception
+  end
+
   class Character < Entity
     autoload :State, 'gamefic/character/state'
 
     attr_reader :queue, :user
-    # @return [Gamefic::Director::Order]
-    attr_reader :last_order
+    # @return [Gamefic::Action]
+    attr_reader :last_action
     # @return [Entity,nil]
     attr_reader :last_object
     attr_accessor :object_of_pronoun
     attr_reader :scene
     attr_reader :next_scene
     attr_accessor :playbook
-
+    
     include Character::State
 
     def initialize(args = {})
-      @queue = Array.new
       super
+      @queue = Array.new
+      @messages = ''
       @buffer_stack = 0
       @buffer = ""
     end
@@ -38,7 +40,32 @@ module Gamefic
     def disconnect
       @user = nil
     end
-    
+
+    # Send a message to the entity.
+    # This method will automatically wrap the message in HTML paragraphs.
+    # To send a message without paragraph formatting, use #stream instead.
+    #
+    # @param message [String]
+    def tell(message)
+      if @buffer_stack > 0
+        @buffer += message
+      else
+        super
+      end
+    end
+
+    # Send a message to the Character as raw text.
+    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
+    #
+    # @param message [String]
+    def stream(message)
+      if @buffer_stack > 0
+        @buffer += message
+      else
+        super
+      end
+    end
+
     # Perform a command.
     # The command can be specified as a String or a set of tokens. Either form
     # should yield the same result, but using tokens can yield better
@@ -53,7 +80,23 @@ module Gamefic
     #   character.perform :take, @key
     #
     def perform(*command)
-      Director.dispatch(self, *command)
+      #Director.dispatch(self, *command)
+      actions = playbook.dispatch(self, *command)
+      a = actions.first
+      okay = true
+      unless a.meta?
+        playbook.validators.each { |v|
+          result = v.call(self, a.verb, a.parameters)
+          okay = (result != false)
+          break if not okay
+        }
+      end
+      if okay
+        performance_stack.push actions
+        proceed
+        performance_stack.pop
+      end
+      a
     end
     
     # Quietly perform a command.
@@ -69,34 +112,6 @@ module Gamefic
       self.perform *command
       @buffer_stack -= 1
       @buffer
-    end
-    
-    # Send a message to the Character.
-    # This method will automatically wrap the message in HTML paragraphs.
-    # To send a message without paragraph formatting, use #stream instead.
-    #
-    # @param message [String]
-    def tell(message)
-      if user != nil and message.to_s != ''
-        if @buffer_stack > 0
-          @buffer += message
-        else
-          message = "<p>#{message.strip}</p>"
-          # This method uses String#gsub instead of String#gsub! for
-          # compatibility with Opal.
-          message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
-          message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
-          user.send message
-        end
-      end
-    end
-    
-    # Send a message to the Character as raw text.
-    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
-    #
-    # @param message [String]
-    def stream(message)
-      user.send message.strip unless user.nil?
     end
 
     # Proceed to the next Action in the current stack.
@@ -120,25 +135,44 @@ module Gamefic
     #     end
     #   end
     #
-    def proceed
-      Director::Delegate.proceed_for self
+    def proceed quietly: false
+      #Director::Delegate.proceed_for self
+      return if performance_stack.empty?
+      a = performance_stack.last.shift
+      unless a.nil?
+        if quietly
+          if @buffer_stack == 0
+            @buffer = ""
+          end
+          @buffer_stack += 1
+        end
+        a.execute
+        if quietly
+          @buffer_stack -= 1
+          @buffer
+        end
+      end
     end
 
     # Immediately start a new scene for the character.
     # Use #prepare if you want to declare a scene to be started at the
     # beginning of the next turn.
     #
-    def cue scene
+    def cue new_scene
       @next_scene = nil
-      @scene = scene
-      @scene.start self unless @scene.nil?
+      if new_scene.nil?
+        @scene = nil
+      else
+        @scene = new_scene.new(self)
+        @scene.start
+      end
     end
 
     # Prepare a scene to be started for this character at the beginning of the
     # next turn.
     #
-    def prepare scene
-      @next_scene = scene
+    def prepare s
+      @next_scene = s
     end
 
     # Return true if the character is expected to be in the specified scene on
@@ -146,14 +180,14 @@ module Gamefic
     #
     # @return [Boolean]
     def will_cue? scene
-      (@scene == scene and @next_scene.nil?) or @next_scene == scene
+      (@scene.class == scene and @next_scene.nil?) or @next_scene == scene
     end
 
     # Cue a conclusion. This method works like #cue, except it will raise a
     # NotConclusionError if the scene is not a Scene::Conclusion.
     #
     def conclude scene
-      raise NotConclusionError if !scene.kind_of?(Scene::Conclusion)
+      raise NotConclusionError unless scene <= Scene::Conclusion
       cue scene
     end
 
@@ -165,14 +199,23 @@ module Gamefic
     end
 
     def performed order
-      @last_order = order
+      order.freeze
+      @last_action = order
     end
 
     # Get the prompt that the user should see for the current scene.
     #
     # @return [String]
-    def prompt
-      scene.nil? ? '>' : scene.prompt_for(self)
+    #def prompt
+    #  scene.nil? ? '>' : scene.prompt
+    #end
+
+    def accessible?
+      false
+    end
+
+    def inspect
+      to_s
     end
 
     private
@@ -181,12 +224,8 @@ module Gamefic
       @delegate_stack ||= []
     end
 
-    def last_order=(order)
-      return if order.nil?
-      @last_order = order
-      if !order.action.meta? and !order.arguments[0].nil? and !order.arguments[0][0].nil? and order.arguments[0][0].kind_of?(Entity)
-        @last_object = order.arguments[0][0]
-      end
+    def performance_stack
+      @performance_stack ||= []
     end
   end
 

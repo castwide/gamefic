@@ -32,7 +32,7 @@ introduction do |actor|
   actor.tell "You are sitting in a small office inside a large warehouse. There's a gold brick somewhere in the stacks. Can you find it?"
 end
 
-respond :take, Query::Reachable.new(gold) do |actor, gold|
+respond :take, Use.family(gold) do |actor, gold|
   actor.conclude @found_gold
 end
 

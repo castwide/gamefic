@@ -1,4 +1,4 @@
-respond :go, Query::Reachable.new(Portal) do |actor, portal|
+respond :go, Use.family(Portal) do |actor, portal|
   if actor.parent != actor.room
     actor.perform :leave
   end
@@ -15,11 +15,11 @@ respond :go, Query::Reachable.new(Portal) do |actor, portal|
   end
 end
 
-respond :go, Query::Reachable.new(Door, :locked?) do |actor, door|
+respond :go, Use.family(Door, :locked?) do |actor, door|
   actor.tell "#{The door} is locked."
 end
 
-respond :go, Query::Reachable.new(Door, :closed?) do |actor, door|
+respond :go, Use.family(Door, :closed?) do |actor, door|
   if door.automatic?
     actor.perform :open, door
     if door.open?
@@ -44,9 +44,10 @@ respond :go, Use.text do |actor, text|
     destinations.push portal.destination
     d_map[portal.destination] = portal
   }
-  matches = Query::Base.new.execute(destinations, text)
-  if matches.objects.length == 1
-    actor.perform :go, d_map[matches.objects[0]]
+  matches = destinations.select{|o| o.match? text }
+  matches = destinations.select{|o| o.match? text, fuzzy: true } if matches.empty?
+  if matches.length == 1
+    actor.perform :go, d_map[matches[0]]
   else
     actor.proceed
   end

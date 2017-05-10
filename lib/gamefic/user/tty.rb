@@ -11,6 +11,10 @@ module Gamefic
   #   need them.
   #
   class User::Tty < User::Base
+    def update state
+      print Gamefic::Text::Html::Conversions.html_to_ansi(state[:output])
+    end
+
     def save filename, snapshot
       json = JSON.generate snapshot
       if json.nil?
@@ -46,14 +50,5 @@ module Gamefic
       end
       nil
     end
-
-    def peek
-      Gamefic::Text::Html::Conversions.html_to_ansi(super)
-    end
-
-    def flush
-      Gamefic::Text::Html::Conversions.html_to_ansi(super)
-    end
   end
-
 end

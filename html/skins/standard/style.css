@@ -68,3 +68,6 @@ body {
 	color: #303030;
 	vertical-align: top;
 }
+#gamefic_controls.working {
+	display: none;
+}

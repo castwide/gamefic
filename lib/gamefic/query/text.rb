@@ -1,43 +1,47 @@
-module Gamefic::Query
-  class Text < Base
-    def base_specificity
-      10
-    end
-    def validate(subject, description)
-      return false unless description.kind_of?(String)
-      valid = false
-      words = description.split_words
-      words.each { |word|
-        if description.include?(word)
-          valid = true
-          break
-        end
-      }
-      valid
-    end
-    def execute(subject, description)
-      if @arguments.length == 0
-        return Matches.new([description], description, '')
+module Gamefic
+  module Query
+    class Text < Base
+      def initialize *arguments
+        arguments.each { |a|
+          if (a.kind_of?(Symbol) or a.kind_of?(String)) and !a.to_s.end_with?('?')
+            raise ArgumentError.new("Text query arguments can only be boolean method names (:method?) or regular expressions")
+          end
+        }
+        super
       end
-      keywords = Keywords.new(description)
-      args = Keywords.new(@arguments)
-      found = Array.new
-      remainder = keywords.clone
-      while remainder.length > 0
-        if args.include?(remainder.first)
-          found.push remainder.shift
+      def resolve(subject, token, continued: false)
+        parts = token.split(Matchable::SPLIT_REGEXP)
+        cursor = []
+        matches = []
+        i = 0
+        parts.each { |w|
+          cursor.push w
+          matches = cursor if accept?(cursor.join(' '))
+          i += 1
+        }
+        if continued
+          Matches.new([matches.join(' ')], matches.join(' '), parts[i..-1].join(' '))
         else
-          break
+          if matches.length == parts.length
+            Matches.new([matches.join(' ')], matches.join(' '), '')
+          else
+            Matches.new([], '', parts.join(' '))
+          end
         end
       end
-      if found.length > 0
-        return Matches.new(found, found.join(' '), remainder.join(' '))
-      else
-        return Matches.new([], '', description)
+
+      def include?(subject, token)
+        accept?(token)
       end
-    end
-    def test_arguments arguments
-      # No test for text
+
+      def accept?(entity)
+        return false unless entity.kind_of?(String) and !entity.empty?
+        super
+      end
+
+      def precision
+        0
+      end
     end
   end
 end
