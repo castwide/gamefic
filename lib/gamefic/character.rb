@@ -6,7 +6,7 @@ module Gamefic
   end
 
   class Character < Entity
-    #autoload :State, 'gamefic/character/state'
+    autoload :State, 'gamefic/character/state'
 
     attr_reader :queue, :user
     # @return [Gamefic::Action]
@@ -18,7 +18,7 @@ module Gamefic
     attr_reader :next_scene
     attr_accessor :playbook
     
-    #include Character::State
+    include Character::State
 
     def initialize(args = {})
       super
@@ -184,7 +184,7 @@ module Gamefic
     #
     # @return [Boolean]
     def will_cue? scene
-      (@scene == scene and @next_scene.nil?) or @next_scene == scene
+      (@scene.class == scene and @next_scene.nil?) or @next_scene == scene
     end
 
     # Cue a conclusion. This method works like #cue, except it will raise a
@@ -213,12 +213,6 @@ module Gamefic
     #def prompt
     #  scene.nil? ? '>' : scene.prompt
     #end
-
-    def state
-      @state ||= {}
-      @state.merge! scene.state unless scene.nil?
-      @state.merge! output: messages
-    end
 
     def accessible?
       false
