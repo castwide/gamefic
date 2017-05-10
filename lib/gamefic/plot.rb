@@ -106,10 +106,10 @@ module Gamefic
       if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
         @working_scripts.push imported_script
         # @hack Arguments need to be in different order if source returns proc
-        if imported_script.read.kind_of?(Proc)
-          stage path, &imported_script.read
-        else
+        if imported_script.block.nil?
           stage imported_script.read, imported_script.absolute_path
+        else
+          stage &imported_script.block
         end
         @working_scripts.pop
         imported_scripts.push imported_script
