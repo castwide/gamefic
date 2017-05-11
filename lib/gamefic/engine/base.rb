@@ -44,16 +44,11 @@ module Gamefic
         list += "</ol>"
         @character.tell list
       end
-      #print @user.flush
       @user.update @character.state
-      #@character.flush
       if @character.queue.empty?
         receive
       end
       @plot.update
-      #print @user.flush
-      @user.update @character.state
-      #@character.flush
     end
 
     def receive
