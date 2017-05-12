@@ -2,7 +2,7 @@ module Gamefic
 
   module Plot::Scenes
     def default_scene
-      @default_scene ||= Scene::Active
+      @default_scene ||= Scene::Activity
     end
 
     def default_conclusion

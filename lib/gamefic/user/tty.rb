@@ -11,8 +11,8 @@ module Gamefic
   #   need them.
   #
   class User::Tty < User::Base
-    def update state
-      print Gamefic::Text::Html::Conversions.html_to_ansi(state[:output])
+    def update
+      print Gamefic::Text::Html::Conversions.html_to_ansi(character.state[:output])
     end
 
     def save filename, snapshot

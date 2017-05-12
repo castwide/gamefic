@@ -33,8 +33,8 @@ end
 respond :_toggle_lock, Use.available(Lockable, :has_lock_key?) do |actor, thing|
   verb = thing.locked? ? 'unlock' : 'lock'
   key = nil
-  if container.lock_key.parent == actor
-    key = container.lock_key
+  if thing.lock_key.parent == actor
+    key = thing.lock_key
   end
   if key.nil?
     actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} have any way to #{verb} #{the thing}."
@@ -55,6 +55,10 @@ end
 respond :lock, Use.available(Lockable, :has_lock_key?), Use.available do |actor, thing, key|
   actor.perform :take, key if key.parent != actor
   actor.proceed if key.parent == actor
+end
+
+respond :unlock, Use.available do |actor, thing|
+  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} unlock #{the thing}."
 end
 
 respond :unlock, Use.available(Lockable, :has_lock_key?), Use.children do |actor, thing, key|

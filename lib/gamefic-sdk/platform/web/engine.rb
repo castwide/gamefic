@@ -14,19 +14,19 @@ module Gamefic
 
       def run
         connect
-        @plot.introduce @character
+        @plot.introduce @user.character
         @plot.ready
-        @user.update @character.state
+        @user.update
       end
 
       def turn
         @plot.ready
-        @user.update @character.state
-        update unless @character.queue.empty?
+        @user.update
+        update unless @user.character.queue.empty?
       end
 
       def receive input
-        @character.queue.push input unless input.nil?
+        @user.character.queue.push input unless input.nil?
         update
       end
 

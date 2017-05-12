@@ -35,6 +35,6 @@ class Portal < Thing
   end
   
   def synonyms
-    "#{super} #{@direction} #{!direction.nil? ? direction.synonyms : ''}"
+    "#{super} #{@destination} #{@direction} #{!direction.nil? ? direction.synonyms : ''}"
   end
 end

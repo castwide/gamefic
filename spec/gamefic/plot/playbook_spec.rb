@@ -96,7 +96,8 @@ describe Plot::Playbook do
     playbook.respond :command do
       num = 3
     end
-    character = Gamefic::Character.new
+    character = Entity.new
+    character.extend Active
     character.playbook = playbook
     character.perform 'command'
     expect(num).to eq(3)

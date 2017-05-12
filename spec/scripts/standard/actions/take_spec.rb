@@ -2,12 +2,14 @@ describe "Take Action" do
   before :each do
     @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
+    # @todo Maybe move the container stuff to a separate spec file
+    @plot.script 'standard/container'
   end
   it "takes a portable sibling" do
     room = @plot.make Room, :name => 'room'
     character = @plot.make Character, :name => 'character', :parent => room
     # Make a portable entity and take it
-    entity = @plot.make Entity, :name => 'entity', :parent => room
+    entity = @plot.make Thing, :name => 'entity', :parent => room
     entity.portable = true
     character.perform 'take entity'
     expect(entity.parent).to be(character)
@@ -20,7 +22,7 @@ describe "Take Action" do
     room = @plot.make Room, :name => 'room'
     character = @plot.make Character, :name => 'character', :parent => room
     # Entity is not portable by default
-    entity = @plot.make Entity, :name => 'entity', :parent => room
+    entity = @plot.make Thing, :name => 'entity', :parent => room
     character.perform 'take entity'
     expect(entity.parent).not_to be(character)
     # Make an item that is not portable

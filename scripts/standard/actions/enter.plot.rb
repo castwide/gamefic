@@ -1,10 +1,10 @@
+respond :enter, Use.siblings do |actor, thing|
+  actor.tell "#{The thing} #{you.contract "can not"} accommodate #{you.pronoun.obj}."
+end
+
 respond :enter, Use.siblings(Enterable, :enterable?) do |actor, supporter|
   actor.parent = supporter
   actor.tell "#{you.pronoun.Subj} #{you.verb[supporter.enter_verb]} #{the supporter}."
-end
-
-respond :enter, Use.siblings do |actor, thing|
-  actor.tell "#{The thing} #{you.contract "can not"} accommodate #{you.pronoun.obj}."
 end
 
 respond :enter, Use.parent do |actor, container|

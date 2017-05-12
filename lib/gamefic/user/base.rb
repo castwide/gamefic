@@ -4,7 +4,7 @@ module Gamefic
     attr_reader :character
 
     def connect entity
-      self.character = entity
+      @character = entity
     end
 
     def update state

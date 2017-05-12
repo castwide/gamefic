@@ -14,11 +14,11 @@ module Openable
   end
 end
 
-respond :open, Use.visible do |actor, thing|
+respond :open, Use.available do |actor, thing|
   actor.tell "You can't open #{the thing}."
 end
 
-respond :open, Use.visible(Openable) do |actor, thing|
+respond :open, Use.available(Openable) do |actor, thing|
   if thing.open?
     actor.tell "#{The thing} is already open."
   else
@@ -27,13 +27,14 @@ respond :open, Use.visible(Openable) do |actor, thing|
   end
 end
 
-respond :close, Use.visible do |actor, thing|
+respond :close, Use.available do |actor, thing|
   actor.tell "You can't close #{the thing}."
 end
 
-respond :close, Use.visible(Openable) do |actor, thing|
+respond :close, Use.available(Openable) do |actor, thing|
   if thing.open?
     actor.tell "You close #{the thing}."
+    thing.open = false
   else
     actor.tell "#{The thing} is already open."
   end
