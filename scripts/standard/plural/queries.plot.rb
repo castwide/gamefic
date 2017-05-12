@@ -1,5 +1,0 @@
-script 'standard/plural/queries/many_visible'
-script 'standard/plural/queries/ambiguous_visible'
-script 'standard/plural/queries/plural_visible'
-script 'standard/plural/queries/any_expression'
-script 'standard/plural/queries/not_expression'

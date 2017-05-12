@@ -90,6 +90,10 @@ module Gamefic
         "#{verb} #{queries.map{|m| m.signature}.join(',')}"
       end
 
+      def hidden?
+        verb.to_s.start_with?('_')
+      end
+
       def executor
         @executor
       end

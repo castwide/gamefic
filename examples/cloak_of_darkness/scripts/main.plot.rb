@@ -86,7 +86,6 @@ end
 bar = make Room, 
   :name => "Foyer Bar", 
   :description => "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty. There seems to be some sort of message scrawled in the sawdust on the floor."
-bar.dark = true
 foyer.connect bar, "south"
 
 
@@ -112,12 +111,8 @@ xlate "read :message", "look :message"
 # Customize the :has_enough_light rule to check if the player has the cloak.
 
 validate do |actor, verb, arguments|
-  if cloak.parent == actor
-    bar.dark = true
-  else
-    bar.dark = false
-  end
-  if actor.room.dark?
+  dark = (cloak.parent == actor)
+  if actor.room == bar and dark
     if verb == :look
       actor.tell "It's too dark in here."
       next false

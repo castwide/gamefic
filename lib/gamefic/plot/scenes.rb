@@ -57,7 +57,16 @@ module Gamefic
         scene.on_finish &block
       end
     end
-    
+
+    # Create a scene with custom processing on user input.
+    #
+    # @example Echo the user's response
+    #   @scene = question 'What do you say?' do |actor, scene|
+    #     actor.tell "You said #{scene.input}"
+    #   end
+    #
+    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Scene::YesOrNo]
     def question prompt = 'What is your answer?', &block
       Scene::Custom.subclass do |actor, scene|
         scene.prompt = prompt
@@ -131,6 +140,17 @@ module Gamefic
     #
     #   introduction do |actor|
     #     actor.cue select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
+    #   end
+    #
+    # @example Customize options
+    #   scene_one = pause # do...
+    #   scene_two = pause # do...
+    #
+    #   # Some event in the game sets actor[:can_go_to_scene_two] to true
+    #
+    #   select_one_or_two = multiple_scene do |actor, scene|
+    #     scene.map "Go to scene one", scene_one
+    #     scene.map "Go to scene two", scene_two if actor[:can_go_to_scene_two]
     #   end
     #
     # @param map [Hash] A Hash of options and associated scene keys.

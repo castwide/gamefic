@@ -10,16 +10,12 @@ module Gamefic
     include Messaging
     include Grammar::WordAdapter
 
-    attr_reader :session
-
     def initialize(args = {})
-      pre_initialize
-      args.each { |key, value|
+      self.class.default_attributes.merge(args).each { |key, value|
         send "#{key}=", value
       }
-      @session = Hash.new
-      yield self if block_given?
       post_initialize
+      yield self if block_given?
     end
 
     def uid
@@ -29,8 +25,8 @@ module Gamefic
       @uid
     end
 
-    def pre_initialize
-      # raise NotImplementedError, "#{self.class} must implement post_initialize"    
+    def default_attributes
+      {}
     end
 
     def post_initialize
@@ -53,7 +49,12 @@ module Gamefic
       end
       super
     end
-    
+
+    # @return [Hash]
+    def session
+      @session ||= {}
+    end
+
     # Get an extended property.
     #
     # @param key [Symbol] The property's name.
@@ -68,7 +69,20 @@ module Gamefic
     def []=(key, value)
       session[key] = value
     end
-    
+
+    class << self
+      def set_default attrs = {}
+        default_attributes.merge! attrs
+      end
+
+      def default_attributes
+        @default_attributes ||= {}
+      end
+
+      def inherited subclass
+        subclass.set_default default_attributes
+      end
+    end
   end
 
 end

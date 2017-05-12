@@ -18,14 +18,10 @@ respond :talk, Use.family(Character) do |actor, character|
   end
 end
 
-respond :talk, Use.family(Character), Query::Text.new do |actor, character, text|
-  actor.perform :talk, character
-end
-
-xlate "talk to :character", "talk :character"
-xlate "talk to :character about :subject", "talk :character :subject"
-xlate "ask :character :subject", "talk :character :subject"
-xlate "ask :character about :subject", "talk :character :subject"
-xlate "tell :character :subject", "talk :character :subject"
-xlate "tell :character about :subject", "talk :character :subject"
-xlate "ask :character for :subject", "talk :character :subject"
+interpret "talk to :character", "talk :character"
+interpret "talk to :character about :subject", "talk :character :subject"
+interpret "ask :character :subject", "talk :character :subject"
+interpret "ask :character about :subject", "talk :character :subject"
+interpret "tell :character :subject", "talk :character :subject"
+interpret "tell :character about :subject", "talk :character :subject"
+interpret "ask :character for :subject", "talk :character :subject"

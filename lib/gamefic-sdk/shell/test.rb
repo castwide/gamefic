@@ -15,7 +15,8 @@ module Gamefic
           paths = config_path.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
           plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
           plot.script 'main'
-          plot.script 'debug'
+          # @todo Debug is temporarily disabled.
+          #plot.script 'debug'
           engine = Engine::Tty.new plot
           engine.connect
           puts "\n"

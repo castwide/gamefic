@@ -30,7 +30,7 @@ module Gamefic
     #     player[:turns] += 1
     #   end
     #
-    # @yieldparam [Character]
+    # @yieldparam [Gamefic::Performance]
     def on_player_ready &block
       p_player_ready_procs.push block
     end

@@ -1,3 +1,3 @@
-class Fixture < Gamefic::Entity
+class Fixture < Thing
 
 end

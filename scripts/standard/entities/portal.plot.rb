@@ -1,4 +1,4 @@
-class Portal < Gamefic::Entity
+class Portal < Thing
   attr_accessor :destination
 
   # Find the portal in the destination that returns to this portal's parent

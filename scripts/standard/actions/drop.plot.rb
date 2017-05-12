@@ -6,7 +6,7 @@ respond :drop, Use.family() do |actor, thing|
   end
 end
 
-respond :drop, Query::Children.new() do |actor, thing|
+respond :drop, Use.children do |actor, thing|
   if thing.sticky?
     actor.tell thing.sticky_message || "#{you.pronoun.Subj} #{you.verb.need} to keep #{the thing} for now."
   else

@@ -20,41 +20,45 @@ module Gamefic
     end
 
     def connect
-      @character = @plot.make Character, name: 'yourself', synonyms: 'self myself you me', proper_named: true
+      raise 'Plot did not specify a player class' if @plot.player_class.nil?
+      # @todo The plot itself can define name, etc.
+      character = @plot.make @plot.player_class, name: 'yourself', synonyms: 'self myself you me', proper_named: true
       @user = user_class.new
-      @character.connect @user
-      @character
+      @user.connect character
+      #@character.connect @user
+      #@character
     end
 
     def run
       connect
       @plot.introduce @character
-      @user.update @character.state
+      #@user.update @character.state
       turn until @character.concluded?
+      @user.update
       #print @user.flush
     end
 
     def turn
       @plot.ready
-      unless @character.state[:options].nil?
+      unless @user.character.state[:options].nil?
         list = '<ol class="multiple_choice">'
-        @character.state[:options].each { |o|
+        @user.character.state[:options].each { |o|
           list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
         }
         list += "</ol>"
-        @character.tell list
+        @user.character.tell list
       end
-      @user.update @character.state
-      if @character.queue.empty?
+      @user.update
+      if @user.character.queue.empty?
         receive
       end
       @plot.update
     end
 
     def receive
-      print @character.scene.prompt + ' '
+      print @user.character.scene.prompt + ' '
       input = STDIN.gets
-      @character.queue.push input unless input.nil?
+      @user.character.queue.push input unless input.nil?
     end
   end
 

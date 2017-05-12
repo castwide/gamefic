@@ -1,5 +1,4 @@
-class Room < Gamefic::Entity
-  include Darkenable
+class Room < Thing
   include ExplicitExits
 
   def connect(destination, direction = nil, type = Portal, two_way = true)
@@ -13,20 +12,21 @@ class Room < Gamefic::Entity
   def synonyms
     @synonyms.to_s + " around here room"
   end
-  
+
   def tell(message)
     children.each { |c|
       c.tell message
     }
   end
-  
+
   def find_portal(direction)
     d = direction.to_s
     portals = children.that_are(Portal).delete_if { |p| p.direction.to_s != d }
     portals[0]
   end
-  
+
   private
+
   def connect2 destination, direction:nil, type:Portal, two_way:true
     if direction.nil?
       portal = type.new :parent => self, :destination => destination

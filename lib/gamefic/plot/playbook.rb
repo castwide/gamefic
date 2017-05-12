@@ -147,6 +147,7 @@ module Gamefic
         commands.each { |c|
           available = actions_for(c.verb)
           available.each { |a|
+            next if a.hidden?
             o = a.attempt(actor, c.arguments)
             result.unshift o unless o.nil?
           }

@@ -21,6 +21,7 @@ module Gamefic
     autoload :Theater,   'gamefic/plot/theater'
 
     attr_reader :commands, :imported_scripts, :source
+
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Theater
@@ -34,6 +35,11 @@ module Gamefic
       @imported_scripts = []
       @running = false
       post_initialize
+    end
+
+    def player_class cls = nil
+      @player_class = cls unless cls.nil?
+      @player_class
     end
 
     # @return [Gamefic::Plot::Playbook]
