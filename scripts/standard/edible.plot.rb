@@ -9,11 +9,11 @@ class Thing
   include Edibility
 end
 
-respond :eat, Use.reachable do |actor, item|
+respond :eat, Use.available do |actor, item|
   actor.tell "You can't eat #{the item}."
 end
 
-respond :eat, Use.reachable(:edible?) do |actor, item|
+respond :eat, Use.available(:edible?) do |actor, item|
   actor.tell "You eat #{the item}."
   destroy item
 end
