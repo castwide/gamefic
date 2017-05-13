@@ -3,7 +3,6 @@ respond :take, Use.text do |actor, text|
 end
 
 respond :take, Use.available do |actor, thing|
-  actor.tell "#{thing} is portable? #{thing.portable?}"
   if thing.parent == actor
     actor.tell "#{you.contract(you.pronoun.subj + ' are').cap_first} already carrying #{the thing}."
   elsif thing.portable?
