@@ -6,11 +6,11 @@ respond :talk, Use.itself do |actor, yourself|
   actor.perform :talk
 end
 
-respond :talk, Use.family do |actor, thing|
+respond :talk, Use.available do |actor, thing|
   actor.tell "Nothing happens."
 end
 
-respond :talk, Use.family(Character) do |actor, character|
+respond :talk, Use.available(Character) do |actor, character|
   if actor == character
     actor.perform :talk
   else
