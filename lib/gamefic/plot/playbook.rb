@@ -225,9 +225,9 @@ module Gamefic
       end
 
       def raise_order_key
-        @order_key ||= 0
-        tmp = @order_key
-        @order_key += 1
+        @@order_key ||= 0
+        tmp = @@order_key
+        @@order_key += 1
         tmp
       end
 
