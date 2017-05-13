@@ -21,8 +21,9 @@ module Gamefic
 
       post '/start' do
         content_type :json
-        @@character = Character.new(name: 'player', synonyms: 'me myself self you yourself', description: 'As good-looking as ever.')
-        @@character.connect User::Base.new
+        @@character = @@plot.player_class.new(name: 'player', synonyms: 'me myself self you yourself', description: 'As good-looking as ever.')
+        #@@character.connect User::Base.new
+        #connect
         @@plot.introduce @@character
         @@plot.ready
         @@character.state.to_json
