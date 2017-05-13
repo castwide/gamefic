@@ -27,7 +27,7 @@ module Gamefic
     
     def start
       super
-      raise "MultipleChoice scene has zero options" if options.empty?
+      #raise "MultipleChoice scene has zero options" if options.empty?
     end
 
     def finish
