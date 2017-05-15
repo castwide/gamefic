@@ -98,7 +98,6 @@ module Gamefic
     #
     def call_player_update
       p_players.each { |player|
-        #player.performed nil
         p_player_update_procs.each { |block| block.call player }
       }
     end

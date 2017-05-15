@@ -1,5 +1,5 @@
 describe Scene::MultipleScene do
-  it "cues the selected scene" do
+  it "prepares the selected scene" do
     plot = Plot.new
     c = Class.new(Entity) { include Active }
     character = plot.make c
@@ -11,6 +11,6 @@ describe Scene::MultipleScene do
     character.queue.push "one"
     plot.ready
     plot.update
-    expect(character.scene.class).to eq(scene1)
+    expect(character.will_cue? scene1).to be true
   end
 end

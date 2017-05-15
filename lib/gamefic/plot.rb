@@ -84,7 +84,10 @@ module Gamefic
     def update
       entities.each { |e| e.flush }
       call_before_player_update
-      p_players.each { |p| p.scene.update }
+      p_players.each { |p|
+        p.performed nil
+        p.scene.update
+      }
       p_entities.each { |e| e.update }
       call_player_update
       call_update
