@@ -21,6 +21,10 @@ module Gamefic::Sdk
       @config.freeze
     end
 
+    def platform
+      @platform ||= (config['platforms'] && config['platforms'][name] ? config['platforms'][name] : {})
+    end
+
     # @return [Array<String>]
     def script_paths
       @script_paths ||= (config['script_paths'] || ['./scripts', './imports']).map{ |p| File.join(source_dir, p) }

@@ -8,26 +8,11 @@ module Gamefic::Sdk
   class Platform::Web < Platform::Base
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
 
-    #def defaults
-    #  @defaults ||= {
-    #    'html_skin' => 'standard',
-    #    'with_media' => true
-    #  }
-    #end
-
     def app_config
       @app_config ||= AppConfig.new source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"]
     end
 
-    #def html_skin
-    #  @html_skin ||= config['platforms'][name]['html_skin'] || 'standard'
-    #end
-
     def build
-      #target_dir = config['target_dir']
-      #build_dir = config['build_dir']
-      html_dir = app_config.html_dir
-
       FileUtils.mkdir_p release_path
       copy_html_files
       build_opal_js
@@ -37,15 +22,23 @@ module Gamefic::Sdk
       render_index
       copy_assets
       copy_media
-
     end
 
     def clean
-      #FileUtils.remove_entry_secure config['build_dir'] if File.exist?(config['build_dir'])
-      #FileUtils.mkdir_p config['build_dir']
-      #puts "#{config['build_dir']} cleaned."
       FileUtils.remove_entry_secure build_path if File.exist?(build_path)
       puts "#{name} cleaned."
+    end
+
+    def html_dir
+      if @html_dir.nil?
+        local_dir = (platform && platform['html'] ? platform['html'] : 'html')
+        @html_dir = Pathname.new(source_dir).join(local_dir).to_s
+        @html_dir = nil unless Dir.exist?(@html_dir)
+        if @html_dir.nil?
+          @html_dir = File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'skins', 'standard')
+        end
+      end
+      @html_dir
     end
 
     private
@@ -64,7 +57,8 @@ module Gamefic::Sdk
 
     # Copy everything in source except config and template
     def copy_html_files
-      Dir.entries(app_config.html_dir).each { |entry|
+      #Dir.entries(app_config.html_dir).each { |entry|
+      Dir.entries(html_dir).each { |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
           FileUtils.mkdir_p release_path + '/' + File.dirname(entry)
           FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{release_path}/#{entry}"
@@ -153,7 +147,6 @@ module Gamefic::Sdk
 
     def copy_media
       # Copy media
-      #pc = PlotConfig.new "#{source_dir}/config.yaml"
       media_paths.each { |path|
         if File.directory?(path)
           FileUtils.mkdir_p release_path + "/media"

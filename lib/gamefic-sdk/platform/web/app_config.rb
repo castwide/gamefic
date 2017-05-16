@@ -42,7 +42,7 @@ module Gamefic
           dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/#{config['html_skin']}"
         end
         if !File.directory?(dir)
-          dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/minimal"
+          dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/standard"
         end
         if !File.directory?(dir)
           raise "Could not resolve HTML directory"
