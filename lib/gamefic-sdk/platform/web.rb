@@ -8,38 +8,44 @@ module Gamefic::Sdk
   class Platform::Web < Platform::Base
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
 
-    def defaults
-      @defaults ||= {
-        'html_skin' => 'standard',
-        'with_media' => true
-      }
-    end
+    #def defaults
+    #  @defaults ||= {
+    #    'html_skin' => 'standard',
+    #    'with_media' => true
+    #  }
+    #end
 
     def app_config
       @app_config ||= AppConfig.new source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"]
     end
 
+    #def html_skin
+    #  @html_skin ||= config['platforms'][name]['html_skin'] || 'standard'
+    #end
+
     def build
-      target_dir = config['target_dir']
-      build_dir = config['build_dir']
+      #target_dir = config['target_dir']
+      #build_dir = config['build_dir']
       html_dir = app_config.html_dir
 
-      FileUtils.mkdir_p target_dir
-      copy_html_files target_dir
-      build_opal_js build_dir
-      build_gamefic_js build_dir
-      build_static_js build_dir
-      build_scripts_js build_dir
-      render_index target_dir
-      copy_assets build_dir, target_dir
-      copy_media source_dir, target_dir
+      FileUtils.mkdir_p release_path
+      copy_html_files
+      build_opal_js
+      build_gamefic_js
+      build_static_js
+      build_scripts_js
+      render_index
+      copy_assets
+      copy_media
 
     end
 
     def clean
-      FileUtils.remove_entry_secure config['build_dir'] if File.exist?(config['build_dir'])
-      FileUtils.mkdir_p config['build_dir']
-      puts "#{config['build_dir']} cleaned."
+      #FileUtils.remove_entry_secure config['build_dir'] if File.exist?(config['build_dir'])
+      #FileUtils.mkdir_p config['build_dir']
+      #puts "#{config['build_dir']} cleaned."
+      FileUtils.remove_entry_secure build_path if File.exist?(build_path)
+      puts "#{name} cleaned."
     end
 
     private
@@ -57,21 +63,21 @@ module Gamefic::Sdk
     end
 
     # Copy everything in source except config and template
-    def copy_html_files target_dir
+    def copy_html_files
       Dir.entries(app_config.html_dir).each { |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
-          FileUtils.mkdir_p target_dir + '/' + File.dirname(entry)
-          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{target_dir}/#{entry}"
+          FileUtils.mkdir_p release_path + '/' + File.dirname(entry)
+          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{release_path}/#{entry}"
         end
       }
     end
 
-    def build_opal_js build_dir
+    def build_opal_js
       # Make sure core exists in build directory
-      FileUtils.mkdir_p build_dir + "/core"
+      FileUtils.mkdir_p build_path + "/core"
       # Opal core
-      if !File.exist?(build_dir + "/core/opal.js")
-        File.open(build_dir + "/core/opal.js", "w") do |file|
+      if !File.exist?(build_path + "/core/opal.js")
+        File.open(build_path + "/core/opal.js", "w") do |file|
           file << Uglifier.compile(
             Opal::Builder.build('opal').to_s + "\n" + Opal::Builder.build('json').to_s + "\n" + Opal::Builder.build('native').to_s
           )
@@ -79,21 +85,21 @@ module Gamefic::Sdk
       end
     end
 
-    def build_gamefic_js build_dir
+    def build_gamefic_js
       # Gamefic core
       Opal.use_gem 'gamefic'
-      if !File.exist?(build_dir + "/core/gamefic.js")
-        File.open(build_dir + "/core/gamefic.js", "w") do |file|
+      if !File.exist?(build_path + "/core/gamefic.js")
+        File.open(build_path + "/core/gamefic.js", "w") do |file|
           file << Uglifier.compile(Opal::Builder.build('gamefic').to_s)
         end
       end
     end
 
-    def build_static_js build_dir
+    def build_static_js
       # GameficOpal
       Opal.append_path Gamefic::Sdk::LIB_PATH
-      if !File.exist?(build_dir + "/core/static.js")
-        File.open(build_dir + "/core/static.js", "w") do |file|
+      if !File.exist?(build_path + "/core/static.js")
+        File.open(build_path + "/core/static.js", "w") do |file|
           #file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
           file << Uglifier.compile(
             Opal::Builder.build('gamefic-sdk/platform/web/engine').to_s + "\n" + Opal::Builder.build('gamefic-sdk/platform/web/user').to_s
@@ -102,8 +108,8 @@ module Gamefic::Sdk
       end
     end
 
-    def build_scripts_js build_dir
-      File.open("#{build_dir}/scripts.rb", 'w') do |file|
+    def build_scripts_js
+      File.open("#{build_path}/scripts.rb", 'w') do |file|
         file << "module Gamefic\n"
         file << "$scripts = {}\n"
         plot.imported_scripts.each { |script|
@@ -117,44 +123,44 @@ module Gamefic::Sdk
         file << "$engine = Gamefic::Engine::Web.new($plot)\n"
         file << "end\n"
       end
-      Opal.append_path build_dir
-      File.open(build_dir + "/core/scripts.js", 'w') do |file|
+      Opal.append_path build_path
+      File.open(build_path + "/core/scripts.js", 'w') do |file|
         file << Uglifier.compile(Opal::Builder.build('scripts').to_s)
       end
     end
 
-    def render_index target_dir
+    def render_index
       # Render index
-      File.open(target_dir + "/index.html", "w") do |file|
+      File.open(release_path + "/index.html", "w") do |file|
         file << app_config.render
       end
     end
 
-    def copy_assets build_dir, target_dir
+    def copy_assets
       paths = app_config.resource_paths
-      paths.push build_dir
+      paths.push build_path
       app_config.javascripts.each { |js|
         absolute = resolve(js, paths)
-        FileUtils.mkdir_p target_dir + "/" + File.dirname(js)
-        FileUtils.cp_r absolute, target_dir + "/" + js
+        FileUtils.mkdir_p release_path + "/" + File.dirname(js)
+        FileUtils.cp_r absolute, release_path + "/" + js
       }
       app_config.stylesheets.each { |css|
         absolute = resolve(css, paths)
-        FileUtils.mkdir_p target_dir + "/" + File.dirname(css)
-        FileUtils.cp_r absolute, target_dir + "/" + css
+        FileUtils.mkdir_p release_path + "/" + File.dirname(css)
+        FileUtils.cp_r absolute, release_path + "/" + css
       }
     end
 
-    def copy_media source_dir, target_dir
+    def copy_media
       # Copy media
-      pc = PlotConfig.new "#{source_dir}/config.yaml"
-      pc.media_paths.each { |path|
+      #pc = PlotConfig.new "#{source_dir}/config.yaml"
+      media_paths.each { |path|
         if File.directory?(path)
-          FileUtils.mkdir_p target_dir + "/media"
+          FileUtils.mkdir_p release_path + "/media"
           Dir.entries(path).each { |entry|
             if entry != '.' and entry != '..'
-              FileUtils.mkdir_p target_dir + "/media/" + File.dirname(entry)
-              FileUtils.cp_r path + "/" + entry, target_dir + "/media/" + entry
+              FileUtils.mkdir_p release_path + "/media/" + File.dirname(entry)
+              FileUtils.cp_r path + "/" + entry, release_path + "/media/" + entry
             end
           }
         end

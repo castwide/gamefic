@@ -8,15 +8,15 @@ module Gamefic
       set :port, 4342
       
       get '/' do
-        paths = config_path(settings.source_dir).script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
-        config = YAML.load(File.read(File.join(settings.source_dir, 'config.yaml')))
-        config['name'] = 'sinatra'
+        paths = base_build(settings.source_dir).script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        #config = YAML.load(File.read(File.join(settings.source_dir, 'config.yaml')))
+        #config['name'] = 'sinatra'
         @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
         @@plot.script 'debug'
-        sinatra = Gamefic::Sdk::Platform::Sinatra.new(settings.source_dir, config)
+        sinatra = Gamefic::Sdk::Platform::Sinatra.new(settings.source_dir, 'sinatra', base_build(settings.source_dir).config)
         sinatra.build
-        File.read File.join(sinatra.config['target_dir'], 'index.html')
+        File.read File.join(sinatra.release_path, 'index.html')
       end
 
       post '/start' do
@@ -55,12 +55,19 @@ module Gamefic
 
       private
 
-      def config_path dir
-        if File.directory?(dir)
-          PlotConfig.new File.join(dir, 'config.yaml')
-        else
-          PlotConfig.new
-        end
+      #def config_path dir
+        #if File.directory?(dir)
+        #  PlotConfig.new File.join(dir, 'config.yaml')
+        #else
+        #  PlotConfig.new
+        #end
+
+      #end
+
+      def base_build dir
+        yaml = YAML.load(File.read("#{dir}/config.yaml"))
+        puts yaml.inspect
+        Gamefic::Sdk::Platform::Base.new(dir, 'sinatra', yaml)
       end
     end
 

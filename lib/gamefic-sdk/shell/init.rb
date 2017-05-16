@@ -22,7 +22,7 @@ module Gamefic
           make_game_directories
           write_main_script
           write_test_script
-          write_build_yaml
+          #write_build_yaml
           write_config_yaml
           write_uuid_file
           copy_html_skin
@@ -40,6 +40,7 @@ module Gamefic
           end
 
           Dir.mkdir(File.join(@directory, 'scripts'))
+          Dir.mkdir(File.join(@directory, 'imports'))
           Dir.mkdir(File.join(@directory, 'media'))
         end
 
@@ -58,15 +59,11 @@ module Gamefic
           end
         end
 
-        def write_build_yaml
-          File.open("#{@directory}/build.yaml", 'w') do |file|
-            file.puts "web:",
-            "  platform: Web",
-            "gfic:",
-            "  platform: Gfic",
-            "  filename: game.gfic"
-          end
-        end
+        #def write_build_yaml
+        #  File.open("#{@directory}/build.yaml", 'w') do |file|
+        #    file.puts "web:",
+        #  end
+        #end
 
         def write_config_yaml
           File.open("#{@directory}/config.yaml", 'w') do |file|
@@ -75,8 +72,16 @@ module Gamefic
             "",
             "script_paths:",
             "  - ./scripts",
+            "  - ./imports",
             "media_paths:",
-            "  - ./media"
+            "  - ./media",
+            "",
+            "platforms:",
+            "  web:",
+            "    platform: Web",
+            "  gfic:",
+            "    platform: Gfic",
+            "    filename: game.gfic"
           end
         end
 
