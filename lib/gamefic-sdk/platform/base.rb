@@ -1,6 +1,7 @@
 require 'gamefic-sdk'
 require 'gamefic-sdk/debug/plot'
 #require 'gamefic-sdk/plot_config'
+require 'pathname'
 
 module Gamefic::Sdk
   class Platform::Base
@@ -22,7 +23,7 @@ module Gamefic::Sdk
 
     # @return [Array<String>]
     def script_paths
-      @script_paths ||= (config['script_paths'] || []).map{ |p| File.join(source_dir, p) }
+      @script_paths ||= (config['script_paths'] || ['./scripts', './imports']).map{ |p| File.join(source_dir, p) }
     end
 
     # @return [Array<String>]
@@ -32,17 +33,17 @@ module Gamefic::Sdk
 
     # @return [Array<String>]
     def media_paths
-      @media_paths ||= config['media_paths'].map{ |p| File.join(source_dir, p) }
+      @media_paths ||= (config['media_paths'] || []).map{ |p| File.join(source_dir, p) }
     end
 
     # @return [String]
     def build_path
-      @build_dir ||= File.join(source_dir, (config['build_path'] || 'build'), name)
+      @build_path ||= Pathname.new(source_dir).join((config['build_path'] || 'build'), name).to_s
     end
 
     # @return [String]
     def release_path
-      @release_dir ||= File.join(source_dir, (config['release_path'] || 'release'), name)
+      @release_path ||= Pathname.new(source_dir).join((config['release_path'] || 'release'), name).to_s
     end
 
     # @return [Gamefic::Plot]
