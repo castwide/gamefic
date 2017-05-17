@@ -22,7 +22,6 @@ module Gamefic
           make_game_directories
           write_main_script
           write_test_script
-          #write_build_yaml
           write_config_yaml
           write_uuid_file
           copy_html_skin
@@ -58,12 +57,6 @@ module Gamefic
             file.puts "script 'standard/test'"
           end
         end
-
-        #def write_build_yaml
-        #  File.open("#{@directory}/build.yaml", 'w') do |file|
-        #    file.puts "web:",
-        #  end
-        #end
 
         def write_config_yaml
           File.open("#{@directory}/config.yaml", 'w') do |file|
