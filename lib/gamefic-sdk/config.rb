@@ -24,7 +24,7 @@ module Gamefic
       end
 
       def script_paths
-        @script_paths ||= (data['script_paths'] || ['./scripts', './imports']).map{ |p| Pathname.new(source_dir).join(p) }
+        @script_paths ||= (data['script_paths'] || ['./scripts', './imports']).map{ |p| Pathname.new(source_dir).join(p).to_s }
       end
 
       def import_paths
@@ -32,7 +32,7 @@ module Gamefic
       end
 
       def media_paths
-        @media_paths ||= (data['import_paths'] || ['./media']).map{ |p| Pathname.new(source_dir).join(p) }
+        @media_paths ||= (data['media_paths'] || ['./media']).map{ |p| Pathname.new(source_dir).join(p).to_s }
       end
 
       def build_path
