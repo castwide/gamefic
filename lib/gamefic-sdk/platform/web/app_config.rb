@@ -38,7 +38,7 @@ module Gamefic
       
       def resolve_html_dir
         dir = "#{source_dir}/html"
-        if !File.directory?(dir) and config['html_skin'].to_s != ''
+        if !File.directory?(dir) and config.data['html_skin'].to_s != ''
           dir = "#{Gamefic::Sdk::HTML_TEMPLATE_PATH}/skins/#{config['html_skin']}"
         end
         if !File.directory?(dir)
@@ -56,8 +56,8 @@ end
 class Gamefic::Sdk::Platform::Web::AppConfig::Data
   attr_reader :author, :title, :javascripts, :stylesheets
   def initialize config, javascripts, stylesheets
-    @author = config['author']
-    @title = config['title']
+    @author = config.author
+    @title = config.title
     @javascripts = javascripts
     @stylesheets = stylesheets
   end

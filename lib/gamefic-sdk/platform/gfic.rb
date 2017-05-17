@@ -7,7 +7,7 @@ module Gamefic::Sdk
   class Platform::Gfic < Platform::Base
     def build
       FileUtils.rm filename if File.file?(filename)
-      FileUtils.mkdir_p release_path
+      FileUtils.mkdir_p release_target
       Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
         plot.imported_scripts.each { |script|
           zipfile.add File.join('scripts', "#{script.path}.plot.rb"), script.absolute_path
@@ -20,7 +20,7 @@ module Gamefic::Sdk
     end
 
     def filename
-      @filename ||= File.join(release_path, (config['platforms'][name]['filename'] || 'game.gfic'))
+      @filename ||= File.join(release_target, (target['filename'] || 'game.gfic'))
     end
   end
   

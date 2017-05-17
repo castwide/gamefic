@@ -9,10 +9,10 @@ describe "Warehouse (Web)", :type => :feature, :js => true do
     FileUtils.remove_entry @dir
   end
   it "concludes web game with test me" do
-    config = { 'target_dir' => "#{@dir}/release", 'build_dir' => "#{@dir}/build" }
-    web = Gamefic::Sdk::Platform::Web.new("examples/warehouse", config)
+    config = Gamefic::Sdk::Config.new('examples/warehouse', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build" })
+    web = Gamefic::Sdk::Platform::Web.new(config: config)
     web.build
-    url = "file://" + (@dir.start_with?('/') ? '' : '/') + @dir + '/release/index.html'
+    url = "file://" + (@dir.start_with?('/') ? '' : '/') + @dir + '/release/web/index.html'
     visit url
     sleep(0.1) while page.evaluate_script("$('#gamefic_controls').hasClass('working')")
     fill_in 'command', :with => 'test me'

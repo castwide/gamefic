@@ -9,11 +9,12 @@ module Gamefic::Sdk
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
 
     def app_config
-      @app_config ||= AppConfig.new source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"]
+      @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"]
     end
 
     def build
-      FileUtils.mkdir_p release_path
+      FileUtils.mkdir_p release_target
+      FileUtils.mkdir_p build_target
       copy_html_files
       build_opal_js
       build_gamefic_js
@@ -25,14 +26,14 @@ module Gamefic::Sdk
     end
 
     def clean
-      FileUtils.remove_entry_secure build_path if File.exist?(build_path)
+      FileUtils.remove_entry_secure build_target if File.exist?(build_target)
       puts "#{name} cleaned."
     end
 
     def html_dir
       if @html_dir.nil?
-        local_dir = (platform && platform['html'] ? platform['html'] : 'html')
-        @html_dir = Pathname.new(source_dir).join(local_dir).to_s
+        local_dir = (target['html'] ? target['html'] : 'html')
+        @html_dir = Pathname.new(config.source_dir).join(local_dir).to_s
         @html_dir = nil unless Dir.exist?(@html_dir)
         if @html_dir.nil?
           @html_dir = File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'skins', 'standard')
@@ -60,18 +61,18 @@ module Gamefic::Sdk
       #Dir.entries(app_config.html_dir).each { |entry|
       Dir.entries(html_dir).each { |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
-          FileUtils.mkdir_p release_path + '/' + File.dirname(entry)
-          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{release_path}/#{entry}"
+          FileUtils.mkdir_p release_target + '/' + File.dirname(entry)
+          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{release_target}/#{entry}"
         end
       }
     end
 
     def build_opal_js
       # Make sure core exists in build directory
-      FileUtils.mkdir_p build_path + "/core"
+      FileUtils.mkdir_p build_target + "/core"
       # Opal core
-      if !File.exist?(build_path + "/core/opal.js")
-        File.open(build_path + "/core/opal.js", "w") do |file|
+      if !File.exist?(build_target + "/core/opal.js")
+        File.open(build_target + "/core/opal.js", "w") do |file|
           file << Uglifier.compile(
             Opal::Builder.build('opal').to_s + "\n" + Opal::Builder.build('json').to_s + "\n" + Opal::Builder.build('native').to_s
           )
@@ -82,8 +83,8 @@ module Gamefic::Sdk
     def build_gamefic_js
       # Gamefic core
       Opal.use_gem 'gamefic'
-      if !File.exist?(build_path + "/core/gamefic.js")
-        File.open(build_path + "/core/gamefic.js", "w") do |file|
+      if !File.exist?(build_target + "/core/gamefic.js")
+        File.open(build_target + "/core/gamefic.js", "w") do |file|
           file << Uglifier.compile(Opal::Builder.build('gamefic').to_s)
         end
       end
@@ -92,8 +93,8 @@ module Gamefic::Sdk
     def build_static_js
       # GameficOpal
       Opal.append_path Gamefic::Sdk::LIB_PATH
-      if !File.exist?(build_path + "/core/static.js")
-        File.open(build_path + "/core/static.js", "w") do |file|
+      if !File.exist?(build_target + "/core/static.js")
+        File.open(build_target + "/core/static.js", "w") do |file|
           #file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
           file << Uglifier.compile(
             Opal::Builder.build('gamefic-sdk/platform/web/engine').to_s + "\n" + Opal::Builder.build('gamefic-sdk/platform/web/user').to_s
@@ -103,7 +104,7 @@ module Gamefic::Sdk
     end
 
     def build_scripts_js
-      File.open("#{build_path}/scripts.rb", 'w') do |file|
+      File.open("#{build_target}/scripts.rb", 'w') do |file|
         file << "module Gamefic\n"
         file << "$scripts = {}\n"
         plot.imported_scripts.each { |script|
@@ -117,43 +118,43 @@ module Gamefic::Sdk
         file << "$engine = Gamefic::Engine::Web.new($plot)\n"
         file << "end\n"
       end
-      Opal.append_path build_path
-      File.open(build_path + "/core/scripts.js", 'w') do |file|
+      Opal.append_path build_target
+      File.open(build_target + "/core/scripts.js", 'w') do |file|
         file << Uglifier.compile(Opal::Builder.build('scripts').to_s)
       end
     end
 
     def render_index
       # Render index
-      File.open(release_path + "/index.html", "w") do |file|
+      File.open(release_target + "/index.html", "w") do |file|
         file << app_config.render
       end
     end
 
     def copy_assets
       paths = app_config.resource_paths
-      paths.push build_path
+      paths.push build_target
       app_config.javascripts.each { |js|
         absolute = resolve(js, paths)
-        FileUtils.mkdir_p release_path + "/" + File.dirname(js)
-        FileUtils.cp_r absolute, release_path + "/" + js
+        FileUtils.mkdir_p release_target + "/" + File.dirname(js)
+        FileUtils.cp_r absolute, release_target + "/" + js
       }
       app_config.stylesheets.each { |css|
         absolute = resolve(css, paths)
-        FileUtils.mkdir_p release_path + "/" + File.dirname(css)
-        FileUtils.cp_r absolute, release_path + "/" + css
+        FileUtils.mkdir_p release_target + "/" + File.dirname(css)
+        FileUtils.cp_r absolute, release_target + "/" + css
       }
     end
 
     def copy_media
       # Copy media
-      media_paths.each { |path|
+      config.media_paths.each { |path|
         if File.directory?(path)
-          FileUtils.mkdir_p release_path + "/media"
+          FileUtils.mkdir_p release_target + "/media"
           Dir.entries(path).each { |entry|
             if entry != '.' and entry != '..'
-              FileUtils.mkdir_p release_path + "/media/" + File.dirname(entry)
-              FileUtils.cp_r path + "/" + entry, release_path + "/media/" + entry
+              FileUtils.mkdir_p release_target + "/media/" + File.dirname(entry)
+              FileUtils.cp_r path + "/" + entry, release_target + "/media/" + entry
             end
           }
         end
