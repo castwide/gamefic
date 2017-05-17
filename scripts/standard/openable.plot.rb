@@ -1,3 +1,5 @@
+# @gamefic.script standard/openable
+
 module Openable
   attr_writer :openable
   def open= bool

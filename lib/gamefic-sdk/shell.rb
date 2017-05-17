@@ -1,5 +1,6 @@
 require 'thor'
 require 'gamefic-sdk/build'
+require 'yard'
 
 module Gamefic
   module Sdk
@@ -58,8 +59,8 @@ module Gamefic
         Gamefic::Sdk::Build.clean(directory_name)
       end
 
-      desc 'import-scripts [DIRECTORY_NAME]', 'Copy external scripts to the local scripts directory'
-      def import_scripts(directory_name = '.')
+      desc 'import [DIRECTORY_NAME]', 'Copy external scripts to the project'
+      def import(directory_name = '.')
         config_yaml = File.join(directory_name, 'config.yaml')
         if File.exist?(config_yaml)
           config_path = PlotConfig.new config_yaml
@@ -90,6 +91,56 @@ module Gamefic
         Dir[File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'skins', '*')].sort.each { |d|
           puts File.basename(d)
         }
+      end
+
+      desc 'script [PATH]', 'List or document the scripts in the SDK'
+      def script path = nil
+        if path.nil?
+          s = []
+          Dir[File.join GLOBAL_SCRIPT_PATH, '**', '*.rb'].each { |f|
+            c = File.read(f)
+            c.each_line { |l|
+              match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
+              unless match.nil?
+                s.push(match[1])
+              end
+            }
+          }
+          puts s.sort.join("\n")
+        else
+          document_script path
+        end
+      end
+
+      private
+
+      def document_script path
+        f = File.join(GLOBAL_SCRIPT_PATH, "#{path}.plot.rb")
+        if File.exist?(f)
+          c = File.read(f)
+          doc = ''
+          in_comment = false
+          c.each_line { |l|
+            if in_comment
+              break unless l.start_with?('#')
+              doc += "#{l[2..-1]}"
+            else
+              match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
+              in_comment = true unless match.nil?
+            end
+          }
+          if in_comment
+            puts ''
+            puts path
+            puts ''
+            puts doc unless doc == ''
+            puts '' unless doc == ''
+          else
+            puts "Path '#{path}' is not documented."
+          end
+        else
+          puts "Script path '#{path}' does not exist."
+        end
       end
     end
   end

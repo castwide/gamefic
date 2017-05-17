@@ -1,3 +1,5 @@
+# @gamefic.script standard/give
+
 respond :give, Use.available, Query::Children.new do |actor, character, gift|
   actor.tell "Nothing happens."
 end

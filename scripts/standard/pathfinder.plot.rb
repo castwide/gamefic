@@ -1,9 +1,8 @@
 # @gamefic.script standard/pathfinder
 #   Pathfinders provide the shortest route between two locations. The
 #   destination needs to be accessible from the origin through portals. Note
-#   that Pathfinders do not take into account portals that characters cannot
-#   traverse, such as locked doors.
-#
+#   that Pathfinders do not take into account portals that characters should
+#   not be able to traverse, such as locked doors.
 
 class Pathfinder
   # @return [Room]

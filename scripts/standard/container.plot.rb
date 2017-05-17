@@ -1,3 +1,5 @@
+# @gamefic.script standard/container
+
 script 'standard/openable'
 script 'standard/lockable'
 #script 'standard/container/entities'

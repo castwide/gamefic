@@ -1,3 +1,5 @@
+# @gamefic.script standard/edible
+
 module Edibility
   attr_writer :edible
   def edible?

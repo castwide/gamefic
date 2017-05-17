@@ -1,3 +1,5 @@
+# @gamefic.script standard/lockable
+
 script 'standard/openable'
 
 module Lockable
