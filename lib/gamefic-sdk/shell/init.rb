@@ -76,7 +76,7 @@ module Gamefic
             "media_paths:",
             "  - ./media",
             "",
-            "platforms:",
+            "targets:",
             "  web:",
             "    platform: Web",
             "  gfic:",
