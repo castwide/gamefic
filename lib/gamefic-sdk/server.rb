@@ -14,9 +14,10 @@ module Gamefic
         @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
         @@plot.script 'debug'
-        sinatra = Gamefic::Sdk::Platform::Sinatra.new(settings.source_dir, 'sinatra', base_build(settings.source_dir).config)
+        #sinatra = Gamefic::Sdk::Platform::Sinatra.new(settings.source_dir, 'sinatra', base_build(settings.source_dir).config)
+        sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: base_build(settings.source_dir))
         sinatra.build
-        File.read File.join(sinatra.release_path, 'index.html')
+        File.read File.join(sinatra.release_target, 'index.html')
       end
 
       post '/start' do
@@ -65,9 +66,11 @@ module Gamefic
       #end
 
       def base_build dir
-        yaml = YAML.load(File.read("#{dir}/config.yaml"))
-        puts yaml.inspect
-        Gamefic::Sdk::Platform::Base.new(dir, 'sinatra', yaml)
+        #yaml = YAML.load(File.read("#{dir}/config.yaml"))
+        #puts yaml.inspect
+        #Gamefic::Sdk::Platform::Base.new(dir, 'sinatra', yaml)
+        #Gamefic::Sdk::Platform::B
+        Gamefic::Sdk::Config.load dir
       end
     end
 
