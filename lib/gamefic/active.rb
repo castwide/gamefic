@@ -38,7 +38,7 @@ module Gamefic
     def state
       @state = {}
       @state.merge! scene.state unless scene.nil?
-      @state.merge! output: messages
+      @state[:output] = messages
       @state
     end
 
@@ -203,13 +203,6 @@ module Gamefic
       order.freeze
       @last_action = order
     end
-
-    # Get the prompt that the user should see for the current scene.
-    #
-    # @return [String]
-    #def prompt
-    #  scene.nil? ? '>' : scene.prompt
-    #end
 
     def accessible?
       false
