@@ -18,20 +18,7 @@ module Gamefic
       self.prompt = 'Enter a choice:'
     end
 
-    #def start actor
-    #  data = start_data_for(actor)
-    #  data.clear
-    #  do_start_block actor, data
-    #  tell_options
-    #end
-    
-    def start
-      super
-      #raise "MultipleChoice scene has zero options" if options.empty?
-    end
-
     def finish
-      #data = finish_data_for(actor, input)
       get_choice
       if selection.nil?
         actor.tell invalid_message
