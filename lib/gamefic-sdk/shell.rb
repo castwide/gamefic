@@ -10,7 +10,8 @@ module Gamefic
 
       map %w[--version -v] => :version
       map [:create, :new] => :init
-      
+      map ['scripts'] => :script
+
       desc "--version, -v", "Print the version"
       def version
         puts "gamefic-sdk #{Gamefic::Sdk::VERSION}"
