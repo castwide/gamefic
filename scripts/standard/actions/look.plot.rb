@@ -40,6 +40,12 @@ end
 respond :look, Use.room do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description if room.has_description?
+  actor.execute :_itemize_room
+end
+
+respond :_itemize_room do |actor|
+  room = actor.room
+  next if room.nil?
   with_locales = []
   chars = room.children.that_are(Character).that_are(:itemized?) - [actor]
   charsum = []

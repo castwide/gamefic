@@ -68,36 +68,24 @@ module Gamefic
     end
 
     # Perform a command.
-    # The command can be specified as a String or a set of tokens. Either form
-    # should yield the same result, but using tokens can yield better
-    # performance since it bypasses the parser.
+    # The command can be specified as a String or a verb with a list of
+    # parameters. Either form should yield the same result, but the
+    # verb/parameter form can yield better performance since it bypasses the
+    # parser.
     #
-    # The command will be executed immediately regardless of game state.
+    # The command will be executed immediately regardless of the entity's
+    # state.
     #
     # @example Send a command as a string
     #   character.perform "take the key"
     #
-    # @example Send a command as a set of tokens
+    # @example Send a command as a verb with parameters
     #   character.perform :take, @key
     #
+    # @return [Gamefic::Action]
     def perform(*command)
-      #Director.dispatch(self, *command)
       actions = playbook.dispatch(self, *command)
-      a = actions.first
-      okay = true
-      unless a.meta?
-        playbook.validators.each { |v|
-          result = v.call(self, a.verb, a.parameters)
-          okay = (result != false)
-          break if not okay
-        }
-      end
-      if okay
-        performance_stack.push actions
-        proceed
-        performance_stack.pop
-      end
-      a
+      execute_stack actions
     end
     
     # Quietly perform a command.
@@ -113,6 +101,20 @@ module Gamefic
       self.perform *command
       set_buffer_stack buffer_stack - 1
       buffer
+    end
+
+    # Perform an action.
+    # This is functionally identical to the `perform` method, except the
+    # action must be declared as a verb with a list of parameters. Use
+    # `perform` if you need to parse a string as a command.
+    #
+    # The command will be executed immediately regardless of the entity's
+    # state.
+    #
+    # @return [Gamefic::Action]
+    def execute(verb, *params, quietly: false)
+      actions = playbook.dispatch_from_params(self, verb, params)
+      execute_stack actions, quietly: quietly
     end
 
     # Proceed to the next Action in the current stack.
@@ -213,6 +215,24 @@ module Gamefic
     end
 
     private
+
+    def execute_stack actions, quietly: false
+      a = actions.first
+      okay = true
+      unless a.meta?
+        playbook.validators.each { |v|
+          result = v.call(self, a.verb, a.parameters)
+          okay = (result != false)
+          break if not okay
+        }
+      end
+      if okay
+        performance_stack.push actions
+        proceed quietly: quietly
+        performance_stack.pop
+      end
+      a
+    end
 
     def buffer_stack
       @buffer_stack ||= 0
