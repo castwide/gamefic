@@ -91,11 +91,9 @@ module Gamefic::Sdk
     end
 
     def build_static_js
-      # GameficOpal
       Opal.append_path Gamefic::Sdk::LIB_PATH
       if !File.exist?(build_target + "/core/static.js")
         File.open(build_target + "/core/static.js", "w") do |file|
-          #file << Opal::Builder.build('gamefic-sdk/platform/web/gamefic_opal')
           file << Uglifier.compile(
             Opal::Builder.build('gamefic-sdk/platform/web/engine').to_s + "\n" + Opal::Builder.build('gamefic-sdk/platform/web/user').to_s
           )
@@ -147,13 +145,12 @@ module Gamefic::Sdk
     end
 
     def copy_media
-      # Copy media
       FileUtils.mkdir_p release_target + "/media"
       return unless File.directory?(config.media_path)
       Dir.entries(config.media_path).each { |entry|
         if entry != '.' and entry != '..'
           FileUtils.mkdir_p release_target + "/media/" + File.dirname(entry)
-          FileUtils.cp_r path + "/" + entry, release_target + "/media/" + entry
+          FileUtils.cp_r config.media_path + "/" + entry, release_target + "/media/" + entry
         end
       }
     end

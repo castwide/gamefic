@@ -6,16 +6,14 @@ module Gamefic
 
     class Server < Sinatra::Base
       set :port, 4342
-      
+
       get '/' do
-        paths = base_build(settings.source_dir).script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
-        #config = YAML.load(File.read(File.join(settings.source_dir, 'config.yaml')))
-        #config['name'] = 'sinatra'
+        config = Gamefic::Sdk::Config.load(settings.source_dir)
+        paths = [config.script_path, config.import_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
         @@plot.script 'debug'
-        #sinatra = Gamefic::Sdk::Platform::Sinatra.new(settings.source_dir, 'sinatra', base_build(settings.source_dir).config)
-        sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: base_build(settings.source_dir))
+        sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: config)
         sinatra.build
         File.read File.join(sinatra.release_target, 'index.html')
       end
@@ -23,8 +21,6 @@ module Gamefic
       post '/start' do
         content_type :json
         @@character = @@plot.player_class.new(name: 'player', synonyms: 'me myself self you yourself', description: 'As good-looking as ever.')
-        #@@character.connect User::Base.new
-        #connect
         @@plot.introduce @@character
         @@plot.ready
         @@character.state.to_json
@@ -52,25 +48,6 @@ module Gamefic
           }
         end
 
-      end
-
-      private
-
-      #def config_path dir
-        #if File.directory?(dir)
-        #  PlotConfig.new File.join(dir, 'config.yaml')
-        #else
-        #  PlotConfig.new
-        #end
-
-      #end
-
-      def base_build dir
-        #yaml = YAML.load(File.read("#{dir}/config.yaml"))
-        #puts yaml.inspect
-        #Gamefic::Sdk::Platform::Base.new(dir, 'sinatra', yaml)
-        #Gamefic::Sdk::Platform::B
-        Gamefic::Sdk::Config.load dir
       end
     end
 
