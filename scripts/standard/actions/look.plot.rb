@@ -79,11 +79,11 @@ respond :_itemize_room do |actor|
     if portals.length > 0
       if portals.length == 1
         p = portals[0]
-        actor.tell "There is an exit #{p.direction || p.name || "to #{the p.destination}"}."
+        actor.tell "There is an exit #{p.instruction}."
       else
         dirs = []
         portals.each { |p|
-          dirs.push (p.direction || p.name || "to #{the p.destination}")
+          dirs.push p.instruction
         }
         actor.tell "There are exits #{dirs.join_and(', ')}."
       end

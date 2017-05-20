@@ -16,7 +16,7 @@ class Portal < Thing
     end
     nil
   end
-  
+
   # Get the ordinal direction of this Portal
   # Portals have distinct direction and name properties so games can display a
   # bare compass direction for exits, e.g., "south" vs. "the southern door."
@@ -25,7 +25,7 @@ class Portal < Thing
   def direction
     @direction
   end
-  
+
   def direction= d
     @direction = Direction.find(d)
   end
@@ -33,7 +33,11 @@ class Portal < Thing
   def name
     @name || (direction.nil? ? destination.name : direction.name)
   end
-  
+
+  def instruction
+    direction || (destination ? "to #{destination.definitely}" : name)
+  end
+
   def synonyms
     "#{super} #{@destination} #{@direction} #{!direction.nil? ? direction.synonyms : ''}"
   end
