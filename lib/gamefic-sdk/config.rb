@@ -15,42 +15,69 @@ module Gamefic
         @data.freeze
       end
 
+      # The game's title.
+      #
+      # @return [String]
       def title
         @title ||= (data['title'] || 'Untitled')
       end
 
+      # The game's author.
+      #
+      # @return [String]
       def author
         @author ||= (data['author'] || 'Anonymous')
       end
 
-      def script_paths
-        @script_paths ||= (data['script_paths'] || ['./scripts', './imports']).map{ |p| Pathname.new(source_dir).join(p).to_s }
+      # The absolute path to the project's script directory.
+      #
+      # @return [String]
+      def script_path
+        @script_paths ||= Pathname.new(source_dir).join(data['script_path'] || './scripts').to_s
       end
 
-      def import_paths
-        @import_paths ||= (data['import_paths'] || [])
+      # The absolute path to the project's import directory.
+      #
+      # @return [String]
+      def import_path
+        @import_paths ||= Pathname.new(source_dir).join(data['import_path'] || './imports').to_s
       end
 
-      def media_paths
-        @media_paths ||= (data['media_paths'] || ['./media']).map{ |p| Pathname.new(source_dir).join(p).to_s }
+      # The absolute path to the project's media directory.
+      #
+      # @return [String]
+      def media_path
+        @media_path ||= Pathname.new(source_dir).join(data['media_path'] || './media').to_s
       end
 
+      # The absolute path to the project's build directory.
+      #
+      # @return [String]
       def build_path
-        @build_path ||= Pathname.new(source_dir).join(data['build_path'] || './build')
+        @build_path ||= Pathname.new(source_dir).join(data['build_path'] || './build').to_s
       end
 
+      # The absolute path to the project's release directory.
+      #
+      # @return [String]
       def release_path
-        @release_path ||= Pathname.new(source_dir).join(data['release_path'] || './release')
+        @release_path ||= Pathname.new(source_dir).join(data['release_path'] || './release').to_s
       end
 
       def auto_import?
         @auto_import ||= (data['auto_import'] || true)
       end
 
+      # A hash of each target's name and its configuration options.
+      #
+      # @return [Hash]
       def targets
         @targets ||= (data['targets'] || {})
       end
 
+      # A universal unique identifier for the project.
+      #
+      # @return [String]
       def uuid
         if @uuid.nil?
           if File.file?(File.join source_dir, '.uuid')

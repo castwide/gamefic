@@ -5,7 +5,7 @@ require 'pathname'
 
 module Gamefic::Sdk
   class Platform::Base
-    # @return [Hash]
+    # @return [Gamefic::Sdk::Config]
     attr_reader :config
 
     # @return [Hash]
@@ -36,7 +36,7 @@ module Gamefic::Sdk
     # @return [Gamefic::Plot]
     def plot
       if @plot.nil?
-        paths = config.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        paths = [config.script_path, config.import_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         # @todo: Should really use Gamefic::Sdk::Debug::Plot or just Gamfic::Plot?
         @plot = Gamefic::Sdk::Debug::Plot.new(Gamefic::Source::File.new(*paths))
         @plot.script 'main'

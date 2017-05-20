@@ -148,15 +148,12 @@ module Gamefic::Sdk
 
     def copy_media
       # Copy media
-      config.media_paths.each { |path|
-        if File.directory?(path)
-          FileUtils.mkdir_p release_target + "/media"
-          Dir.entries(path).each { |entry|
-            if entry != '.' and entry != '..'
-              FileUtils.mkdir_p release_target + "/media/" + File.dirname(entry)
-              FileUtils.cp_r path + "/" + entry, release_target + "/media/" + entry
-            end
-          }
+      FileUtils.mkdir_p release_target + "/media"
+      return unless File.directory?(config.media_path)
+      Dir.entries(config.media_path).each { |entry|
+        if entry != '.' and entry != '..'
+          FileUtils.mkdir_p release_target + "/media/" + File.dirname(entry)
+          FileUtils.cp_r path + "/" + entry, release_target + "/media/" + entry
         end
       }
     end

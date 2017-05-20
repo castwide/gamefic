@@ -62,19 +62,15 @@ module Gamefic
 
       desc 'import [DIRECTORY_NAME]', 'Copy external scripts to the project'
       def import(directory_name = '.')
-        config_yaml = File.join(directory_name, 'config.yaml')
-        if File.exist?(config_yaml)
-          config_path = PlotConfig.new config_yaml
-        else
-          config_path = PlotConfig.new
-        end
-        FileUtils.mkdir_p(File.join(directory_name, 'scripts'))
-        paths = config_path.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        config = Gamefic::Sdk::Config.load directory_name
+        FileUtils.mkdir_p(File.join(directory_name, 'imports'))
+        paths = config.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
+          next unless s.absolute_path.start_with?(Gamefic::Sdk::GLOBAL_SCRIPT_PATH)
           src = File.absolute_path(s.absolute_path)
-          dst = File.absolute_path(File.join(directory_name, 'scripts', "#{s.path}.plot.rb"))
+          dst = File.absolute_path(File.join(directory_name, 'imports', "#{s.path}.plot.rb"))
           next if src == dst
           puts "Importing #{s.path}"
           FileUtils.mkdir_p(File.dirname(dst))
