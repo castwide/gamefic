@@ -2,6 +2,18 @@ var Gamefic = (function() {
 	var startCallbacks = [];
 	var updateCallbacks = [];
 	return {
+		enableLogging: function() {
+
+		},
+
+		logAlias: function() {
+
+		},
+
+		canLog: function() {
+			return false
+		},
+
 		start: function() {
 			var that = this;
       $.post('/start', function(response) {
@@ -11,11 +23,13 @@ var Gamefic = (function() {
 				that.update(response);
       });
 		},
+
 		update: function(response) {
 			updateCallbacks.forEach(function(callback) {
 				callback(response);
 			});
 		},
+
 		receive: function(input) {
 			var that = this;
 			$.post('/update', {command: input}, function(response) {
@@ -25,17 +39,21 @@ var Gamefic = (function() {
 				console.log('An error occurred');
 			});
 		},
+
 		onUpdate: function(callback) {
 			updateCallbacks.push(callback);
 		},
+
 		onStart: function(callback) {
 			updateCallbacks.push(callback);
 		},
+
 		save: function(filename, data) {
 			var json = Opal.JSON.$generate(data);
 			localStorage.setItem(filename, json);
 			Opal.GameficOpal.$static_character().$tell('Game saved.');
 		},
+
 		restore: function(filename) {
 			var data = Opal.JSON.$parse(localStorage.getItem(filename));
 			var metadata = data.$fetch('metadata');
