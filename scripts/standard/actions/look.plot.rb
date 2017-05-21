@@ -21,16 +21,16 @@ end
 respond :look, Use.available(Supporter) do |actor, thing|
   actor.proceed
   if thing.accessible?
-    itemized = thing.children.that_are_not(:attached?).that_are(:itemized)
-    actor.tell "You see #{thing.itemized.join_and} on #{the thing}." unless itemized.empty?
+    itemized = thing.children.that_are_not(:attached?).that_are(:itemized?)
+    actor.tell "You see #{itemized.join_and} on #{the thing}." unless itemized.empty?
   end
 end
 
 respond :look, Use.available(Receptacle) do |actor, thing|
   actor.proceed
   if thing.accessible?
-    itemized = thing.children.that_are_not(:attached?).that_are(:itemized)
-    actor.tell "You see #{thing.itemized.join_and} in #{the thing}." unless itemized.empty?
+    itemized = thing.children.that_are_not(:attached?).that_are(:itemized?)
+    actor.tell "You see #{itemized.join_and} in #{the thing}." unless itemized.empty?
   end
 end
 
