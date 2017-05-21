@@ -63,7 +63,8 @@ module Gamefic
       desc 'import [DIRECTORY_NAME]', 'Copy external scripts to the project'
       def import(directory_name = '.')
         config = Gamefic::Sdk::Config.load directory_name
-        FileUtils.mkdir_p(File.join(directory_name, 'imports'))
+        FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
+        FileUtils.mkdir_p config.import_path
         paths = [config.script_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
