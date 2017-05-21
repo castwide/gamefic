@@ -64,7 +64,7 @@ module Gamefic
       def import(directory_name = '.')
         config = Gamefic::Sdk::Config.load directory_name
         FileUtils.mkdir_p(File.join(directory_name, 'imports'))
-        paths = config.script_paths + [Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        paths = [config.script_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
