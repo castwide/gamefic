@@ -153,7 +153,7 @@ module Gamefic
     #     scene.map "Go to scene two", scene_two if actor[:can_go_to_scene_two]
     #   end
     #
-    # @param map [Hash] A Hash of options and associated scene keys.
+    # @param map [Hash] A Hash of options and associated scenes.
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::MultipleScene]
     def multiple_scene map = {}, &block

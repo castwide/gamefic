@@ -3,6 +3,7 @@ require 'gamefic/plot'
 module Gamefic
 
   class Subplot
+    # @return [Gamefic::Plot]
     attr_reader :plot
     attr_writer :denied_message
 

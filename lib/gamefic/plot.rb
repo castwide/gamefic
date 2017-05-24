@@ -126,7 +126,7 @@ module Gamefic
       else
         false
       end
-    end    
+    end
   end
 
 end
