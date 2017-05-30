@@ -7,15 +7,15 @@ require 'gamefic/grammar/conjugator'
 
 module Gamefic
   module Engine
-    class Web < Gamefic::Engine::Base      
+    class Web < Gamefic::Engine::Base
       def post_initialize
         self.user_class = Gamefic::User::Web
       end
 
       def run
         connect
-        @plot.introduce @user.character
-        @plot.ready
+        plot.introduce @user.character
+        plot.ready
         @user.update
       end
 
