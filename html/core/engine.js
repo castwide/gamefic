@@ -4,6 +4,8 @@ var Gamefic = (function() {
 	var loggingUrl = null;
 	var logId = null;
 	var logAlias = null;
+	var lastPrompt = null;
+	var lastInput = null;
 
 	var _start = function() {
 		startCallbacks.forEach((callback) => {
@@ -21,6 +23,10 @@ var Gamefic = (function() {
 		return (a.host == window.location.host);
 	}
 
+	var _logAlias = function(name) {
+		logAlias = name || logAlias || 'anonymous';
+		return logAlias;
+	}
 	return {
 		enableLogging: function(url) {
 			loggingUrl = url || '//gamefic.com/game/log';
@@ -28,8 +34,7 @@ var Gamefic = (function() {
 		},
 
 		logAlias: function(name) {
-			logAlias = name || logAlias || 'anonymous';
-			return logAlias;
+			return _logAlias(name);
 		},
 
 		canLog: function() {
@@ -39,7 +44,7 @@ var Gamefic = (function() {
 		start: function() {
 			if (loggingUrl) {
 				if (_canLog()) {
-					$.post(loggingUrl, { alias: logAlias() }, function(response) {
+					$.post(loggingUrl, { alias: _logAlias() }, function(response) {
 						logId = response.id;
 						_start();
 					}).fail(function(response) {
@@ -57,8 +62,11 @@ var Gamefic = (function() {
 		},
 
 		update: function(json) {
+			var state = JSON.parse(json);
+			state.last_prompt = lastPrompt;
+			state.last_input = lastInput;
 			if (logId) {
-				$.post(loggingUrl + logId + '.json', { _method: 'PUT', state: json }, function(response) {
+				$.post(loggingUrl + '/' + logId + '.json', { _method: 'PUT', state: state }, function(response) {
 
 				}).fail(function(response) {
 					console.warn('Logging update failed.');
@@ -66,13 +74,14 @@ var Gamefic = (function() {
 					logId = null;
 				});
 			}
-			var state = JSON.parse(json);
 			updateCallbacks.forEach(function(callback) {
 				callback(state);
 			});
+			lastPrompt = state.prompt;
 		},
 
 		receive: function(input) {
+			lastInput = input;
 			Opal.gvars.engine.$receive(input);
 		},
 
