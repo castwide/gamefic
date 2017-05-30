@@ -32,6 +32,11 @@ module Gamefic
 
     def finish
       @finish_block.call @actor, self unless @finish_block.nil?
+      @finished = true
+    end
+
+    def finished?
+      @finished ||= false
     end
 
     def flush
@@ -40,7 +45,7 @@ module Gamefic
 
     def state
       {
-        scene: type, prompt: prompt, input: input #, output: actor.messages, busy: !actor.queue.empty?
+        scene: type, prompt: prompt
       }
     end
 
