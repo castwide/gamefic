@@ -50,22 +50,28 @@ module Gamefic
       super
     end
 
+    # A freeform property dictionary.
+    # Authors can use the session hash to assign custom properties to the
+    # entity. It can also be referenced directly using [] without the method
+    # name, e.g., entity.session[:my_value] or entity[:my_value].
+    #
     # @return [Hash]
     def session
       @session ||= {}
     end
 
-    # Get an extended property.
+    # Get a custom property.
     #
-    # @param key [Symbol] The property's name.
+    # @param key [Symbol] The property's name
+    # @return The value of the property
     def [](key)
       session[key]
     end
     
-    # Set an extended property.
+    # Set a custom property.
     #
-    # @param key [Symbol] The property's name.
-    # @param value The value to set.
+    # @param key [Symbol] The property's name
+    # @param value The value to set
     def []=(key, value)
       session[key] = value
     end

@@ -3,7 +3,10 @@ module Gamefic
   # Basic functionality for running a single-player game from a console.
   #
   class Engine::Base
+    # @return [Class]
     attr_writer :user_class
+
+    # @return [Gamefic::Plot]
     attr_reader :plot
 
     def initialize(plot)

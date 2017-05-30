@@ -1,5 +1,3 @@
-#require 'gamefic/scene_data'
-
 module Gamefic
 
   module Scene
@@ -12,5 +10,5 @@ module Gamefic
     autoload :MultipleScene, 'gamefic/scene/multiple_scene'
     autoload :YesOrNo, 'gamefic/scene/yes_or_no'
   end
-  
+
 end
