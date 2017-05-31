@@ -9,15 +9,24 @@ module Gamefic
     include Grammar::Person, Grammar::Plural
     include Matchable
 
+    # Get the name of the object.
+    # The name is usually presented without articles (e.g., "object" instead
+    # of "an object" or "the object" unless the article is part of a proper
+    # name (e.g., "The Ohio State University").
+    #
     # @return [String]
     attr_reader :name
 
     # @return [String]
     attr_reader :synonyms
 
+    # Get the object's indefinite article (usually "a" or "an").
+    #
     # @return [String]
     attr_reader :indefinite_article
 
+    # Get the object's definite article (usually "the").
+    #
     # @return [String]
     attr_reader :definite_article
 
@@ -41,22 +50,30 @@ module Gamefic
     # Get the name of the object with a definite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
+    #
+    # @return [String]
     def definitely
       ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name.to_s
     end
     
-    # Get the definite article for this object.
+    # Get the definite article for this object (usually "the").
     #
     # @return [String]
     def definite_article
       @definite_article || "the"
     end
     
+    # Set the definite article.
+    #
+    # @param [String] article
     def definite_article= article
       @keywords = nil
       @definite_article = article
     end
 
+    # Set the indefinite article.
+    #
+    # @param [String] article
     def indefinite_article= article
       @keywords = nil
       @indefinite_article = article
