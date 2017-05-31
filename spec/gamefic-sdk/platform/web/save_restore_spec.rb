@@ -10,7 +10,7 @@ describe "Save/Restore on Web", :type => :feature, :js => true do
     web = Gamefic::Sdk::Platform::Web.new(config: config)
     web.build
     Capybara.app.root = @dir
-    page.visit '/release/index.html'
+    page.visit '/release/web/index.html'
     sleep(0.1) while page.evaluate_script("document.getElementById('gamefic_controls').getAttribute('class').indexOf('working') != -1")
     fill_in 'command', :with => 'take key'
     click_button 'gamefic_submit'

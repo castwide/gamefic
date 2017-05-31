@@ -1,6 +1,5 @@
 require 'thor'
 require 'gamefic-sdk/build'
-require 'yard'
 
 module Gamefic
   module Sdk
