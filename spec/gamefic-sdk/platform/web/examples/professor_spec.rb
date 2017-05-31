@@ -12,12 +12,8 @@ describe "Professor (Web)", :type => :feature, :js => true do
     config = Gamefic::Sdk::Config.new('examples/professor', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build" })
     web = Gamefic::Sdk::Platform::Web.new(config: config)
     web.build
-    url = "file://" + (@dir.start_with?('/') ? '' : '/') + @dir + '/release/web/index.html'
-    visit url
-    sleep(0.1) while page.evaluate_script("$('#gamefic_controls').hasClass('working')")
-    fill_in 'command', :with => 'test me'
-    click_button 'gamefic_submit'
-    sleep(0.1) while page.evaluate_script("$('#gamefic_controls').hasClass('working')")
-    expect(page.evaluate_script("$('#gamefic_console').hasClass('concluded')")).to eq(true)
+    Capybara.app.root = @dir
+    Capybara.app.run_test page
+    expect(page.evaluate_script("document.getElementById('gamefic_console').getAttribute('class').indexOf('concluded') != -1")).to eq(true)
   end
 end

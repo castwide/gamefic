@@ -1,6 +1,7 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'gamefic/version'
+require 'date'
 
 Gem::Specification.new do |s|
   s.name          = 'gamefic'
@@ -23,6 +24,4 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
   s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'
-  s.add_development_dependency 'poltergeist', '~> 1.11'
-  s.add_development_dependency 'codeclimate-test-reporter', '~> 1.0', '>= 1.0.0'
 end
