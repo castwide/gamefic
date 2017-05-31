@@ -12,11 +12,6 @@ module Gamefic
     # @return [Gamefic::Action]
     attr_reader :last_action
 
-    # @return [Entity,nil]
-    attr_reader :last_object
-
-    attr_accessor :object_of_pronoun
-
     # @return [Gamefic::Scene::Base]
     attr_reader :scene
 
