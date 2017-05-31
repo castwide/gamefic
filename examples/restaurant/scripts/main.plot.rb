@@ -4,8 +4,8 @@
 # Examples of the clothing and edible libraries.
 
 script 'standard'
-script 'clothing'
-script 'edible'
+script 'standard/clothing'
+script 'standard/edible'
 script 'test'
 
 lobby = make Room, :name => 'the lobby', :description => 'An alcove that opens into the dining area to the north. The exit is south.'

@@ -147,6 +147,7 @@ module Gamefic
         commands.each { |c|
           available = actions_for(c.verb)
           available.each { |a|
+            next if a.hidden?
             o = a.attempt(actor, c.arguments)
             result.unshift o unless o.nil?
           }
@@ -224,9 +225,9 @@ module Gamefic
       end
 
       def raise_order_key
-        @order_key ||= 0
-        tmp = @order_key
-        @order_key += 1
+        @@order_key ||= 0
+        tmp = @@order_key
+        @@order_key += 1
         tmp
       end
 

@@ -5,6 +5,7 @@
 # containers.
 
 script 'standard'
+script 'standard/container'
 script 'test'
 
 office = make Room, :name => 'the manager\'s office', :description => 'A small office in the back of the warehouse.'

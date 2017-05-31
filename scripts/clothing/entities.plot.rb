@@ -1,7 +1,0 @@
-script 'clothing/entities/clothing'
-script 'clothing/entities/coat'
-script 'clothing/entities/gloves'
-script 'clothing/entities/hat'
-script 'clothing/entities/pants'
-script 'clothing/entities/shirt'
-script 'clothing/entities/shoes'

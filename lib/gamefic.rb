@@ -4,7 +4,7 @@ require 'gamefic/core_ext/string'
 
 require 'gamefic/grammar'
 require 'gamefic/entity'
-require 'gamefic/character'
+require 'gamefic/active'
 require "gamefic/scene"
 require "gamefic/query"
 require "gamefic/action"

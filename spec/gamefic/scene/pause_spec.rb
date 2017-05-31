@@ -1,8 +1,8 @@
 describe Scene::Pause do
   it "changes the character's state after a response" do
     plot = Plot.new
-    #room = plot.make Room, :name => 'room'
-    character = plot.make Character
+    c = Class.new(Entity) { include Active }
+    character = plot.make c
     character[:has_paused] = false
     paused = plot.pause do |actor|
       actor[:has_paused] = true

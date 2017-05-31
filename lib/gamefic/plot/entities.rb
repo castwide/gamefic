@@ -18,7 +18,7 @@ module Gamefic
         end
         p_entities.push ent
         p_dynamic.push ent if running?
-        ent.playbook = playbook if ent.kind_of?(Character)
+        ent.playbook = playbook if ent.kind_of?(Active)
         ent
       end
 

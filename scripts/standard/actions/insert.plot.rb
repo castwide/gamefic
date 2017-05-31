@@ -1,38 +1,24 @@
 script 'standard'
 
-respond :insert, Use.visible, Use.reachable do |actor, thing, target|
+respond :insert, Use.available, Use.available do |actor, thing, target|
   actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.can + ' not'} put #{the thing} inside #{the target}."
 end
 
-respond :insert, Use.visible, Use.reachable(Receptacle) do |actor, thing, receptacle|
+respond :insert, Use.children, Use.available(Receptacle) do |actor, thing, receptacle|
   if thing.sticky?
     actor.tell thing.sticky_message || "#{you.pronoun.Subj} #{you.verb.need} to keep #{the thing} for now."
   else
-    if actor.auto_takes?(thing)
-      actor.tell "#{you.pronoun.Subj} put #{the thing} in #{the receptacle}."
-      thing.parent = receptacle
-    end
+    actor.tell "#{you.pronoun.Subj} put #{the thing} in #{the receptacle}."
+    thing.parent = receptacle
   end
 end
 
-respond :insert, Use.visible, Use.reachable(Container) do |actor, thing, container|
-  if container.open?
+respond :insert, Use.available, Use.available(Receptacle) do |actor, thing, receptacle|
+  if thing.parent == actor
     actor.proceed
   else
-    actor.tell "#{The container} is closed."
+    actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} have #{the thing}."
   end
-end
-
-respond :insert, Use.visible, Use.text do |actor, thing, container|
-  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see anything called \"#{container}\" here."
-end
-
-respond :insert, Use.text, Use.visible do |actor, thing, container|
-  actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see anything called \"#{thing}\" here."
-end
-
-respond :insert, Use.text, Use.text do |actor, thing, container|
-  actor.tell "I don't know what you mean by \"#{thing}\" or \"#{container}.\""
 end
 
 interpret "drop :item in :container", "insert :item :container"

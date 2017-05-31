@@ -1,4 +1,4 @@
-respond :go, Use.family(Portal) do |actor, portal|
+respond :go, Use.siblings(Portal) do |actor, portal|
   if actor.parent != actor.room
     actor.perform :leave
   end
@@ -15,42 +15,8 @@ respond :go, Use.family(Portal) do |actor, portal|
   end
 end
 
-respond :go, Use.family(Door, :locked?) do |actor, door|
-  actor.tell "#{The door} is locked."
-end
-
-respond :go, Use.family(Door, :closed?) do |actor, door|
-  if door.automatic?
-    actor.perform :open, door
-    if door.open?
-      actor.proceed
-    end
-  else
-    actor.tell "#{The door} is closed."
-  end
-end
-
-respond :go, Query::Text.new() do |actor, string|
+respond :go, Use.text do |actor, string|
   actor.tell "#{you.pronoun.Subj} #{you.contract(you.verb.do + ' not')} see any exit \"#{string}\" from here."
-end
-
-respond :go, Use.text do |actor, text|
-  # This version of the Go action identifies portals by their destinations.
-  portals = actor.room.children.that_are(Portal)
-  destinations = []
-  d_map = {}
-  portals.each { |portal|
-    next if portal.destination.nil?
-    destinations.push portal.destination
-    d_map[portal.destination] = portal
-  }
-  matches = destinations.select{|o| o.match? text }
-  matches = destinations.select{|o| o.match? text, fuzzy: true } if matches.empty?
-  if matches.length == 1
-    actor.perform :go, d_map[matches[0]]
-  else
-    actor.proceed
-  end
 end
 
 respond :go do |actor|

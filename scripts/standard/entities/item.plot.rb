@@ -1,5 +1,3 @@
-class Item < Gamefic::Entity
-  def pre_initialize
-    self.portable = true
-  end
+class Item < Thing
+  set_default portable: true
 end

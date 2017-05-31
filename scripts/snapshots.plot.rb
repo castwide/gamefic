@@ -1,3 +1,5 @@
+# @gamefic.script snapshots
+
 module Snapshots
   def self.history
     @history ||= []

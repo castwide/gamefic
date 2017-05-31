@@ -1,6 +1,6 @@
 meta nil, Query::Text.new() do |actor, string|
   words = string.split_words
-  list = verbs(to_s: true)
+  list = verbs
   if list.include?(words[0])
     if words.length > 1
       actor.tell "I recognize '#{words[0]}' as a verb but could not understand the rest of your sentence."

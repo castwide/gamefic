@@ -1,4 +1,4 @@
-class ::Gamefic::Direction
+class Direction
     attr_accessor :name, :adjective, :adverb, :reverse
 
     def initialize args = {}
@@ -52,5 +52,4 @@ class ::Gamefic::Direction
         compass[dir.to_s.downcase.to_sym]
       end
     end
-
 end

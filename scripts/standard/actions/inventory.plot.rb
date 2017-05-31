@@ -5,4 +5,5 @@ respond :inventory do |actor|
     actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.be + ' not'} carrying anything."
   end
 end
-xlate "i", "inventory"
+
+interpret "i", "inventory"

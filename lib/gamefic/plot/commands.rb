@@ -103,11 +103,10 @@ module Gamefic
     end
 
     # Get an Array of available verbs.
-    # If the to_s parameter is true, convert Symbols to Strings.
     #
-    # @return [Array<Symbol|String>]
-    def verbs to_s: false
-      to_s ? playbook.verbs.map { |v| v.to_s } : playbook.verbs
+    # @return [Array<String>]
+    def verbs
+      playbook.verbs.map { |v| v.to_s }.reject{ |v| v.start_with?('_') }
     end
 
     # Get an Array of all Actions defined in the Plot.

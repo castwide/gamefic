@@ -1,10 +1,7 @@
-class Supporter < Gamefic::Entity
+class Supporter < Thing
   include Enterable
 
-  def initialize(args = {})
-    self.enter_verb = "get on"
-    self.leave_verb = "get off"
-    self.inside_verb = "be on"
-    super
-  end
+  set_default enter_verb: 'get on'
+  set_default leave_verb: 'get off'
+  set_default inside_verb: 'be on'
 end

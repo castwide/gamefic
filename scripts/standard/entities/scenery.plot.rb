@@ -1,5 +1,3 @@
-class Scenery < Gamefic::Entity
-  def pre_initialize
-    self.itemized = false
-  end
+class Scenery < Thing
+  set_default itemized: false
 end

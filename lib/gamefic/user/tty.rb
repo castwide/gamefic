@@ -11,8 +11,16 @@ module Gamefic
   #   need them.
   #
   class User::Tty < User::Base
-    def update state
-      print Gamefic::Text::Html::Conversions.html_to_ansi(state[:output])
+    def update
+      unless character.state[:options].nil?
+        list = '<ol class="multiple_choice">'
+        character.state[:options].each { |o|
+          list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
+        }
+        list += "</ol>"
+        character.tell list
+      end
+      print Gamefic::Text::Html::Conversions.html_to_ansi(character.state[:output])
     end
 
     def save filename, snapshot

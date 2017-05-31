@@ -51,13 +51,18 @@ module Gamefic
         if @precision.nil?
           @precision = 1
           arguments.each { |a|
-            if a.kind_of?(Symbol) or a.kind_of?(Regexp)
-              @precision += 1
-            elsif a.kind_of?(Class)
-              @precision += (count_superclasses(a) * 100)
-            elsif a.kind_of?(Module)
-              @precision += 10
-            elsif a.kind_of?(Object)
+            #if a.kind_of?(Symbol) or a.kind_of?(Regexp)
+            #  @precision += 1
+            #elsif a.kind_of?(Class)
+            #  @precision += (count_superclasses(a) * 100)
+            #elsif a.kind_of?(Module)
+            #  @precision += 10
+            #elsif a.kind_of?(Object)
+            #  @precision += 1000
+            #end
+            if a.kind_of?(Class)
+              @precision += 100
+            elsif a.kind_of?(Gamefic::Entity)
               @precision += 1000
             end
           }
@@ -111,15 +116,15 @@ module Gamefic
 
       private
 
-      def count_superclasses cls
-        s = cls.superclass
-        c = 1
-        until s.nil? or s == Object or s == BasicObject
-          c += 1
-          s = s.superclass
-        end
-        c
-      end
+      #def count_superclasses cls
+      #  s = cls.superclass
+      #  c = 1
+      #  until s.nil? or s == Object or s == BasicObject
+      #    c += 1
+      #    s = s.superclass
+      #  end
+      #  c
+      #end
 
       def nested?(token)
         !token.match(NEST_REGEXP).nil?

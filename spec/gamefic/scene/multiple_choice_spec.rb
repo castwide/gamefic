@@ -1,7 +1,8 @@
 describe Scene::MultipleChoice do
   before :each do
     @plot = Plot.new
-    @character = @plot.make Character, :name => 'character'
+    c = Class.new(Entity) { include Active }
+    @character = @plot.make c, :name => 'character'
     @after = @plot.pause
     @chooser = @plot.multiple_choice "one", "two", "three", "next" do |actor, data|
       actor[:index] = data.index
@@ -26,7 +27,7 @@ describe Scene::MultipleChoice do
       if answer == '4'
         expect(@character.scene.class).to eq(@after)
       else
-        expect(@character.scene.type).to eq('Active')
+        expect(@character.scene.type).to eq('Activity')
       end
     }
   end
@@ -39,7 +40,7 @@ describe Scene::MultipleChoice do
       @plot.ready
       @plot.update
       expect(@character[:selection]).to eq(answer)
-      expect(@character.scene.type).to eq('Active')
+      expect(@character.scene.type).to eq('Activity')
     }
   end
   it "detects an invalid answer and stays in the current scene" do

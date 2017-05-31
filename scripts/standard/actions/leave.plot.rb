@@ -1,11 +1,3 @@
-respond :leave, Use.parent(Container, :enterable?) do |actor, container|
-  if container.open?
-    actor.proceed
-  else
-    actor.tell "#{The container} is closed."
-  end
-end
-
 respond :leave, Use.parent do |actor, thing|
   actor.tell "There's no way out of #{the thing}."
 end
@@ -15,7 +7,7 @@ respond :leave, Use.parent(Enterable, :enterable?) do |actor, thing|
   actor.parent = thing.parent
 end
 
-respond :leave, Query::Parent.new(Room) do |actor, room|
+respond :leave, Use.room do |actor, room|
   portals = room.children.that_are(Portal)
   if portals.length == 0
     actor.tell "#{you.pronoun.Subj} #{you.contract you.verb.do + ' not'} see any obvious exits."
@@ -30,12 +22,9 @@ respond :leave do |actor|
   actor.perform :leave, actor.parent
 end
 
-xlate "exit", "leave"
-xlate "exit :supporter", "leave :supporter"
-xlate "get off :supporter", "leave :supporter"
-xlate "get up from :supporter", "leave :supporter"
-xlate "get up", "leave"
-xlate "get off", "leave"
-xlate "get out :container", "leave :container"
-xlate "get out of :container", "leave :container"
-#xlate "out", "leave"
+interpret "exit", "leave"
+interpret "exit :supporter", "leave :supporter"
+interpret "get on :supporter", "enter :supporter"
+interpret "get off :supporter", "leave :supporter"
+interpret "get out :container", "leave :container"
+interpret "get out of :container", "leave :container"

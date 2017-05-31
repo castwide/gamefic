@@ -2,6 +2,7 @@ describe "Leave Action" do
   before :each do
     @plot = Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
+    @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'room'
     @character = @plot.make Character, :name => 'character', :parent => @room
     @supporter = @plot.make Supporter, :name => 'supporter', :parent => @room, :enterable => true

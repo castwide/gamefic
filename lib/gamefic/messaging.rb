@@ -11,7 +11,6 @@ module Gamefic
       # compatibility with Opal.
       message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
       message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
-      #user.send message
       p_set_messages messages + message
     end
 

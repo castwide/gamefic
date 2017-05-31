@@ -1,8 +1,8 @@
 module Gamefic
   module User
     class Web < Gamefic::User::Base
-      def update state
-        `Gamefic.update(#{state.to_json});`
+      def update
+        `Gamefic.update(#{character.state.to_json});`
       end
 
       def save filename, data

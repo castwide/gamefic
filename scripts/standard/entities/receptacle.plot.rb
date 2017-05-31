@@ -1,3 +1,3 @@
-class Receptacle < Gamefic::Entity
+class Receptacle < Thing
   include Enterable
 end

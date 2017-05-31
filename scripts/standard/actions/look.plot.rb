@@ -1,16 +1,53 @@
-respond :look, Use.parent(Supporter) do |actor, supporter|
-  actor.tell supporter.description
-  actor.tell "#{you.pronoun.Subj} are currently on #{the supporter}."
+respond :look, Use.text do |actor, string|
+  if string == 'around'
+    actor.perform :look, actor.room
+  else
+    actor.tell "You don't see any \"#{string}\" here."
+  end
 end
 
-respond :look, Use.itself do |actor, _|
+respond :look, Use.itself do |actor, thing|
   actor.tell actor.description
   actor.perform :inventory
+end
+
+respond :look, Use.available do |actor, thing|
+  actor.tell thing.description
+  thing.children.that_are(:attached?).that_are(:itemized?).each { |item|
+    actor.tell "#{An item} is attached to #{the thing}."
+  }
+end
+
+respond :look, Use.available(Supporter) do |actor, thing|
+  actor.proceed
+  if thing.accessible?
+    itemized = thing.children.that_are_not(:attached?).that_are(:itemized?)
+    actor.tell "You see #{itemized.join_and} on #{the thing}." unless itemized.empty?
+  end
+end
+
+respond :look, Use.available(Receptacle) do |actor, thing|
+  actor.proceed
+  if thing.accessible?
+    itemized = thing.children.that_are_not(:attached?).that_are(:itemized?)
+    actor.tell "You see #{itemized.join_and} in #{the thing}." unless itemized.empty?
+  end
+end
+
+respond :look, Use.parent(Supporter, :enterable?) do |actor, supporter|
+  actor.proceed
+  actor.tell "#{you.pronoun.Subj} are currently on #{the supporter}."
 end
 
 respond :look, Use.room do |actor, room|
   actor.tell "<strong>#{room.name.cap_first}</strong>"
   actor.tell room.description if room.has_description?
+  actor.execute :_itemize_room
+end
+
+respond :_itemize_room do |actor|
+  room = actor.room
+  next if room.nil?
   with_locales = []
   chars = room.children.that_are(Character).that_are(:itemized?) - [actor]
   charsum = []
@@ -44,11 +81,11 @@ respond :look, Use.room do |actor, room|
     if portals.length > 0
       if portals.length == 1
         p = portals[0]
-        actor.tell "There is an exit #{p.direction || p.name || "to #{the p.destination}"}."
+        actor.tell "There is an exit #{p.instruction}."
       else
         dirs = []
         portals.each { |p|
-          dirs.push (p.direction || p.name || "to #{the p.destination}")
+          dirs.push p.instruction
         }
         actor.tell "There are exits #{dirs.join_and(', ')}."
       end
@@ -61,45 +98,9 @@ respond :look, Use.room do |actor, room|
     }
   end
 end
-xlate "look", "look around"
-xlate "l", "look around"
 
-respond :look, Use.available() do |actor, thing|
-  actor.tell thing.description
-  thing.children.that_are(:attached?).that_are(:itemized?).each { |item|
-    actor.tell "#{An item} is attached to #{the thing}."
-  }
-end
-
-respond :look, Use.text do |actor, string|
-  if string == 'around'
-    actor.perform :look, actor.parent
-  else
-    actor.tell "You don't see any \"#{string}\" here."
-  end
-end
-
-respond :look, Use.available(Receptacle) do |actor, receptacle|
-  if receptacle.has_description?
-    actor.tell receptacle.description
-  end
-  actor.perform :search, receptacle
-end
-
-respond :look, Use.available(Supporter) do |actor, supporter|
-  actor.proceed
-  supported = supporter.children.that_are_not(:attached?)
-  if supported.length > 0
-    actor.tell "You see #{supported.join_and} sitting there."
-  end
-end
-
-respond :look, Use.available(Door) do |actor, door|
-  if door.has_description?
-    actor.proceed
-  end
-  actor.tell "#{The door} is " + (door.open? ? 'open' : 'closed') + '.'
-end
+interpret "look", "look around"
+interpret "l", "look around"
 
 interpret "look at :thing", "look :thing"
 interpret "l :thing", "look :thing"

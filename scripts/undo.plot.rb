@@ -1,3 +1,5 @@
+# @gamefic.script undo
+
 script 'snapshots'
 
 meta :undo do |actor|

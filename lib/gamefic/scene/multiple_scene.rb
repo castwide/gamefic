@@ -13,7 +13,7 @@ module Gamefic
     def finish
       get_choice
       unless selection.nil?
-        actor.cue option_map[selection]
+        actor.prepare option_map[selection]
       end
     end
   end

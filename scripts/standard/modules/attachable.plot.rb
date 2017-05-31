@@ -5,6 +5,7 @@ module Attachable
     end
     @attached
   end
+  
   def attached=(bool)
     @attached = bool
   end

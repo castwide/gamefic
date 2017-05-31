@@ -27,7 +27,7 @@ module Gamefic
     end
 
     def start
-      self.class.initialize_block.call @actor, self unless self.class.initialize_block.nil?
+      self.class.start_block.call @actor, self unless self.class.start_block.nil?
     end
 
     def finish
@@ -46,7 +46,7 @@ module Gamefic
 
     def self.subclass &block
       c = Class.new(self) do
-        on_initialize &block
+        on_start &block
       end
       c
     end
@@ -62,13 +62,13 @@ module Gamefic
       @type ||= 'Scene'
     end
 
-    def self.on_initialize &block
-      @initialize_block = block
+    def self.on_start &block
+      @start_block = block
     end
 
     class << self
-      def initialize_block
-        @initialize_block
+      def start_block
+        @start_block
       end
     end
   end
