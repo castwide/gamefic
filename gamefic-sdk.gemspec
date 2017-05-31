@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'opal', '~> 0.10', '>= 0.10.3'
   s.add_runtime_dependency 'uglifier'
   s.add_runtime_dependency 'sinatra', '~> 1.4'
-  
+
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
-  #s.add_development_dependency 'poltergeist', '~> 1.11'
+  s.add_development_dependency 'capybara', '~> 2.0', '>= 2.0'
   s.add_development_dependency 'selenium-webdriver'
 end
