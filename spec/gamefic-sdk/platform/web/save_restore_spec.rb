@@ -9,9 +9,9 @@ describe "Save/Restore on Web", :type => :feature, :js => true do
     config = { 'target_dir' => "#{@dir}/release", 'build_dir' => "#{@dir}/build" }
     web = Gamefic::Sdk::Platform::Web.new("examples/warehouse", config)
     web.build
-    url = "file://" + (@dir.start_with?('/') ? '' : '/') + @dir + '/release/index.html'
-    visit url
-    sleep(0.1) while page.evaluate_script("$('#gamefic_controls').hasClass('working')")
+    Capybara.app.root = @dir
+    page.visit '/release/index.html'
+    sleep(0.1) while page.evaluate_script("document.getElementById('gamefic_controls').getAttribute('class').indexOf('working') != -1")
     fill_in 'command', :with => 'take key'
     click_button 'gamefic_submit'
     sleep(0.1)
