@@ -1,6 +1,7 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'gamefic/version'
+require 'date'
 
 Gem::Specification.new do |s|
   s.name          = 'gamefic'
