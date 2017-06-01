@@ -24,7 +24,7 @@ describe Active do
   end
   it "splits #tell messages into multiple paragraphs" do
     plot = Plot.new
-    user = User::Base.new
+    user = User::Base.new(nil)
     character = plot.make Entity
     character.extend Active
     character.playbook = plot.playbook
