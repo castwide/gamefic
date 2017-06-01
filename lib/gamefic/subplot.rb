@@ -2,7 +2,7 @@ require 'gamefic/plot'
 
 module Gamefic
 
-  class Subplot
+  class Subplot < Plot
     # @return [Gamefic::Plot]
     attr_reader :plot
     attr_writer :denied_message
@@ -32,6 +32,10 @@ module Gamefic
       stage &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
       self.introduce introduce unless introduce.nil?
+    end
+
+    def add_entity e
+      @p_entities.push e
     end
 
     def subplot

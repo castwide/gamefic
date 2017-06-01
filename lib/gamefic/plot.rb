@@ -14,6 +14,7 @@ module Gamefic
     autoload :Articles,  'gamefic/plot/articles'
     autoload :YouMount,  'gamefic/plot/you_mount'
     autoload :Snapshot,  'gamefic/plot/snapshot'
+    autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
     autoload :Players,   'gamefic/plot/players'
     autoload :Playbook,  'gamefic/plot/playbook'

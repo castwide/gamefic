@@ -33,7 +33,6 @@ var Gamefic = (function() {
 		receive: function(input) {
 			var that = this;
 			$.post('/update', {command: input}, function(response) {
-				console.log(JSON.stringify(response));
 				that.update(response);
 			}).fail(function(response) {
 				console.log('An error occurred');
@@ -67,9 +66,9 @@ var Gamefic = (function() {
 			//} else {
 				//return data;
 			//}
-			console.log('Data: ' + JSON.stringify(data));
-			$.post('/restore', {snapshot: data}, function(response) {
-				console.log('Updated.')
+			var that = this;
+			$.post('/restore', {snapshot: JSON.stringify(data)}, function(response) {
+				console.log('Restored a snapshot. Response: ' + response);
 				that.update(response);
 			});
 		}

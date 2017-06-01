@@ -36,8 +36,9 @@ module Gamefic
 
       post '/restore' do
         content_type :json
-        STDERR.puts "Restoring: #{params['snapshot']}"
-        @@plot.restore params['snapshot']
+        snapshot = JSON.parse(params['snapshot'], symbolize_names: true)
+        STDERR.puts "Restoring: #{snapshot}"
+        @@plot.restore snapshot
         @@plot.ready
         @@character.state.to_json
       end
