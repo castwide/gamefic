@@ -94,8 +94,9 @@ var Gamefic = (function() {
 		},
 
 		save: function(filename, data) {
-			var json = Opal.JSON.$generate(data);
-			localStorage.setItem(filename, json);
+			//var json = Opal.JSON.$generate(data);
+			//var json = JSON.stringify(data);
+			localStorage.setItem(filename, data);
 			Opal.GameficOpal.$static_character().$tell('Game saved.');
 		},
 

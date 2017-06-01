@@ -3,6 +3,13 @@ module Gamefic
     # @return [Gamefic::Active]
     attr_reader :character
 
+    # @return [Gamefic::Engine::Base]
+    attr_reader :engine
+
+    def initialize engine
+      @engine = engine
+    end
+
     def connect entity
       @character = entity
     end

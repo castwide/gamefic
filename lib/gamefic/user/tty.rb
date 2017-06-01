@@ -24,39 +24,15 @@ module Gamefic
     end
 
     def save filename, snapshot
-      json = JSON.generate snapshot
-      if json.nil?
-        @character.tell "Nothing to save."
-      end
-      if filename.nil?
-        stream.select "Enter the filename to save:"
-        filename = stream.queue.pop
-      end
-      if filename != ''
-        File.open(filename, 'w') do |f|
-          f.write json
-        end
+      File.open(filename, 'w') do |file|
+        file << snapshot.to_json
       end
     end
 
     def restore filename
-      if filename.nil?
-        stream.select "Enter the filename to restore:"
-        filename = stream.queue.pop
-      end
-      if filename != ''
-        if File.exists?(filename)
-          data = JSON.parse File.read(filename), symbolize_names: true
-          #if (data[:metadata] != @character.plot.metadata)
-          #  @character.tell "The save file is not compatible with this version of the game."
-          #else
-            return data
-          #end
-        else
-          @character.tell "File \"#{filename}\" not found."
-        end
-      end
-      nil
+      json = File.read(filename)
+      snapshot = JSON.parse(json, symbolize_names: true)
+      engine.plot.restore snapshot
     end
   end
 end

@@ -34,6 +34,14 @@ module Gamefic
         @@character.state.merge(input: params['command']).to_json
       end
 
+      post '/restore' do
+        content_type :json
+        STDERR.puts "Restoring: #{params['snapshot']}"
+        @@plot.restore params['snapshot']
+        @@plot.ready
+        @@character.state.to_json
+      end
+
       class << self
 
         def run!

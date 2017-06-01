@@ -49,21 +49,29 @@ var Gamefic = (function() {
 		},
 
 		save: function(filename, data) {
-			var json = Opal.JSON.$generate(data);
-			localStorage.setItem(filename, json);
-			Opal.GameficOpal.$static_character().$tell('Game saved.');
+			//var json = Opal.JSON.$generate(data);
+			console.log('Saving ' + data);
+			localStorage.setItem(filename, data);
+			//Opal.GameficOpal.$static_character().$tell('Game saved.');
 		},
 
 		restore: function(filename) {
-			var data = Opal.JSON.$parse(localStorage.getItem(filename));
-			var metadata = data.$fetch('metadata');
+			//var data = Opal.JSON.$parse(localStorage.getItem(filename));
+			var json = localStorage.getItem(filename);
+			var data = JSON.parse(json);
+			//var metadata = data.metadata;
 			// HACK Converting hashes to strings for JavaScript comparison
-			if (metadata.$to_s() != Opal.GameficOpal.$static_plot().$metadata().$to_s()) {
-				Opal.GameficOpal.$static_character().$tell('The saved data is not compatible with this version of the game.');
-				return Opal.nil;
-			} else {
-				return data;
-			}
+			//if (metadata.$to_s() != Opal.GameficOpal.$static_plot().$metadata().$to_s()) {
+			//	Opal.GameficOpal.$static_character().$tell('The saved data is not compatible with this version of the game.');
+			//	return Opal.nil;
+			//} else {
+				//return data;
+			//}
+			console.log('Data: ' + JSON.stringify(data));
+			$.post('/restore', {snapshot: data}, function(response) {
+				console.log('Updated.')
+				that.update(response);
+			});
 		}
 	}
 })();

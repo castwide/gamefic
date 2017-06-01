@@ -40,10 +40,12 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::Data::MultipleChoice]
     def multiple_choice *choices, &block
-      Scene::MultipleChoice.subclass do |actor, scene|
+      s = Scene::MultipleChoice.subclass do |actor, scene|
         scene.options.concat choices
         scene.on_finish &block
       end
+      scene_classes.push s
+      s
     end
     
     # Create a yes-or-no scene.
@@ -52,10 +54,12 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::YesOrNo]
     def yes_or_no prompt = nil, &block
-      Scene::YesOrNo.subclass do |actor, scene|
+      s = Scene::YesOrNo.subclass do |actor, scene|
         scene.prompt = prompt
         scene.on_finish &block
       end
+      scene_classes.push s
+      s
     end
 
     # Create a scene with custom processing on user input.
@@ -68,10 +72,12 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::YesOrNo]
     def question prompt = 'What is your answer?', &block
-      Scene::Custom.subclass do |actor, scene|
+      s = Scene::Custom.subclass do |actor, scene|
         scene.prompt = prompt
         scene.on_finish &block
       end
+      scene_classes.push s
+      s
     end
 
     # Create a scene that pauses the game.
@@ -82,10 +88,12 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::Pause]
     def pause prompt = nil, &block
-      Scene::Pause.subclass do |actor, scene|
+      s = Scene::Pause.subclass do |actor, scene|
         scene.prompt = prompt unless prompt.nil?
         block.call(actor, scene) unless block.nil?
       end
+      scene_classes.push s
+      s
     end
     
     # Create a conclusion.
@@ -95,7 +103,9 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::Conclusion]
     def conclusion &block
-      Scene::Conclusion.subclass &block
+      s = Scene::Conclusion.subclass &block
+      scene_classes.push s
+      s
     end
     
     # Create a custom scene.
@@ -120,7 +130,9 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Scene::Custom] The instantiated scene.
     def custom cls = Scene::Custom, &block
-      cls.subclass &block
+      s = cls.subclass &block
+      scene_classes.push s
+      s
     end
 
     # Choose a new scene based on a list of options.
@@ -157,12 +169,18 @@ module Gamefic
     # @yieldparam [Gamefic::Character]
     # @yieldparam [Gamefic::Scene::MultipleScene]
     def multiple_scene map = {}, &block
-      Scene::MultipleScene.subclass do |actor, scene|
+      s = Scene::MultipleScene.subclass do |actor, scene|
         map.each_pair { |k, v|
           scene.map k, v
         }
         block.call actor, scene unless block.nil?
       end
+      scene_classes.push s
+      s
+    end
+
+    def scene_classes
+      @scene_classes ||= []
     end
   end
 

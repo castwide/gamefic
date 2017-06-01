@@ -74,6 +74,8 @@ module Gamefic
     def ready
       playbook.freeze
       @running = true
+      # Call the initial state to make sure it's set
+      initial_state
       call_ready
       call_player_ready
       p_subplots.each { |s| s.ready }

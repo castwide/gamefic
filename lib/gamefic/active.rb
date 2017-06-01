@@ -12,6 +12,9 @@ module Gamefic
     # @return [Gamefic::Action]
     attr_reader :last_action
 
+    # @return [Gamefic::User::Base]
+    attr_reader :user
+
     # @return [Gamefic::Scene::Base]
     attr_reader :scene
 
@@ -19,6 +22,10 @@ module Gamefic
     
     # @return [Gamefic::Plot::Playbook]
     attr_accessor :playbook
+
+    def connect user
+      @user = user
+    end
 
     # An array of actions waiting to be performed.
     #
