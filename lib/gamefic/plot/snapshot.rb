@@ -10,6 +10,7 @@ module Gamefic
 
     def restore snapshot
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)
+      entities.each { |e| e.flush }
     end
 
     def initial_state
