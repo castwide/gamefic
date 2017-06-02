@@ -12,7 +12,7 @@ module Gamefic
     #
     # @return [Hash]
     def save
-      result = { entities: [], players: [], subplots: [] }
+      result = { entities: [], players: [], subplots: [], instance_variables: {} }
       entity_store.clear
       player_store.clear
       entity_store.concat plot.entities
@@ -25,6 +25,10 @@ module Gamefic
       player_store.each do |p|
         result[:players].push hash_entity(p)
       end
+      plot.theater.instance_variables.each { |i|
+        v = plot.theater.instance_variable_get(i)
+        result[:instance_variables][i] = serialize(v) if can_serialize?(v)
+      }
       plot.subplots.each { |s|
         result[:subplots].push hash_subplot(s)
       }
@@ -37,7 +41,8 @@ module Gamefic
       entity_store.clear
       player_store.clear
       plot.subplots.each { |s| s.conclude }
-      entity_store.concat plot.entities[0, plot.initial_state[:entities].length]
+      plot.entities[plot.initial_state[:entities].length..-1].each { |e| plot.destroy e }
+      entity_store.concat plot.entities[0..plot.initial_state[:entities].length-1]
       entity_store.uniq!
       player_store.concat plot.players
       i = 0
@@ -79,6 +84,9 @@ module Gamefic
       snapshot[:players].each { |h|
         rebuild2 player_store[i], h
         i += 1
+      }
+      snapshot[:instance_variables].each_pair { |k, v|
+        plot.theater.instance_variable_set(k, unserialize(v))
       }
     end
 
@@ -214,11 +222,11 @@ module Gamefic
     end
 
     def rebuild_subplot s, h
-      h[:instance_variables].each_pair { |k, v|
-        s.theater.instance_variable_set(k, unserialize(v))
-      }
       s.entities.each { |e|
         s.destroy e
+      }
+      h[:instance_variables].each_pair { |k, v|
+        s.theater.instance_variable_set(k, unserialize(v))
       }
       i = 0
       h[:entities].each { |e|

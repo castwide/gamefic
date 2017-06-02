@@ -2,7 +2,7 @@ require 'gamefic/plot'
 
 module Gamefic
 
-  class Subplot < Plot
+  class Subplot
     # @return [Gamefic::Plot]
     attr_reader :plot
     attr_writer :denied_message
@@ -82,6 +82,7 @@ module Gamefic
     end
 
     def conclude
+      puts "Concluding subplot"
       @concluded = true
       entities.each { |e|
         destroy e

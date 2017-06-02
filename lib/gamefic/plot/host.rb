@@ -10,14 +10,6 @@ module Gamefic
       p_subplots.clone
     end
     
-    def entities
-      result = super
-      subplots.each do |s|
-        result.concat s.entities
-      end
-      result
-    end
-
     # Start a new subplot based on the provided class.
     #
     # @param subplot_class [Class] The class of the subplot to be created (Subplot by default)
