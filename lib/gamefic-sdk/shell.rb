@@ -60,6 +60,7 @@ module Gamefic
       end
 
       desc 'import [DIRECTORY_NAME]', 'Copy external scripts to the project'
+      option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       def import(directory_name = '.')
         config = Gamefic::Sdk::Config.load directory_name
         FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
@@ -72,7 +73,7 @@ module Gamefic
           src = File.absolute_path(s.absolute_path)
           dst = File.absolute_path(File.join(directory_name, 'imports', "#{s.path}.plot.rb"))
           next if src == dst
-          puts "Importing #{s.path}"
+          puts "Importing #{s.path}" unless options[:quiet]
           FileUtils.mkdir_p(File.dirname(dst))
           FileUtils.cp_r(src, dst)
         }

@@ -5,6 +5,10 @@ module Gamefic::Sdk
   module Build
     def self.release directory, quiet = false
       config = Gamefic::Sdk::Config.load(directory)
+      if config.auto_import?
+        puts "Importing scripts..."
+        Shell.start ['import', @path, '--quiet']
+      end
       config.targets.each_pair { |k, v|
         puts "Building #{k}..." unless quiet
         plat = Gamefic::Sdk::Platform.load(config, k)

@@ -12,6 +12,10 @@ module Gamefic
         def run
           puts "Loading..."
           config = Gamefic::Sdk::Config.new(@path)
+          if config.auto_import?
+            puts "Importing scripts..."
+            Shell.start ['import', @path, '--quiet']
+          end
           paths = [config.script_path, config.import_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
           plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
           plot.script 'main'
