@@ -62,7 +62,7 @@ describe Plot::Playbook do
       actor[:illegal] = true
     end
     actor = Character.new
-    actor.playbook = playbook
+    actor.playbooks.push playbook
     actor.perform 'legal'
     expect(actor[:legal]).to be true
     actor.perform 'illegal'
@@ -77,7 +77,7 @@ describe Plot::Playbook do
       actor[:illegal] = true
     end
     actor = Character.new
-    actor.playbook = playbook
+    actor.playbooks.push playbook
     actor.perform 'illegal'
     expect(actor[:illegal]).to be true
   end
@@ -98,7 +98,7 @@ describe Plot::Playbook do
     end
     character = Entity.new
     character.extend Active
-    character.playbook = playbook
+    character.playbooks.push playbook
     character.perform 'command'
     expect(num).to eq(3)
   end

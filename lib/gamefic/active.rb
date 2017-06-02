@@ -19,9 +19,14 @@ module Gamefic
     attr_reader :scene
 
     attr_reader :next_scene
-    
+
     # @return [Gamefic::Plot::Playbook]
-    attr_accessor :playbook
+    #attr_accessor :playbook
+
+    # @return [Array<Gamefic::Plot::Playbook>]
+    def playbooks
+      @playbooks ||= []
+    end
 
     def connect user
       @user = user
@@ -86,7 +91,8 @@ module Gamefic
     #
     # @return [Gamefic::Action]
     def perform(*command)
-      actions = playbook.dispatch(self, *command)
+      actions = []
+      playbooks.reverse.each { |p| actions.concat p.dispatch(self, *command) }
       execute_stack actions
     end
     
@@ -113,9 +119,13 @@ module Gamefic
     # The command will be executed immediately regardless of the entity's
     # state.
     #
+    # @example
+    #   character.execute :take, @key
+    #
     # @return [Gamefic::Action]
     def execute(verb, *params, quietly: false)
-      actions = playbook.dispatch_from_params(self, verb, params)
+      actions = []
+      playbooks.reverse.each { |p| actions.concat p.dispatch_from_params(self, verb, params) }
       execute_stack actions, quietly: quietly
     end
 
@@ -222,11 +232,10 @@ module Gamefic
       a = actions.first
       okay = true
       unless a.meta?
-        playbook.validators.each { |v|
-          result = v.call(self, a.verb, a.parameters)
-          okay = (result != false)
-          break if not okay
-        }
+        playbooks.reverse.each do |playbook|
+          okay = validate_playbook playbook, a
+          break unless okay
+        end
       end
       if okay
         performance_stack.push actions
@@ -234,6 +243,16 @@ module Gamefic
         performance_stack.pop
       end
       a
+    end
+
+    def validate_playbook playbook, action
+      okay = true
+      playbook.validators.each { |v|
+        result = v.call(self, action.verb, action.parameters)
+        okay = (result != false)
+        break unless okay
+      }
+      okay
     end
 
     def buffer_stack

@@ -51,7 +51,7 @@ module Gamefic
     end
 
     def playbook
-      @playbook ||= plot.playbook.dup
+      @playbook ||= Gamefic::Plot::Playbook.new
     end
 
     # HACK: Always assume subplots are running for the sake of entity destruction
@@ -76,7 +76,7 @@ module Gamefic
     end
 
     def exeunt player
-      player.playbook = plot.playbook
+      player.playbooks.delete playbook
       player.cue (@next_cue || default_scene)
       p_players.delete player
     end

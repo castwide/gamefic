@@ -6,7 +6,7 @@ describe Active do
     plot = Plot.new
     character = plot.make Entity
     character.extend Active
-    character.playbook = plot.playbook
+    character.playbooks.push plot.playbook
     x = 0
     plot.respond :increment_number do |actor|
       x += 1
@@ -18,7 +18,7 @@ describe Active do
     plot = Plot.new
     character = plot.make Entity
     character.extend Active
-    character.playbook = plot.playbook
+    character.playbooks.push plot.playbook
     character.tell "This is one paragraph."
     expect(character.messages).to eq("<p>This is one paragraph.</p>")
   end
@@ -27,7 +27,7 @@ describe Active do
     user = User::Base.new(nil)
     character = plot.make Entity
     character.extend Active
-    character.playbook = plot.playbook
+    character.playbooks.push plot.playbook
     character.tell "This is paragraph 1.\n\nThis is paragraph 2.\r\n\r\nThis is paragraph 3."
     expect(character.messages).to eq("<p>This is paragraph 1.</p><p>This is paragraph 2.</p><p>This is paragraph 3.</p>")
   end
