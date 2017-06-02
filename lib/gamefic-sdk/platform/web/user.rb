@@ -6,7 +6,7 @@ module Gamefic
       end
 
       def save filename, data
-        data[:metadata] = GameficOpal.static_plot.metadata
+        #data[:metadata] = GameficOpal.static_plot.metadata
         `Gamefic.save(filename, data);`
       end
 
