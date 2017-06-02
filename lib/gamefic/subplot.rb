@@ -82,7 +82,6 @@ module Gamefic
     end
 
     def conclude
-      puts "Concluding subplot"
       @concluded = true
       entities.each { |e|
         destroy e
