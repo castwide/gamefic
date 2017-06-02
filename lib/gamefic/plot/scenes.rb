@@ -30,7 +30,6 @@ module Gamefic
     def introduce(player)
       player.playbook = playbook
       player.cue default_scene
-      puts "Player should be added here"
       p_players.push player
       @introduction.call(player) unless @introduction.nil?
     end
