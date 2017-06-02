@@ -81,7 +81,6 @@
 							});
 							$('#objects a, #incidentals a').each(function() {
 								var name = $(this).text().replace(/^(a |an |the )/i, '');
-								console.log('Object: ' + name);
 								var regexp = new RegExp(name, 'g');
 								var command = $(this).attr('data-command');
 								html.find('*').each(function() {
@@ -93,7 +92,6 @@
 							});
 							$('#portals a').not('.disabled').each(function() {
 								var name = $(this).attr('id').replace(/^(a |an |the )/i, '');
-								console.log('Object: ' + name);
 								var regexp = new RegExp(name, 'g');
 								var command = $(this).attr('data-command');
 								html.find('*').each(function() {
