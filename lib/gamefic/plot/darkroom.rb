@@ -93,7 +93,7 @@ module Gamefic
     private
 
     def hash_blacklist
-      [:@parent, :@children, :@last_action, :@scene, :@next_scene, :@playbook, :@performance_stack]
+      [:@parent, :@children, :@last_action, :@scene, :@next_scene, :@playbook, :@performance_stack, :@buffer_stack, :@messages, :@state]
     end
 
     def can_serialize? v
