@@ -122,7 +122,7 @@ module Gamefic
       if v.kind_of?(Class)
         s = v
         until s.nil?
-          return true if s == Gamefic::Scene
+          return true if s == Gamefic::Scene::Base
           s = s.superclass
         end
         false
@@ -145,7 +145,7 @@ module Gamefic
         end
         result
       elsif is_scene_class?(v)
-        i = scene_classes.index(v)
+        i = plot.scene_classes.index(v)
         "#<SIN_#{i}>"
       elsif v.kind_of?(Gamefic::Entity)
         i = entity_store.index(v)
@@ -180,7 +180,7 @@ module Gamefic
         result
       elsif v.kind_of?(String)
         if m = v.match(/#<SIN_([0-9]+)>/)
-          scene_classes[m[1].to_i]
+          plot.scene_classes[m[1].to_i]
         elsif m = v.match(/#<EIN_([0-9]+)>/)
           entity_store[m[1].to_i]
         elsif m = v.match(/#<PIN_([0-9]+)>/)
@@ -211,10 +211,14 @@ module Gamefic
     end
 
     def hash_subplot s
-      result = { entities: [], instance_variables: {} }
+      result = { entities: [], instance_variables: {}, theater_instance_variables: {} }
+      s.instance_variables.each { |i|
+        v = s.instance_variable_get(i)
+        result[:instance_variables][i] = serialize(v) if can_serialize?(v)
+      }
       s.theater.instance_variables.each { |i|
         v = s.theater.instance_variable_get(i)
-        result[:instance_variables][i] = serialize(v) if can_serialize?(v)
+        result[:theater_instance_variables][i] = serialize(v) if can_serialize?(v)
       }
       s.entities.each { |s|
         result[:entities].push serialize(s)
@@ -228,6 +232,9 @@ module Gamefic
         s.destroy e
       }
       h[:instance_variables].each_pair { |k, v|
+        s.instance_variable_set(k, unserialize(v))
+      }
+      h[:theater_instance_variables].each_pair { |k, v|
         s.theater.instance_variable_set(k, unserialize(v))
       }
       i = 0
