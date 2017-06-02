@@ -101,7 +101,7 @@ var Gamefic = (function() {
 		},
 
 		restore: function(filename) {
-			var data = Opal.JSON.$parse(localStorage.getItem(filename));
+			/*var data = Opal.JSON.$parse(localStorage.getItem(filename));
 			var metadata = data.$fetch('metadata');
 			// HACK Converting hashes to strings for JavaScript comparison
 			if (metadata.$to_s() != Opal.GameficOpal.$static_plot().$metadata().$to_s()) {
@@ -109,7 +109,20 @@ var Gamefic = (function() {
 				return Opal.nil;
 			} else {
 				return data;
-			}
+			}*/
+			var json = localStorage.getItem(filename);
+			var snapshot = Opal.JSON.$parse(json);
+			Opal.gvars.plot.$restore(snapshot);
+			Opal.gvars.engine.$user().$character().$flush();
+			Opal.gvars.engine.$user().$character().$cue(Opal.gvars.plot.$default_scene());
+			Opal.gvars.plot.$update();
+			Opal.gvars.plot.$ready();
+			Opal.gvars.engine.$user().$character().$tell('Game restored to last available turn.');
+			var state = Opal.gvars.engine.$user().$character().$state();
+			console.log(typeof state);
+			var json = state.$to_json();
+			console.log('State: ' + json);
+			this.update(json);
 		}
 	}
 })();

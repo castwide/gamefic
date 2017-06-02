@@ -7,7 +7,7 @@ module Gamefic::Sdk
       config = Gamefic::Sdk::Config.load(directory)
       if config.auto_import?
         puts "Importing scripts..."
-        Shell.start ['import', @path, '--quiet']
+        Shell.start ['import', directory, '--quiet']
       end
       config.targets.each_pair { |k, v|
         puts "Building #{k}..." unless quiet

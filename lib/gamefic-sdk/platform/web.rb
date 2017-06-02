@@ -103,6 +103,10 @@ module Gamefic::Sdk
 
     def build_scripts_js
       File.open("#{build_target}/scripts.rb", 'w') do |file|
+        #file << "def Module.const_missing sym\n"
+        #file << "puts 'From Object to Gamefic'\n"
+        #file << "Gamefic.const_get sym\n"
+        #file << "end\n"
         file << "module Gamefic\n"
         file << "$scripts = {}\n"
         plot.imported_scripts.each { |script|
@@ -115,6 +119,15 @@ module Gamefic::Sdk
         file << "$plot.script 'main'\n"
         file << "$engine = Gamefic::Engine::Web.new($plot)\n"
         file << "end\n"
+        file << "$plot.stage do\n"
+        file << "def self.const_missing sym\n"
+        file << "Gamefic.const_get sym\n"
+        file << "end\n"
+        file << "end\n"
+        #file << "def $plot.theater.const_missing sym\n"
+        #file << 'puts "Trying to get #{sym} from object"' + "\n"
+        #file << "Object.const_get sym\n"
+        #file << "end\n"
       end
       Opal.append_path build_target
       File.open(build_target + "/core/scripts.js", 'w') do |file|

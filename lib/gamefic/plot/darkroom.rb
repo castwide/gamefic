@@ -38,6 +38,7 @@ module Gamefic
     # Restore a snapshot.
     #
     def restore snapshot
+      puts "Restoring a plot with #{plot.players.length} players"
       entity_store.clear
       player_store.clear
       plot.subplots.each { |s| s.conclude }
@@ -49,7 +50,7 @@ module Gamefic
       snapshot[:entities].each { |h|
         if entity_store[i].nil?
           e = plot.stage do
-            cls = const_get(h[:class])
+            cls = self.const_get(h[:class])
             make cls
           end
           entity_store.push e
@@ -201,6 +202,7 @@ module Gamefic
     end
 
     def rebuild2 e, h
+      puts "Rebuild #{e.class} with #{h.inspect}"
       h.each_pair do |k, v|
         if k.to_s != 'class' and !k.to_s.start_with?('@')
           e.send("#{k}=", unserialize(v))
