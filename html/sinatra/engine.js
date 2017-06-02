@@ -11,7 +11,7 @@ var Gamefic = (function() {
 		},
 
 		canLog: function() {
-			return false
+			return false;
 		},
 
 		start: function() {
@@ -48,27 +48,16 @@ var Gamefic = (function() {
 		},
 
 		save: function(filename, data) {
-			//var json = Opal.JSON.$generate(data);
 			console.log('Saving ' + data);
 			localStorage.setItem(filename, data);
-			//Opal.GameficOpal.$static_character().$tell('Game saved.');
 		},
 
 		restore: function(filename) {
-			//var data = Opal.JSON.$parse(localStorage.getItem(filename));
 			var json = localStorage.getItem(filename);
 			var data = JSON.parse(json);
-			//var metadata = data.metadata;
-			// HACK Converting hashes to strings for JavaScript comparison
-			//if (metadata.$to_s() != Opal.GameficOpal.$static_plot().$metadata().$to_s()) {
-			//	Opal.GameficOpal.$static_character().$tell('The saved data is not compatible with this version of the game.');
-			//	return Opal.nil;
-			//} else {
-				//return data;
-			//}
 			var that = this;
 			$.post('/restore', {snapshot: JSON.stringify(data)}, function(response) {
-				console.log('Restored a snapshot. Response: ' + response);
+				console.log('Restored a snapshot.');
 				that.update(response);
 			});
 		}
