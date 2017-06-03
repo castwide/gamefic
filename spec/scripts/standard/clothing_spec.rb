@@ -6,7 +6,7 @@ describe "Clothing" do
   end
   it "attaches to character when worn" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     clothing = @plot.make Clothing, :name => 'clothing', :parent => character
     #expect(@item.parent).to be(@character)
     expect(clothing.attached?).to be(false)
@@ -17,7 +17,7 @@ describe "Clothing" do
   end
   it "limits worn clothing to one per class" do
     room = @plot.make Room, :name => 'room'
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     red_coat = @plot.make Coat, :name => 'red coat', :parent => character
     blue_coat = @plot.make Coat, :name => 'blue coat', :parent => character
     character.perform "wear red coat"

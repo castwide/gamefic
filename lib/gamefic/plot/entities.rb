@@ -18,7 +18,19 @@ module Gamefic
         end
         p_entities.push ent
         p_dynamic.push ent if running?
-        ent.playbooks.push playbook if ent.kind_of?(Active)
+        ent
+      end
+
+      # Cast an active entity.
+      # This method is similar to make, but it also provides the plot's
+      # playbook to the entity so it can perform actions. The entity should
+      # either be a kind of Gamefic::Actor or include the Gamefic::Active
+      # module.
+      #
+      # @return [Gamefic::Actor, Gamefic::Active]
+      def cast cls, args = {}, &block
+        ent = make cls, args, &block
+        ent.playbooks.push playbook
         ent
       end
 

@@ -4,7 +4,7 @@ describe "Place Action" do
     @plot.script 'standard'
     @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'room'
-    @character = @plot.make Character, :name => 'character', :parent => @room
+    @character = @plot.cast Character, :name => 'character', :parent => @room
     @item = @plot.make Item, :name => 'item', :parent => @character
     @thing = @plot.make Item, :name => 'thing', :parent => @character
     @receptacle = @plot.make Receptacle, :name => 'receptacle', :parent => @room

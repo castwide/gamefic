@@ -4,9 +4,9 @@ describe "Give action" do
     @plot.script 'standard'
     @plot.script 'standard/give'
     @room = @plot.make Room, :name => 'room'
-    @giver = @plot.make Character, :name => 'giver', :parent => @room
+    @giver = @plot.cast Character, :name => 'giver', :parent => @room
     @item = @plot.make Item, :name => 'item', :parent => @giver
-    @receiver = @plot.make Character, :name => 'receiver', :parent => @room
+    @receiver = @plot.cast Character, :name => 'receiver', :parent => @room
   end
   it "responds to the default syntax for give" do
     response = @giver.perform "give receiver item"

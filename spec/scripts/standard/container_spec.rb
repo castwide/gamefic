@@ -6,7 +6,7 @@ describe "Lock Action" do
     @room = @plot.make Room, :name => 'a room'
     @key = @plot.make Item, :name => 'a key', :parent => @room
     @box = @plot.make Container, :name => 'a box', :parent => @room, :lock_key => @key
-    @character = @plot.make Character, :name => 'a character', :parent => @room
+    @character = @plot.cast Character, :name => 'a character', :parent => @room
     @key.parent = @character
   end
   it "locks an unlocked container" do
@@ -25,7 +25,7 @@ describe "Unlock Action" do
     @key = @plot.make Item, :name => 'a key', :parent => @room
     @box = @plot.make Container, :name => 'a box', :parent => @room, :lock_key => @key
     @box.locked = true
-    @character = @plot.make Character, :name => 'a character', :parent => @room
+    @character = @plot.cast Character, :name => 'a character', :parent => @room
     @key.parent = @character
   end
   it "unlocks a locked container with the key" do
@@ -47,7 +47,7 @@ describe "Open Action" do
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
     container.open = false
-    character = plot.make Character, :name => 'character', :parent => room
+    character = plot.cast Character, :name => 'character', :parent => room
     character.perform "open container"
     expect(container.open?).to eq(true)
   end
@@ -58,7 +58,7 @@ describe "Open Action" do
     container = plot.make Container, :name => 'container', :parent => room
     container.open = false
     container.locked = true
-    character = plot.make Character, :name => 'character', :parent => room
+    character = plot.cast Character, :name => 'character', :parent => room
     character.perform "open container"
     expect(container.open?).to eq(false)
   end
@@ -72,7 +72,7 @@ describe "Close Action" do
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
     container.open = true
-    character = plot.make Character, :name => 'character', :parent => room
+    character = plot.cast Character, :name => 'character', :parent => room
     character.perform "close container"
     expect(container.open?).to eq(false)
   end

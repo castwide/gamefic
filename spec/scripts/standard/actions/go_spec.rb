@@ -7,7 +7,7 @@ describe "Go Action" do
     room1 = @plot.make Room, :name => 'room one'
     room2 = @plot.make(Room, :name => 'room two')
     room2.connect room1, "south"
-    character = @plot.make Character, :name => 'character', :parent => room1
+    character = @plot.cast Character, :name => 'character', :parent => room1
     character.perform "go north"
     expect(character.room).to be(room2)
     character.perform "go south"
@@ -17,7 +17,7 @@ describe "Go Action" do
     room1 = @plot.make Room, :name => 'room one'
     room2 = @plot.make(Room, :name => 'room two')
     room2.connect room1, "south"
-    character = @plot.make Character, :name => 'character', :parent => room1
+    character = @plot.cast Character, :name => 'character', :parent => room1
     character.perform "go room two"
     expect(character.room).to be(room2)
     character.perform "go room one"

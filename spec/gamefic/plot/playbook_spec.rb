@@ -61,7 +61,7 @@ describe Plot::Playbook do
     playbook.respond :illegal do |actor|
       actor[:illegal] = true
     end
-    actor = Character.new
+    actor = Gamefic::Actor.new
     actor.playbooks.push playbook
     actor.perform 'legal'
     expect(actor[:legal]).to be true
@@ -76,7 +76,7 @@ describe Plot::Playbook do
     playbook.meta :illegal do |actor|
       actor[:illegal] = true
     end
-    actor = Character.new
+    actor = Gamefic::Actor.new
     actor.playbooks.push playbook
     actor.perform 'illegal'
     expect(actor[:illegal]).to be true

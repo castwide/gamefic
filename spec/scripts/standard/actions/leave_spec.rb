@@ -4,7 +4,7 @@ describe "Leave Action" do
     @plot.script 'standard'
     @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'room'
-    @character = @plot.make Character, :name => 'character', :parent => @room
+    @character = @plot.cast Character, :name => 'character', :parent => @room
     @supporter = @plot.make Supporter, :name => 'supporter', :parent => @room, :enterable => true
     @receptacle = @plot.make Receptacle, :name => 'receptacle', :parent => @room, :enterable => true
     @container = @plot.make Container, :name => 'container', :parent => @room, :enterable => true

@@ -6,7 +6,7 @@ describe "Look Action" do
   it "responds to looking at siblings" do
     room = @plot.make Room, :name => 'room'
     item = @plot.make Item, :name => 'item', :description => 'The item description.', :parent => room
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     character.perform 'look item'
     expect(character.messages).to include(item.description)
   end
@@ -14,7 +14,7 @@ describe "Look Action" do
     room = @plot.make Room, :name => 'room'
     container = @plot.make Container, :name => 'container', :parent => room, :open => true
     item = @plot.make Item, :name => 'item', :description => 'The item description.', :parent => container
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     character.perform 'look item'
     expect(character.messages).to include(item.description)
   end
@@ -22,7 +22,7 @@ describe "Look Action" do
     room = @plot.make Room, :name => 'room'
     supporter = @plot.make Supporter, :name => 'supporter', :parent => room
     item = @plot.make Item, :name => 'item', :description => 'The item description.', :parent => supporter
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     character.perform 'look item'
     expect(character.messages).to include(item.description)
   end
@@ -31,7 +31,7 @@ describe "Look Action" do
     fixture = @plot.make Fixture, :name => 'supporter', :parent => room
     item = @plot.make Item, :name => 'item', :description => 'The item description.', :parent => fixture
     item.attached = true
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     character.perform 'look item'
     expect(character.messages).to include(item.description)
   end
@@ -39,7 +39,7 @@ describe "Look Action" do
     room = @plot.make Room, :name => 'room'
     container = @plot.make Container, :name => 'container', :parent => room, :open => true
     item = @plot.make Item, :name => 'item', :description => 'The item description.', :parent => container
-    character = @plot.make Character, :name => 'character', :parent => room
+    character = @plot.cast Character, :name => 'character', :parent => room
     character.perform 'look at item in container'
     expect(character.messages).to include(item.description)
   end
