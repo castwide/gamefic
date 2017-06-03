@@ -131,14 +131,7 @@ module Gamefic
         if result.empty?
           result.concat dispatch_from_string(actor, command.join(' '))
         end
-        result.sort! { |a,b|
-          if a.rank == b.rank
-            b.order_key <=> a.order_key
-          else
-            b.rank <=> a.rank
-          end
-        }
-        result.uniq{|a| a.class}
+        result
       end
 
       def dispatch_from_string actor, text
@@ -152,7 +145,7 @@ module Gamefic
             result.unshift o unless o.nil?
           }
         }
-        result
+        sort_and_reduce_actions result
       end
 
       def dispatch_from_params actor, verb, params
@@ -161,7 +154,7 @@ module Gamefic
         available.each { |a|
           result.unshift a.new(actor, params) if a.valid?(actor, params)
         }
-        result
+        sort_and_reduce_actions result
       end
 
       # Duplicate the playbook.
@@ -222,6 +215,16 @@ module Gamefic
             b.token_count <=> a.token_count
           end
         }
+      end
+
+      def sort_and_reduce_actions arr
+        arr.sort { |a,b|
+          if a.rank == b.rank
+            b.order_key <=> a.order_key
+          else
+            b.rank <=> a.rank
+          end
+        }.uniq{|a| a.class}
       end
 
       def raise_order_key
