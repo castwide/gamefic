@@ -19,7 +19,7 @@ module Gamefic
     #   end
     #
     # @yieldparam [Gamefic::Character]
-    def introduction (&proc)
+    def introduction(&proc)
       @introduction = proc
     end
 
