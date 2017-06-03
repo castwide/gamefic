@@ -38,7 +38,6 @@ module Gamefic
     # Restore a snapshot.
     #
     def restore snapshot
-      puts "Restoring a plot with #{plot.players.length} players"
       entity_store.clear
       player_store.clear
       plot.subplots.each { |s| s.conclude }

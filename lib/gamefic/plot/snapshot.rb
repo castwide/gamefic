@@ -9,7 +9,6 @@ module Gamefic
     end
 
     def restore snapshot
-      STDERR.puts "Restoring #{snapshot}"
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)
       entities.each { |e| e.flush }
     end
