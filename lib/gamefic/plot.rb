@@ -1,5 +1,3 @@
-# TODO: JSON support is currently experimental.
-#require 'gamefic/entityloader'
 require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'

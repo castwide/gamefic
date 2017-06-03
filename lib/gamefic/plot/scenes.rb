@@ -28,7 +28,6 @@ module Gamefic
     #
     # @param [Gamefic::Character]
     def introduce(player)
-      #player.playbook = playbook
       player.playbooks.push playbook unless player.playbooks.include?(playbook)
       player.cue default_scene
       p_players.push player

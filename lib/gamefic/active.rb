@@ -1,6 +1,3 @@
-#require 'gamefic/director'
-
-
 module Gamefic
   class NotConclusionError < Exception
   end
