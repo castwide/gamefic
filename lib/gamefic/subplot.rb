@@ -63,18 +63,6 @@ module Gamefic
       @denied_message ||= 'You are already involved in another subplot.'
     end
 
-    def introduce player
-      if plot.in_subplot?(player)
-        if @busy_cue.nil?
-          player.tell denied_message
-        else
-          player.cue @busy_cue
-        end
-      else
-        super
-      end
-    end
-
     def exeunt player
       player.playbooks.delete playbook
       player.cue (@next_cue || default_scene)

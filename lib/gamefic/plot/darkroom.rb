@@ -201,7 +201,6 @@ module Gamefic
     end
 
     def rebuild2 e, h
-      puts "Rebuild #{e.class} with #{h.inspect}"
       h.each_pair do |k, v|
         if k.to_s != 'class' and !k.to_s.start_with?('@')
           e.send("#{k}=", unserialize(v))
