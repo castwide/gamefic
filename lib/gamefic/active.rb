@@ -229,6 +229,7 @@ module Gamefic
     private
 
     def execute_stack actions, quietly: false
+      return nil if actions.empty?
       a = actions.first
       okay = true
       unless a.meta?
