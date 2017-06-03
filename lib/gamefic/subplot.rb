@@ -54,6 +54,12 @@ module Gamefic
       @playbook ||= Gamefic::Plot::Playbook.new
     end
 
+    def cast cls, args = {}, &block
+      ent = super
+      ent.playbooks.push plot.playbook unless ent.playbooks.include?(plot.playbook)
+      ent
+    end
+
     # HACK: Always assume subplots are running for the sake of entity destruction
     def running?
       true
