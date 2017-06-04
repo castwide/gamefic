@@ -12,7 +12,7 @@ module Gamefic
     def finish
       super
       o = nil
-      o = actor.perform input.strip unless input.nil?
+      o = actor.perform input.strip unless input.to_s.strip.empty?
       actor.performed o
     end
 
