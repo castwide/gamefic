@@ -62,7 +62,7 @@ module Gamefic
           branch cls
         end
         # @todo Assuming one player
-        sp.introduce player_store[0]
+        sp.introduce player_store[0] unless player_store.empty?
         rebuild_subplot sp, s
       }
       i = 0

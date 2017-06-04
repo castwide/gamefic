@@ -10,6 +10,8 @@ module Gamefic
 
     def restore snapshot
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)
+      # HACK Force removal of concluded subplots
+      p_subplots.delete_if{ |s| s.concluded? }
       entities.each { |e| e.flush }
     end
 
