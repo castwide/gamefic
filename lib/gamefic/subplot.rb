@@ -3,16 +3,15 @@ require 'gamefic/plot'
 module Gamefic
 
   class Subplot
-    # @return [Gamefic::Plot]
-    attr_reader :plot
-    attr_writer :denied_message
-
     include Plot::Theater
     include Plot::Entities
     include Plot::Commands
     include Plot::Callbacks
     include Plot::Scenes
     include Plot::Articles
+
+    # @return [Gamefic::Plot]
+    attr_reader :plot
 
     class << self
       attr_reader :start_proc
@@ -24,10 +23,9 @@ module Gamefic
       end
     end
 
-    def initialize plot, introduce: nil, next_cue: nil, busy_cue: nil
+    def initialize plot, introduce: nil, next_cue: nil
       @plot = plot
       @next_cue = next_cue
-      @busy_cue = busy_cue
       @concluded = false
       stage &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
@@ -63,10 +61,6 @@ module Gamefic
     # HACK: Always assume subplots are running for the sake of entity destruction
     def running?
       true
-    end
-
-    def denied_message
-      @denied_message ||= 'You are already involved in another subplot.'
     end
 
     def exeunt player

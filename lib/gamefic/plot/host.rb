@@ -14,30 +14,32 @@ module Gamefic
     #
     # @param subplot_class [Class] The class of the subplot to be created (Subplot by default)
     # @return [Subplot]
-    def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, busy_cue: nil
-      subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, busy_cue: busy_cue)
+    def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil
+      subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue)
       p_subplots.push subplot
       subplot
     end
 
-    # Get the player's current subplot or nil if none exists.
+    # Get the player's current subplots.
     #
-    # @return [Subplot]
-    def subplot_for player
+    # @return [Array<Subplot>]
+    def subplots_featuring player
+      result = []
       subplots.each { |s|
-        return s if s.players.include?(player)
+        result.push s if s.players.include?(player)
       }
-      nil
+      result
     end
 
     # Determine whether the player is involved in a subplot.
     #
     # @return [Boolean]
     def in_subplot? player
-      !subplot_for(player).nil?
+      !subplots_featuring(player).empty?
     end
 
     private
+
     def p_subplots
       @p_subplots ||= []
     end
