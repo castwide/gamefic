@@ -88,7 +88,7 @@ module Gamefic::Grammar
       if @sets.nil?
         @sets = {}
         @sets["1:singular"] = ["I", "me", "my", "myself"]
-        @sets["2"] = ["you", "you", "your", "yourself"]
+        @sets["2:singular"] = ["you", "you", "your", "yourself"]
         @sets["3:singular:male"] = ["he", "him", "his", "himself"]
         @sets["3:singular:female"] = ["she", "her", "her", "herself"]
         # "other" refers to a person or living being that is neither
@@ -97,6 +97,7 @@ module Gamefic::Grammar
         @sets["3:singular:other"] = ["they", "them", "their", "themselves"]
         @sets["3:singular:neutral"] = ["it", "it", "its", "itself"]
         @sets["1:plural"] = ["we", "us", "our", "ourselves"]
+        @sets["2:plural"] = ["you", "you", "your", "yourselves"]
         @sets["3:plural"] = ["they", "them", "their", "themselves"]
       end
       @sets
