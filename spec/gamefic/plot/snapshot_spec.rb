@@ -32,4 +32,15 @@ describe Gamefic::Plot::Snapshot do
     expect(plot.subplots.length).to eq(1)
     expect(plot.subplots[0].concluded?).to be(false)
   end
+
+  it "restores dynamic entities" do
+    plot = Gamefic::Plot.new
+    plot.make Gamefic::Entity, name: 'static entity'
+    plot.ready
+    plot.make Gamefic::Entity, name: 'dynamic entity'
+    snapshot = plot.save
+    plot.restore snapshot
+    expect(plot.entities.length).to eq(2)
+    expect(plot.entities[1].name).to eq('dynamic entity')
+  end
 end
