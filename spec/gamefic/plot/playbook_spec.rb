@@ -102,4 +102,10 @@ describe Plot::Playbook do
     character.perform 'command'
     expect(num).to eq(3)
   end
+
+  it "returns all actions independently of verbs" do
+    playbook.respond :action1 do;end
+    playbook.respond :action2 do;end
+    expect(playbook.actions.length).to eq(2)
+  end
 end

@@ -43,4 +43,26 @@ describe Gamefic::Plot::Snapshot do
     expect(plot.entities.length).to eq(2)
     expect(plot.entities[1].name).to eq('dynamic entity')
   end
+
+  it "restores a player" do
+    plot = Gamefic::Plot.new
+    player = plot.cast Actor, name: 'old name'
+    plot.introduce player
+    snapshot = plot.save
+    player.name = 'new name'
+    plot.restore snapshot
+    expect(plot.players.length).to eq(1)
+    expect(plot.players[0].name).to eq('old name')
+  end
+
+  it "restores a hash in an entity session" do
+    plot = Gamefic::Plot.new
+    entity = plot.make Entity, name: 'entity'
+    hash = { one: 'one', two: 'two' }
+    entity[:hash] = hash
+    snapshot = plot.save
+    entity[:hash] = nil
+    plot.restore snapshot
+    expect(entity[:hash]).to eq(hash)
+  end
 end
