@@ -53,7 +53,7 @@ module Gamefic::Grammar
     #
     # @return [String]
     def Poss
-      obj.cap_first
+      poss.cap_first
     end
     
     # Get the capitalized reflexive pronoun

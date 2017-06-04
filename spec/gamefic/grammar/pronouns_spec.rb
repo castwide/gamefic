@@ -75,4 +75,13 @@ describe Gamefic::Grammar::Pronouns do
     expect(object.pronoun.poss).to eq('their')
     expect(object.pronoun.reflex).to eq('themselves')
   end
+
+  it "capitalizes 3rd person singular male" do
+    object.person = 3
+    object.gender = 'male'
+    expect(object.pronoun.Subj).to eq('He')
+    expect(object.pronoun.Obj).to eq('Him')
+    expect(object.pronoun.Poss).to eq('His')
+    expect(object.pronoun.Reflex).to eq('Himself')
+  end
 end
