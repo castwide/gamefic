@@ -277,5 +277,4 @@ module Gamefic
       @performance_stack ||= []
     end
   end
-
 end

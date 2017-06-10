@@ -21,9 +21,10 @@ module Gamefic
         []
       end
 
-      # Get an array of objects that exist in the subject's context and match
-      # the provided token.
+      # Get a collection of objects that exist in the subject's context and
+      # match the provided token. The result is provided as a Matches object.
       #
+      # @return [Gamefic::Query::Matches]
       def resolve(subject, token, continued: false)
         available = context_from(subject)
         return Matches.new([], '', token) if available.empty?
@@ -115,16 +116,6 @@ module Gamefic
       end
 
       private
-
-      #def count_superclasses cls
-      #  s = cls.superclass
-      #  c = 1
-      #  until s.nil? or s == Object or s == BasicObject
-      #    c += 1
-      #    s = s.superclass
-      #  end
-      #  c
-      #end
 
       def nested?(token)
         !token.match(NEST_REGEXP).nil?
