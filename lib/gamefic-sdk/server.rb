@@ -12,7 +12,7 @@ module Gamefic
         paths = [config.script_path, config.import_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
         @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
-        @@plot.script 'debug'
+        #@@plot.script 'debug'
         sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: config)
         sinatra.build
         File.read File.join(sinatra.release_target, 'index.html')
