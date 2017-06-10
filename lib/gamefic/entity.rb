@@ -6,20 +6,8 @@ module Gamefic
 
   class Entity < Element
     include Node
-    include Describable
     include Messaging
     include Grammar::WordAdapter
-
-    def uid
-      if @uid == nil
-        @uid = self.object_id.to_s
-      end
-      @uid
-    end
-
-    def default_attributes
-      {}
-    end
 
     # Execute the entity's on_update blocks.
     # This method is typically called by the Engine that manages game execution.
