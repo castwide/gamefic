@@ -6,6 +6,7 @@ module Gamefic
     autoload :Base, 'gamefic/query/base'
     autoload :Children, 'gamefic/query/children'
     autoload :Descendants, 'gamefic/query/descendants'
+    autoload :External, 'gamefic/query/external'
     autoload :Family, 'gamefic/query/family'
     autoload :Itself, 'gamefic/query/itself'
     autoload :Matches, 'gamefic/query/matches'

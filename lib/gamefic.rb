@@ -3,6 +3,8 @@ require 'gamefic/core_ext/array'
 require 'gamefic/core_ext/string'
 
 require 'gamefic/grammar'
+require 'gamefic/describable'
+require 'gamefic/element'
 require 'gamefic/entity'
 require 'gamefic/active'
 require 'gamefic/actor'
