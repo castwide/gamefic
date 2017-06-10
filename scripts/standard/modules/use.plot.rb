@@ -44,4 +44,8 @@ module Use
   def self.itself *args
     Gamefic::Query::Room.new *args
   end
+
+  def self.from objects, *args
+    Gamefic::Query::External.new objects, *args
+  end
 end
