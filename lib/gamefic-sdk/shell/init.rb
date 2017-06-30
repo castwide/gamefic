@@ -60,23 +60,7 @@ module Gamefic
 
         def write_config_yaml
           File.open("#{@directory}/config.yaml", 'w') do |file|
-            file.puts "title: #{@title || 'Untitled'}",
-            "author: #{@author || 'Anonymous'}",
-            "",
-            "script_path: ./scripts",
-            "import_path: ./imports",
-            "media_path: ./media",
-            "",
-            "build_path: ./build",
-            "release_path: ./release",
-            "",
-            "targets:",
-            "  web:",
-            "    platform: Web",
-            "    html: ./html",
-            "  gfic:",
-            "    platform: Gfic",
-            "    filename: game.gfic"
+            file << Gamefic::Sdk::Config.generate
           end
         end
 

@@ -97,6 +97,28 @@ module Gamefic
         end
         Config.new(directory, config)
       end
+
+      def self.generate author = 'Anonymous', title = 'Untitled'
+<<-EOS
+title: #{@title || 'Untitled'}
+author: #{@author || 'Anonymous'}
+
+script_path: ./scripts
+import_path: ./imports
+media_path: ./media
+
+build_path: ./build
+release_path: ./release
+
+targets:
+  web:
+    platform: Web
+    html: ./html
+  gfic:
+    platform: Gfic
+    filename: game.gfic
+EOS
+      end
     end
   end
 end
