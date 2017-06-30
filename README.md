@@ -325,7 +325,7 @@ keep your game fun and immersive, it's a good idea to support multiple
 Syntaxes for actions. We can make "lie down" work with the following line of
 code:
 
-    xlate "lie down on :thing", "lie_on :thing"
+    interpret "lie down on :thing", "lie on :thing"
 
 This code tells the game to accept a Syntax that matches "lie down on :thing"
 where :thing is a placeholder for a Query. The action the Syntax executes
@@ -340,8 +340,8 @@ Now "lie down on" works the same as "lie on":
 
 Here are a couple more syntaxes that might prove useful:
 
-    xlate "sleep on :thing", "lie_on :thing"
-	xlate "sleep", "lie_on bed"
+    interpret "sleep on :thing", "lie on :thing"
+	interpret "sleep", "lie on bed"
 
 The first Syntax allows the player to enter "sleep on bed."
 
@@ -380,9 +380,9 @@ Let's fix this with another Action:
 This Action will let the player sleep as long as he's in the room with the bed
 in it. We can add a few more Syntaxes like so:
 
-	xlate "go to sleep", "sleep"
-	xlate "rest", "sleep"
-	xlate "snooze", "sleep"
+	interpret "go to sleep", "sleep"
+	interpret "rest", "sleep"
+	interpret "snooze", "sleep"
 
 # Building Game Files
 
