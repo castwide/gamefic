@@ -1,4 +1,4 @@
-require 'gamefic'
+require 'gamefic-core'
 require 'gamefic/grammar'
 
 module Gamefic

@@ -1,4 +1,4 @@
-require "gamefic/text/html"
+require "gamefic-tty/text/html"
 
 describe Gamefic::Text::Html do
   it "fixes bare ampersands" do

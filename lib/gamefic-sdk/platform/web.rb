@@ -1,5 +1,5 @@
-require 'gamefic'
-require 'gamefic-sdk'
+#require 'gamefic'
+#require 'gamefic-sdk'
 require 'opal'
 require 'uglifier'
 
@@ -82,10 +82,10 @@ module Gamefic::Sdk
 
     def build_gamefic_js
       # Gamefic core
-      Opal.use_gem 'gamefic'
+      Opal.use_gem 'gamefic-core'
       if !File.exist?(build_target + "/core/gamefic.js")
         File.open(build_target + "/core/gamefic.js", "w") do |file|
-          file << Uglifier.compile(Opal::Builder.build('gamefic').to_s)
+          file << Uglifier.compile(Opal::Builder.build('gamefic-core').to_s)
         end
       end
     end

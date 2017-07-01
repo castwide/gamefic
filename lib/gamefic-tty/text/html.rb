@@ -1,10 +1,10 @@
 ﻿require 'rexml/document'
-require 'gamefic/text/html/entities'
+require 'gamefic-tty/text/html/entities'
 
 module Gamefic
   module Text
     module Html
-      autoload :Conversions, 'gamefic/text/html/conversions'
+      autoload :Conversions, 'gamefic-tty/text/html/conversions'
 
       # Convert ampersands to &amp;
       #

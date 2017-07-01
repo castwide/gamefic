@@ -1,5 +1,5 @@
-require 'gamefic/text/ansi'
-require 'gamefic/text/html'
+require 'gamefic-tty/text/ansi'
+require 'gamefic-tty/text/html'
 require 'io/console'
 
 module Gamefic

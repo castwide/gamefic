@@ -1,4 +1,4 @@
-require 'gamefic/text'
+require 'gamefic-tty/text'
 include Gamefic::Text
 
 describe Text::Html::Conversions do
