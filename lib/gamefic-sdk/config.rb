@@ -102,8 +102,8 @@ module Gamefic
 
       def self.generate author = 'Anonymous', title = 'Untitled'
 <<-EOS
-title: #{@title || 'Untitled'}
-author: #{@author || 'Anonymous'}
+title: #{title}
+author: #{author}
 
 script_path: ./scripts
 import_path: ./imports
