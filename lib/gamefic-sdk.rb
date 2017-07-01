@@ -9,6 +9,7 @@ module Gamefic::Sdk
   autoload :Config, 'gamefic-sdk/config'
 
   HTML_TEMPLATE_PATH = File.realpath(File.dirname(__FILE__) + "/../html/")
+  GLOBAL_SCRIPT_PATH = File.realpath(File.dirname(__FILE__) + "/../scripts/")
   LIB_PATH = File.dirname(__FILE__)
 
   @@script_paths = []
@@ -27,6 +28,8 @@ module Gamefic::Sdk
     end
     false
   end
+
+  mount GLOBAL_SCRIPT_PATH
 end
 
 class Class
