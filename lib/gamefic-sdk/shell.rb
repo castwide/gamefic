@@ -79,12 +79,12 @@ module Gamefic
         }
       end
 
-      desc 'reset-config [DIRECTORY_NAME]', 'Reset config.yaml to the default values'
-      def reset_config(directory_name = '.')
-        File.open(File.join(directory_name, 'config.yaml'), 'w') do |file|
+      desc 'default-config [DIRECTORY_NAME]', 'Create or overwrite config.yml with default values'
+      def default_config(directory_name = '.')
+        File.open(File.join(directory_name, 'config.yml'), 'w') do |file|
           file << Gamefic::Sdk::Config.generate
         end
-        puts "Default config.yaml created."
+        puts "Default config.yml created."
       end
 
       desc 'webskins', 'List the available skins for the Web platform'

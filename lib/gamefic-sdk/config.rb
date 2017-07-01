@@ -89,11 +89,13 @@ module Gamefic
 
       # @return [Gamefic::Sdk::Config]
       def self.load directory
-        config_file = File.join(directory, 'config.yaml')
-        if File.exist?(config_file)
-          config = YAML.load(File.read(config_file))
-        else
-          config = {}
+        config = {}
+        ['config.yml', 'config.yaml'].each do |cy|
+          config_file = File.join(directory, cy)
+          if File.exist?(config_file)
+            config = YAML.load(File.read(config_file))
+            break
+          end
         end
         Config.new(directory, config)
       end

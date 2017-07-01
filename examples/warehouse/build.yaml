@@ -1,5 +1,0 @@
-web:
-  platform: Web
-gfic:
-  platform: Gfic
-  filename: game.gfic

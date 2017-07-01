@@ -59,7 +59,7 @@ module Gamefic
         end
 
         def write_config_yaml
-          File.open("#{@directory}/config.yaml", 'w') do |file|
+          File.open("#{@directory}/config.yml", 'w') do |file|
             file << Gamefic::Sdk::Config.generate
           end
         end
