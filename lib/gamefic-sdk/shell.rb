@@ -65,11 +65,11 @@ module Gamefic
         config = Gamefic::Sdk::Config.load directory_name
         FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
         FileUtils.mkdir_p config.import_path
-        paths = [config.script_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        paths = [config.script_path] + Gamefic::Sdk.script_paths
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
-          next unless s.absolute_path.start_with?(Gamefic::Sdk::GLOBAL_SCRIPT_PATH)
+          next unless Gamefic::Sdk.script_paths_include?(s.absolut_path)
           src = File.absolute_path(s.absolute_path)
           dst = File.absolute_path(File.join(directory_name, 'imports', "#{s.path}.plot.rb"))
           next if src == dst
@@ -98,15 +98,17 @@ module Gamefic
       def script path = nil
         if path.nil?
           s = []
-          Dir[File.join GLOBAL_SCRIPT_PATH, '**', '*.rb'].each { |f|
-            c = File.read(f)
-            c.each_line { |l|
-              match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
-              unless match.nil?
-                s.push(match[1])
-              end
+          Gamefic::Sdk.script_paths.each do |path|
+            Dir[File.join path, '**', '*.rb'].each { |f|
+              c = File.read(f)
+              c.each_line { |l|
+                match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
+                unless match.nil?
+                  s.push(match[1])
+                end
+              }
             }
-          }
+          end
           puts s.sort.join("\n")
         else
           document_script path
@@ -116,32 +118,34 @@ module Gamefic
       private
 
       def document_script path
-        f = File.join(GLOBAL_SCRIPT_PATH, "#{path}.plot.rb")
-        if File.exist?(f)
-          c = File.read(f)
-          doc = ''
-          in_comment = false
-          c.each_line { |l|
+        Gamefic::Sdk.script_paths.each do |sdk_path|
+          f = File.join(sdk_path, "#{path}.plot.rb")
+          if File.exist?(f)
+            c = File.read(f)
+            doc = ''
+            in_comment = false
+            c.each_line { |l|
+              if in_comment
+                break unless l.start_with?('#')
+                doc += "#{l[2..-1]}"
+              else
+                match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
+                in_comment = true unless match.nil?
+              end
+            }
             if in_comment
-              break unless l.start_with?('#')
-              doc += "#{l[2..-1]}"
+              puts ''
+              puts path
+              puts ''
+              puts doc unless doc == ''
+              puts '' unless doc == ''
             else
-              match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
-              in_comment = true unless match.nil?
+              puts "Path '#{path}' is not documented."
             end
-          }
-          if in_comment
-            puts ''
-            puts path
-            puts ''
-            puts doc unless doc == ''
-            puts '' unless doc == ''
-          else
-            puts "Path '#{path}' is not documented."
+            return
           end
-        else
-          puts "Script path '#{path}' does not exist."
         end
+        puts "Script path '#{path}' does not exist."
       end
     end
   end

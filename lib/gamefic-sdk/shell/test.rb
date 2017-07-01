@@ -16,7 +16,7 @@ module Gamefic
             puts "Importing scripts..."
             Shell.start ['import', @path, '--quiet']
           end
-          paths = [config.script_path, config.import_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+          paths = [config.script_path, config.import_path] + Gamefic::Sdk.script_paths
           plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
           plot.script 'main'
           # @todo Debug is temporarily disabled.

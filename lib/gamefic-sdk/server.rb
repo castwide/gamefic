@@ -9,7 +9,7 @@ module Gamefic
 
       get '/' do
         config = Gamefic::Sdk::Config.load(settings.source_dir)
-        paths = [config.script_path, config.import_path, Gamefic::Sdk::GLOBAL_SCRIPT_PATH]
+        paths = [config.script_path, config.import_path] + Gamefic::Sdk.script_paths
         @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
         #@@plot.script 'debug'
