@@ -1,11 +1,11 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'gamefic/version'
+require 'gamefic-tty/version'
 require 'date'
 
 Gem::Specification.new do |s|
   s.name          = 'gamefic-tty'
-  s.version       = Gamefic::VERSION
+  s.version       = Gamefic::Tty::VERSION
   s.date          = Date.today.strftime("%Y-%m-%d")
   s.summary       = "Gamefic"
   s.description   = "Libraries for running terminal-based Gamefic apps"
