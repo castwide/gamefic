@@ -1,4 +1,3 @@
-#require 'gamefic/keywords'
 require 'gamefic/grammar'
 
 module Gamefic

@@ -1,6 +1,5 @@
 require 'gamefic-sdk'
 require 'gamefic-sdk/debug/plot'
-#require 'gamefic-sdk/plot_config'
 require 'pathname'
 
 module Gamefic::Sdk

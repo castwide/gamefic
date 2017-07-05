@@ -1,5 +1,3 @@
-#require 'gamefic/user/tty'
-
 module Gamefic
   module Tty
     # Extend Engine::Base to connect with User::Tty, which provides ANSI

@@ -1,6 +1,5 @@
 require 'gamefic'
 require 'gamefic-sdk/platform'
-#require 'gamefic-sdk/plot_config'
 require 'gamefic-sdk/debug'
 require 'gamefic-sdk/version'
 

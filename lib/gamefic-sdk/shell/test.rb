@@ -1,4 +1,3 @@
-#require 'gamefic-tty/engine/tty'
 require 'gamefic-tty'
 
 module Gamefic

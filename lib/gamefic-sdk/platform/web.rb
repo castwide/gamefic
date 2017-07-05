@@ -1,5 +1,3 @@
-#require 'gamefic'
-#require 'gamefic-sdk'
 require 'opal'
 require 'uglifier'
 

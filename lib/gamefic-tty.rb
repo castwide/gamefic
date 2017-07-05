@@ -1,4 +1,5 @@
 require 'gamefic-tty/text'
+require 'gamefic-tty/version'
 
 module Gamefic
   module Tty

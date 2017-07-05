@@ -1,5 +1,3 @@
-#require 'gamefic/keywords'
-
 module Gamefic
 
   module Query
