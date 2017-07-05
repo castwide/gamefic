@@ -1,7 +1,7 @@
 module Gamefic
 
   # Constants for ANSI codes, plus ExtraCodes for custom formatting.
-  module Text::Ansi
+  module Tty::Text::Ansi
     module Code
       module Attribute
         NORMAL = 0

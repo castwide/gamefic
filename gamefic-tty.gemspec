@@ -8,19 +8,18 @@ Gem::Specification.new do |s|
   s.version       = Gamefic::VERSION
   s.date          = Date.today.strftime("%Y-%m-%d")
   s.summary       = "Gamefic"
-  s.description   = "An adventure game and interactive fiction framework"
+  s.description   = "Libraries for running terminal-based Gamefic apps"
   s.authors       = ["Fred Snyder"]
   s.email         = 'fsnyder@gamefic.com'
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files = ['lib/gamefic.rb'] + Dir['lib/gamefic/**/*.rb']
+  s.files = ['lib/gamefic-tty.rb'] + Dir['lib/gamefic-tty/**/*.rb']
   s.executables   = ['gamefic']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
-  s.add_runtime_dependency 'thor', '~> 0.19', '>= 0.19.4'
-  s.add_runtime_dependency 'rubyzip', '~> 1.2', '>= 1.2.0'
+  s.add_runtime_dependency 'gamefic-core', '~> 2.0'
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
   s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'

@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
-  s.add_runtime_dependency 'gamefic', '~> 1.7'
+  s.add_runtime_dependency 'gamefic-core', '~> 2.0'
+  s.add_runtime_dependency 'gamefic-tty', '~> 2.0'
   s.add_runtime_dependency 'opal', '~> 0.10', '>= 0.10.3'
   s.add_runtime_dependency 'uglifier', '~> 3.2'
   s.add_runtime_dependency 'sinatra', '~> 1.4'

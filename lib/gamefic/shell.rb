@@ -1,5 +1,5 @@
 require 'thor'
-require 'gamefic/engine/tty'
+require 'gamefic-tty'
 require 'zip'
 require 'tmpdir'
 require 'yaml'
@@ -70,7 +70,8 @@ module Gamefic
       plot = Plot.new(Source::File.new(File.join(directory, 'scripts')))
       plot.script 'main'
       plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
-      Engine::Tty.start(plot)
+      #Engine::Tty.start(plot)
+      Gamefic::Tty::Engine.start(plot)
     end
   end
 end

@@ -1,4 +1,5 @@
-require 'gamefic/engine/tty'
+#require 'gamefic-tty/engine/tty'
+require 'gamefic-tty'
 
 module Gamefic
   module Sdk
@@ -21,7 +22,7 @@ module Gamefic
           plot.script 'main'
           # @todo Debug is temporarily disabled.
           #plot.script 'debug'
-          engine = Engine::Tty.new plot
+          engine = Gamefic::Tty::Engine.new plot
           engine.connect
           puts "\n"
           engine.run

@@ -4,13 +4,20 @@ A Ruby Interactive Fiction Framework
 
 Gamefic is a system for developing and playing adventure games.
 
-The core Gamefic library and executable are available as a Ruby gem:
+# Installation
+
+Gamefic is available as a Ruby gem:
 
     gem install gamefic
 
-The Gamefic SDK is also a gem:
+## The Gem Architecture
 
-    gem install gamefic-sdk
+As of Version 2.0, the primary gem has three components, each of which is a
+separate gem:
+
+* _gamefic-core_: The core libraries for the framework
+* _gamefic-tty_: Command-line components for running Gamefic games (e.g., .gfic files) in a terminal
+* _gamefic-sdk_: Development and authoring tools
 
 # Using the Executables
 

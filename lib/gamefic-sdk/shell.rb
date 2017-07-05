@@ -69,7 +69,7 @@ module Gamefic
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
-          next unless Gamefic::Sdk.script_paths_include?(s.absolut_path)
+          next unless Gamefic::Sdk.script_paths_include?(s.absolute_path)
           src = File.absolute_path(s.absolute_path)
           dst = File.absolute_path(File.join(directory_name, 'imports', "#{s.path}.plot.rb"))
           next if src == dst

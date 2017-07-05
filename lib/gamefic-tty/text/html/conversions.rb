@@ -4,8 +4,8 @@ require 'io/console'
 
 module Gamefic
 
-  module Text::Html::Conversions
-    include Gamefic::Text
+  module Tty::Text::Html::Conversions
+    include Gamefic::Tty::Text
 
     def self.html_to_ansi text, wrap: true, width: nil
       return '' if text.strip == ''
@@ -31,7 +31,7 @@ module Gamefic
     end
 
     class AnsiNode
-      include Gamefic::Text::Ansi::Code
+      include Gamefic::Tty::Text::Ansi::Code
       attr_accessor :parent
       
       def render
@@ -72,7 +72,7 @@ module Gamefic
           @text
         else
           @prev_format = format
-          Gamefic::Text::Ansi.graphics_mode(*format) + @text
+          Gamefic::Tty::Text::Ansi.graphics_mode(*format) + @text
         end
       end
     end
@@ -125,7 +125,7 @@ module Gamefic
     private_constant :BreakNode
 
     class AnsiFormatter
-      include Gamefic::Text::Ansi::Code
+      include Gamefic::Tty::Text::Ansi::Code
       def format document
         @document = document
         @ansi_root = InlineNode.new

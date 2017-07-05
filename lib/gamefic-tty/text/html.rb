@@ -2,7 +2,7 @@
 require 'gamefic-tty/text/html/entities'
 
 module Gamefic
-  module Text
+  module Tty::Text
     module Html
       autoload :Conversions, 'gamefic-tty/text/html/conversions'
 

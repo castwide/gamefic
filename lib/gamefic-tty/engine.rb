@@ -1,4 +1,4 @@
-require 'gamefic/user/tty'
+#require 'gamefic/user/tty'
 
 module Gamefic
   module Tty
@@ -11,7 +11,7 @@ module Gamefic
     #
     class Engine < Gamefic::Engine::Base
       def post_initialize
-        self.user_class = Gamefic::User::Tty
+        self.user_class = Gamefic::Tty::User
       end
 
       def self.start plot

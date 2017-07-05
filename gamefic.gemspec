@@ -14,13 +14,15 @@ Gem::Specification.new do |s|
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files = ['lib/gamefic.rb'] + Dir['lib/gamefic/**/*.rb']
-  s.executables   = ['gamefic']
+  s.files = ['lib/gamefic.rb']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
   s.add_runtime_dependency 'thor', '~> 0.19', '>= 0.19.4'
   s.add_runtime_dependency 'rubyzip', '~> 1.2', '>= 1.2.0'
+  s.add_runtime_dependency 'gamefic-core', '~> 2.0'
+  s.add_runtime_dependency 'gamefic-sdk', '~> 2.0'
+  s.add_runtime_dependency 'gamefic-tty', '~> 2.0'
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
   s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'

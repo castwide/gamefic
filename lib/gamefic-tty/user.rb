@@ -1,6 +1,6 @@
 require 'gamefic/engine'
 require 'json'
-require 'gamefic/text'
+#require 'gamefic/text'
 
 module Gamefic
   module Tty
@@ -20,7 +20,7 @@ module Gamefic
           list += "</ol>"
           character.tell list
         end
-        print Gamefic::Text::Html::Conversions.html_to_ansi(character.state[:output])
+        print Gamefic::Tty::Text::Html::Conversions.html_to_ansi(character.state[:output])
       end
 
       def save filename, snapshot
