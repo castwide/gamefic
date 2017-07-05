@@ -1,11 +1,10 @@
 require 'thor'
-require 'gamefic-tty'
 require 'zip'
 require 'tmpdir'
 require 'yaml'
 
 module Gamefic
-  class Shell < Thor
+  class Tty::Shell < Thor
     map %w[--version -v] => :version
 
     desc "--version, -v", "Print the version"
