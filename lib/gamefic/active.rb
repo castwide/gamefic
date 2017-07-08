@@ -3,7 +3,8 @@ module Gamefic
   end
 
   # The Active module gives entities the ability to perform actions and
-  # participate in scenes.
+  # participate in scenes. The Actor class, for example, is an Entity
+  # subclass that includes this module.
   #
   module Active
     # @return [Gamefic::Action]

@@ -1,4 +1,10 @@
 module Gamefic
+  # The simplest class that can compose an object for use in a plot.
+  # Most game objects, especially tangible items in the game, should derive
+  # from the Entity class. Elements, on the other hand, can be used for
+  # abstractions and ideas that don't have a physical presence but still might
+  # need to be referenced in a command.
+  #
   class Element
     include Gamefic::Describable
 
