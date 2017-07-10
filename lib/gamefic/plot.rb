@@ -1,4 +1,4 @@
-require 'gamefic/tester'
+#require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
@@ -24,7 +24,8 @@ module Gamefic
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Theater
-    include Gamefic, Tester, Players, Scenes, Commands, Entities
+    #include Gamefic, Tester, Players, Scenes, Commands, Entities
+    include Gamefic, Players, Scenes, Commands, Entities
     include Articles, YouMount, Snapshot, Host, Callbacks
 
     # @param source [Source::Base]
