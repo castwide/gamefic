@@ -58,22 +58,6 @@ class Array
     delete_at(rand(self.length))
   end
 
-  # @todo Candidate for deprecation
-  # @return [Array]
-  #def shuffle
-  #  self.sort { |a, b|
-  #    rand(3) <=> rand(3)
-  #  }
-  #end
-
-  # @todo Candidate for deprecation
-  # @return [Array]
-  #def shuffle!
-  #  self.sort! { |a, b|
-  #    rand(3) <=> rand(3)
-  #  }
-  #end
-
   # Get a string representation of the array that separates elements with
   # commas and adds a conjunction before the last element.
   #
