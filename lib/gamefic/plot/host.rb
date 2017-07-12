@@ -2,6 +2,8 @@ require 'gamefic/subplot'
 
 module Gamefic
 
+  # Methods for hosting and managing subplots.
+  #
   module Plot::Host
     # Get an array of all the current subplots.
     #
