@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubyzip', '~> 1.2', '>= 1.2.0'
   s.add_runtime_dependency 'gamefic-core', '~> 2.0'
   s.add_runtime_dependency 'gamefic-sdk', '~> 2.0'
-  s.add_runtime_dependency 'gamefic-tty', '~> 2.0'
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
   s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'
