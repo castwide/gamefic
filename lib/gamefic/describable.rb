@@ -16,20 +16,23 @@ module Gamefic
     # @return [String]
     attr_reader :name
 
+    # Alternate words that can be used to describe the object. Synonyms are
+    # used in conjunction with the object's name when generating keywords.
+    #
     # @return [String]
     attr_reader :synonyms
 
-    # Get the object's indefinite article (usually "a" or "an").
+    # The object's indefinite article (usually "a" or "an").
     #
     # @return [String]
     attr_reader :indefinite_article
 
-    # Get the object's definite article (usually "the").
+    # The object's definite article (usually "the").
     #
     # @return [String]
     attr_reader :definite_article
 
-    # Get a set of Keywords associated with the object.
+    # Get a set of keywords associated with the object.
     # Keywords are typically the words in the object's name plus its synonyms.
     #
     # @return [Keywords]
@@ -45,7 +48,7 @@ module Gamefic
     def indefinitely
       ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name.to_s
     end
-    
+
     # Get the name of the object with a definite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
@@ -54,14 +57,14 @@ module Gamefic
     def definitely
       ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name.to_s
     end
-    
+
     # Get the definite article for this object (usually "the").
     #
     # @return [String]
     def definite_article
       @definite_article || "the"
     end
-    
+
     # Set the definite article.
     #
     # @param [String] article
@@ -77,7 +80,7 @@ module Gamefic
       @keywords = nil
       @indefinite_article = article
     end
-    
+
     # Is the object proper-named?
     # Proper-named objects typically do not add articles to their names when
     # referenced #definitely or #indefinitely, e.g., "Jane Doe" instead of
@@ -87,7 +90,7 @@ module Gamefic
     def proper_named?
       (@proper_named == true)
     end
-    
+
     # Set whether the object has a proper name.
     #
     # @param bool [Boolean]
@@ -100,7 +103,7 @@ module Gamefic
       end
       @proper_named = bool
     end
-    
+
     # Set the name of the object.
     # Setting the name performs some magic to determine how to handle
     # articles ("an object" and "the object").
@@ -131,21 +134,21 @@ module Gamefic
       end
       @name = value
     end
-    
+
     # Does the object have a description?
     #
     # @return [Boolean]
     def has_description?
       (@description.to_s != '')
     end
-    
+
     # Get the object's description.
     #
     # @return [String]
     def description
       @description || (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
     end
-    
+
     # Set the object's description.
     #
     # @param text [String]
@@ -156,7 +159,7 @@ module Gamefic
         @description = nil
       end
     end
-    
+
     def synonyms= text
       @keywords = nil
       @synonyms = text
@@ -171,14 +174,14 @@ module Gamefic
     def self.default_description=(text)
       @default_description = text
     end
-    
+
     # Get the object's default description.
     #
     # @return [String]
     def self.default_description
       @default_description || "There's nothing special about %{name}."
     end
-    
+
     # Get a String representation of the object. By default, this is the
     # object's name with an indefinite article, e.g., "a person" or "a red
     # dog."

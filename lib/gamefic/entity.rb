@@ -13,7 +13,6 @@ module Gamefic
     include Messaging
     include Grammar::WordAdapter
 
-    # Execute the entity's on_update blocks.
     # This method is typically called by the Engine that manages game execution.
     # The base method does nothing. Subclasses can override it.
     #

@@ -17,6 +17,8 @@ module Gamefic
     def post_initialize
     end
 
+    # Set a proc to be executed at the end of the scene.
+    #
     def on_finish &block
       @finish_block = block
     end

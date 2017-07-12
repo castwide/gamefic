@@ -10,22 +10,30 @@ module Gamefic
     # @return [Gamefic::Action]
     attr_reader :last_action
 
+    # The user connected to this entity (or nil).
     # @return [Gamefic::User::Base]
     attr_reader :user
 
+    # The scene in which the entity is currently participating.
+    #
     # @return [Gamefic::Scene::Base]
     attr_reader :scene
 
+    # The scene class that will be cued for this entity on the next turn.
+    # Usually set with the #prepare method.
+    #
+    # @return [Class]
     attr_reader :next_scene
 
-    # @return [Gamefic::Plot::Playbook]
-    #attr_accessor :playbook
-
+    # The playbooks that will be used to perform commands.
+    #
     # @return [Array<Gamefic::Plot::Playbook>]
     def playbooks
       @playbooks ||= []
     end
 
+    # Connect a user to the entity.
+    #
     def connect user
       @user = user
     end
