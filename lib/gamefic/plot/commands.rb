@@ -97,7 +97,7 @@ module Gamefic
       playbook.interpret command, translation
     end
 
-    # @deprecated
+    # @deprecated Use #interpret instead.
     def xlate command, translation
       interpret command, translation
     end
