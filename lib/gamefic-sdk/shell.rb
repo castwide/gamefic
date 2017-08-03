@@ -3,6 +3,7 @@ require 'zip'
 require 'tmpdir'
 require 'yaml'
 require 'gamefic-sdk/build'
+require 'gamefic-tty'
 
 module Gamefic
   module Sdk
