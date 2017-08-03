@@ -8,14 +8,14 @@ Gem::Specification.new do |s|
   s.version       = Gamefic::Sdk::VERSION
   s.date          = Date.today.strftime("%Y-%m-%d")
   s.summary       = "Gamefic SDK"
-  s.description   = "Development tools for Gamefic"
+  s.description   = "Development and command-line tools for Gamefic"
   s.authors       = ["Fred Snyder"]
   s.email         = 'fsnyder@gamefic.com'
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files = ['lib/gamefic-sdk.rb'] + Dir['lib/gamefic-sdk/**/*.rb'] + ['lib/gamefic-tty.rb'] + Dir['lib/gamefic-tty/**/*.rb'] + Dir['html/**/*'] + Dir['scripts/**/*']
-  s.executables   = ['gfk']
+  s.files = Dir['lib/gamefic-sdk.rb', 'lib/gamefic-tty.rb', 'lib/gamefic-sdk/**/*.rb', 'lib/gamefic-tty/**/*.rb', 'html/**/*', 'scripts/**/*']
+  s.executables   = ['gfk', 'gamefic']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
