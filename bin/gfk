@@ -1,6 +1,3 @@
 #!/usr/bin/env ruby
 
-require 'gamefic-sdk'
-require 'gamefic-sdk/shell'
-
-Gamefic::Sdk::Shell.start(ARGV)
+load File.join(File.dirname(__FILE__), 'gamefic')
