@@ -14,13 +14,12 @@ Gem::Specification.new do |s|
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files = ['lib/gamefic-sdk.rb'] + Dir['lib/gamefic-sdk/**/*.rb'] + Dir['html/**/*'] + Dir['scripts/**/*']
+  s.files = ['lib/gamefic-sdk.rb'] + Dir['lib/gamefic-sdk/**/*.rb'] + ['lib/gamefic-tty.rb'] + Dir['lib/gamefic-tty/**/*.rb'] + Dir['html/**/*'] + Dir['scripts/**/*']
   s.executables   = ['gfk']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
-  s.add_runtime_dependency 'gamefic-core', '~> 2.0'
-  s.add_runtime_dependency 'gamefic-tty', '~> 2.0'
+  s.add_runtime_dependency 'gamefic', '~> 2.0'
   s.add_runtime_dependency 'opal', '~> 0.10', '>= 0.10.3'
   s.add_runtime_dependency 'uglifier', '~> 3.2'
   s.add_runtime_dependency 'sinatra', '~> 1.4'
