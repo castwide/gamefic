@@ -33,7 +33,7 @@ module Gamefic
       #
       # @return [String]
       def script_path
-        @script_paths ||= Pathname.new(source_dir).join(data['script_path'] || './scripts').to_s
+        @script_path ||= Pathname.new(source_dir).join(data['script_path'] || './scripts').to_s
       end
 
       # The absolute path to the project's import directory.
