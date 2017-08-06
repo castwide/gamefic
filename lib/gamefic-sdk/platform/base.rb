@@ -10,12 +10,7 @@ module Gamefic::Sdk
     # @return [Hash]
     attr_reader :target
 
-    #def initialize config, name = nil
     def initialize config: Gamefic::Sdk::Config.new, target: {}
-      #@source_dir = source_dir
-      #@name = name
-      #@config = config
-      #@config.freeze
       @config = config
       @target = target
     end

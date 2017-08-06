@@ -16,12 +16,6 @@ module Gamefic::Sdk
       FileUtils.cp_r File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'sinatra', 'engine.js'), File.join(release_target, 'core', 'engine.js')
     end
 
-    #def clean
-    #  FileUtils.remove_entry_secure config['build_path'] if File.exist?(config['build_path'])
-    #  FileUtils.mkdir_p config['build_path']
-    #  puts "#{config['build_path']} cleaned."
-    #end
-
     def app_config
       @app_config ||= AppConfig.new config.source_dir, config, ["core/engine.js"]
     end
@@ -71,24 +65,6 @@ module Gamefic::Sdk
         FileUtils.cp_r absolute, release_target + "/" + css
       }
     end
-
-=begin
-    def copy_media
-      # Copy media
-      pc = PlotConfig.new "#{source_dir}/config.yaml"
-      pc.media_paths.each { |path|
-        if File.directory?(path)
-          FileUtils.mkdir_p release_target + "/media"
-          Dir.entries(path).each { |entry|
-            if entry != '.' and entry != '..'
-              FileUtils.mkdir_p release_target + "/media/" + File.dirname(entry)
-              FileUtils.cp_r path + "/" + entry, release_target + "/media/" + entry
-            end
-          }
-        end
-      }
-    end
-=end
 
     def metadata_code
       "\nGameficOpal.static_plot.metadata = JSON.parse('#{metadata.to_json}')"
