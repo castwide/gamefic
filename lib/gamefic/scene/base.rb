@@ -23,11 +23,15 @@ module Gamefic
       @finish_block = block
     end
 
+    # Update the scene.
+    #
     def update
       @input = actor.queue.shift
       finish
     end
 
+    # Start the scene.
+    #
     def start
       self.class.start_block.call @actor, self unless self.class.start_block.nil?
     end
@@ -37,14 +41,16 @@ module Gamefic
       @finished = true
     end
 
+    # Determine whether the scene's execution is finished.
+    #
+    # @return [Boolean]
     def finished?
       @finished ||= false
     end
 
-    def flush
-      @state.clear
-    end
-
+    # Get a hash that describes the current state of the scene.
+    #
+    # @return [Hash]
     def state
       {
         scene: type, prompt: prompt
@@ -65,6 +71,9 @@ module Gamefic
       @prompt ||= '>'
     end
 
+    # Get a String that describes the type of scene.
+    #
+    # @return [String]
     def type
       @type ||= 'Scene'
     end

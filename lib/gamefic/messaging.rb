@@ -22,15 +22,22 @@ module Gamefic
       p_set_messages messages + message.strip
     end
 
+    # Get all the currently buffered messages consolidated in a single string.
+    #
     # @return [String]
     def messages
       @messages ||= ''
     end
     
+    # Alias for #messages.
+    #
+    # @return [String]
     def output
       messages
     end
 
+    # Clear the buffered messages.
+    #
     def flush
       p_set_messages '' unless messages.empty?
     end

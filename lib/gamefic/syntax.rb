@@ -71,7 +71,11 @@ module Gamefic
       }
       Command.new @verb, arguments
     end
-    
+
+    # Determine if the specified text matches the syntax's expected pattern.
+    #
+    # @param text [String]
+    # @return [Boolean]
     def accept? text
       !text.match(@regexp).nil?
     end
@@ -82,11 +86,11 @@ module Gamefic
     def signature
       [@regexp, @replace]
     end
-    
+
     def ==(other)
       signature == other.signature
     end
-    
+
     # Tokenize an Array of Commands from the specified text.
     #
     # @param text [String] The text to tokenize.

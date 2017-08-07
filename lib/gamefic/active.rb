@@ -157,7 +157,6 @@ module Gamefic
     #   end
     #
     def proceed quietly: false
-      #Director::Delegate.proceed_for self
       return if performance_stack.empty?
       a = performance_stack.last.shift
       unless a.nil?
