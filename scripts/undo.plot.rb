@@ -1,13 +1,14 @@
 # @gamefic.script undo
+#   UNDO action.
 
 script 'snapshots'
 
 meta :undo do |actor|
-  last = Snapshots.history.pop
-  if last.nil?
-    actor.tell "No previous turns are available."
+  snap = Snapshots.history.last
+  if snap.nil?
+    actor.tell "Nothing to undo."
   else
-    restore last
-    actor.tell "Previous turn undone."
+    restore snap
+    actor.tell "Last action undone."
   end
 end
