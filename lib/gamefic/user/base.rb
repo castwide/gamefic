@@ -17,6 +17,7 @@ module Gamefic
     #
     # @param entity [Gamefic::Actor]
     def connect entity
+      raise TypeError.new('Entities connected to users must be Active') unless entity.kind_of?(Gamefic::Active)
       @character = entity
     end
 

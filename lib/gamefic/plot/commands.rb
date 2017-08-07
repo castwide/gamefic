@@ -27,12 +27,14 @@ module Gamefic
     # @param command [Symbol] An imperative verb for the command
     # @param queries [Array<Query::Base>] Filters for the command's tokens
     # @yieldparam [Character]
+    # @return [Class] The resulting Action subclass
     def respond(command, *queries, &proc)
       playbook.respond(command, *queries, &proc)
     end
 
     # Parse a verb and a list of arguments into an action.
     # This method serves as a shortcut to creating an action with one or more
+    # arguments that identify specific entities.
     #
     # @example
     #   @thing = make Entity, name: 'a thing'
@@ -40,6 +42,9 @@ module Gamefic
     #     actor.tell "You use it."
     #   end
     #
+    # @param verb [String, Symbol] The command's verb
+    # @param tokens [Array<String>] The arguments passed to the action
+    # @return [Class] The resulting Action subclass
     def parse verb, *tokens, &proc
       query = Query::External.new(entities)
       params = []
@@ -52,6 +57,11 @@ module Gamefic
       respond(verb.to_sym, *params, &proc)
     end
 
+    # Tokenize and parse a command to create a new Action subclass.
+    #
+    # @param command [String] The command
+    # @yieldparam [Character]
+    # @return [Class] the resulting Action subclass
     def override(command, &proc)
       cmd = Syntax.tokenize(command, playbook.syntaxes).first
       raise "Unable to tokenize command '#{command}'" if cmd.nil?

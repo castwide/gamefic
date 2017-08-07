@@ -26,6 +26,7 @@ module Gamefic
     #   dog.match?("re do", fuzzy: true)  #=> true
     #   dog.match?("red og", fuzzy: true) #=> false
     #
+    # @param description [String] The description to be compared
     # @return [Boolean]
     def match? description, fuzzy: false
       words = description.split(SPLIT_REGEXP)

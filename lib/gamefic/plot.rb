@@ -57,20 +57,22 @@ module Gamefic
     def imported_scripts
       @imported_scripts ||= []
     end
-    
+
     def post_initialize
       # TODO: Should this method be required by extended classes?
     end
-    
+
     # Get an Array of the Plot's current Syntaxes.
     #
     # @return [Array<Syntax>]
     def syntaxes
       playbook.syntaxes
     end
-    
+
     # Prepare the Plot for the next turn of gameplay.
-    # This method is typically called by the Engine that manages game execution.
+    # This method is typically called by the Engine that manages game
+    # execution.
+    #
     def ready
       playbook.freeze
       @running = true
@@ -80,9 +82,11 @@ module Gamefic
       call_player_ready
       p_subplots.each { |s| s.ready }
     end
-    
+
     # Update the Plot's current turn of gameplay.
-    # This method is typically called by the Engine that manages game execution.
+    # This method is typically called by the Engine that manages game
+    # execution.
+    #
     def update
       entities.each { |e| e.flush }
       call_before_player_update
@@ -97,9 +101,13 @@ module Gamefic
       p_subplots.delete_if { |s| s.concluded? }
     end
 
-    def tell entities, message, refresh = false
+    # Send a message to a group of entities.
+    #
+    # @param entities [Array<Entity>]
+    # @param message [String]
+    def tell entities, message
       entities.each { |entity|
-        entity.tell message, refresh
+        entity.tell message
       }
     end
 

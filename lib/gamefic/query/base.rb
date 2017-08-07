@@ -9,6 +9,13 @@ module Gamefic
         @arguments = args
       end
 
+      # Determine whether the query allows ambiguous entity references.
+      # If false, actions that use this query will only be valid if the token
+      # passed into it resolves to a single entity. If true, actions will
+      # accept an array of matching entities instead.
+      # Queries are not ambiguous by default (ambiguous? == false).
+      #
+      # @return [Boolean]
       def ambiguous?
         false
       end
@@ -52,15 +59,6 @@ module Gamefic
         if @precision.nil?
           @precision = 1
           arguments.each { |a|
-            #if a.kind_of?(Symbol) or a.kind_of?(Regexp)
-            #  @precision += 1
-            #elsif a.kind_of?(Class)
-            #  @precision += (count_superclasses(a) * 100)
-            #elsif a.kind_of?(Module)
-            #  @precision += 10
-            #elsif a.kind_of?(Object)
-            #  @precision += 1000
-            #end
             if a.kind_of?(Class)
               @precision += 100
             elsif a.kind_of?(Gamefic::Entity)
@@ -80,6 +78,9 @@ module Gamefic
         "#{self.class.to_s.downcase}(#{@arguments.join(',')})"
       end
 
+      # Determine whether the specified entity passes the query's arguments.
+      #
+      # @return [Boolean]
       def accept?(entity)
         result = true
         arguments.each { |a|

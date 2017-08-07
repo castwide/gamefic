@@ -5,7 +5,7 @@ module Gamefic
         super(*args)
         @objects = objects
       end
-      
+
       def context_from subject
         @objects
       end
