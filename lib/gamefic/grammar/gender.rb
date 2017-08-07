@@ -3,8 +3,11 @@ require 'gamefic/grammar'
 module Gamefic::Grammar
   module Gender
     attr_writer :gender
+
+    # Supported values are "male", "female", "other", and "neutral"
+    #
+    # @return [String]
     def gender
-      # Supported values are "male", "female", "other", and "neutral"
       @gender ||= "neutral"
     end
   end

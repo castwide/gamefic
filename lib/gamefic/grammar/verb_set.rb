@@ -19,6 +19,7 @@ module Gamefic::Grammar
         form = forms[5]
         @forms["3:plural"] = form.nil? ? @forms["1:plural"] : form.to_s
       end
+
       def conjugate pronoun
         form = @forms["#{pronoun.person}"]
         if form.nil?
@@ -29,7 +30,9 @@ module Gamefic::Grammar
         end
         form
       end
+
       private
+
       def generate_third_singular
         if @infinitive.end_with?('o')
           @infinitive + "es"

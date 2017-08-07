@@ -21,10 +21,16 @@ module Gamefic
     end
 
     class << self
+      # Set or update the default values for new instances.
+      #
+      # @param attrs [Hash] The attributes to be merged into the defaults.
       def set_default attrs = {}
         default_attributes.merge! attrs
       end
 
+      # A hash of default values for attributes when creating an instance.
+      #
+      # @return [Hash]
       def default_attributes
         @default_attributes ||= {}
       end

@@ -18,15 +18,23 @@ module Gamefic
       parameters
     end
 
+    # Perform the action.
+    #
     def execute
       @executed = true
       self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
     end
 
+    # True if the #execute method has been called for this action.
+    #
+    # @return [Boolean]
     def executed?
       @executed
     end
 
+    # The verb associated with this action.
+    #
+    # @return [Symbol] The symbol representing the verb
     def verb
       self.class.verb
     end
@@ -39,6 +47,9 @@ module Gamefic
       self.class.rank
     end
 
+    # True if the action is flagged as meta.
+    #
+    # @return [Boolean]
     def meta?
       self.class.meta?
     end
@@ -90,10 +101,20 @@ module Gamefic
         "#{verb} #{queries.map{|m| m.signature}.join(',')}"
       end
 
+      # True if this action is not intended to be performed directly by a
+      # character.
+      # If the action is hidden, users should not be able to perform it with a
+      # direct command. By default, any action whose verb starts with an
+      # underscore is hidden.
+      #
+      # @return [Boolean]
       def hidden?
         verb.to_s.start_with?('_')
       end
 
+      # The proc to call when the action is executed
+      #
+      # @return [Proc]
       def executor
         @executor
       end

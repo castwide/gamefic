@@ -34,6 +34,13 @@ module Gamefic
         ent
       end
 
+      # Safely remove an entity from a plot.
+      # If the entity is dynamic (e.g., created after a plot is already
+      # running), it is safe to delete it completely. Otherwise the entity
+      # will still be referenced in the entities array, but its parent will be
+      # set to nil.
+      #
+      # @param [Gamefic::Entity] The entity to remove
       def destroy entity
         if p_dynamic.include?(entity)
           p_entities.delete entity

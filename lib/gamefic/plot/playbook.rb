@@ -37,6 +37,8 @@ module Gamefic
       @validators
     end
 
+    # Get the action for handling ambiguous entity references.
+    #
     def disambiguator
       @disambiguator ||= Action.new(nil, Query::Base.new) do |actor, entities|
         definites = []
@@ -47,11 +49,13 @@ module Gamefic
       end
     end
 
-    #def disambiguate &block
-    #  @disambiguator = Action.new(nil, Query::Base.new, &block)
-    #  @disambiguator.meta = true
-    #  @disambiguator
-    #end
+    # Set the action for handling ambiguous entity references.
+    #
+    def disambiguate &block
+      @disambiguator = Action.new(nil, Query::Base.new, &block)
+      @disambiguator.meta = true
+      @disambiguator
+    end
 
     # Add a block that determines whether an action can be executed.
     #
@@ -205,10 +209,6 @@ module Gamefic
     def add_action(action)
       @commands[action.verb] ||= []
       @commands[action.verb].push action
-      #@commands[action.verb].uniq!
-      #@commands[action.verb].sort! { |a, b|
-      #  b.rank <=> a.rank
-      #}
       generate_default_syntax action
     end
 
