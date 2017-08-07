@@ -3,6 +3,8 @@ require 'gamefic/action'
 module Gamefic
 
   module Plot::Commands
+    include Gamefic::Plot::Entities
+
     # Create an Action that responds to a command.
     # An Action uses the command argument to identify the imperative verb that
     # triggers the action.
@@ -27,6 +29,33 @@ module Gamefic
     # @yieldparam [Character]
     def respond(command, *queries, &proc)
       playbook.respond(command, *queries, &proc)
+    end
+
+    # Parse a verb and a list of arguments into an action.
+    # This method serves as a shortcut to creating an action with one or more
+    #
+    # @example
+    #   @thing = make Entity, name: 'a thing'
+    #   parse "use", "the thing" do |actor, thing|
+    #     actor.tell "You use it."
+    #   end
+    #
+    def parse verb, *tokens, &proc
+      query = Query::External.new(entities)
+      params = []
+      tokens.each do |arg|
+        matches = query.resolve(nil, arg)
+        raise "Unable to resolve token '#{arg}'" if matches.objects.empty?
+        raise "Ambiguous results for '#{arg}'" if matches.objects.length > 1
+        params.push Query::Family.new(matches.objects[0])
+      end
+      respond(verb.to_sym, *params, &proc)
+    end
+
+    def override(command, &proc)
+      cmd = Syntax.tokenize(command, playbook.syntaxes).first
+      raise "Unable to tokenize command '#{command}'" if cmd.nil?
+      parse cmd.verb, *cmd.arguments, &proc
     end
 
     # Create a Meta Action that responds to a command.
