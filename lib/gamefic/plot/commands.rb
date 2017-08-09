@@ -26,7 +26,7 @@ module Gamefic
     #
     # @param command [Symbol] An imperative verb for the command
     # @param queries [Array<Query::Base>] Filters for the command's tokens
-    # @yieldparam [Character]
+    # @yieldparam [Gamefic::Actor]
     # @return [Class] The resulting Action subclass
     def respond(command, *queries, &proc)
       playbook.respond(command, *queries, &proc)
@@ -60,7 +60,7 @@ module Gamefic
     # Tokenize and parse a command to create a new Action subclass.
     #
     # @param command [String] The command
-    # @yieldparam [Character]
+    # @yieldparam [Gamefic::Actor]
     # @return [Class] the resulting Action subclass
     def override(command, &proc)
       cmd = Syntax.tokenize(command, playbook.syntaxes).first
@@ -82,7 +82,7 @@ module Gamefic
     #
     # @param command [Symbol] An imperative verb for the command
     # @param queries [Array<Query::Base>] Filters for the command's tokens
-    # @yieldparam [Character]
+    # @yieldparam [Gamefic::Actor]
     def meta(command, *queries, &proc)
       playbook.meta command, *queries, &proc
     end
@@ -105,7 +105,7 @@ module Gamefic
     #     actor.tell "I don't know which you mean: #{entities.join_or}."
     #   end
     #
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Array<Gamefic::Entity>]
     def disambiguate &block
       playbook.disambiguate &block

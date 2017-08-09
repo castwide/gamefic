@@ -37,6 +37,7 @@ module Gamefic
 
     # Restore a snapshot.
     #
+    # @param snapshot [Hash]
     def restore snapshot
       entity_store.clear
       player_store.clear

@@ -56,7 +56,7 @@ module Gamefic
       #
       # @example Select the Entity that matches the description
       #   red_chair = make Entity, :name => 'red chair'
-      #   blue_chair make Entity, :name => 'blue chair'
+      #   blue_chair = make Entity, :name => 'blue chair'
       #   pick "red chair" #=> red_chair
       #   pick "blue chair" #=> blue_chair
       #   pick "chair" #=> IndexError: description is ambiguous
