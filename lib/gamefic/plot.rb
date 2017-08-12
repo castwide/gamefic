@@ -1,4 +1,3 @@
-#require 'gamefic/tester'
 require 'gamefic/source'
 require 'gamefic/script'
 require 'gamefic/query'
@@ -24,7 +23,6 @@ module Gamefic
     # TODO: Metadata could use better protection
     attr_accessor :metadata
     include Theater
-    #include Gamefic, Tester, Players, Scenes, Commands, Entities
     include Gamefic, Players, Scenes, Commands, Entities
     include Articles, YouMount, Snapshot, Host, Callbacks
 
@@ -124,7 +122,7 @@ module Gamefic
       end
       if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
         @working_scripts.push imported_script
-        # @hack Arguments need to be in different order if source returns proc
+        # HACK: Arguments need to be in different order if source returns proc
         if imported_script.read.kind_of?(Proc)
           stage &imported_script.read
         else
