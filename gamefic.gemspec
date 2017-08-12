@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version       = Gamefic::VERSION
   s.date          = Date.today.strftime("%Y-%m-%d")
   s.summary       = "Gamefic"
-  s.description   = "The Gamefic core libraries"
+  s.description   = "An adventure game and interactive fiction framework"
   s.authors       = ["Fred Snyder"]
   s.email         = 'fsnyder@gamefic.com'
   s.homepage      = 'http://gamefic.com'
