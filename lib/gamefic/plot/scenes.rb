@@ -18,7 +18,7 @@ module Gamefic
     #     actor.tell "Welcome to the game!"
     #   end
     #
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     def introduction(&proc)
       @introduction = proc
     end
@@ -26,7 +26,7 @@ module Gamefic
     # Introduce a player to the game.
     # This method is typically called by the Engine that manages game execution.
     #
-    # @param [Gamefic::Character]
+    # @param [Gamefic::Actor]
     def introduce(player)
       player.playbooks.push playbook unless player.playbooks.include?(playbook)
       player.cue default_scene
@@ -37,7 +37,7 @@ module Gamefic
     # Create a multiple-choice scene.
     # The user will be required to make a valid choice to continue.
     #
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::Data::MultipleChoice]
     def multiple_choice *choices, &block
       s = Scene::MultipleChoice.subclass do |actor, scene|
@@ -51,7 +51,7 @@ module Gamefic
     # Create a yes-or-no scene.
     # The user will be required to answer Yes or No to continue.
     #
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::YesOrNo]
     def yes_or_no prompt = nil, &block
       s = Scene::YesOrNo.subclass do |actor, scene|
@@ -69,7 +69,7 @@ module Gamefic
     #     actor.tell "You said #{scene.input}"
     #   end
     #
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::YesOrNo]
     def question prompt = 'What is your answer?', &block
       s = Scene::Custom.subclass do |actor, scene|
@@ -85,7 +85,7 @@ module Gamefic
     # the user (e.g., pressing Enter) to continue.
     #
     # @param prompt [String] The text to display when prompting the user to continue.
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::Pause]
     def pause prompt = nil, &block
       s = Scene::Pause.subclass do |actor, scene|
@@ -100,7 +100,7 @@ module Gamefic
     # The game (or the character's participation in it) will end after this
     # scene is complete.
     #
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::Conclusion]
     def conclusion &block
       s = Scene::Conclusion.subclass &block
@@ -127,7 +127,7 @@ module Gamefic
     #   end
     #
     # @param cls [Class] The class of scene to be instantiated.
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Scene::Custom] The instantiated scene.
     def custom cls = Scene::Custom, &block
       s = cls.subclass &block
@@ -166,7 +166,7 @@ module Gamefic
     #   end
     #
     # @param map [Hash] A Hash of options and associated scenes.
-    # @yieldparam [Gamefic::Character]
+    # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::MultipleScene]
     def multiple_scene map = {}, &block
       s = Scene::MultipleScene.subclass do |actor, scene|

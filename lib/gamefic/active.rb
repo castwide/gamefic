@@ -178,6 +178,7 @@ module Gamefic
     # Use #prepare if you want to declare a scene to be started at the
     # beginning of the next turn.
     #
+    # @param new_scene [Class]
     def cue new_scene
       @next_scene = nil
       if new_scene.nil?
@@ -191,8 +192,9 @@ module Gamefic
     # Prepare a scene to be started for this character at the beginning of the
     # next turn.
     #
-    def prepare s
-      @next_scene = s
+    # @param new_scene [Class]
+    def prepare new_scene
+      @next_scene = new_scene
     end
 
     # Return true if the character is expected to be in the specified scene on

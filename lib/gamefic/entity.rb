@@ -5,8 +5,8 @@ require 'gamefic/messaging'
 module Gamefic
 
   # A physical object that can exist in a plot. Most objects with which
-  # players interact are entities. Player characters themselves, in fact,
-  # typically derive from entities, e.g., the Actor class.
+  # players interact are entities. Player characters themselves typically
+  # derive from entities, e.g., the Gamefic::Actor class.
   #
   class Entity < Element
     include Node
