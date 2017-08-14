@@ -59,7 +59,7 @@ module Gamefic
       }
     end
 
-    # @yieldparam [Class<Gamefic::Scene::Base>]
+    # @yieldparam [Class<Gamefic::Actor>]
     # @return [Class<Gamefic::Scene::Base>]
     def self.subclass &block
       c = Class.new(self) do

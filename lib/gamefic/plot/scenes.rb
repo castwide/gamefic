@@ -1,10 +1,12 @@
 module Gamefic
 
   module Plot::Scenes
+    # @return [Class<Gamefic::Scene::Activity>]
     def default_scene
       @default_scene ||= Scene::Activity
     end
 
+    # @return [Class<Gamefic::Scene::Conclusion>]
     def default_conclusion
       @default_conclusion ||= Scene::Conclusion
     end
@@ -37,6 +39,15 @@ module Gamefic
     # Create a multiple-choice scene.
     # The user will be required to make a valid choice to continue.
     #
+    # @example
+    #   @scene = multiple_choice 'Go to work', 'Go to school' do |actor, scene|
+    #     if scene.select == 'Go to work'
+    #       actor.tell 'You go to work.'
+    #     else
+    #       actor.tell 'You go to school.'
+    #     end
+    #   end
+    #
     # @yieldparam [Gamefic::Actor]
     # @yieldparam [Gamefic::Scene::MultipleChoice]
     # @return [Class<Gamefic::Scene::MultipleChoice>]
@@ -53,7 +64,7 @@ module Gamefic
     # The user will be required to answer Yes or No to continue.
     #
     # @example
-    #   yes_or_no 'What is your answer?' do |actor, scene|
+    #   @scene = yes_or_no 'What is your answer?' do |actor, scene|
     #     if scene.yes?
     #       actor.tell "You said yes."
     #     else
@@ -83,7 +94,7 @@ module Gamefic
     #
     # @param prompt [String]
     # @yieldparam [Gamefic::Actor]
-    # @yieldparam [Gamefic::Scene::YesOrNo]
+    # @yieldparam [Gamefic::Scene::Custom]
     # @return [Class<Gamefic::Scene::Custom>]
     def question prompt = 'What is your answer?', &block
       s = Scene::Custom.subclass do |actor, scene|
@@ -97,6 +108,12 @@ module Gamefic
     # Create a scene that pauses the game.
     # This scene will execute the specified block and wait for input from the
     # the user (e.g., pressing Enter) to continue.
+    #
+    # @example
+    #   @scene = pause 'Continue' do |actor|
+    #     actor.tell "After you continue, you will be prompted for a command."
+    #     actor.prepare default_scene
+    #   end
     #
     # @param prompt [String] The text to display when prompting the user to continue.
     # @yieldparam [Gamefic::Actor]
@@ -113,6 +130,11 @@ module Gamefic
     # Create a conclusion.
     # The game (or the character's participation in it) will end after this
     # scene is complete.
+    #
+    # @example
+    #   @scene = conclusion do |actor|
+    #     actor.tell 'Game over'
+    #   end
     #
     # @yieldparam [Gamefic::Actor]
     # @return [Class<Gamefic::Scene::Conclusion>]
@@ -194,6 +216,7 @@ module Gamefic
       s
     end
 
+    # @return [Array<Class<Gamefic::Scene::Base>>]
     def scene_classes
       @scene_classes ||= []
     end

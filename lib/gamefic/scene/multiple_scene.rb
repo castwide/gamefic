@@ -5,6 +5,8 @@ module Gamefic
       @option_map ||= {}
     end
 
+    # @param option [String]
+    # @param scene [Class<Gamefic::Scene::Base>]
     def map option, scene
       options.push option
       option_map[option] = scene

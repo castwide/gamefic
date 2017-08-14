@@ -11,14 +11,24 @@ module Gamefic
       self.prompt = 'Yes or No?'
     end
 
+    # True if the actor's answer is Yes.
+    #
+    # @return [Boolean]
     def yes?
       input.to_s[0,1].downcase == 'y'
     end
 
+    # True if the actor's answer is No.
+    #
+    # @return [Boolean]
     def no?
       input.to_s[0,1].downcase == 'n'
     end
 
+    # The message sent to the user for an invalid answer, i.e., the input
+    # could not be resolved to either Yes or No.
+    #
+    # @return [String]
     def invalid_message
       @invalid_message ||= 'Please enter Yes or No.'
     end
