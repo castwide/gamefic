@@ -6,6 +6,8 @@ module Gamefic
   # other scene has been prepared or cued.
   #
   class Scene::YesOrNo < Scene::Custom
+    attr_writer :invalid_message
+
     def post_initialize
       self.type = 'YesOrNo'
       self.prompt = 'Yes or No?'
