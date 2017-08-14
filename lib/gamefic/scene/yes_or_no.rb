@@ -12,6 +12,7 @@ module Gamefic
     end
 
     # True if the actor's answer is Yes.
+    # Any answer beginning with letter Y is considered Yes.
     #
     # @return [Boolean]
     def yes?
@@ -19,6 +20,7 @@ module Gamefic
     end
 
     # True if the actor's answer is No.
+    # Any answer beginning with letter N is considered No.
     #
     # @return [Boolean]
     def no?
