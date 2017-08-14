@@ -36,6 +36,8 @@ module Gamefic
       self.class.start_block.call @actor, self unless self.class.start_block.nil?
     end
 
+    # Finish the scene.
+    #
     def finish
       @finish_block.call @actor, self unless @finish_block.nil?
       @finished = true
@@ -57,13 +59,15 @@ module Gamefic
       }
     end
 
+    # @yieldparam [Class<Gamefic::Scene::Base>]
+    # @return [Class<Gamefic::Scene::Base>]
     def self.subclass &block
       c = Class.new(self) do
         on_start &block
       end
       c
     end
-    
+
     # Get the prompt to be displayed to the user when accepting input.
     #
     # @return [String] The text to be displayed.
@@ -78,6 +82,7 @@ module Gamefic
       @type ||= 'Scene'
     end
 
+    # @yieldparam [Class<Gamefic::Scene::Base>]
     def self.on_start &block
       @start_block = block
     end
