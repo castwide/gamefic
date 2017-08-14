@@ -8,9 +8,21 @@ module Gamefic
   # instead of a String.
   #
   class Scene::MultipleChoice < Scene::Custom
+    # The zero-based index of the selected option.
+    #
+    # @return [Integer]
     attr_reader :index
+
+    # The one-based index of the selected option.
+    #
+    # @return [Number]
     attr_reader :number
+
+    # The full text of the selected option.
+    #
+    # @return [String]
     attr_reader :selection
+
     attr_writer :invalid_message
 
     def post_initialize
@@ -28,10 +40,16 @@ module Gamefic
       end
     end
 
+    # The array of available options.
+    #
+    # @return [Array<String>]
     def options
       @options ||= []
     end
 
+    # The text to display when an invalid selection is received.
+    #
+    # @return [String]
     def invalid_message
       @invalid_message ||= 'That is not a valid choice.'
     end
@@ -69,7 +87,6 @@ module Gamefic
       list += "</ol>"
       actor.tell list
     end
-    
   end
 
 end

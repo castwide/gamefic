@@ -4,9 +4,24 @@ module Gamefic
   # should inherit from it.
   #
   class Scene::Base
+    # The scene's primary actor.
+    #
+    # @return [Gamefic::Actor]
     attr_reader :actor
+
+    # A human-readable string identifying the type of scene.
+    #
+    # @return [String]
     attr_writer :type
+
+    # The text to display when requesting input.
+    #
+    # @return [String]
     attr_writer :prompt
+
+    # The input received from the actor.
+    #
+    # @return [String]
     attr_reader :input
 
     def initialize actor

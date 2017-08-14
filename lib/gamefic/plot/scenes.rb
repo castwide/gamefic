@@ -41,11 +41,10 @@ module Gamefic
     #
     # @example
     #   @scene = multiple_choice 'Go to work', 'Go to school' do |actor, scene|
-    #     if scene.select == 'Go to work'
-    #       actor.tell 'You go to work.'
-    #     else
-    #       actor.tell 'You go to school.'
-    #     end
+    #     # Assuming user selected the first choice:
+    #     scene.selection #=> 'Go to work'
+    #     scene.index     #=> 0
+    #     scene.number    #=> 1
     #   end
     #
     # @yieldparam [Gamefic::Actor]
