@@ -93,8 +93,8 @@ module Gamefic
       #
       # @param verb [Symbol] An imperative verb for the command
       # @param queries [Array<Query::Base>] Filters for the command's tokens
-      # @yieldparam [Gamefic::Character]
-      # @return [Gamefic::Action]
+      # @yieldparam [Gamefic::Actor]
+      # @return [Class<Gamefic::Action>]
       def respond(verb, *queries, &proc)
         act = Action.subclass verb, *queries, order_key: raise_order_key, &proc
         add_action act
@@ -115,7 +115,8 @@ module Gamefic
       #
       # @param verb [Symbol] An imperative verb for the command
       # @param queries [Array<Query::Base>] Filters for the command's tokens
-      # @yieldparam [Gamefic::Character]
+      # @yieldparam [Gamefic::Actor]
+      # @return [Class<Gamefic::Action>]
       def meta(verb, *queries, &proc)
         act = Action.subclass verb, *queries, meta: true, &proc
         add_action act
