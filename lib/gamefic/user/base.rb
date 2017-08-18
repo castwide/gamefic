@@ -1,6 +1,6 @@
 module Gamefic
   class User::Base
-    # @return [Gamefic::Active]
+    # @return [Gamefic::Actor]
     attr_reader :character
 
     # @return [Gamefic::Engine::Base]
