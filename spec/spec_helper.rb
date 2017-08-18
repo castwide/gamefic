@@ -13,6 +13,7 @@ SimpleCov.start
 class TestFileServer < Rack::File
   attr_writer :root
   def initialize
+    super(nil, {}, 'text/html')
   end
   def run_test page
     page.visit '/release/web/index.html'
