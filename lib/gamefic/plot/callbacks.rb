@@ -30,21 +30,21 @@ module Gamefic
     #     player[:turns] += 1
     #   end
     #
-    # @yieldparam [Gamefic::Performance]
+    # @yieldparam [Gamefic::Actor]
     def on_player_ready &block
       p_player_ready_procs.push block
     end
 
     # Add a block to be executed for each player before an update.
     #
-    # @yieldparam[Character]
+    # @yieldparam[Gamefic::Actor]
     def before_player_update &block
       p_before_player_update_procs.push block
     end
 
     # Add a block to be executed for each player at the end of a turn.
     #
-    # @yieldparam [Character]
+    # @yieldparam [Gamefic::Actor]
     def on_player_update &block
       p_player_update_procs.push block
     end
