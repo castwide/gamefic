@@ -4,6 +4,7 @@ module Gamefic
     # Get a name for the entity with an indefinite article (unless the entity
     # has a proper name).
     #
+    # @param entity [Gamefic::Entity]
     # @return [String]
     def a(entity)
       entity.indefinitely
@@ -11,6 +12,7 @@ module Gamefic
 
     # Alias for a.
     #
+    # @param entity [Gamefic::Entity]
     # @return [String]
     def an(entity)
       entity.indefinitely
@@ -19,6 +21,7 @@ module Gamefic
     # Get a name for the entity with a definite article (unless the entity has
     # a proper name).
     #
+    # @param entity [Gamefic::Entity]
     # @return [String]
     def the(entity)
       entity.definitely
@@ -27,6 +30,7 @@ module Gamefic
     # Get a capitalized name for the entity with an indefinite article (unless
     # the entity has a proper name).
     #
+    # @param entity [Gamefic::Entity]
     # @return [String]
     def A(entity)
       entity.indefinitely.cap_first
@@ -34,6 +38,7 @@ module Gamefic
 
     # Alias for A.
     #
+    # @param entity [Gamefic::Entity]
     # @return [String]
     def An(entity)
       entity.indefinitely.cap_first
@@ -42,6 +47,7 @@ module Gamefic
     # Get a capitalized name for the entity with a definite article (unless
     # the entity has a proper name).
     #
+    # @param entity [Gamefic::Entity]
     # @return [String]
     def The(entity)
       entity.definitely.cap_first
