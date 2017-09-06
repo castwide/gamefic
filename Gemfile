@@ -8,5 +8,5 @@ group :test do
 end
 
 group :development do
-  gem "solargraph", path: '/Users/Fred/Documents/solargraph'
+  gem "solargraph"
 end
