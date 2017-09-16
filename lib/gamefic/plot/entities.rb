@@ -76,14 +76,14 @@ module Gamefic
 
       # Get an array of entities associated with this plot.
       #
-      # @return [Array<Entity>]
+      # @return [Array<Gamefic::Entity>]
       def entities
         p_entities.clone
       end
 
       # Get an array of players associated with this plot.
       #
-      # @return [Array<Character>]
+      # @return [Array<Gamefic::Actor>]
       def players
         p_players.clone
       end
