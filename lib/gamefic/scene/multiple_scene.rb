@@ -18,5 +18,13 @@ module Gamefic
         actor.prepare option_map[selection]
       end
     end
+
+    def state
+      entered = {}
+      option_map.each_pair do |k, v|
+        entered[k] = actor.entered?(v)
+      end
+      super.merge entered: entered
+    end
   end
 end

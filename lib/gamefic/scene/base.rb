@@ -49,6 +49,7 @@ module Gamefic
     #
     def start
       self.class.start_block.call @actor, self unless self.class.start_block.nil?
+      @actor.entered self if tracked?
     end
 
     # Finish the scene.
@@ -102,9 +103,23 @@ module Gamefic
       @start_block = block
     end
 
+    def tracked?
+      self.class.tracked?
+    end
+
+    def tracked= bool
+      self.class.tracked = bool
+    end
+
     class << self
+      attr_writer :tracked
+
       def start_block
         @start_block
+      end
+
+      def tracked?
+        @tracked ||= false
       end
     end
   end

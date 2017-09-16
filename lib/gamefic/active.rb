@@ -233,7 +233,21 @@ module Gamefic
       to_s
     end
 
+    def entered scene
+      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
+      entered_scenes.push klass unless entered_scenes.include?(klass)
+    end
+
+    def entered? scene
+      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
+      entered_scenes.include?(klass)
+    end
+
     private
+
+    def entered_scenes
+      @entered_scenes ||= []    
+    end
 
     def execute_stack actions, quietly: false
       return nil if actions.empty?
