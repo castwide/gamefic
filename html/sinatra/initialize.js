@@ -19,7 +19,7 @@ Gamefic.onRestore(function(json) {
 	return new Promise((resolve) => {
 		var state = JSON.parse(json);
 		$.post('/restore', {snapshot: json}, function(response) {
-			console.log('Updating from restore');
+			response.output = '<p>Game restored to last available turn.</p>';
 			resolve(response);
 		});
 	});

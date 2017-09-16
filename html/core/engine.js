@@ -3,6 +3,7 @@ var Gamefic = (function() {
 	var updateCallbacks = [];
 	var receiveCallbacks = [];
 	var restoreCallbacks = [];
+	var saveCallbacks = [];
 	var loggingUrl = null;
 	var logId = null;
 	var logAlias = null;
@@ -10,24 +11,20 @@ var Gamefic = (function() {
 	var lastInput = null;
 
 	var _start = function() {
-		console.log('Starting with ' + startCallbacks.length + ' callbacks');
 		return new Promise((resolve) => {
 			var i = 0;
 			var state = null;
 			var recursor = function() {
 				if (i <= startCallbacks.length - 1) {
-					console.log('Running start ' + i);
 					startCallbacks[i]().then((response) => {
 						if (response) {
 							state = response;
-							console.log('Updating in startup');
 							Gamefic.update(response);
 						}
 						recursor();
 					});
 					i++;
 				} else {
-					console.log('Finished startup');
 					resolve(state);
 				}
 			}
@@ -79,7 +76,6 @@ var Gamefic = (function() {
 		},
 
 		update: function(state) {
-			console.log('Updating ' + state);
 			state.last_prompt = lastPrompt;
 			state.last_input = lastInput;
 			if (logId) {
@@ -134,9 +130,14 @@ var Gamefic = (function() {
 			restoreCallbacks.push(callback);
 		},
 
+		onSave: function(callback) {
+			saveCallbacks.push(callback);
+		},
+
 		save: function(filename, data) {
-			console.log('I should be saving to ' + filename + ': ' + data);
-			//localStorage.setItem(filename, Opal.JSON.$generate(data));
+			saveCallbacks.forEach((callback) => {
+				callback(filename, data);
+			});
 		},
 
 		restore: function(filename) {
@@ -146,18 +147,15 @@ var Gamefic = (function() {
 				var state = null;
 				var recursor = function() {
 					if (i <= restoreCallbacks.length - 1) {
-						console.log('Running restore ' + i);
 						restoreCallbacks[i](json).then((response) => {
 							if (response) {
 								state = response;
-								console.log('Updating in restore');
 								Gamefic.update(response);
 							}
 							recursor();
 						});
 						i++;
 					} else {
-						console.log('Finished restore');
 						resolve(state);
 					}
 				}
