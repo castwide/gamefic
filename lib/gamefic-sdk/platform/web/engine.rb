@@ -1,4 +1,4 @@
-# @hack Explicit requires for Opal
+# HACK: Explicit requires for Opal
 require 'gamefic/plot/playbook'
 require 'gamefic/plot/darkroom'
 require 'gamefic/grammar'

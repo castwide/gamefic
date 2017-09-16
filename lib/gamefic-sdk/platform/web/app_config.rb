@@ -5,8 +5,7 @@ module Gamefic
     class Gamefic::Sdk::Platform::Web::AppConfig
       include Plot::Theater
       attr_reader :javascripts, :stylesheets, :resource_paths, :source_dir, :config, :html_dir
-      #expose :javascripts, :stylesheets, :resource_paths
-      
+
       # @param source_dir [String] The directory containing the resources (config file, HTML template, etc.) for this build
       def initialize source_dir, config, js
         @javascripts = []
@@ -17,8 +16,8 @@ module Gamefic
         #@game_config = PlotConfig.new("#{source_dir}/config.yaml")
         @resource_paths = ["#{html_dir}", Gamefic::Sdk::HTML_TEMPLATE_PATH]
         config_file = "#{html_dir}/index.rb"
-        stage File.read(config_file), config_file
         javascripts.concat js
+        stage File.read(config_file), config_file
       end
       
       # @return [BuildConfig::Data]

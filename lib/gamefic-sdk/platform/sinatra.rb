@@ -13,11 +13,11 @@ module Gamefic::Sdk
       render_index
       copy_assets
       copy_media
-      FileUtils.cp_r File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'sinatra', 'engine.js'), File.join(release_target, 'core', 'engine.js')
+      FileUtils.cp_r File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'core', 'engine.js'), File.join(release_target, 'core', 'engine.js')
     end
 
     def app_config
-      @app_config ||= AppConfig.new config.source_dir, config, ["core/engine.js"]
+      @app_config ||= AppConfig.new config.source_dir, config, ["core/engine.js", "sinatra/initialize.js"]
     end
 
     private

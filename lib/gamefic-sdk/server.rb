@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'yaml'
+require 'gamefic-sdk/platform/web/user'
 
 module Gamefic
   module Sdk
@@ -21,6 +22,7 @@ module Gamefic
       post '/start' do
         content_type :json
         @@character = @@plot.player_class.new(name: 'player', synonyms: 'me myself self you yourself', description: 'As good-looking as ever.')
+        @@character.connect Gamefic::User::Web.new(nil)
         @@plot.introduce @@character
         @@plot.ready
         @@character.state.to_json

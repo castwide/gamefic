@@ -7,7 +7,7 @@ module Gamefic::Sdk
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
 
     def app_config
-      @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js"]
+      @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js", "opal/initialize.js"]
     end
 
     def build
