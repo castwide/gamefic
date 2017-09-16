@@ -1,8 +1,9 @@
 Gamefic.onStart(function() {
-	$.post('/start', function(response) {
-		Gamefic.update(response);
+	return new Promise((resolve) => {
+		$.post('/start', function(response) {
+			resolve(response);
+		});	
 	});
-	return null;
 });
 
 Gamefic.onReceive(function(input) {
@@ -15,6 +16,11 @@ Gamefic.onReceive(function(input) {
 });
 
 Gamefic.onRestore(function(json) {
-	console.warn('Sinatra restore is not implented.');
-	return null;
+	return new Promise((resolve) => {
+		var state = JSON.parse(json);
+		$.post('/restore', {snapshot: json}, function(response) {
+			console.log('Updating from restore');
+			resolve(response);
+		});
+	});
 });

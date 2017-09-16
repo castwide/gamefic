@@ -10,11 +10,28 @@ var Gamefic = (function() {
 	var lastInput = null;
 
 	var _start = function() {
-		startCallbacks.forEach((callback) => {
-			var response = callback();
-			if (response) {
-				Gamefic.update(response);
+		console.log('Starting with ' + startCallbacks.length + ' callbacks');
+		return new Promise((resolve) => {
+			var i = 0;
+			var state = null;
+			var recursor = function() {
+				if (i <= startCallbacks.length - 1) {
+					console.log('Running start ' + i);
+					startCallbacks[i]().then((response) => {
+						if (response) {
+							state = response;
+							console.log('Updating in startup');
+							Gamefic.update(response);
+						}
+						recursor();
+					});
+					i++;
+				} else {
+					console.log('Finished startup');
+					resolve(state);
+				}
 			}
+			recursor();	
 		});
 	}
 
@@ -58,7 +75,7 @@ var Gamefic = (function() {
 					console.warn('Logging was not activated for ' + loggingUrl);
 				}
 			}
-			_start();
+			return _start();
 		},
 
 		update: function(state) {
@@ -74,11 +91,21 @@ var Gamefic = (function() {
 					logId = null;
 				});
 			}
-			updateCallbacks.forEach(function(callback) {
-				console.log('Running an update callback');
-				callback(state);
+			return new Promise((resolve) => {
+				var i = 0;
+				var recursor = function() {
+					if (i <= updateCallbacks.length - 1) {
+						updateCallbacks[i](state).then((response) => {
+							recursor();
+						});
+						i++;
+					} else {
+						lastPrompt = state.prompt;
+						resolve(state);
+					}
+				}
+				recursor();	
 			});
-			lastPrompt = state.prompt;
 		},
 
 		receive: function(input) {
@@ -108,18 +135,34 @@ var Gamefic = (function() {
 		},
 
 		save: function(filename, data) {
-			localStorage.setItem(filename, Opal.JSON.$generate(data));
+			console.log('I should be saving to ' + filename + ': ' + data);
+			//localStorage.setItem(filename, Opal.JSON.$generate(data));
 		},
 
 		restore: function(filename) {
-			var json = localStorage.getItem(filename);
-			var state = null;
-			restoreCallbacks.forEach(function(callback) {
-				state = callback(json);
+			return new Promise((resolve) => {
+				var json = localStorage.getItem(filename);
+				var i = 0;
+				var state = null;
+				var recursor = function() {
+					if (i <= restoreCallbacks.length - 1) {
+						console.log('Running restore ' + i);
+						restoreCallbacks[i](json).then((response) => {
+							if (response) {
+								state = response;
+								console.log('Updating in restore');
+								Gamefic.update(response);
+							}
+							recursor();
+						});
+						i++;
+					} else {
+						console.log('Finished restore');
+						resolve(state);
+					}
+				}
+				recursor();		
 			});
-			if (state) {
-				this.update(state);
-			}
 		}
 	}
 })();
