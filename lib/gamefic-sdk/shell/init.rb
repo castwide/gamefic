@@ -25,6 +25,8 @@ module Gamefic
           write_config_yaml
           write_uuid_file
           copy_html_skin
+          write_gemfile
+          write_yardopts
           puts "Game directory '#{@directory}' initialized." unless @quiet
         end
 
@@ -75,6 +77,25 @@ module Gamefic
             FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + @html + '/*'], "#{@directory}/html")
           else
             FileUtils.cp_r(Dir[File.join(File.realpath(@webdir), '*')], "#{@directory}/html")
+          end
+        end
+
+        def write_gemfile
+          File.open("#{@directory}/Gemfile", 'w') do |file|
+            file << "source 'https://rubygems.org'"
+            file << ""
+            file << "gem 'gamefic'"
+            file << ""
+            file << "group :development do"
+            file << "  gem 'gamefic-sdk'"
+            file << "end"
+          end
+        end
+
+        def write_yardopts
+          File.open("#{@directory}/.yardopts", 'w') do |file|
+            file << 'scripts/**/*.rb'
+            file << 'imports/**/*.rb'
           end
         end
       end
