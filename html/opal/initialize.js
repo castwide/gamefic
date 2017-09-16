@@ -13,7 +13,6 @@ Gamefic.onReceive(function(input) {
 });
 
 Gamefic.onRestore(function(json) {
-	console.log('Snapshot: ' + json);
 	var snapshot = Opal.JSON.$parse(json);
 	Opal.gvars.plot.$restore(snapshot);
 	Opal.gvars.engine.$user().$character().$flush();
