@@ -21,6 +21,7 @@ Gamefic.onRestore(function(data) {
 		if (JSON.stringify(current) == JSON.stringify(data.metadata)) {
 			Opal.gvars.plot.$restore(snapshot);
 			var preState = JSON.parse(Opal.gvars.engine.$user().$character().$state().$to_json());
+			Opal.gvars.engine.$user().$character().$cue(Opal.gvars.plot.$default_scene());
 			Opal.gvars.plot.$update();
 			Opal.gvars.plot.$ready();
 			var postState = JSON.parse(Opal.gvars.engine.$user().$character().$state().$to_json());
