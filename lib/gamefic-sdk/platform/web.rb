@@ -6,6 +6,7 @@ module Gamefic::Sdk
   class Platform::Web < Platform::Base
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
 
+    # @return [Gamefic::Sdk::Platform::Web::AppConfig]
     def app_config
       @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js", "opal/initialize.js"]
     end
@@ -18,9 +19,9 @@ module Gamefic::Sdk
       build_gamefic_js
       build_static_js
       build_scripts_js
-      render_index
       copy_assets
       copy_media
+      render_index
     end
 
     def clean
@@ -101,10 +102,6 @@ module Gamefic::Sdk
 
     def build_scripts_js
       File.open("#{build_target}/scripts.rb", 'w') do |file|
-        #file << "def Module.const_missing sym\n"
-        #file << "puts 'From Object to Gamefic'\n"
-        #file << "Gamefic.const_get sym\n"
-        #file << "end\n"
         file << "module Gamefic\n"
         file << "$scripts = {}\n"
         plot.imported_scripts.each { |script|
@@ -114,6 +111,7 @@ module Gamefic::Sdk
         }
         file << "$source = Gamefic::Source::Text.new($scripts)\n"
         file << "$plot = Gamefic::Plot.new($source)\n"
+        file << "$plot.metadata = JSON.parse('#{metadata.to_json}')\n"
         file << "$plot.script 'main'\n"
         file << "$engine = Gamefic::Engine::Web.new($plot)\n"
         file << "end\n"
@@ -122,10 +120,6 @@ module Gamefic::Sdk
         file << "Gamefic.const_get sym\n"
         file << "end\n"
         file << "end\n"
-        #file << "def $plot.theater.const_missing sym\n"
-        #file << 'puts "Trying to get #{sym} from object"' + "\n"
-        #file << "Object.const_get sym\n"
-        #file << "end\n"
       end
       Opal.append_path build_target
       File.open(build_target + "/core/scripts.js", 'w') do |file|
@@ -164,10 +158,6 @@ module Gamefic::Sdk
           FileUtils.cp_r config.media_path + "/" + entry, release_target + "/media/" + entry
         end
       }
-    end
-
-    def metadata_code
-      "\nGameficOpal.static_plot.metadata = JSON.parse('#{metadata.to_json}')"
     end
   end
 

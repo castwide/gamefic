@@ -15,12 +15,13 @@ Gamefic.onReceive(function(input) {
 	});
 });
 
-Gamefic.onRestore(function(json) {
+Gamefic.onRestore(function(state) {
 	return new Promise((resolve) => {
-		var state = JSON.parse(json);
-		$.post('/restore', {snapshot: json}, function(response) {
-			response.output = '<p>Game restored to last available turn.</p>';
+		$.post('/restore', {snapshot: JSON.stringify(state)}, function(response) {
 			resolve(response);
+		}).fail(function(response) {
+			console.log('An error occurred during a restore.');
+			console.log(JSON.stringify(response));
 		});
 	});
 });

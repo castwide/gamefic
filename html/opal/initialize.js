@@ -14,21 +14,25 @@ Gamefic.onReceive(function(input) {
 	return JSON.parse(json);
 });
 
-Gamefic.onRestore(function(json) {
-	var snapshot = Opal.JSON.$parse(json);
-	return new Promise((resolve) => {
-		Opal.gvars.plot.$restore(snapshot);
-		Opal.gvars.engine.$user().$character().$flush();
-		Opal.gvars.engine.$user().$character().$cue(Opal.gvars.plot.$default_scene());
-		Opal.gvars.plot.$update();
-		Opal.gvars.plot.$ready();
-		Opal.gvars.engine.$user().$character().$tell('Game restored to last available turn.');
-		var state = Opal.gvars.engine.$user().$character().$state();
-		var response = state.$to_json();
-		resolve(JSON.parse(response));
+Gamefic.onRestore(function(data) {
+	var current = JSON.parse(Opal.gvars.plot.$metadata().$to_json());
+	var snapshot = Opal.JSON.$parse(JSON.stringify(data));
+	return new Promise((resolve, reject) => {
+		if (JSON.stringify(current) == JSON.stringify(data.metadata)) {
+			Opal.gvars.plot.$restore(snapshot);
+			var preState = JSON.parse(Opal.gvars.engine.$user().$character().$state().$to_json());
+			Opal.gvars.plot.$update();
+			Opal.gvars.plot.$ready();
+			var postState = JSON.parse(Opal.gvars.engine.$user().$character().$state().$to_json());
+			postState.output = preState.output;
+			resolve(postState);
+		} else {
+			reject('Incompatible snapshot');
+		}
 	});
 });
 
 Gamefic.onSave(function(filename, data) {
-	localStorage.setItem(filename, Opal.JSON.$generate(data));	
+	var snapshot = Opal.JSON.$generate(data);
+	localStorage.setItem(filename, snapshot);	
 });

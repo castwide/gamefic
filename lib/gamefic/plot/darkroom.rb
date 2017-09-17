@@ -2,6 +2,7 @@ module Gamefic
   # Create and restore plot snapshots.
   #
   class Plot::Darkroom
+    # @return [Gamefic::Plot]
     attr_reader :plot
 
     def initialize plot
@@ -12,7 +13,7 @@ module Gamefic
     #
     # @return [Hash]
     def save
-      result = { entities: [], players: [], subplots: [], instance_variables: {} }
+      result = { entities: [], players: [], subplots: [], instance_variables: {}, metadata: plot.metadata }
       entity_store.clear
       player_store.clear
       entity_store.concat plot.entities

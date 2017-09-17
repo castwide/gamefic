@@ -141,18 +141,20 @@ var Gamefic = (function() {
 		},
 
 		restore: function(filename) {
-			return new Promise((resolve) => {
+			return new Promise((resolve, reject) => {
 				var json = localStorage.getItem(filename);
+				var data = JSON.parse(json);
 				var i = 0;
 				var state = null;
 				var recursor = function() {
 					if (i <= restoreCallbacks.length - 1) {
-						restoreCallbacks[i](json).then((response) => {
+						restoreCallbacks[i](data).then((response) => {
 							if (response) {
 								state = response;
-								Gamefic.update(response);
 							}
 							recursor();
+						}).catch((response) => {
+							reject(response);
 						});
 						i++;
 					} else {
