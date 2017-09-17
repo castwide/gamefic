@@ -82,20 +82,20 @@ module Gamefic
 
         def write_gemfile
           File.open("#{@directory}/Gemfile", 'w') do |file|
-            file << "source 'https://rubygems.org'"
-            file << ""
-            file << "gem 'gamefic'"
-            file << ""
-            file << "group :development do"
-            file << "  gem 'gamefic-sdk'"
-            file << "end"
+            file.puts "source 'https://rubygems.org'"
+            file.puts ""
+            file.puts "gem 'gamefic'"
+            file.puts ""
+            file.puts "group :development do"
+            file.puts "  gem 'gamefic-sdk'"
+            file.puts "end"
           end
         end
 
         def write_yardopts
           File.open("#{@directory}/.yardopts", 'w') do |file|
-            file << 'scripts/**/*.rb'
-            file << 'imports/**/*.rb'
+            file.puts 'scripts/**/*.rb'
+            file.puts 'imports/**/*.rb'
           end
         end
       end
