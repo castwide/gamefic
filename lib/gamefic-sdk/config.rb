@@ -10,6 +10,7 @@ module Gamefic
       def initialize directory, data = {}
         @source_dir = directory
         @data = data
+        require_plugins
 
         @source_dir.freeze
         @data.freeze
@@ -87,6 +88,10 @@ module Gamefic
         @uuid
       end
 
+      def plugins
+        @plugins ||= (data['plugins'] || [])
+      end
+
       # @return [Gamefic::Sdk::Config]
       def self.load directory
         config = {}
@@ -120,6 +125,12 @@ targets:
     platform: Gfic
     filename: game.gfic
 EOS
+      end
+
+      private
+
+      def require_plugins
+        plugins.each { |p| require p }
       end
     end
   end
