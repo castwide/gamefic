@@ -19,7 +19,6 @@ var Gamefic = (function() {
 					startCallbacks[i]().then((response) => {
 						if (response) {
 							state = response;
-							Gamefic.update(response);
 						}
 						recursor();
 					});
@@ -47,7 +46,7 @@ var Gamefic = (function() {
 	}
 	return {
 		enableLogging: function(url) {
-			loggingUrl = url || '//gamefic.com/game/log';
+			loggingUrl = url || '/game/log';
 			return loggingUrl;
 		},
 
@@ -60,22 +59,42 @@ var Gamefic = (function() {
 		},
 
 		start: function() {
-			if (loggingUrl) {
-				if (_canLog()) {
-					$.post(loggingUrl, { alias: _logAlias() }, function(response) {
-						logId = response.id;
-					}).fail(function(response) {
-						console.warn('Logging failed.');
-						console.warn(response);
-					});
-				} else {
-					console.warn('Logging was not activated for ' + loggingUrl);
-				}
-			}
-			return _start();
+			return new Promise((resolve) => {
+				_start().then((response) => {
+					if (loggingUrl) {
+						if (_canLog()) {
+							$.post(loggingUrl, { alias: _logAlias(), state: response }, function(ajaxResponse) {
+								logId = ajaxResponse.id;
+								Gamefic.update(response).then(() => {
+									resolve(response);
+								});
+							}).fail(function(ajaxResponse) {
+								console.warn('Logging failed.');
+								console.warn(ajaxResponse);
+								Gamefic.update(response).then(() => {
+									resolve(response);
+								});
+							});
+						} else {
+							console.warn('Logging was not activated for ' + loggingUrl);
+							Gamefic.update(response).then(() => {
+								resolve(response);
+							});
+						}
+					} else{
+						Gamefic.update(response).then(() => {
+							resolve(response);
+						});					
+					}
+				});
+			});
 		},
 
 		update: function(state) {
+			// @todo Figure out where this method is getting a string instead of an object
+			if (typeof state == 'string') {
+				state = JSON.parse(state);
+			}
 			state.last_prompt = lastPrompt;
 			state.last_input = lastInput;
 			if (logId) {

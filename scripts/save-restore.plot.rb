@@ -1,4 +1,4 @@
-# @gamefic.script save-restore-undo
+# @gamefic.script save-restore
 #   SAVE and RESTORE actions.
 
 script 'snapshots'

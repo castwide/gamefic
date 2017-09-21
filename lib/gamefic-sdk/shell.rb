@@ -106,7 +106,7 @@ module Gamefic
             Dir[File.join path, '**', '*.rb'].each { |f|
               c = File.read(f)
               c.each_line { |l|
-                match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9\/]+)/)
+                match = l.match(/[\s]*#[\s]*@gamefic.script[ ]+([a-z0-9_\/\-]+)/)
                 unless match.nil?
                   s.push(match[1])
                 end
