@@ -19,10 +19,14 @@ respond :look, Use.available do |actor, thing|
 end
 
 respond :look, Use.available(Supporter) do |actor, thing|
-  actor.proceed
   if thing.accessible?
     itemized = thing.children.that_are_not(:attached?).that_are(:itemized?)
+    # If the supporter does not have a description but it does contain
+    # itemized things, avoid saying there's nothing special about it.
+    actor.proceed if thing.has_description? or itemized.empty?
     actor.tell "You see #{itemized.join_and} on #{the thing}." unless itemized.empty?
+  else
+    actor.proceed
   end
 end
 
