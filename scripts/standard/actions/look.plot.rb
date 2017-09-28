@@ -11,7 +11,7 @@ respond :look, Use.itself do |actor, thing|
   actor.perform :inventory
 end
 
-respond :look, Use.available do |actor, thing|
+respond :look, Use.available(Thing) do |actor, thing|
   actor.tell thing.description
   thing.children.that_are(:attached?).that_are(:itemized?).each { |item|
     actor.tell "#{An item} is attached to #{the thing}."
