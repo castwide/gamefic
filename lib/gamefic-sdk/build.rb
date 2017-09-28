@@ -10,8 +10,10 @@ module Gamefic::Sdk
         Shell.start ['import', directory, '--quiet']
       end
       config.targets.each_pair { |k, v|
-        puts "Building #{k}..." unless quiet
         plat = Gamefic::Sdk::Platform.load(config, k)
+        puts "Clearing #{k}..."
+        FileUtils.rm_rf plat.release_target, secure: true
+        puts "Building #{k}..." unless quiet
         plat.build
       }
       puts "Build#{config.targets.length > 1 ? 's' : ''} complete." unless quiet
