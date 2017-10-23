@@ -4,11 +4,17 @@ require 'gamefic/query'
 
 module Gamefic
 
+  # A plot controls the game narrative and manages the world model.
+  # Authors typically build plots through scripts that are executed in a
+  # special container called a stage. All of the elements that compose the
+  # narrative (characters, locations, scenes, etc.) reside in the stage's
+  # scope. Game engines use the plot to receive game data and process user
+  # input.
+  #
   class Plot
     autoload :Scenes,    'gamefic/plot/scenes'
     autoload :Commands,  'gamefic/plot/commands'
     autoload :Entities,  'gamefic/plot/entities'
-    autoload :Articles,  'gamefic/plot/articles'
     autoload :YouMount,  'gamefic/plot/you_mount'
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
@@ -18,13 +24,18 @@ module Gamefic
     autoload :Callbacks, 'gamefic/plot/callbacks'
     autoload :Theater,   'gamefic/plot/theater'
 
-    attr_reader :commands, :imported_scripts, :source
+    # @return [Array<Gamefic::Script::Base>]
+    attr_reader :imported_scripts
+
+    # @return [Gamefic::Source::Base]
+    attr_reader :source
 
     # TODO: Metadata could use better protection
     attr_accessor :metadata
+
     include Theater
     include Gamefic, Players, Scenes, Commands, Entities
-    include Articles, YouMount, Snapshot, Host, Callbacks
+    include YouMount, Snapshot, Host, Callbacks
 
     # @param source [Source::Base]
     def initialize(source = nil)

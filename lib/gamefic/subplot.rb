@@ -8,7 +8,7 @@ module Gamefic
     include Plot::Commands
     include Plot::Callbacks
     include Plot::Scenes
-    include Plot::Articles
+    #include Plot::Articles
 
     # @return [Gamefic::Plot]
     attr_reader :plot
