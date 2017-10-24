@@ -4,6 +4,7 @@
 #   adventures, but easily extensible for other formats.
 
 script 'articles'
+script 'you'
 script 'standard/queries'
 script 'standard/modules'
 script 'standard/direction'

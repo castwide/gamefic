@@ -14,7 +14,6 @@ module Gamefic
     autoload :Scenes,    'gamefic/plot/scenes'
     autoload :Commands,  'gamefic/plot/commands'
     autoload :Entities,  'gamefic/plot/entities'
-    autoload :YouMount,  'gamefic/plot/you_mount'
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
@@ -32,9 +31,8 @@ module Gamefic
     # TODO: Metadata could use better protection
     attr_accessor :metadata
 
-    include Theater
-    include Gamefic, Players, Scenes, Commands, Entities
-    include YouMount, Snapshot, Host, Callbacks
+    include Theater, Gamefic, Players, Scenes, Commands, Entities, Snapshot
+    include Host, Callbacks
 
     # @param source [Source::Base]
     def initialize(source = nil)
