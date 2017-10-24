@@ -117,6 +117,8 @@ media_path: ./media
 build_path: ./build
 release_path: ./release
 
+auto_import: true
+
 targets:
   web:
     platform: Web
