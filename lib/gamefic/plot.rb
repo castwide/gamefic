@@ -3,7 +3,6 @@ require 'gamefic/script'
 require 'gamefic/query'
 
 module Gamefic
-
   # A plot controls the game narrative and manages the world model.
   # Authors typically build plots through scripts that are executed in a
   # special container called a stage. All of the elements that compose the
@@ -147,5 +146,4 @@ module Gamefic
       end
     end
   end
-
 end

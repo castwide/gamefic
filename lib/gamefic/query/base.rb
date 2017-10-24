@@ -99,7 +99,7 @@ module Gamefic
       end
 
       protected
-      
+
       # Return an array of the entity's children. If the child is neighborly,
       # recursively append its children.
       # The result will NOT include the original entity itself.

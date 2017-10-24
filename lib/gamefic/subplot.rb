@@ -8,7 +8,6 @@ module Gamefic
     include Plot::Commands
     include Plot::Callbacks
     include Plot::Scenes
-    #include Plot::Articles
 
     # @return [Gamefic::Plot]
     attr_reader :plot
@@ -18,6 +17,8 @@ module Gamefic
 
       protected
 
+      # Define a proc to be executed when the subplot is initialized.
+      #
       def on_start &block
         @start_proc = block
       end
@@ -96,5 +97,4 @@ module Gamefic
       call_update
     end
   end
-
 end

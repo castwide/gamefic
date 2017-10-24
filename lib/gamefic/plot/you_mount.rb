@@ -8,6 +8,7 @@ module Gamefic
       include Grammar::Plural
       include Grammar::WordAdapter
     end
+
     # @return [YouGrammarSet]
     def you
       if @you.nil?
@@ -17,5 +18,4 @@ module Gamefic
       @you
     end
   end
-  
 end
