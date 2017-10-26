@@ -1,5 +1,4 @@
 module Gamefic
-
   # Basic functionality for running a single-player game from a console.
   #
   class Engine::Base
@@ -55,5 +54,4 @@ module Gamefic
       @user.character.queue.push input unless input.nil?
     end
   end
-
 end
