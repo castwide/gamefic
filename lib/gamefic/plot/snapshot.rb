@@ -18,15 +18,15 @@ module Gamefic
 
     def initial_state
       if @initial_state.nil?
-        @initial_state = internal_save
+        @initial_state = internal_save(false)
       end
       @initial_state
     end
 
     private
 
-    def internal_save
-      Gamefic::Plot::Darkroom.new(self).save
+    def internal_save reduce = true
+      Gamefic::Plot::Darkroom.new(self, reduce: reduce).save
     end
   end
 end

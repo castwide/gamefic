@@ -5,8 +5,9 @@ module Gamefic
     # @return [Gamefic::Plot]
     attr_reader :plot
 
-    def initialize plot
+    def initialize plot, reduce: true
       @plot = plot
+      @reduce = reduce
     end
 
     # Create a snapshot of the plot.
@@ -20,8 +21,18 @@ module Gamefic
       player_store.concat plot.players
       plot.subplots.each { |s| entity_store.concat s.entities }
       entity_store.uniq!
+      i = 0
       entity_store.each do |e|
-        result[:entities].push hash_entity(e)
+        he = hash_entity(e)
+        if @reduce
+          unless plot.initial_state[:entities][i].nil?
+            plot.initial_state[:entities][i].each_pair do |k, v|
+              he.delete k if he[k] == v
+            end
+          end
+        end
+        result[:entities].push he
+        i += 1
       end
       player_store.each do |p|
         result[:players].push hash_entity(p)
