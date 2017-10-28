@@ -27,6 +27,7 @@ module Gamefic
           copy_html_skin
           write_gemfile
           write_yardopts
+          write_solargraph_yml
           puts "Game directory '#{@directory}' initialized." unless @quiet
         end
 
@@ -96,6 +97,16 @@ module Gamefic
           File.open("#{@directory}/.yardopts", 'w') do |file|
             file.puts 'scripts/**/*.rb'
             file.puts 'imports/**/*.rb'
+          end
+        end
+
+        def write_solargraph_yml
+          File.open("#{@directory}/.solargraph.yml", 'w') do |file|
+            file.puts 'include:'
+            file.puts '  - scripts/**/*.rb'
+            file.puts '  - imports/**/*.rb'
+            file.puts 'domains:'
+            file.puts '  - Gamefic::Plot'
           end
         end
       end
