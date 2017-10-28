@@ -7,10 +7,14 @@ module Gamefic
   # subclass that includes this module.
   #
   module Active
+    # The last action executed by the entity, as reported by the
+    # Active#performed method.
+    #
     # @return [Gamefic::Action]
     attr_reader :last_action
 
     # The user connected to this entity (or nil).
+    #
     # @return [Gamefic::User::Base]
     attr_reader :user
 
@@ -101,7 +105,7 @@ module Gamefic
       playbooks.reverse.each { |p| actions.concat p.dispatch(self, *command) }
       execute_stack actions
     end
-    
+
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
@@ -220,9 +224,12 @@ module Gamefic
       !scene.nil? and scene.kind_of?(Scene::Conclusion)
     end
 
-    def performed order
-      order.freeze
-      @last_action = order
+    # Record the last action the entity executed. This method is typically
+    # called when the entity performs an action in response to user input.
+    #
+    def performed action
+      action.freeze
+      @last_action = action
     end
 
     def accessible?
@@ -233,11 +240,16 @@ module Gamefic
       to_s
     end
 
+    # Track the entity's performance of a scene.
+    #
     def entered scene
       klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
       entered_scenes.push klass unless entered_scenes.include?(klass)
     end
 
+    # Determine whether the entity has performed the specified scene.
+    #
+    # @return [Boolean]
     def entered? scene
       klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
       entered_scenes.include?(klass)
@@ -245,6 +257,7 @@ module Gamefic
 
     private
 
+    # @return [Array<Gamefic::Scene::Base>]
     def entered_scenes
       @entered_scenes ||= []    
     end
@@ -285,6 +298,7 @@ module Gamefic
       @buffer_stack = num
     end
 
+    # @return [String]
     def buffer
       @buffer ||= ''
     end
