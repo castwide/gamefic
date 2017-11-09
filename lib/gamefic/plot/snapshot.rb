@@ -26,7 +26,7 @@ module Gamefic
     private
 
     def internal_save reduce = true
-      Gamefic::Plot::Darkroom.new(self, reduce: reduce).save
+      Gamefic::Plot::Darkroom.new(self).save(reduce: reduce)
     end
   end
 end

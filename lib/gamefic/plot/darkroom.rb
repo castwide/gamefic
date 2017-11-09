@@ -5,15 +5,14 @@ module Gamefic
     # @return [Gamefic::Plot]
     attr_reader :plot
 
-    def initialize plot, reduce: true
+    def initialize plot
       @plot = plot
-      @reduce = reduce
     end
 
     # Create a snapshot of the plot.
     #
     # @return [Hash]
-    def save
+    def save reduce: true
       result = { entities: [], players: [], subplots: [], instance_variables: {}, metadata: plot.metadata }
       entity_store.clear
       player_store.clear
@@ -24,7 +23,7 @@ module Gamefic
       i = 0
       entity_store.each do |e|
         he = hash_entity(e)
-        if @reduce
+        if reduce
           unless plot.initial_state[:entities][i].nil?
             plot.initial_state[:entities][i].each_pair do |k, v|
               he.delete k if he[k] == v
@@ -66,6 +65,9 @@ module Gamefic
             make cls
           end
           entity_store.push e
+        end
+        unless plot.initial_state[:entities][i].nil?
+          rebuild1 entity_store[i], plot.initial_state[:entities][i]
         end
         i += 1
       }
