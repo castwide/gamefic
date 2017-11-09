@@ -113,7 +113,7 @@ module Gamefic
     end
 
     def can_serialize? v
-      return true if v.kind_of?(String) or v.kind_of?(Numeric) or v.kind_of?(Symbol) or v.kind_of?(Gamefic::Entity) or is_scene_class?(v) or v == true or v == false or v.nil?
+      return true if is_simple_type?(v) or v.kind_of?(Gamefic::Entity) or is_scene_class?(v)
       if v.kind_of?(Array)
         v.each do |e|
           result = can_serialize?(e)
@@ -144,6 +144,11 @@ module Gamefic
       else
         false
       end
+    end
+
+    def is_simple_type?(v)
+      return true if v.kind_of?(String) or v.kind_of?(Numeric) or v.kind_of?(Symbol) or v == true or v == false or v.nil?
+      false
     end
 
     def serialize v
