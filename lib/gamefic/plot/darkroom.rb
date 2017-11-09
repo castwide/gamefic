@@ -68,6 +68,7 @@ module Gamefic
         end
         unless plot.initial_state[:entities][i].nil?
           rebuild1 entity_store[i], plot.initial_state[:entities][i]
+          rebuild2 entity_store[i], plot.initial_state[:entities][i]
         end
         i += 1
       }
