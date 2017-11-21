@@ -15,13 +15,10 @@ module Gamefic
       def initialize directory, data = {}
         @source_dir = directory
         @data = data
-        require_plugins
+        require_libraries
 
         @source_dir.freeze
         @data.freeze
-        libraries.each do |lib|
-          require "gamefic-#{lib}"
-        end
       end
 
       # The game's title.
@@ -100,10 +97,6 @@ module Gamefic
         @uuid
       end
 
-      def plugins
-        @plugins ||= (data['plugins'] || [])
-      end
-
       # Load a configuration from the specified directory.
       # This method requires a config.yml file to exist in the directory root.
       #
@@ -152,8 +145,8 @@ EOS
 
       private
 
-      def require_plugins
-        plugins.each { |p| require p }
+      def require_libraries
+        libraries.each { |p| require p }
       end
     end
   end
