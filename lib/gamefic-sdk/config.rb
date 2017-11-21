@@ -146,7 +146,7 @@ EOS
       private
 
       def require_libraries
-        libraries.each { |p| require p }
+        libraries.each { |lib| require "gamefic-#{lib}" }
       end
     end
   end

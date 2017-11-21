@@ -4,7 +4,7 @@ module Gamefic
   module Sdk
     class Shell
       class Test
-        include Gamefic::Sdk::Shdell::Plotter
+        include Gamefic::Sdk::Shell::Plotter
 
         def initialize(directory:)
           @path = directory
