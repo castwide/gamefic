@@ -5,6 +5,7 @@ require 'simplecov'
 require 'gamefic'
 require 'gamefic-sdk'
 require 'sinatra/base'
+require 'gamefic-standard'
 
 include Gamefic
 

@@ -27,8 +27,6 @@ module Gamefic::Sdk
     end
     false
   end
-
-  mount GLOBAL_SCRIPT_PATH
 end
 
 class Class

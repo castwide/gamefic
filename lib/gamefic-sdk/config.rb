@@ -19,6 +19,9 @@ module Gamefic
 
         @source_dir.freeze
         @data.freeze
+        libraries.each do |lib|
+          require "gamefic-#{lib}"
+        end
       end
 
       # The game's title.
@@ -68,6 +71,10 @@ module Gamefic
       # @return [String]
       def release_path
         @release_path ||= Pathname.new(source_dir).join(data['release_path'] || './release').to_s
+      end
+
+      def libraries
+        @libraries ||= data['libraries'] || []
       end
 
       def auto_import?
