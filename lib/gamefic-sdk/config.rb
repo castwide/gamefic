@@ -132,6 +132,9 @@ script_path: ./scripts
 import_path: ./imports
 media_path: ./media
 
+libraries:
+- standard
+
 build_path: ./build
 release_path: ./release
 
