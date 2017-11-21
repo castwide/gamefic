@@ -16,15 +16,15 @@ introduction do |actor|
 end
 
 coatroom = make Room, :name => 'the coatroom', :description => 'A walk-in closet where guests can hang their coats.'
-coatroom.connect lobby, "east"
+connect coatroom, lobby, "east"
 
 dining = make Room, :name => 'the dining room', :description => 'The main dining area. Your favorite table is in the northwest corner.'
-dining.connect lobby, "south"
+connect dining, lobby, "south"
 
 jacket = make Clothing, :name => 'a wool jacket', :description => 'A thick wool jacket.', :parent => coatroom
 
 corner = make Room, :name => 'a secluded corner', :description => 'This cozy nook at the end of the dining room has your favorite table.'
-corner.connect dining, "southeast"
+connect corner, dining, "southeast"
 
 table = make Supporter, :name => 'table', :description => 'A cozy booth.', :parent => corner
 

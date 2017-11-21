@@ -38,7 +38,7 @@ cloakroom = make Room,
   :name => "Cloakroom",
   :description => "The walls of this small room were clearly once lined with hooks, though now only one remains. The exit is a door to the east."
 
-foyer.connect cloakroom, "west"
+connect foyer, cloakroom, "west"
 
 
 # In the cloak room there's a hook where we can hang the cloak. 
@@ -86,7 +86,7 @@ end
 bar = make Room, 
   :name => "Foyer Bar", 
   :description => "The bar, much rougher than you'd have guessed after the opulence of the foyer to the north, is completely empty. There seems to be some sort of message scrawled in the sawdust on the floor."
-foyer.connect bar, "south"
+connect foyer, bar, "south"
 
 
 # There's a message in the sawdust. If the player does things in the dark, the message is destroyed.

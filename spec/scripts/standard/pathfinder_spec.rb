@@ -5,11 +5,11 @@ describe "Pathfinder" do
     plot.script 'standard/pathfinder'
     room1 = plot.make Room, :name => 'room 1'
     room2 = plot.make Room, :name => 'room 2'
-    room2.connect room1
+    plot.connect room2, room1
     room2a = plot.make Room, :name => 'room 2a'
-    room2a.connect room2
+    plot.connect room2a, room2
     room3 = plot.make Room, :name => 'room 3'
-    room3.connect room2
+    plot.connect room3, room2
     finder = Pathfinder.new(room1, room3)
     expect(finder.valid?).to eq(true)
     expect(finder.origin).to eq(room1)
@@ -22,9 +22,9 @@ describe "Pathfinder" do
     plot.script 'standard/pathfinder'
     room1 = plot.make Room, :name => 'room 1'
     room2 = plot.make Room, :name => 'room 2'
-    room2.connect room1
+    plot.connect room2, room1
     room2a = plot.make Room, :name => 'room 2a'
-    room2a.connect room2
+    plot.connect room2a, room2
     room3 = plot.make Room, :name => 'room 3'
     finder = Pathfinder.new(room1, room3)
     expect(finder.valid?).to eq(false)

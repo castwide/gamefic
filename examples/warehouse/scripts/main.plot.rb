@@ -19,7 +19,7 @@ chair.enterable = true
 key = make Item, :name => 'a key', :description => 'A small key for a padlock.', :parent => desk
 
 stacks = make Room, :name => 'the stacks', :description => 'The warehouse\'s main storage area.'
-stacks.connect office, 'south'
+connect stacks, office, 'south'
 
 # Containers have a key property that indicates which entity unlocks it.
 # Setting the key property automatically selects the :lockable option.
