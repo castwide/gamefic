@@ -7,6 +7,11 @@ module Gamefic
       attr_reader :source_dir
       attr_reader :data
 
+      # Create a configuration for the project in the specified directory and
+      # initialize settings from an optional hash.
+      # Use Config.load(directory) to generate a configuration from the config
+      # file in the directory's root.
+      #
       def initialize directory, data = {}
         @source_dir = directory
         @data = data
@@ -92,16 +97,22 @@ module Gamefic
         @plugins ||= (data['plugins'] || [])
       end
 
+      # Load a configuration from the specified directory.
+      # This method requires a config.yml file to exist in the directory root.
+      #
       # @return [Gamefic::Sdk::Config]
       def self.load directory
         config = {}
+        found = false
         ['config.yml', 'config.yaml'].each do |cy|
           config_file = File.join(directory, cy)
           if File.exist?(config_file)
             config = YAML.load(File.read(config_file))
+            found = true
             break
           end
         end
+        raise LoadError.new("Gamefic config file not found") if !found
         Config.new(directory, config)
       end
 

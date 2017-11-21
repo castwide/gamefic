@@ -10,6 +10,10 @@ module Gamefic
     class Shell < Thor
       autoload :Init, 'gamefic-sdk/shell/init'
       autoload :Test, 'gamefic-sdk/shell/test'
+      autoload :Ide, 'gamefic-sdk/shell/ide'
+      autoload :Plotter, 'gamefic-sdk/shell/plotter'
+
+      include Plotter
 
       map %w[--version -v] => :version
       map [:create, :new] => :init
@@ -155,6 +159,11 @@ module Gamefic
       #  raise UndefinedCommandError, "Could not find command or file named \"#{symbol}\"."
       #end
 
+      desc 'ide COMMAND [ARGS]', 'Run an IDE command'
+      def ide *args
+        Gamefic::Sdk::Shell::Ide.start(args)
+      end
+
       private
 
       def document_script path
@@ -209,7 +218,7 @@ module Gamefic
         plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
         #Engine::Tty.start(plot)
         Gamefic::Tty::Engine.start(plot)
-      end  
+      end
     end
   end
 end
