@@ -6,7 +6,7 @@ describe "Save/Restore on Web", :type => :feature, :js => true do
     FileUtils.remove_entry @dir
   end
   it "saves and restores a game" do
-    config = Gamefic::Sdk::Config.new('examples/warehouse', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build" })
+    config = Gamefic::Sdk::Config.new('examples/warehouse', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build", "libraries" => ["standard"] })
     web = Gamefic::Sdk::Platform::Web.new(config: config)
     web.build
     Capybara.app.root = @dir

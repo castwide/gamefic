@@ -74,6 +74,14 @@ module Gamefic
         @libraries ||= data['libraries'] || []
       end
 
+      def library_paths
+        paths = []
+        libraries.each do |l|
+          paths.push Gamefic::Library.path(l)
+        end
+        paths
+      end
+
       def auto_import?
         @auto_import ||= (data['auto_import'] || true)
       end
@@ -146,7 +154,7 @@ EOS
       private
 
       def require_libraries
-        libraries.each { |lib| require "gamefic-#{lib}" }
+        libraries.each { |lib| require "gamefic-library-#{lib}" }
       end
     end
   end

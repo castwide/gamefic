@@ -11,7 +11,7 @@ describe "Cloak of Darkness (Web)", type: :feature, js: true do
   end
 
   it "concludes web game with test me" do
-    config = Gamefic::Sdk::Config.new('examples/cloak_of_darkness', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build" })
+    config = Gamefic::Sdk::Config.new('examples/cloak_of_darkness', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build", "libraries" => ["standard"] })
     web = Gamefic::Sdk::Platform::Web.new(config: config)
     web.build
     Capybara.app.root = @dir

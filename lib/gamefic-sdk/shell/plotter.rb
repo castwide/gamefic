@@ -11,7 +11,7 @@ module Gamefic
             puts "Importing scripts..."
             Shell.start ['import', directory, '--quiet']
           end
-          paths = [config.script_path, config.import_path] + Gamefic::Sdk.script_paths
+          paths = [config.script_path, config.import_path] + config.library_paths
           plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
           plot.script 'main'
           plot

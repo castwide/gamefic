@@ -11,22 +11,22 @@ module Gamefic::Sdk
   GLOBAL_SCRIPT_PATH = File.realpath(File.dirname(__FILE__) + "/../scripts/")
   LIB_PATH = File.dirname(__FILE__)
 
-  @@script_paths = []
+  #@@script_paths = []
 
-  def self.mount path
-    @@script_paths.push path
-  end
+  #def self.mount path
+  #  @@script_paths.push path
+  #end
 
-  def self.script_paths
-    @@script_paths
-  end
+  #def self.script_paths
+  #  @@script_paths
+  #end
 
-  def self.script_paths_include? path
-    @@script_paths.each do |p|
-      return true if path.start_with?(p)
-    end
-    false
-  end
+  #def self.script_paths_include? path
+  #  @@script_paths.each do |p|
+  #    return true if path.start_with?(p)
+  #  end
+  #  false
+  #end
 end
 
 class Class

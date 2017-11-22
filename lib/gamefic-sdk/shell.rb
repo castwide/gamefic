@@ -73,11 +73,12 @@ module Gamefic
         config = Gamefic::Sdk::Config.load directory_name
         FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
         FileUtils.mkdir_p config.import_path
-        paths = [config.script_path] + Gamefic::Sdk.script_paths
+        paths = [config.script_path] + config.library_paths
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
-          next unless Gamefic::Sdk.script_paths_include?(s.absolute_path)
+          #next unless Gamefic::Sdk.script_paths_include?(s.absolute_path)
+          next if s.absolute_path.start_with?(config.script_path)
           src = File.absolute_path(s.absolute_path)
           dst = File.absolute_path(File.join(directory_name, 'imports', "#{s.path}.plot.rb"))
           next if src == dst
