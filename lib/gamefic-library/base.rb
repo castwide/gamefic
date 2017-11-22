@@ -1,19 +1,14 @@
 module Gamefic
   module Library
     class Base
-      attr_reader :path
-
       @@subclasses = []
-
-      def initialize
-        post_initialize
-      end
-
-      def post_initialize
-      end
 
       def name
         @name ||= self.class.to_s.split('::').last.downcase
+      end
+
+      def path
+        nil
       end
 
       def self.inherited(subclass)
@@ -31,11 +26,6 @@ module Gamefic
       def self.path
         self.new.path
       end
-
-      protected
-
-      attr_writer :name
-      attr_writer :path
     end
   end
 end
