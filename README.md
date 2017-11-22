@@ -6,25 +6,17 @@ Gamefic is a system for developing and playing adventure games.
 
 # Installation
 
-Gamefic is available as a Ruby gem:
+Game authors should install the Gamefic SDK:
 
-    gem install gamefic
+    gem install gamefic-sdk
 
-## The Gem Architecture
+The SDK includes the core Gamefic gem that game engines use to run plots.
 
-As of Version 2.0, the primary gem has three components, each of which is a
-separate gem:
+# The Gamefic Executable
 
-* _gamefic-core_: The core libraries for the framework
-* _gamefic-tty_: Command-line components for running Gamefic games (e.g., .gfic files) in a terminal
-* _gamefic-sdk_: Development and authoring tools
+The `gamefic` executable provides commands for creating, testing, and building games. A list of commands is available via `gamefic help`.
 
-# Using the Executables
-
-There are two Gamefic executables: "gamefic" for playing games and "gfk" for
-writing games.
-
-## Using Executables in Development
+## Using Gamefic in Development
 
 The examples in this README assume you are working with the executables that
 get distributed with the gems. If you're actively developing the core Gamefic
@@ -34,22 +26,21 @@ configure the environment:
     cd /path/to/repo
     bundle install
 
-Then use bundle exec to run the binaries:
+Then use bundle exec to run the binary:
 
     bundle exec gamefic
-    bundle exec gfk
 
 # Running the Examples
 
 The Git repo includes several demo games in the examples directory. You can
 run them from the command line like so:
 
-    gfk test examples/[name]
+    gamefic test examples/[name]
 
 One of the examples is a Gamefic implementation of [Cloak of Darkness](http://www.firthworks.com/roger/cloak/),
 courtesy of Peter Orme:
 
-    gfk test examples/cloak_of_darkness
+    gamefic test examples/cloak_of_darkness
 
 # Game Commands
 
@@ -81,42 +72,16 @@ Some other shortcuts:
     i = inventory
 	x or exam = look (examine)
 
-# Games on the Command Line
-
-The gamefic executable accepts six commands: play, init, test, fetch, build,
-and help. Use "gamefic help" to get information about the other commands.
-
-To play a game:
-
-    gamefic play example.gfic
-
-Alternately, you can just give it the filename, and the "play" command is
-assumed:
-
-    gamefic example.gfic
-
-The default game engine is a turn-based terminal program. Executing the above
-command drops you to a command line in-game, ready for you to enter an action.
-The example games provide simple demonstrations of what you can do with the
-default game environment.
-
-## Play vs. Test
-
-There are two commands you'll typically use to play games: gamefic play and
-gfk test. The play command executes compiled games (.gfic files). The test
-command lets you run source directories and scripts. Use test to debug your
-games before you build Gamefic files for distribution.
-
 # Writing Your First Game
 
 The easiest way to start your own game is with the init command:
 
-    gfk init mygame
+    gamefic init mygame
 
 Gamefic will create a directory called "mygame" that contains the main script
 and an import directory. The game is already capable of running:
 
-    gfk test mygame
+    gamefic test mygame
 
 Right now the game is just a single featureless room. Open the mygame/main.rb
 file in a text editor. Modify it to the following:
@@ -131,7 +96,7 @@ file in a text editor. Modify it to the following:
 
 Run the script from the command line:
 
-    gfk test mygame
+    gamefic test mygame
 
 The script will drop you into a game prompt. There's still not much you can do
 except look around:
@@ -170,7 +135,7 @@ Let's take a closer look at the methods we used in the script.
 
 The script method in plot scripts is similar to Ruby's require method. It loads
 a script from your game's scripts directory. If the script doesn't exist locally,
-the program will look for it in the Gamefic library.
+the program will look for it in shared libraries.
 
 The "standard" library provides a bunch of functionality common to text
 adventures, including the abilities to look around, move between rooms, and
@@ -228,15 +193,14 @@ Fixtures, Scenery is not included in a room's list of visible items.
 
 ## Adding More Entities
 
-Let's explore some of the other Entity types by adding more stuff to the
-tiny.rb demo.
+Let's explore some of the other Entity types by adding more stuff to the demo.
 
     bed = make Fixture, :name => "bed", :description => "A comfy little twin bed.", :parent => apartment
 	
     cupboard = make Container, :name => "cupboard", :description => "A small wooden cupboard.", :parent => apartment
 
     closet = make Room, :name => "closet", :description => "This closet is surprisingly spacious for such a small apartment."
-    closet.connect apartment, "east"
+    connect closet, apartment, "east"
 
 Run the demo again and try interacting with the new Entities. Among the new
 actions you can perform are walking into the closet ("west" from the apartment)
@@ -246,7 +210,7 @@ and putting the pencil in the cupboard.
 
 Note the additional line of code following the creation of the closet:
 
-    closet.connect apartment, "east"
+    connect closet, apartment, "east"
 
 The connect method creates a Portal between this Room and another. The first
 argument is the Room to be connected and the second argument is the name of the
