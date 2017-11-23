@@ -8,7 +8,7 @@ respond :go, Use.siblings(Portal) do |actor, portal|
     else
       actor.parent = portal.destination
       if !portal.direction.nil?
-        actor.tell "#{you.pronoun.Subj} go #{portal.direction}"
+        actor.tell "#{you.pronoun.Subj} go #{portal.direction}."
       end
       actor.perform :look, actor.room
     end
