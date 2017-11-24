@@ -17,6 +17,7 @@ module Gamefic::Sdk
         Dir.chdir target_dir do
           system "npm", "init", "-y"
           system "npm", "install", "webpack", "--save-dev"
+          system "npm", "install", "gamefic-driver", "--save"
         end
       end
     end
