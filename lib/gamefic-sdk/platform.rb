@@ -8,6 +8,7 @@ module Gamefic::Sdk
     autoload :Ruby, 'gamefic-sdk/platform/ruby'
     autoload :OpalBuilder, 'gamefic-sdk/platform/opal_builder'
     autoload :Opal, 'gamefic-sdk/platform/opal'
+    autoload :Webpack, 'gamefic-sdk/platform/webpack'
 
     #def self.load directory, platform
     #  config_file = File.join(directory, 'config.yaml')

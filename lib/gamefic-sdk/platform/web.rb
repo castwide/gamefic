@@ -55,13 +55,12 @@ module Gamefic::Sdk
 
     # Copy everything in source except config and template
     def copy_html_files
-      Dir.entries(html_dir).each { |entry|
+      Dir.entries(html_dir).each do |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
           FileUtils.mkdir_p File.join(build_dir, File.dirname(entry))
-          #FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{build_dir}/#{entry}"
           FileUtils.cp_r File.join(html_dir, entry), File.join(build_dir, entry)
         end
-      }
+      end
     end
 
     def build_opal_js
