@@ -6,6 +6,8 @@ module Gamefic::Sdk
     autoload :Web, 'gamefic-sdk/platform/web'
     autoload :Sinatra, 'gamefic-sdk/platform/sinatra'
     autoload :Ruby, 'gamefic-sdk/platform/ruby'
+    autoload :OpalBuilder, 'gamefic-sdk/platform/opal_builder'
+    autoload :Opal, 'gamefic-sdk/platform/opal'
 
     #def self.load directory, platform
     #  config_file = File.join(directory, 'config.yaml')

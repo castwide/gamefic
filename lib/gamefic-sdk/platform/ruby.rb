@@ -6,17 +6,6 @@ module Gamefic::Sdk
 
   class Platform::Ruby < Platform::Base
     def build
-      #FileUtils.rm filename if File.file?(filename)
-      #FileUtils.mkdir_p release_target
-      #Zip::File.open(filename, Zip::File::CREATE) do |zipfile|
-      #  plot.imported_scripts.each { |script|
-      #    zipfile.add File.join('scripts', "#{script.path}.plot.rb"), script.absolute_path
-      #  }
-      #  Tempfile.open('metadata.yaml') do |file|
-      #    file.puts metadata.to_yaml
-      #    zipfile.add "metadata.yaml", file.path
-      #  end
-      #end
       files = {}
       dir = File.dirname(File.dirname(`gem which gamefic`))
       # @type [Gem::Specification]
