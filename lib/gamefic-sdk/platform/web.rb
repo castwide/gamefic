@@ -22,11 +22,6 @@ module Gamefic::Sdk
       render_index
     end
 
-    def clean
-      FileUtils.remove_entry_secure build_dir if File.exist?(build_dir)
-      puts "#{name} cleaned."
-    end
-
     def html_dir
       if @html_dir.nil?
         local_dir = (target['html'] ? target['html'] : 'html')

@@ -49,10 +49,6 @@ module Gamefic::Sdk
       raise "The base Platform class does not have a build method"
     end
 
-    def clean
-      puts "Nothing to do for this platform."
-    end
-
     def make_target
     end
 

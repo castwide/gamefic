@@ -63,11 +63,6 @@ module Gamefic
         Gamefic::Sdk::Build.release(directory_name, options[:quiet])
       end
 
-      desc 'clean [DIRECTORY_NAME]', 'Perform cleanup of DIRECTORY_NAME'
-      def clean(directory_name = '.')
-        Gamefic::Sdk::Build.clean(directory_name)
-      end
-
       desc 'import [DIRECTORY_NAME]', 'Copy external scripts to the project'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       def import(directory_name = '.')
