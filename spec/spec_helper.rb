@@ -17,7 +17,7 @@ class TestFileServer < Rack::File
     super(nil, {}, 'text/html')
   end
   def run_test page
-    page.visit '/release/web/index.html'
+    page.visit '/builds/web/index.html'
     sleep(1)
     sleep(0.1) while page.evaluate_script("document.getElementById('gamefic_controls').getAttribute('class').indexOf('working') != -1")
     page.fill_in 'command', with: 'test me'

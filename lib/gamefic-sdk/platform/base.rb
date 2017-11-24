@@ -19,12 +19,26 @@ module Gamefic::Sdk
       @name ||= (target['name'] || self.class.to_s.split('::').last.downcase)
     end
 
-    def build_target
-      @build_target ||= File.join(config.build_path, name)
+    #def build_target
+    #  @build_target ||= File.join(config.build_path, name)
+    #end
+
+    #def release_target
+    #  @release_target ||= File.join(config.release_path, name)
+    #end
+
+    # The path to the build directory (the compiled game).
+    #
+    # @return [String]
+    def build_dir
+      @build_dir ||= File.join(config.build_path, name)
     end
 
-    def release_target
-      @release_target ||= File.join(config.release_path, name)
+    # The path to the target directory (the platform-specific code).
+    #
+    # @return [String]
+    def target_dir
+      @target_dir ||= File.join(config.target_path, name)
     end
 
     # @return [Gamefic::Plot]

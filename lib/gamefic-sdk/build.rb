@@ -12,7 +12,7 @@ module Gamefic::Sdk
       config.targets.each_pair { |k, v|
         plat = Gamefic::Sdk::Platform.load(config, k)
         puts "Clearing #{k}..."
-        FileUtils.rm_rf plat.release_target, secure: true
+        FileUtils.rm_rf plat.build_dir, secure: true
         puts "Building #{k}..." unless quiet
         plat.build
       }

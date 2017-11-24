@@ -19,7 +19,6 @@ module Gamefic::Sdk
         comp = Zlib::Deflate.deflate(code)
         files["scripts/#{script.path}.plot.rb"] = Base64.encode64(comp)
       end
-      puts files.keys
       program = %(
 #!/usr/bin/env ruby
 require 'tmpdir'
@@ -49,14 +48,14 @@ Dir.mktmpdir do |tmpdir|
   engine.run
 end
 ).strip
-      FileUtils.mkdir_p release_target
+      FileUtils.mkdir_p build_dir
       File.open(filename, 'w') do |file|
         file << program
       end
     end
 
     def filename
-      @filename ||= File.join(release_target, (target['filename'] || 'game'))
+      @filename ||= File.join(build_dir, (target['filename'] || 'game'))
     end
 
     private

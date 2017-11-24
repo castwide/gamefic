@@ -60,14 +60,11 @@ module Gamefic
       #
       # @return [String]
       def build_path
-        @build_path ||= Pathname.new(source_dir).join(data['build_path'] || './build').to_s
+        @build_path ||= Pathname.new(source_dir).join(data['build_path'] || './builds').to_s
       end
 
-      # The absolute path to the project's release directory.
-      #
-      # @return [String]
-      def release_path
-        @release_path ||= Pathname.new(source_dir).join(data['release_path'] || './release').to_s
+      def target_path
+        @target_path ||= Pathname.new(source_dir).join(data['target_path'] || './targets').to_s
       end
 
       def libraries
@@ -75,11 +72,13 @@ module Gamefic
       end
 
       def library_paths
-        paths = []
-        libraries.each do |l|
-          paths.push Gamefic::Library.path(l)
+        if @library_paths.nil?
+          @library_paths = []
+          libraries.each do |l|
+            @library_paths.push Gamefic::Library.path(l)
+          end
         end
-        paths
+        @library_paths
       end
 
       def auto_import?
@@ -136,8 +135,8 @@ media_path: ./media
 libraries:
 - standard
 
-build_path: ./build
-release_path: ./release
+build_path: ./builds
+target_path: ./targets
 
 auto_import: true
 
@@ -145,9 +144,9 @@ targets:
   web:
     platform: Web
     html: ./html
-  gfic:
-    platform: Gfic
-    filename: game.gfic
+  ruby:
+    platform: Ruby
+    filename: game
 EOS
       end
 

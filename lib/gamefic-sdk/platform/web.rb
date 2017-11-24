@@ -6,26 +6,28 @@ module Gamefic::Sdk
   class Platform::Web < Platform::Base
     autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
 
+    include Gamefic::Sdk::Platform::OpalBuilder
+
     # @return [Gamefic::Sdk::Platform::Web::AppConfig]
     def app_config
-      @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/gamefic.js", "core/static.js", "core/scripts.js", "core/engine.js", "opal/initialize.js"]
+      @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/engine.js", "opal/initialize.js"]
     end
 
     def build
-      FileUtils.mkdir_p release_target
-      FileUtils.mkdir_p build_target
+      FileUtils.mkdir_p target_dir
+      FileUtils.mkdir_p build_dir
       copy_html_files
       build_opal_js
-      build_gamefic_js
-      build_static_js
-      build_scripts_js
+      #build_gamefic_js
+      #build_static_js
+      #build_scripts_js
       copy_assets
       copy_media
       render_index
     end
 
     def clean
-      FileUtils.remove_entry_secure build_target if File.exist?(build_target)
+      FileUtils.remove_entry_secure build_dir if File.exist?(build_dir)
       puts "#{name} cleaned."
     end
 
@@ -60,12 +62,13 @@ module Gamefic::Sdk
       #Dir.entries(app_config.html_dir).each { |entry|
       Dir.entries(html_dir).each { |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
-          FileUtils.mkdir_p release_target + '/' + File.dirname(entry)
-          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{release_target}/#{entry}"
+          FileUtils.mkdir_p build_dir + '/' + File.dirname(entry)
+          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{build_dir}/#{entry}"
         end
       }
     end
 
+=begin
     def build_opal_js
       # Make sure core exists in build directory
       FileUtils.mkdir_p build_target + "/core"
@@ -78,7 +81,14 @@ module Gamefic::Sdk
         end
       end
     end
+=end
 
+    def build_opal_js
+      FileUtils.mkdir_p File.join(build_dir, 'core')
+      File.write File.join(build_dir, 'core', 'opal.js'), Uglifier.compile(build_opal_str)
+    end
+
+=begin
     def build_gamefic_js
       # Gamefic core
       Opal.use_gem 'gamefic'
@@ -126,36 +136,39 @@ module Gamefic::Sdk
         file << Uglifier.compile(Opal::Builder.build('scripts').to_s)
       end
     end
+=end
 
     def render_index
       # Render index
-      File.open(release_target + "/index.html", "w") do |file|
+      File.open(build_dir + "/index.html", "w") do |file|
         file << app_config.render
       end
     end
 
     def copy_assets
       paths = app_config.resource_paths
-      paths.push build_target
+      paths.push target_dir
       app_config.javascripts.each { |js|
-        absolute = resolve(js, paths)
-        FileUtils.mkdir_p release_target + "/" + File.dirname(js)
-        FileUtils.cp_r absolute, release_target + "/" + js
+        unless File.exist?(File.join(build_dir, js))
+          absolute = resolve(js, paths)
+          FileUtils.mkdir_p File.join(build_dir, File.dirname(js))
+          FileUtils.cp_r absolute, File.join(build_dir, js)
+        end
       }
       app_config.stylesheets.each { |css|
         absolute = resolve(css, paths)
-        FileUtils.mkdir_p release_target + "/" + File.dirname(css)
-        FileUtils.cp_r absolute, release_target + "/" + css
+        FileUtils.mkdir_p build_dir + "/" + File.dirname(css)
+        FileUtils.cp_r absolute, build_dir + "/" + css
       }
     end
 
     def copy_media
-      FileUtils.mkdir_p release_target + "/media"
+      FileUtils.mkdir_p build_dir + "/media"
       return unless File.directory?(config.media_path)
       Dir.entries(config.media_path).each { |entry|
         if entry != '.' and entry != '..'
-          FileUtils.mkdir_p release_target + "/media/" + File.dirname(entry)
-          FileUtils.cp_r config.media_path + "/" + entry, release_target + "/media/" + entry
+          FileUtils.mkdir_p build_dir + "/media/" + File.dirname(entry)
+          FileUtils.cp_r config.media_path + "/" + entry, build_dir + "/media/" + entry
         end
       }
     end

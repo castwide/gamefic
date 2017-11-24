@@ -9,7 +9,7 @@ describe "Professor (Web)", :type => :feature, :js => true do
     FileUtils.remove_entry @dir
   end
   it "concludes web game with test me" do
-    config = Gamefic::Sdk::Config.new('examples/professor', { 'release_path' => "#{@dir}/release", 'build_path' => "#{@dir}/build", "libraries" => ["standard"] })
+    config = Gamefic::Sdk::Config.new('examples/professor', { 'target_path' => "#{@dir}/targets", 'build_path' => "#{@dir}/builds", "libraries" => ["standard"] })
     web = Gamefic::Sdk::Platform::Web.new(config: config)
     web.build
     Capybara.app.root = @dir
