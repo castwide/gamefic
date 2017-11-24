@@ -12,7 +12,7 @@ module Gamefic
       # Use Config.load(directory) to generate a configuration from the config
       # file in the directory's root.
       #
-      def initialize directory, data = {}
+      def initialize directory, data = Config.defaults
         @source_dir = directory
         @data = data
         require_libraries
@@ -134,30 +134,34 @@ module Gamefic
         Config.new(directory, config.merge(overrides))
       end
 
-      def self.generate author = 'Anonymous', title = 'Untitled'
-<<-EOS
-title: #{title}
-author: #{author}
+      def self.generate title = 'Untitled', author = 'Anonymous'
+        data = self.defaults
+        data['title'] = title
+        data['author'] = author
+        YAML.dump data
+      end
 
-script_path: ./scripts
-import_path: ./imports
-media_path: ./media
-
-libraries:
-- standard
-
-build_path: ./builds
-target_path: ./targets
-
-auto_import: true
-
-targets:
-  web:
-    platform: Web
-  ruby:
-    platform: Ruby
-    filename: game
-EOS
+      def self.defaults
+        @defaults ||= JSON.parse({
+          title: 'Untitled',
+          author: 'Anonymous',
+          script_path: './scripts',
+          import_path: './imports',
+          media_path: './media',
+          libraries: ['standard'],
+          target_path: './targets',
+          build_path: './builds',
+          auto_import: true,
+          targets: {
+            ruby: {
+              platform: 'Ruby',
+              filename: 'game'
+            },
+            web: {
+              platform: 'Web'
+            }
+          }
+        }.to_json)
       end
 
       private

@@ -24,10 +24,10 @@ module Gamefic
           write_test_script
           write_config_yaml
           write_uuid_file
-          copy_html_skin
           write_gemfile
           write_yardopts
           write_solargraph_yml
+          make_targets
           puts "Game directory '#{@directory}' initialized." unless @quiet
         end
 
@@ -62,23 +62,18 @@ module Gamefic
         end
 
         def write_config_yaml
-          File.open("#{@directory}/config.yml", 'w') do |file|
-            file << Gamefic::Sdk::Config.generate
-          end
+          File.write File.join(@directory, 'config.yml'), Gamefic::Sdk::Config.generate
         end
 
         def write_uuid_file
-          uuid = SecureRandom.uuid
-          File.open("#{@directory}/.uuid", "w") { |f| f.write uuid }
+          File.write File.join(@directory, '.uuid'), SecureRandom.uuid
         end
 
-        def copy_html_skin
-          web_target_dir = File.join(@directory, 'targets', 'web')
-          FileUtils.mkdir_p web_target_dir
-          if @webdir.nil?
-            FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + @html + '/*'], web_target_dir)
-          else
-            FileUtils.cp_r(Dir[File.join(File.realpath(@webdir), '*')], web_target_dir)
+        def make_targets
+          config = Gamefic::Sdk::Config.load(@directory)
+          config.targets.each do |name, conf|
+            plat = Gamefic::Sdk::Platform.load(config, name)
+            plat.make_target
           end
         end
 

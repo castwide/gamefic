@@ -54,7 +54,6 @@ module Gamefic::Sdk
     end
 
     def make_target
-      puts "Nothing to do for this platform."
     end
 
     # Get a hash of build metadata.
