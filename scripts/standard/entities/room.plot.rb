@@ -18,6 +18,9 @@ class Room < Thing
   end
 end
 
+# Create portals between rooms.
+#
+# @return [Portal]
 def connect origin, destination, direction = nil, type: Portal, two_way: true
   if direction.nil?
     portal = make type, :parent => origin, :destination => destination
