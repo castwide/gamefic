@@ -14,7 +14,6 @@ module Gamefic::Sdk
     end
 
     def build
-      FileUtils.mkdir_p target_dir
       FileUtils.mkdir_p build_dir
       copy_html_files
       build_opal_js
@@ -56,12 +55,11 @@ module Gamefic::Sdk
 
     # Copy everything in source except config and template
     def copy_html_files
-      #Dir.entries(app_config.html_dir).each { |entry|
       Dir.entries(html_dir).each { |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
-          FileUtils.mkdir_p build_dir + '/' + File.dirname(entry)
+          FileUtils.mkdir_p File.join(build_dir, File.dirname(entry))
           #FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{build_dir}/#{entry}"
-          FileUtils.cp_r File.join(target_dir, entry), File.join(build_dir, entry)
+          FileUtils.cp_r File.join(html_dir, entry), File.join(build_dir, entry)
         end
       }
     end
@@ -72,9 +70,9 @@ module Gamefic::Sdk
     end
 
     def render_index
-      # Render index
-      File.open(build_dir + "/index.html", "w") do |file|
-        file << config.render(File.join(target_dir, 'index.html.erb'))
+      template = File.join(html_dir, 'index.html.erb')
+      if File.exist?(template)
+        File.write File.join(build_dir, 'index.html'), config.render(template)
       end
     end
 
