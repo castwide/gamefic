@@ -78,7 +78,6 @@ module Gamefic
         plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
-          #next unless Gamefic::Sdk.script_paths_include?(s.absolute_path)
           next if s.absolute_path.start_with?(config.script_path)
           src = File.absolute_path(s.absolute_path)
           dst = File.absolute_path(File.join(directory_name, 'imports', "#{s.path}.plot.rb"))
@@ -140,17 +139,48 @@ module Gamefic
         show_exception(e) if options[:verbose]
       end
 
-      # Custom error message for invalid command or filename
-      #def method_missing(symbol, *args)
-      #  raise UndefinedCommandError, "Could not find command or file named \"#{symbol}\"."
-      #end
-
-      desc 'ide COMMAND [ARGS]', 'Run an IDE command'
+      desc 'ide COMMAND [ARGS]', 'Run an IDE command.'
       def ide *args
         Gamefic::Sdk::Shell::Ide.start(args)
       end
 
+      desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to a project.'
+      def target platform_name, directory = nil
+        directory ||= platform_name.downcase
+        config = Gamefic::Sdk::Config.load('.')
+        # @type [Class<Gamefic::Sdk::Platform::Base>]
+        cls = Gamefic::Sdk::Platform.const_get(platform_name)
+        target = config.targets[directory] || {
+          'platform' => platform_name
+        }
+        platform = cls.new(config: config, target: target.merge(name: directory))
+        platform.make_target
+        new_data = config.data.dup
+        new_data['targets'] ||= {}
+        new_data['targets'][directory] = target
+        new_config = Gamefic::Sdk::Config.new('.', new_data)
+        new_config.save
+      end
+
+      desc 'platforms', 'List available platforms.'
+      def platforms
+        Gamefic::Sdk::Platform.constants(false).each do |c|
+          next if c == :Base or c == :Sinatra
+          obj = Gamefic::Sdk::Platform.const_get(c)
+          next unless obj.kind_of?(Class)
+          puts c.to_s if platform?(obj)
+        end
+      end
+
       private
+
+      def platform?(cls)
+        until cls.nil?
+          return true if cls == Gamefic::Sdk::Platform::Base
+          cls = cls.superclass
+        end
+        false
+      end
 
       def show_exception(exception)
         puts exception.inspect
@@ -171,7 +201,6 @@ module Gamefic
         plot = Plot.new(Source::File.new(File.join(directory, 'scripts')))
         plot.script 'main'
         plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
-        #Engine::Tty.start(plot)
         Gamefic::Tty::Engine.start(plot)
       end
     end

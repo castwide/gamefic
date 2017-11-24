@@ -1,6 +1,7 @@
-require 'zip'
 require 'tempfile'
 require 'yaml'
+require 'zlib'
+require 'base64'
 
 module Gamefic::Sdk
 

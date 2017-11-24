@@ -39,6 +39,11 @@ module Gamefic::Sdk
       @html_dir
     end
 
+    def make_target
+      FileUtils.mkdir_p target_dir
+      FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + 'standard' + '/*'], target_dir)
+    end
+
     private
 
     def resolve filename, paths

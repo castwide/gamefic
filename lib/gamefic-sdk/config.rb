@@ -109,11 +109,17 @@ module Gamefic
         erb.result binding
       end
 
+      def save filename = nil
+        filename ||= File.join(source_dir, 'config.yml')
+        # @todo Generate the YAML
+        File.write filename, YAML.dump(data)
+      end
+
       # Load a configuration from the specified directory.
       # This method requires a config.yml file to exist in the directory root.
       #
       # @return [Gamefic::Sdk::Config]
-      def self.load directory
+      def self.load directory, overrides = {}
         config = {}
         found = false
         ['config.yml', 'config.yaml'].each do |cy|
@@ -125,7 +131,7 @@ module Gamefic
           end
         end
         raise LoadError.new("Gamefic config file not found") if !found
-        Config.new(directory, config)
+        Config.new(directory, config.merge(overrides))
       end
 
       def self.generate author = 'Anonymous', title = 'Untitled'
@@ -148,7 +154,6 @@ auto_import: true
 targets:
   web:
     platform: Web
-    html: ./html
   ruby:
     platform: Ruby
     filename: game

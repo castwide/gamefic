@@ -8,6 +8,7 @@ module Gamefic::Sdk
     autoload :Ruby, 'gamefic-sdk/platform/ruby'
     autoload :OpalBuilder, 'gamefic-sdk/platform/opal_builder'
     autoload :Webpack, 'gamefic-sdk/platform/webpack'
+    autoload :ReactApp, 'gamefic-sdk/platform/react_app'
 
     def self.load config, name
       target = config.targets[name]

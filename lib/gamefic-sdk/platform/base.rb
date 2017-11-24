@@ -19,14 +19,6 @@ module Gamefic::Sdk
       @name ||= (target['name'] || self.class.to_s.split('::').last.downcase)
     end
 
-    #def build_target
-    #  @build_target ||= File.join(config.build_path, name)
-    #end
-
-    #def release_target
-    #  @release_target ||= File.join(config.release_path, name)
-    #end
-
     # The path to the build directory (the compiled game).
     #
     # @return [String]
@@ -58,6 +50,10 @@ module Gamefic::Sdk
     end
 
     def clean
+      puts "Nothing to do for this platform."
+    end
+
+    def make_target
       puts "Nothing to do for this platform."
     end
 
