@@ -44,6 +44,7 @@ module Gamefic
           Dir.mkdir(File.join(@directory, 'scripts'))
           Dir.mkdir(File.join(@directory, 'imports'))
           Dir.mkdir(File.join(@directory, 'media'))
+          Dir.mkdir(File.join(@directory, 'builds'))
         end
 
         def write_main_script
