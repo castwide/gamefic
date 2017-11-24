@@ -73,11 +73,12 @@ module Gamefic
         end
 
         def copy_html_skin
-          Dir.mkdir("#{@directory}/html")
+          web_target_dir = File.join(@directory, 'targets', 'web')
+          FileUtils.mkdir_p web_target_dir
           if @webdir.nil?
-            FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + @html + '/*'], "#{@directory}/html")
+            FileUtils.cp_r(Dir[Gamefic::Sdk::HTML_TEMPLATE_PATH + '/skins/' + @html + '/*'], web_target_dir)
           else
-            FileUtils.cp_r(Dir[File.join(File.realpath(@webdir), '*')], "#{@directory}/html")
+            FileUtils.cp_r(Dir[File.join(File.realpath(@webdir), '*')], web_target_dir)
           end
         end
 

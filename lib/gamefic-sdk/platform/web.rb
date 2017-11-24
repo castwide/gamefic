@@ -10,7 +10,7 @@ module Gamefic::Sdk
 
     # @return [Gamefic::Sdk::Platform::Web::AppConfig]
     def app_config
-      @app_config ||= AppConfig.new config.source_dir, config, ["core/opal.js", "core/engine.js", "opal/initialize.js"]
+      @app_config ||= AppConfig.new config.source_dir, config, ["core/jquery.js", "core/opal.js", "core/engine.js", "opal/initialize.js"]
     end
 
     def build
@@ -18,9 +18,6 @@ module Gamefic::Sdk
       FileUtils.mkdir_p build_dir
       copy_html_files
       build_opal_js
-      #build_gamefic_js
-      #build_static_js
-      #build_scripts_js
       copy_assets
       copy_media
       render_index
@@ -63,85 +60,21 @@ module Gamefic::Sdk
       Dir.entries(html_dir).each { |entry|
         if entry != 'index.rb' and entry != 'index.html.erb' and entry != '.' and entry != '..'
           FileUtils.mkdir_p build_dir + '/' + File.dirname(entry)
-          FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{build_dir}/#{entry}"
+          #FileUtils.cp_r "#{app_config.html_dir}/#{entry}", "#{build_dir}/#{entry}"
+          FileUtils.cp_r File.join(target_dir, entry), File.join(build_dir, entry)
         end
       }
     end
-
-=begin
-    def build_opal_js
-      # Make sure core exists in build directory
-      FileUtils.mkdir_p build_target + "/core"
-      # Opal core
-      if !File.exist?(build_target + "/core/opal.js")
-        File.open(build_target + "/core/opal.js", "w") do |file|
-          file << Uglifier.compile(
-            Opal::Builder.build('opal').to_s + "\n" + Opal::Builder.build('json').to_s + "\n" + Opal::Builder.build('native').to_s
-          )
-        end
-      end
-    end
-=end
 
     def build_opal_js
       FileUtils.mkdir_p File.join(build_dir, 'core')
       File.write File.join(build_dir, 'core', 'opal.js'), Uglifier.compile(build_opal_str)
     end
 
-=begin
-    def build_gamefic_js
-      # Gamefic core
-      Opal.use_gem 'gamefic'
-      if !File.exist?(build_target + "/core/gamefic.js")
-        File.open(build_target + "/core/gamefic.js", "w") do |file|
-          file << Uglifier.compile(Opal::Builder.build('gamefic').to_s)
-        end
-      end
-    end
-
-    def build_static_js
-      Opal.append_path Gamefic::Sdk::LIB_PATH
-      if !File.exist?(build_target + "/core/static.js")
-        File.open(build_target + "/core/static.js", "w") do |file|
-          file << Uglifier.compile(
-            Opal::Builder.build('gamefic-sdk/platform/web/engine').to_s + "\n" + Opal::Builder.build('gamefic-sdk/platform/web/user').to_s
-          )
-        end
-      end
-    end
-
-    def build_scripts_js
-      File.open("#{build_target}/scripts.rb", 'w') do |file|
-        file << "module Gamefic\n"
-        file << "$scripts = {}\n"
-        plot.imported_scripts.each { |script|
-          file << "$scripts['#{script.path}'] = proc {\n"
-          file << script.read
-          file << "\n}\n"
-        }
-        file << "$source = Gamefic::Source::Text.new($scripts)\n"
-        file << "$plot = Gamefic::Plot.new($source)\n"
-        file << "$plot.metadata = JSON.parse('#{metadata.to_json}')\n"
-        file << "$plot.script 'main'\n"
-        file << "$engine = Gamefic::Engine::Web.new($plot)\n"
-        file << "end\n"
-        file << "$plot.stage do\n"
-        file << "def self.const_missing sym\n"
-        file << "Gamefic.const_get sym\n"
-        file << "end\n"
-        file << "end\n"
-      end
-      Opal.append_path build_target
-      File.open(build_target + "/core/scripts.js", 'w') do |file|
-        file << Uglifier.compile(Opal::Builder.build('scripts').to_s)
-      end
-    end
-=end
-
     def render_index
       # Render index
       File.open(build_dir + "/index.html", "w") do |file|
-        file << app_config.render
+        file << config.render(File.join(target_dir, 'index.html.erb'))
       end
     end
 

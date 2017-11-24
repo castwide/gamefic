@@ -17,7 +17,7 @@ module Gamefic
         @resource_paths = ["#{html_dir}", Gamefic::Sdk::HTML_TEMPLATE_PATH]
         config_file = "#{html_dir}/index.rb"
         javascripts.concat js
-        stage File.read(config_file), config_file
+        #stage File.read(config_file), config_file
       end
       
       # @return [BuildConfig::Data]

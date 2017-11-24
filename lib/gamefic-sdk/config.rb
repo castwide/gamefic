@@ -104,6 +104,11 @@ module Gamefic
         @uuid
       end
 
+      def render filename
+        erb = ERB.new(File.read(filename))
+        erb.result binding
+      end
+
       # Load a configuration from the specified directory.
       # This method requires a config.yml file to exist in the directory root.
       #
