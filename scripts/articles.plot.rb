@@ -53,4 +53,10 @@ module Articles
   end
 end
 
-extend Articles
+class Gamefic::Plot
+  include Articles
+end
+
+class Gamefic::Subplot
+  include Articles
+end
