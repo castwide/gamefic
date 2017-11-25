@@ -6,6 +6,8 @@ module Gamefic::Sdk
       def build
         FileUtils.mkdir_p build_dir
         File.write File.join(build_dir, 'opal.js'), build_opal_str
+        FileUtils.mkdir_p File.join(build_dir, 'media')
+        FileUtils.cp_r File.join(config.media_path, '.'), File.join(build_dir, 'media')
         abs_build = File.absolute_path(build_dir)
         Dir.chdir target_dir do
           system 'webpack', '-p', '--output-path', abs_build
