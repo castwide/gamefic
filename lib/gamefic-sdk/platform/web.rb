@@ -4,14 +4,7 @@ require 'uglifier'
 module Gamefic::Sdk
 
   class Platform::Web < Platform::Base
-    autoload :AppConfig, 'gamefic-sdk/platform/web/app_config'
-
     include Gamefic::Sdk::Platform::OpalBuilder
-
-    # @return [Gamefic::Sdk::Platform::Web::AppConfig]
-    def app_config
-      @app_config ||= AppConfig.new config.source_dir, config, ["core/jquery.js", "core/opal.js", "core/engine.js", "opal/initialize.js"]
-    end
 
     def build
       FileUtils.mkdir_p build_dir
@@ -76,20 +69,15 @@ module Gamefic::Sdk
     end
 
     def copy_assets
-      paths = app_config.resource_paths
+      paths = [html_dir, Gamefic::Sdk::HTML_TEMPLATE_PATH]
       paths.push target_dir
-      app_config.javascripts.each { |js|
+      javascripts.each do |js|
         unless File.exist?(File.join(build_dir, js))
           absolute = resolve(js, paths)
           FileUtils.mkdir_p File.join(build_dir, File.dirname(js))
           FileUtils.cp_r absolute, File.join(build_dir, js)
         end
-      }
-      app_config.stylesheets.each { |css|
-        absolute = resolve(css, paths)
-        FileUtils.mkdir_p build_dir + "/" + File.dirname(css)
-        FileUtils.cp_r absolute, build_dir + "/" + css
-      }
+      end
     end
 
     def copy_media
@@ -104,4 +92,7 @@ module Gamefic::Sdk
     end
   end
 
+  def javascripts
+    @javascripts ||= ["core/jquery.js", "core/opal.js", "core/engine.js", "opal/initialize.js"]
+  end
 end
