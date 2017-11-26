@@ -10,13 +10,13 @@ module Gamefic
 
       get '/' do
         config = Gamefic::Sdk::Config.load(settings.source_dir)
-        paths = [config.script_path, config.import_path] + Gamefic::Sdk.script_paths
+        paths = [config.script_path, config.import_path]
         @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
         #@@plot.script 'debug'
         sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: config)
         sinatra.build
-        File.read File.join(sinatra.release_target, 'index.html')
+        File.read File.join(settings.public_folder, 'index.html')
       end
 
       post '/start' do

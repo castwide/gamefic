@@ -22,7 +22,7 @@ module Gamefic
     end
 
     def update state
-      raise 'Unimplemented'
+      puts character.state.to_json
     end
 
     def save filename, snapshot

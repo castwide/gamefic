@@ -33,10 +33,8 @@ module Gamefic
     def run
       connect
       @plot.introduce @user.character
-      #@user.update @character.state
       turn until @user.character.concluded?
       @user.update
-      #print @user.flush
     end
 
     def turn

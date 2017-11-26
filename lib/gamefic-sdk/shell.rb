@@ -50,17 +50,23 @@ module Gamefic
       desc 'start [TARGET_NAME]', 'Start the specified target'
       def start target
         config = Gamefic::Sdk::Config.load('.')
+        if config.auto_import?
+          puts "Importing scripts..."
+          Shell.start ['import', '.', '--quiet']
+        end
         platform = Gamefic::Sdk::Platform.load(config, target)
         platform.start
       end
 
       desc 'server [DIRECTORY_NAME]', 'Run the game in DIRECTORY_NAME in a web server'
+      option :target, type: :string, required: true, aliases: :t, desc: 'The target app'
       option :browser, type: :boolean, aliases: :b, desc: 'Open a browser when the server starts'
       def server(directory_name = '.')
+        # @todo Should we make sure the target is built?
+        config = Gamefic::Sdk::Config.load(directory_name)
         Gamefic::Sdk::Server.set :source_dir, directory_name
         Gamefic::Sdk::Server.set :browser, options[:browser]
-        pub = File.join(directory_name, 'release', 'sinatra').gsub(/\\/, '/')
-        Gamefic::Sdk::Server.set :public_folder, pub
+        Gamefic::Sdk::Server.set :public_folder, File.join(config.build_path, options[:target])
         Gamefic::Sdk::Server.run!
       end
 

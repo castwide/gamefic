@@ -8,6 +8,7 @@ module Gamefic::Sdk
         if @opal_engine_code.nil?
           @opal_engine_code = %(
             require 'opal'
+            require 'native'
             require 'gamefic'
             require 'gamefic/query'
             require 'gamefic-opal/plot'
