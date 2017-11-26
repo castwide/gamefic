@@ -15,7 +15,7 @@ module Gamefic
 
         def start
           Dir.chdir target_dir do
-            system "npm", "run", "start"
+            exec "npm", "run", "start"
           end
         end
 
