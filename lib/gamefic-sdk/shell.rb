@@ -26,7 +26,7 @@ module Gamefic
         puts "gamefic #{Gamefic::VERSION}"
       end
 
-      desc 'init DIRECTORY_NAME', 'Initialize a new game in DIRECTORY_NAME'
+      desc 'init DIRECTORY_NAME', 'Create a new game in DIRECTORY_NAME'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       option :standard, type: :boolean, default: true, desc: 'Include the standard script'
       option :scripts, type: :array, aliases: [:s, :script], desc: 'Additional scripts'
@@ -126,6 +126,7 @@ module Gamefic
         show_exception(e) if options[:verbose]
       end
 
+=begin
       desc 'info FILE_NAME', 'Print information about a (.gfic) game'
       option :verbose, type: :boolean, aliases: :v, desc: "Don't suppress Ruby exceptions"
       def info(file)
@@ -140,11 +141,14 @@ module Gamefic
         puts "'#{file}' does not appear to be a valid Gamefic file."
         show_exception(e) if options[:verbose]
       end
+=end
 
+=begin
       desc 'ide COMMAND [ARGS]', 'Run an IDE command.'
       def ide *args
         Gamefic::Sdk::Shell::Ide.start(args)
       end
+=end
 
       desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to a project.'
       def target platform_name, directory = nil
