@@ -4,7 +4,9 @@
   "description": "A Gamefic/React application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node_modules/.bin/webpack-dev-server",
+    "build": "webpack -p"
   },
   "keywords": [],
   "author": <%= config.author.to_json %>,

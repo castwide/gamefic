@@ -27,6 +27,7 @@ module Gamefic
           write_gemfile
           write_yardopts
           write_solargraph_yml
+          write_gitignore
           make_targets
           puts "Game directory '#{@directory}' initialized." unless @quiet
         end
@@ -104,6 +105,15 @@ module Gamefic
             file.puts '  - imports/**/*.rb'
             file.puts 'domains:'
             file.puts '  - Gamefic::Plot'
+          end
+        end
+
+        def write_gitignore
+          File.open("#{@directory}/.gitignore", 'w') do |file|
+            file.puts "./builds"
+            file.puts "node_modules"
+            file.puts "Gemfile.lock"
+            file.puts "_opal.js"
           end
         end
       end

@@ -47,6 +47,13 @@ module Gamefic
         Gamefic::Sdk::Shell::Test.new(directory: directory_name).run
       end
 
+      desc 'start [TARGET_NAME]', 'Start the specified target'
+      def start target
+        config = Gamefic::Sdk::Config.load('.')
+        platform = Gamefic::Sdk::Platform.load(config, target)
+        platform.start
+      end
+
       desc 'server [DIRECTORY_NAME]', 'Run the game in DIRECTORY_NAME in a web server'
       option :browser, type: :boolean, aliases: :b, desc: 'Open a browser when the server starts'
       def server(directory_name = '.')
@@ -118,7 +125,7 @@ module Gamefic
         puts "An error occurred: #{e.message}"
         show_exception(e) if options[:verbose]
       end
-  
+
       desc 'info FILE_NAME', 'Print information about a (.gfic) game'
       option :verbose, type: :boolean, aliases: :v, desc: "Don't suppress Ruby exceptions"
       def info(file)
@@ -169,14 +176,57 @@ module Gamefic
 
       desc 'compile-opal', 'Generate an Opal file'
       option :output, type: :string, aliases: [:o], desc: "The output file"
+      option :watch, type: :boolean, aliases: [:w], desc: "Watch for changes", default: false
+      option :minify, type: :boolean, aliases: [:m], desc: "Minify the output", default: false
+      option :sourcemap, type: :boolean, aliases: [:s], desc: "Include sourcemap", default: false
       def compile_opal
         config = Gamefic::Sdk::Config.load('.')
-        platform = Gamefic::Sdk::Platform::Base.new(config: config)
-        platform.extend Gamefic::Sdk::Platform::OpalBuilder
-        File.write options[:output], platform.build_opal_str
+        if options[:minify] and options[:sourcemap]
+          STDERR.puts "WARNING: Enabling --sourcemap disables --minify in compile-opal options"
+          options[:minify] = false
+        end
+        begin
+          write_opal_files config, options[:output], options[:minify], options[:sourcemap]
+        rescue Exception => e
+          STDERR.puts e.inspect
+        end
+        if options[:watch]
+          compile_time = Time.now
+          while true
+            latest = Dir[config.script_path + '/**/*', config.import_path + '/**/*', config.media_path + '/**/*'].map{|f| File.mtime(f)}.max
+            if latest > compile_time
+              begin
+                puts "Rebuilding #{File.basename(options[:output])}"
+                write_opal_files config, options[:output], options[:minify], options[:sourcemap]
+              rescue Exception => e
+                STDERR.puts e.inspect
+              end
+              compile_time = latest
+            end
+            sleep 0.1
+          end
+        end
       end
 
       private
+
+      def opal_builder_platform(config)
+        platform = Gamefic::Sdk::Platform::Base.new(config: config)
+        platform.extend Gamefic::Sdk::Platform::OpalBuilder
+        platform
+      end
+
+      def write_opal_files config, output, minify, sourcemap
+        platform = opal_builder_platform(config)
+        code = platform.build_opal_str(minify)
+        if sourcemap
+          code += "\n//# sourceMappingURL=#{File.basename(output)}.map"
+        end
+        File.write output, code
+        if sourcemap
+          File.write "#{output}.map", platform.opal_builder.source_map.to_s
+        end
+      end
 
       def platform?(cls)
         until cls.nil?

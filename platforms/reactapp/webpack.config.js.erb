@@ -2,26 +2,36 @@ var path = require('path');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-
 var GAME_DIR = path.resolve(__dirname, <%= relative_target_to_root.split(File::SEPARATOR).to_json[1..-2] %>);
 var BUILD_DIR = path.resolve(__dirname, <%= relative_target_to_build.split(File::SEPARATOR).to_json[1..-2] %>);
 var APP_DIR = path.resolve(__dirname, 'src');
 var PUBLIC_DIR = path.resolve(__dirname, 'public');
 
+// HACK: This is a smelly method for determining whether the build is running
+// from webpack-dev-server.
+var usingDevServer = (process.argv[1].indexOf('webpack-dev-server') >= 0);
+var gameBuildCommand;
+if (usingDevServer) {
+  // Quick compilation and watch for dev server
+  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(PUBLIC_DIR, '_opal.js') + ' -w -s';
+} else {
+  // Minified compilation for production build
+  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(BUILD_DIR, '_opal.js') + ' -m';
+}
+
 var config = {
   entry: APP_DIR + '/index.js',
   output: {
     path: BUILD_DIR,
-    filename: 'bundle.js',
-    publicPath: PUBLIC_DIR
+    filename: 'bundle.js'
   },
   plugins: [
     new WebpackShellPlugin({
-      onBuildStart: ['cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + PUBLIC_DIR + '/opal.js']
+      onBuildStart: [gameBuildCommand]
     }),
     new CopyWebpackPlugin([
       {
-        from: 'public'
+        from: PUBLIC_DIR
       }
     ])
   ],
@@ -33,24 +43,12 @@ var config = {
       },
       {
         test: /\.css$/,
-        loader: 'css-loader'/*,
-        query: {
-          modules: true,
-          localIdentName: '[name]__[local]__[hash:base64:5]'
-        }*/
+        loader: 'css-loader'
       },
       {
         test : /\.jsx?/,
         include : APP_DIR,
         loader : 'babel-loader'
-      },
-      {
-        test: /\.(htm|html)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[path][name].[ext]',
-          context: 'src'
-        }
       }
     ]
   }

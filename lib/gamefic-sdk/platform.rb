@@ -10,6 +10,9 @@ module Gamefic::Sdk
     autoload :Webpack, 'gamefic-sdk/platform/webpack'
     autoload :ReactApp, 'gamefic-sdk/platform/react_app'
 
+    # Load a platform for the provided config and target name.
+    #
+    # @return [Gamefic::Sdk::Platform::Base]
     def self.load config, name
       target = config.targets[name]
       raise ArgumentError.new("Config does not have a target '#{name}'") if target.nil?

@@ -52,6 +52,9 @@ module Gamefic::Sdk
     def make_target
     end
 
+    def start
+    end
+
     # Get a hash of build metadata.
     #
     # @return [Hash]
