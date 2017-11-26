@@ -17,14 +17,22 @@ module Gamefic
 
       def run
         connect
-        plot.introduce @user.character
-        plot.ready
-        @user.update
+        begin
+          plot.introduce @user.character
+          plot.ready
+          @user.update
+        rescue Exception => e
+          STDERR.puts e.inspect
+        end
       end
 
       def turn
-        @plot.ready
-        @user.update
+        begin
+          @plot.ready
+          @user.update
+        rescue Exception => e
+          STDERR.puts e.inspect
+        end
         update unless @user.character.queue.empty?
       end
 
@@ -33,7 +41,7 @@ module Gamefic
           @user.character.queue.push input unless input.nil?
           update
         rescue Exception => e
-          STDERR.puts e
+          STDERR.puts e.inspect
         end
       end
 
@@ -44,7 +52,7 @@ module Gamefic
           @plot.update
           turn
         rescue Exception => e
-          STDERR.puts e
+          STDERR.puts e.inspect
         end
       end
     end
