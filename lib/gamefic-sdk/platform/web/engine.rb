@@ -29,15 +29,23 @@ module Gamefic
       end
 
       def receive input
-        @user.character.queue.push input unless input.nil?
-        update
+        begin
+          @user.character.queue.push input unless input.nil?
+          update
+        rescue Exception => e
+          STDERR.puts e
+        end
       end
 
       private
 
       def update
-        @plot.update
-        turn
+        begin
+          @plot.update
+          turn
+        rescue Exception => e
+          STDERR.puts e
+        end
       end
     end
   end
