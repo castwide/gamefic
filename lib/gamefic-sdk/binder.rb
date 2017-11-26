@@ -15,18 +15,18 @@ module Gamefic
       end
 
       def relative_target_to_build
-        relativize target_path, build_path, config.root_path
+        relativize current_target_path, current_build_path, config.root_path
       end
 
       def relative_target_to_root
-        relativize target_path, config.root_path, config.root_path
+        relativize current_target_path, config.root_path, config.root_path
       end
 
-      def target_path
+      def current_target_path
         File.absolute_path File.join(config.target_path, target_name)
       end
 
-      def build_path
+      def current_build_path
         File.absolute_path File.join(config.build_path, target_name)
       end
 
