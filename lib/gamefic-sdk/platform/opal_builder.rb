@@ -1,5 +1,4 @@
 require 'opal'
-require 'uglifier'
 
 module Gamefic::Sdk
   module Platform
@@ -33,7 +32,7 @@ end
         builder.use_gem 'gamefic'
         builder.use_gem 'gamefic-sdk'
         builder.build_str(code, '(inline)')
-        Uglifier.compile(builder.to_s)
+        builder.to_s
       end
     end
   end
