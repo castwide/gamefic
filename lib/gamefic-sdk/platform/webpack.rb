@@ -10,10 +10,14 @@ module Gamefic::Sdk
         FileUtils.cp_r File.join(config.media_path, '.'), File.join(build_dir, 'media')
         abs_build = File.absolute_path(build_dir)
         Dir.chdir target_dir do
-          system 'webpack', '-p', '--output-path', abs_build
+          system 'webpack', '-p'
         end
       end
 
+      # The Webpack platform initializes a base package.json with dependencies
+      # on webpack and gamefic-driver. Subclasses can install additional
+      # dependencies as necessary.
+      #
       def make_target
         FileUtils.mkdir_p target_dir
         Dir.chdir target_dir do

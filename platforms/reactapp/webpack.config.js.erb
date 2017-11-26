@@ -1,15 +1,30 @@
-var webpack = require('webpack');
 var path = require('path');
+const WebpackShellPlugin = require('webpack-shell-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var BUILD_DIR = path.resolve(__dirname, 'build');
+
+var GAME_DIR = path.resolve(__dirname, <%= relative_target_to_root.split(File::SEPARATOR).to_json[1..-2] %>);
+var BUILD_DIR = path.resolve(__dirname, <%= relative_target_to_build.split(File::SEPARATOR).to_json[1..-2] %>);
 var APP_DIR = path.resolve(__dirname, 'src');
+var PUBLIC_DIR = path.resolve(__dirname, 'public');
 
 var config = {
   entry: APP_DIR + '/index.js',
   output: {
     path: BUILD_DIR,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: PUBLIC_DIR
   },
+  plugins: [
+    new WebpackShellPlugin({
+      onBuildStart: ['cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + PUBLIC_DIR + '/opal.js']
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: 'public'
+      }
+    ])
+  ],
   module : {
     loaders: [
       {

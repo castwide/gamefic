@@ -39,32 +39,40 @@ module Gamefic
       #
       # @return [String]
       def script_path
-        @script_path ||= Pathname.new(source_dir).join(data['script_path'] || './scripts').to_s
+        @script_path ||= File.absolute_path(Pathname.new(source_dir).join(data['script_path'] || './scripts').to_s)
       end
 
       # The absolute path to the project's import directory.
       #
       # @return [String]
       def import_path
-        @import_paths ||= Pathname.new(source_dir).join(data['import_path'] || './imports').to_s
+        @import_paths ||= File.absolute_path(Pathname.new(source_dir).join(data['import_path'] || './imports').to_s)
       end
 
       # The absolute path to the project's media directory.
       #
       # @return [String]
       def media_path
-        @media_path ||= Pathname.new(source_dir).join(data['media_path'] || './media').to_s
+        @media_path ||= File.absolute_path(Pathname.new(source_dir).join(data['media_path'] || './media').to_s)
       end
 
-      # The absolute path to the project's build directory.
+      # The absolute path to the project's root directory.
+      def root_path
+        @root_path ||= File.absolute_path(source_dir)
+      end
+
+      # The absolute path to the project's builds directory.
       #
       # @return [String]
       def build_path
-        @build_path ||= Pathname.new(source_dir).join(data['build_path'] || './builds').to_s
+        @build_path ||= File.absolute_path(Pathname.new(source_dir).join(data['build_path'] || './builds').to_s)
       end
 
+      # The absolute path to the project's targets directory.
+      #
+      # @return [String]
       def target_path
-        @target_path ||= Pathname.new(source_dir).join(data['target_path'] || './targets').to_s
+        @target_path ||= File.absolute_path(Pathname.new(source_dir).join(data['target_path'] || './targets').to_s)
       end
 
       def libraries

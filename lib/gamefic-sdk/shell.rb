@@ -148,7 +148,7 @@ module Gamefic
         target = config.targets[directory] || {
           'platform' => platform_name
         }
-        platform = cls.new(config: config, target: target.merge(name: directory))
+        platform = cls.new(config: config, target: target.merge('name' => directory))
         platform.make_target
         new_data = config.data.dup
         new_data['targets'] ||= {}
@@ -165,6 +165,15 @@ module Gamefic
           next unless obj.kind_of?(Class)
           puts c.to_s if platform?(obj)
         end
+      end
+
+      desc 'compile-opal', 'Generate an Opal file'
+      option :output, type: :string, aliases: [:o], desc: "The output file"
+      def compile_opal
+        config = Gamefic::Sdk::Config.load('.')
+        platform = Gamefic::Sdk::Platform::Base.new(config: config)
+        platform.extend Gamefic::Sdk::Platform::OpalBuilder
+        File.write options[:output], platform.build_opal_str
       end
 
       private
