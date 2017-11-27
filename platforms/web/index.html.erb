@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title><%= title %> by <%= author %></title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<body>
+		<div id="gamefic_console">
+			<div id="gamefic_output">
+			</div>
+			<div id="gamefic_controls" class="working">
+				<form action="">
+					<span id="gamefic_prompt"></span>
+					<input type="text" name="command" id="gamefic_command" autocomplete="off" />
+					<button type="submit" id="gamefic_submit">Enter</button>
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript" src="core/opal.js"></script>
+		<script type="text/javascript" src="core/engine.js"></script>
+		<script type="text/javascript" src="opal/initialize.js"></script>
+		<script type="text/javascript" src="core/jquery.js"></script>
+		<script type="text/javascript" src="play.js"></script>
+	</body>
+</html>

@@ -8,6 +8,7 @@ describe "Save/Restore on Web", :type => :feature, :js => true do
   it "saves and restores a game" do
     config = Gamefic::Sdk::Config.new('examples/warehouse', { 'target_path' => "#{@dir}/targets", 'build_path' => "#{@dir}/builds", "libraries" => ["standard"], 'import_path' => Gamefic::Sdk::GLOBAL_SCRIPT_PATH })
     web = Gamefic::Sdk::Platform::Web.new(config: config)
+    web.make_target
     web.build
     Capybara.app.root = @dir
     page.visit '/builds/web/index.html'

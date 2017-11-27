@@ -66,5 +66,35 @@ module Gamefic::Sdk
       hash[:build_date] = "#{DateTime.now}"
       hash
     end
+
+    protected
+
+    def write_files_to_target src_dir
+      binder = Gamefic::Sdk::Binder.new(config, target['name'])
+      Dir[File.join(src_dir, '**', '{.*,*}')].each do |file|
+        if File.directory?(file)
+          FileUtils.mkdir_p File.join(target_dir, file[src_dir.length+1..-1])
+        else
+          FileUtils.mkdir_p File.join(target_dir, File.dirname(file[src_dir.length+1..-1]))
+          if File.extname(file) == '.erb'
+            dst = File.join target_dir, file[src_dir.length+1..-5]
+            File.write dst, ERB.new(File.read(file)).result(binder.get_binding)
+          else
+            FileUtils.cp file, File.join(target_dir, file[src_dir.length+1..-1])
+          end
+        end
+      end
+    end
+
+    def copy_media
+      return unless File.directory?(config.media_path)
+      FileUtils.mkdir_p File.join(build_dir, '/media')
+      Dir.entries(config.media_path).each do |entry|
+        if entry != '.' and entry != '..'
+          FileUtils.mkdir_p File.join(build_dir, 'media', File.dirname(entry))
+          FileUtils.cp_r File.join(config.media_path, entry, '.'), File.join(build_dir, 'media', entry)
+        end
+      end
+    end
   end
 end

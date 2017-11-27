@@ -30,15 +30,12 @@ module Gamefic
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       option :standard, type: :boolean, default: true, desc: 'Include the standard script'
       option :scripts, type: :array, aliases: [:s, :script], desc: 'Additional scripts'
-      option :webskin, default: 'standard', aliases: [:w], desc: 'Skin to use for the Web platform'
-      option :webdir, aliases: [:d], desc: 'HTML directory to copy. This option overrides the webskin.'
       option :title, type: :string, aliases: [:t], desc: "The game's title"
       option :author, type: :string, aliases: [:a], desc: "The game's author"
       def init(directory_name)
         Gamefic::Sdk::Shell::Init.new(
           directory: directory_name, quiet: options[:quiet], scripts: options[:scripts],
-          webskin: options[:webskin], title: options[:title], author: options[:author],
-          webdir: options[:webdir]
+          title: options[:title], author: options[:author]
         ).run
       end
 
@@ -131,30 +128,6 @@ module Gamefic
         puts "An error occurred: #{e.message}"
         show_exception(e) if options[:verbose]
       end
-
-=begin
-      desc 'info FILE_NAME', 'Print information about a (.gfic) game'
-      option :verbose, type: :boolean, aliases: :v, desc: "Don't suppress Ruby exceptions"
-      def info(file)
-        Dir.mktmpdir 'gamefic_' do |dir|
-          decompress file, dir
-          metadata = YAML.load_file File.join(dir, 'metadata.yaml')
-          metadata.each { |k, v|
-            puts "#{k}: #{v}"
-          }
-        end
-      rescue StandardError, Zip::Error => e
-        puts "'#{file}' does not appear to be a valid Gamefic file."
-        show_exception(e) if options[:verbose]
-      end
-=end
-
-=begin
-      desc 'ide COMMAND [ARGS]', 'Run an IDE command.'
-      def ide *args
-        Gamefic::Sdk::Shell::Ide.start(args)
-      end
-=end
 
       desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to a project.'
       def target platform_name, directory = nil

@@ -5,11 +5,9 @@ module Gamefic
   module Sdk
     class Shell
       class Init
-        def initialize(directory:, standard: true, quiet: false, scripts: [], webskin: 'standard', webdir: nil, title: nil, author: nil)
+        def initialize(directory:, standard: true, quiet: false, scripts: [], title: nil, author: nil)
           @quiet = quiet
           @directory = directory
-          @html = webskin
-          @webdir = webdir
           @scripts = []
           @scripts.push('standard') if standard
           @scripts += scripts if scripts
