@@ -112,11 +112,6 @@ module Gamefic
         @uuid
       end
 
-      def render filename
-        erb = ERB.new(File.read(filename))
-        erb.result binding
-      end
-
       def save filename = nil
         filename ||= File.join(source_dir, 'config.yml')
         # @todo Generate the YAML

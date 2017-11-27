@@ -11,7 +11,11 @@ module Gamefic
         return dst unless src.start_with?(root) and dst.start_with?(root)
         parts = src[root.length+1..-1].split(File::SEPARATOR).length
         dots = ['..'] * parts
-        File.join(*(dots + [dst[root.length..-1]]))
+        if dst == root
+          File.join(*dots)
+        else
+          File.join(*(dots + [dst[root.length..-1]]))
+        end
       end
 
       def relative_target_to_build
