@@ -11,7 +11,6 @@ module Gamefic
           @scripts = []
           @scripts.push('standard') if standard
           @scripts += scripts if scripts
-          @platforms = ['Gfic', 'Web']
           @title = title
           @author = author
         end
@@ -26,7 +25,6 @@ module Gamefic
           write_yardopts
           write_solargraph_yml
           write_gitignore
-          make_targets
           puts "Game directory '#{@directory}' initialized." unless @quiet
         end
 

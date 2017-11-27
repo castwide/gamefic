@@ -164,9 +164,6 @@ module Gamefic
             ruby: {
               platform: 'Ruby',
               filename: 'game'
-            },
-            web: {
-              platform: 'Web'
             }
           }
         }.to_json)
