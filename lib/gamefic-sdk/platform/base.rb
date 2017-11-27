@@ -1,5 +1,4 @@
 require 'gamefic-sdk'
-require 'gamefic-sdk/debug/plot'
 require 'pathname'
 
 module Gamefic::Sdk
@@ -37,8 +36,7 @@ module Gamefic::Sdk
     def plot
       if @plot.nil?
         paths = [config.script_path, config.import_path] + config.library_paths
-        # @todo: Should really use Gamefic::Sdk::Debug::Plot or just Gamfic::Plot?
-        @plot = Gamefic::Sdk::Debug::Plot.new(Gamefic::Source::File.new(*paths))
+        @plot = Gamefic::Plot.new(Gamefic::Source::File.new(*paths))
         @plot.script 'main'
       end
       @plot

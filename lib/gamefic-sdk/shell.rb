@@ -80,7 +80,7 @@ module Gamefic
         FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
         FileUtils.mkdir_p config.import_path
         paths = [config.script_path] + config.library_paths
-        plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
+        plot = Gamefic::Plot.new Source::File.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
           next if s.absolute_path.start_with?(config.script_path)

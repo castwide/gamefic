@@ -11,7 +11,7 @@ module Gamefic
       get '/' do
         config = Gamefic::Sdk::Config.load(settings.source_dir)
         paths = [config.script_path, config.import_path]
-        @@plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
+        @@plot = Gamefic::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
         #@@plot.script 'debug'
         sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: config)

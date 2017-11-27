@@ -12,7 +12,7 @@ module Gamefic
             Shell.start ['import', directory, '--quiet']
           end
           paths = [config.script_path, config.import_path] + config.library_paths
-          plot = Gamefic::Sdk::Debug::Plot.new Source::File.new(*paths)
+          plot = Gamefic::Plot.new Source::File.new(*paths)
           plot.script 'main'
           plot
         end
