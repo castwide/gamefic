@@ -101,13 +101,6 @@ module Gamefic
         puts "Default config.yml created."
       end
 
-      desc 'webskins', 'List the available skins for the Web platform'
-      def webskins
-        Dir[File.join(Gamefic::Sdk::HTML_TEMPLATE_PATH, 'skins', '*')].sort.each { |d|
-          puts File.basename(d)
-        }
-      end
-
       desc 'script [PATH]', 'List or document the scripts in the SDK'
       def script path = nil
         Gamefic::Sdk::Shell::Script.new(path).run
