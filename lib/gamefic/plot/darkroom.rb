@@ -12,7 +12,7 @@ module Gamefic
     # Create a snapshot of the plot.
     #
     # @return [Hash]
-    def save reduce: true
+    def save reduce: false
       result = { entities: [], players: [], subplots: [], instance_variables: {}, metadata: plot.metadata }
       entity_store.clear
       player_store.clear
