@@ -97,10 +97,12 @@ module Gamefic
         def write_solargraph_yml
           File.open("#{@directory}/.solargraph.yml", 'w') do |file|
             file.puts 'include:'
-            file.puts '  - scripts/**/*.rb'
-            file.puts '  - imports/**/*.rb'
+            file.puts '- scripts/**/*.rb'
+            file.puts '- imports/**/*.rb'
             file.puts 'domains:'
-            file.puts '  - Gamefic::Plot'
+            file.puts '- Gamefic::Plot'
+            file.puts 'required:'
+            file.puts '-gamefic'
           end
         end
 
