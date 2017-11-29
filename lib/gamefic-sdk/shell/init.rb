@@ -102,7 +102,7 @@ module Gamefic
             file.puts 'domains:'
             file.puts '- Gamefic::Plot'
             file.puts 'required:'
-            file.puts '-gamefic'
+            file.puts '- gamefic'
           end
         end
 
