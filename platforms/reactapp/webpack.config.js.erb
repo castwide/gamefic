@@ -1,10 +1,11 @@
 var path = require('path');
-const WebpackShellPlugin = require('webpack-shell-plugin');
+const WebpackSynchronizableShellPlugin = require('webpack-synchronizable-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var GAME_DIR = path.resolve(__dirname, <%= relative_target_to_root.split(File::SEPARATOR).to_json[1..-2] %>);
 var BUILD_DIR = path.resolve(__dirname, <%= relative_target_to_build.split(File::SEPARATOR).to_json[1..-2] %>);
 var APP_DIR = path.resolve(__dirname, 'src');
+var ENGINE_DIR = path.resolve(__dirname, 'engine');
 var PUBLIC_DIR = path.resolve(__dirname, 'public');
 
 // HACK: This is a smelly method for determining whether the build is running
@@ -13,10 +14,10 @@ var usingDevServer = (process.argv[1].indexOf('webpack-dev-server') >= 0);
 var gameBuildCommand;
 if (usingDevServer) {
   // Quick compilation and watch for dev server
-  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(PUBLIC_DIR, '_opal.js') + ' -w -s';
+  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, '_opal.js') + ' -w -s';
 } else {
   // Minified compilation for production build
-  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(BUILD_DIR, '_opal.js') + ' -m';
+  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, '_opal.js') + ' -m';
 }
 
 var config = {
@@ -25,9 +26,18 @@ var config = {
     path: BUILD_DIR,
     filename: 'bundle.js'
   },
+  resolve: {
+    alias: {
+      engine: path.resolve(__dirname, 'engine'),
+      media: path.resolve(GAME_DIR, 'media')
+    }
+  },
   plugins: [
-    new WebpackShellPlugin({
-      onBuildStart: [gameBuildCommand]
+    new WebpackSynchronizableShellPlugin({
+      onBuildStart: {
+        scripts: [gameBuildCommand],
+        blocking: !usingDevServer
+      }
     }),
     new CopyWebpackPlugin([
       {
@@ -36,19 +46,30 @@ var config = {
     ])
   ],
   module : {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
-        loader: 'style-loader'
+        use: 'style-loader'
       },
       {
         test: /\.css$/,
-        loader: 'css-loader'
+        use: 'css-loader'
       },
       {
-        test : /\.jsx?/,
-        include : APP_DIR,
-        loader : 'babel-loader'
+        test: require.resolve('./engine/opal.js'),
+        use: 'script-loader'
+      },
+      {
+        test: /\.jsx?/,
+        include: APP_DIR,
+        use: 'babel-loader'
+      },
+      {
+        test: /\.(gif|png|jpe?g|svg|webp)$/i,
+        use: [
+          'file-loader?outputPath=media/',
+          'image-webpack-loader'
+        ]        
       }
     ]
   }

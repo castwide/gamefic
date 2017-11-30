@@ -4,14 +4,10 @@ module Gamefic::Sdk
       include OpalBuilder
 
       def build
-        FileUtils.mkdir_p build_dir
-        File.write File.join(build_dir, 'opal.js'), build_opal_str
-        FileUtils.mkdir_p File.join(build_dir, 'media')
-        FileUtils.cp_r File.join(config.media_path, '.'), File.join(build_dir, 'media')
-        abs_build = File.absolute_path(build_dir)
-        copy_media
+        # Webpack builds assume that an npm build script does all the work
+        # (compile plot scripts, copy media, etc.)
         Dir.chdir target_dir do
-          system 'webpack', '-p'
+          system 'npm', 'run', 'build'
         end
       end
 
