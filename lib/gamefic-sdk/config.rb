@@ -57,6 +57,8 @@ module Gamefic
       end
 
       # The absolute path to the project's root directory.
+      #
+      # @return [String]
       def root_path
         @root_path ||= File.absolute_path(source_dir)
       end
@@ -75,10 +77,16 @@ module Gamefic
         @target_path ||= File.absolute_path(Pathname.new(source_dir).join(data['target_path'] || './targets').to_s)
       end
 
+      # An array of library names to be used as sources for imported scripts.
+      #
+      # @return [Array<String>]
       def libraries
         @libraries ||= data['libraries'] || []
       end
 
+      # An array of absolute paths to all of the project's imported libraries.
+      #
+      # @return [Array<String>]
       def library_paths
         if @library_paths.nil?
           @library_paths = []
@@ -89,6 +97,10 @@ module Gamefic
         @library_paths
       end
 
+      # True if the project should automatically import scripts from shared
+      # libraries before common SDK operations (build, test, etc.)
+      #
+      # @return [Boolean]
       def auto_import?
         @auto_import ||= (data['auto_import'] || true)
       end
@@ -112,6 +124,8 @@ module Gamefic
         @uuid
       end
 
+      # Save this configuration to a file.
+      #
       def save filename = nil
         filename ||= File.join(source_dir, 'config.yml')
         # @todo Generate the YAML
@@ -137,6 +151,10 @@ module Gamefic
         Config.new(directory, config.merge(overrides))
       end
 
+      # Generate a YAML string with a default configuration and the specified
+      # title and author.
+      #
+      # @return [String]
       def self.generate title = 'Untitled', author = 'Anonymous'
         data = self.defaults
         data['title'] = title
@@ -144,6 +162,10 @@ module Gamefic
         YAML.dump data
       end
 
+      # The default values for a new project configuration. Keys are
+      # represented as strings for consistency with YAML.
+      #
+      # @return [Hash]
       def self.defaults
         @defaults ||= JSON.parse({
           title: 'Untitled',
@@ -166,6 +188,10 @@ module Gamefic
 
       private
 
+      # Ensure that the project's libaries have been included.
+      # Gamefic assumes the convention gamefic-library-[name], e.g., the
+      # standard library's required path is gamefic-library-standard.
+      #
       def require_libraries
         $LOAD_PATH.unshift File.join(source_dir, 'lib')
         libraries.each { |lib| require "gamefic-library-#{lib}" }

@@ -11,7 +11,11 @@ module Gamefic::Sdk
     autoload :ReactApp, 'gamefic-sdk/platform/react_app'
 
     # Load a platform for the provided config and target name.
+    # The target name must have an entry in the config's targets, and the
+    # target's platform must reference a valid platform class name.
     #
+    # @param config [Gamefic::Sdk::Config] The project config
+    # @param name [String] The target name
     # @return [Gamefic::Sdk::Platform::Base]
     def self.load config, name
       target = config.targets[name]

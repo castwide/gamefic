@@ -1,6 +1,8 @@
 module Gamefic
   module Sdk
     module Platform
+      # Compile the project into a React application.
+      #
       class ReactApp < Webpack
         def make_target
           FileUtils.mkdir_p target_dir

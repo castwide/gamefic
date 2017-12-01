@@ -2,6 +2,8 @@ require 'gamefic-sdk'
 require 'pathname'
 
 module Gamefic::Sdk
+  # The base Platform class for building applications from Gamefic projects.
+  #
   class Platform::Base
     # @return [Gamefic::Sdk::Config]
     attr_reader :config
@@ -9,11 +11,18 @@ module Gamefic::Sdk
     # @return [Hash]
     attr_reader :target
 
+    # @param config [Gamefic::Sdk::Config]
+    # @param target [Hash]
     def initialize config: Gamefic::Sdk::Config.new, target: {}
       @config = config
       @target = target
     end
 
+    # The name of the target. This typically corresponds to the target's
+    # subdirectory in the project's targets directory, e.g.,
+    # `/[project-name]/targets/[target-name]`.
+    #
+    # @return [String]
     def name
       @name ||= (target['name'] || self.class.to_s.split('::').last.downcase)
     end
@@ -32,6 +41,8 @@ module Gamefic::Sdk
       @target_dir ||= File.join(config.target_path, name)
     end
 
+    # Get an evaluated instance of the project's plot.
+    #
     # @return [Gamefic::Plot]
     def plot
       if @plot.nil?
@@ -42,14 +53,24 @@ module Gamefic::Sdk
       @plot
     end
 
+    # Build the target. Subclasses should override this method with the
+    # process to compile the project into an application for the target's
+    # platform.
+    #
     def build
       # Platforms need to build/compile the deployment here.
-      raise "The base Platform class does not have a build method"
+      raise "The #{self.class} class does not have a build method"
     end
 
+    # Make a build target for this platform. Subclasses can override this
+    # method to initialize the target, copy files, etc.
+    #
     def make_target
     end
 
+    # Start the target project in development mode. Subclasses should override
+    # this method.
+    #
     def start
     end
 
@@ -67,6 +88,13 @@ module Gamefic::Sdk
 
     protected
 
+    # Write the specified directory of files to a target directory.
+    # This method is typically used in the platform's make_target method.
+    #
+    # Most files will simply be copied, but ERB templates (e.g,
+    # index.html.erb) will be rendered with a Binder that specifies the
+    # project's configuration and the name of the target.
+    #
     def write_files_to_target src_dir
       binder = Gamefic::Sdk::Binder.new(config, target['name'])
       Dir[File.join(src_dir, '**', '{.*,*}')].each do |file|
@@ -84,6 +112,9 @@ module Gamefic::Sdk
       end
     end
 
+    # Copy the project's media directory to the target's build directory.
+    # This method is typically used in the platform's build method.
+    #
     def copy_media
       return unless File.directory?(config.media_path)
       FileUtils.mkdir_p File.join(build_dir, '/media')

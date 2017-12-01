@@ -1,8 +1,8 @@
 module Gamefic::Sdk
   module Platform
     class Webpack < Base
-      include OpalBuilder
-
+      # Compile the project into a Node application using Webpack.
+      #
       def build
         # Webpack builds assume that an npm build script does all the work
         # (compile plot scripts, copy media, etc.)

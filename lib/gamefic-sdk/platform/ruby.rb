@@ -5,6 +5,8 @@ require 'base64'
 
 module Gamefic::Sdk
 
+  # Compile the project into a standalone Ruby script.
+  #
   class Platform::Ruby < Platform::Base
     def build
       files = {}
