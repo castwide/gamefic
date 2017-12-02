@@ -15,10 +15,10 @@ module Gamefic
     class << self
       attr_reader :start_proc
 
-      protected
-
       # Define a proc to be executed when the subplot is initialized.
       #
+      # @yieldparam self [Gamefic::Subplot] The subplot instance
+      # @yieldself [Gamefic::Subplot]
       def on_start &block
         @start_proc = block
       end
@@ -28,7 +28,11 @@ module Gamefic
       @plot = plot
       @next_cue = next_cue
       @concluded = false
-      stage &self.class.start_proc unless self.class.start_proc.nil?
+      # @todo It's not strictly necessary to pass self as a parameter here.
+      #   We're only doing it to give Solargraph a way to provide completion
+      #   items for the Subplot instance until we figure out a way to tell it
+      #   the block's execution scope.
+      stage self, &self.class.start_proc unless self.class.start_proc.nil?
       playbook.freeze
       self.introduce introduce unless introduce.nil?
     end
