@@ -3,7 +3,6 @@ require "gamefic/describable"
 require 'gamefic/messaging'
 
 module Gamefic
-
   # A physical object that can exist in a plot. Most objects with which
   # players interact are entities. Player characters themselves typically
   # derive from entities, e.g., the Gamefic::Actor class.
@@ -18,7 +17,7 @@ module Gamefic
     #
     def update
     end
-    
+
     # Set the Entity's parent.
     #
     # @param node [Gamefic::Entity] The new parent.
@@ -46,7 +45,7 @@ module Gamefic
     def [](key)
       session[key]
     end
-    
+
     # Set a custom property.
     #
     # @param key [Symbol] The property's name
@@ -55,5 +54,4 @@ module Gamefic
       session[key] = value
     end
   end
-
 end
