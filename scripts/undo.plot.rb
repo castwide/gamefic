@@ -4,7 +4,7 @@
 script 'snapshots'
 
 meta :undo do |actor|
-  snap = Snapshots.history.last
+  snap = Snapshots.history.pop
   if snap.nil?
     actor.tell "Nothing to undo."
   else
