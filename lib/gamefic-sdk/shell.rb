@@ -123,11 +123,22 @@ module Gamefic
       end
 
       desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to a project.'
+      long_desc %(
+        Add a target to a project.
+        Run `gamefic platforms` for a list of available platform names.
+      )
       def target platform_name, directory = nil
         directory ||= platform_name.downcase
         config = Gamefic::Sdk::Config.load('.')
         # @type [Class<Gamefic::Sdk::Platform::Base>]
-        cls = Gamefic::Sdk::Platform.const_get(platform_name)
+        begin
+          cls = Gamefic::Sdk::Platform.const_get(platform_name)
+          raise NameError unless is_a_platform?(cls)
+        rescue NameError
+          puts "ERROR: '#{platform_name}' is not a valid platform name."
+          puts "Run `gamefic platforms` for a list of available platforms."
+          exit 1
+        end
         target = config.targets[directory] || {
           'platform' => platform_name
         }
@@ -232,6 +243,15 @@ module Gamefic
         plot.script 'main'
         plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
         Gamefic::Tty::Engine.start(plot)
+      end
+
+      def is_a_platform?(klass)
+        cursor = klass.superclass
+        until cursor.nil?
+          return true if cursor == Gamefic::Sdk::Platform::Base
+          cursor = cursor.superclass
+        end
+        false
       end
     end
   end
