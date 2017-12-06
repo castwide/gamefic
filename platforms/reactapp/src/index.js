@@ -7,4 +7,4 @@ var media = require.context('media');
 import style from './style.css';
 
 var driver = new OpalDriver(Opal);
-render(<Console className="Console" driver={driver} />, document.getElementById('root'));
+render(<Console driver={driver} />, document.getElementById('root'));

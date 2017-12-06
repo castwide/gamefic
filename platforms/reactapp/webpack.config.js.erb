@@ -14,10 +14,10 @@ var usingDevServer = (process.argv[1].indexOf('webpack-dev-server') >= 0);
 var gameBuildCommand;
 if (usingDevServer) {
   // Quick compilation and watch for dev server
-  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, '_opal.js') + ' -w -s';
+  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -w -s';
 } else {
   // Minified compilation for production build
-  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, '_opal.js') + ' -m';
+  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -m';
 }
 
 var config = {
