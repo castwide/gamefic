@@ -1,5 +1,6 @@
 require 'gamefic-sdk'
 require 'pathname'
+require 'erb'
 
 module Gamefic::Sdk
   # The base Platform class for building applications from Gamefic projects.
