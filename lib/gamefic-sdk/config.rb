@@ -91,7 +91,7 @@ module Gamefic
         if @library_paths.nil?
           @library_paths = []
           libraries.each do |l|
-            @library_paths.push Gamefic::Library.path(l)
+            @library_paths.push Gamefic::Library.find(l)
           end
         end
         @library_paths
