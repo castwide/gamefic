@@ -24,13 +24,10 @@ module Gamefic
 
       def turn
         @plot.ready
-        @user.update
-        update unless @user.character.queue.empty?
       end
 
       def receive input
         @user.character.queue.push input unless input.nil?
-        update
       end
 
       private
