@@ -1,13 +1,10 @@
 require 'gamefic/engine'
 require 'json'
+require 'gamefic/tty'
 
 module Gamefic
   module Tty
     # Extend User::Base to convert HTML into ANSI text.
-    #
-    # @note Due to their dependency on io/console, User::Tty and Engine::Tty are
-    #   not included in the core Gamefic library. `require gamefic/tty` if you
-    #   need them.
     #
     class User < Gamefic::User::Base
       def update
