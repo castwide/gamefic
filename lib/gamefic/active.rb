@@ -36,12 +36,6 @@ module Gamefic
       @playbooks ||= []
     end
 
-    # Connect a user to the entity.
-    #
-    def connect user
-      @user = user
-    end
-
     # An array of actions waiting to be performed.
     #
     # @return [Array<String>]

@@ -22,28 +22,25 @@ module Gamefic
     end
 
     def connect
-      raise 'Plot did not specify a player class' if @plot.player_class.nil?
-      # @todo The plot itself can define name, etc.
-      character = @plot.make @plot.player_class, name: 'yourself', synonyms: 'self myself you me', proper_named: true
+      character = plot.get_player_character
       @user = user_class.new(self)
-      @user.connect character
-      character.connect @user
+      plot.authorize @user, character
     end
 
     def run
       connect
-      @plot.introduce @user.character
+      plot.introduce @user.character
       turn until @user.character.concluded?
       @user.update
     end
 
     def turn
-      @plot.ready
+      plot.ready
       @user.update
       if @user.character.queue.empty?
         receive
       end
-      @plot.update
+      plot.update
     end
 
     def receive

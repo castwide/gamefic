@@ -21,9 +21,9 @@ module Gamefic
 
       post '/start' do
         content_type :json
-        @@character = @@plot.player_class.new(name: 'player', synonyms: 'me myself self you yourself', description: 'As good-looking as ever.')
+        @@character = @@plot.get_player_character
         engine = Gamefic::Engine::Base.new(@@plot)
-        @@character.connect Gamefic::User::Sinatra.new(engine)
+        @@plot.authorize Gamefic::User::Sinatra.new(engine), @@character
         @@plot.introduce @@character
         @@plot.ready
         @@character.state.to_json

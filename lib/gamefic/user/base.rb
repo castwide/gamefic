@@ -10,17 +10,6 @@ module Gamefic
       @engine = engine
     end
 
-    # Connect an entity to the user. This method is typically used to identify
-    # the player character that a user is controlling. The entity is typically
-    # expected to be a subclass of Entity that includes the Active module, an
-    # example of which is the Gamefic::Actor class.
-    #
-    # @param entity [Gamefic::Actor]
-    def connect entity
-      raise TypeError.new('Entities connected to users must be Active') unless entity.kind_of?(Gamefic::Active)
-      @character = entity
-    end
-
     def update state
       puts character.state.to_json
     end
