@@ -29,7 +29,7 @@ module Gamefic
     # @yieldparam [Gamefic::Actor]
     # @return [Class] The resulting Action subclass
     def respond(command, *queries, &proc)
-      playbook.respond(command, *queries, &proc)
+      playbook.respond(command, *map_response_args(queries), &proc)
     end
 
     # Parse a verb and a list of arguments into an action.
@@ -153,6 +153,31 @@ module Gamefic
     # @return [Array<Action>]
     def actions
       playbook.actions
+    end
+
+    def get_default_query
+      @default_query_class ||= Gamefic::Query::Family
+    end
+
+    def set_default_query cls
+      @default_query_class = cls
+    end
+
+    private
+    
+    def map_response_args queries
+      result = []
+      queries.each do |q|
+        if q.is_a?(Gamefic::Query::Base)
+          result.push q
+        elsif q.is_a?(Gamefic::Element)
+          result.push get_default_query.new(q)
+        elsif q.is_a?(Regexp)
+          result.push Gamefic::Query::Text.new(q)
+        else
+          raise ArgumentError.new("Invalid argument for response: #{q}")
+        end
+      end
     end
   end
   

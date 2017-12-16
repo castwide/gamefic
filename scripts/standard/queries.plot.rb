@@ -19,3 +19,5 @@ class Gamefic::Query::Room < Gamefic::Query::Base
     subject.room ? [subject.room] : []
   end
 end
+
+set_default_query Gamefic::Query::Available
