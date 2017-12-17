@@ -13,5 +13,12 @@ module Gamefic::Sdk
     def make_target
       write_files_to_target File.join(Gamefic::Sdk::PLATFORMS_PATH, 'web')
     end
+
+    def start
+      Gamefic::Sdk::Server.set :source_dir, config.root_path
+      Gamefic::Sdk::Server.set :browser, false
+      Gamefic::Sdk::Server.set :public_folder, target_dir
+      Gamefic::Sdk::Server.run!
+    end
   end
 end

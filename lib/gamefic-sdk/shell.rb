@@ -55,6 +55,7 @@ module Gamefic
         platform.start
       end
 
+=begin
       desc 'server [DIRECTORY_NAME]', 'Run the game in DIRECTORY_NAME in a web server'
       option :target, type: :string, required: true, aliases: :t, desc: 'The target app'
       option :browser, type: :boolean, aliases: :b, desc: 'Open a browser when the server starts'
@@ -66,6 +67,7 @@ module Gamefic
         Gamefic::Sdk::Server.set :public_folder, File.join(config.build_path, options[:target])
         Gamefic::Sdk::Server.run!
       end
+=end
 
       desc 'build [DIRECTORY_NAME]', 'Build the game for specified platforms in DIRECTORY_NAME'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'

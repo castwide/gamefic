@@ -13,10 +13,15 @@ module Gamefic
         paths = [config.script_path, config.import_path]
         @@plot = Gamefic::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
-        #@@plot.script 'debug'
-        sinatra = Gamefic::Sdk::Platform::Sinatra.new(config: config)
-        sinatra.build
         File.read File.join(settings.public_folder, 'index.html')
+      end
+
+      get '/core/opal.js' do
+        ''
+      end
+
+      get '/media/:file' do
+        send_file File.join(settings.media_folder, params[:file]), disposition: 'inline'
       end
 
       post '/start' do
@@ -29,12 +34,17 @@ module Gamefic
         @@character.state.to_json
       end
 
-      post '/update' do
+      post '/receive' do
         content_type :json
         @@character.queue.push params['command']
+        {}.to_json
+      end
+
+      post '/update' do
+        content_type :json
         @@plot.update
         @@plot.ready
-        @@character.state.merge(input: params['command']).to_json
+        @@character.state.merge(input: params['command'], continued: @@character.queue.any?).to_json
       end
 
       post '/restore' do
@@ -53,7 +63,7 @@ module Gamefic
           start_browser if settings.browser
           super
         end
-        
+
         def start_browser
           Thread.new {
             sleep 1 until Server.running?
