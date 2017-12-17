@@ -10,9 +10,15 @@ respond :go, Use.siblings(Portal) do |actor, portal|
       if !portal.direction.nil?
         actor.tell "#{you.pronoun.Subj} go #{portal.direction}."
       end
-      actor.perform :look, actor.room
+      actor.tell "<strong>#{actor.room.name.cap_first}</strong>"
+      actor.execute :_describe_destination
+      actor.execute :_itemize_room
     end
   end
+end
+
+respond :_describe_destination do |actor|
+  actor.tell actor.room.description if actor.room.has_description?
 end
 
 respond :go, Use.text do |actor, string|
