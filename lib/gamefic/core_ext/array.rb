@@ -38,20 +38,6 @@ class Array
     end
   end
 
-  # Get a random element from the array.
-  # @deprecated Use Array#sample instead.
-  #
-  def random
-    return self[rand(self.length)]
-  end
-
-  # Pop a random element from the array.
-  # @deprecated Use Array#pop_sample instead.
-  #
-  def pop_random
-    pop_sample
-  end
-
   # Pop a random element from the array.
   #
   def pop_sample
