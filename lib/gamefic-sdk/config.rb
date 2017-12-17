@@ -13,7 +13,7 @@ module Gamefic
       # file in the directory's root.
       #
       def initialize directory, data = Config.defaults
-        @source_dir = directory
+        @source_dir = File.absolute_path(directory)
         @data = data
         require_libraries
 

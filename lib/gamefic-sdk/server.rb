@@ -13,7 +13,12 @@ module Gamefic
         paths = [config.script_path, config.import_path]
         @@plot = Gamefic::Plot.new Source::File.new(*paths)
         @@plot.script 'main'
-        File.read File.join(settings.public_folder, 'index.html')
+        index_file = File.join(settings.public_folder, 'index.html')
+        if File.file?(index_file)
+          File.read index_file
+        else
+          ''
+        end
       end
 
       get '/core/opal.js' do
