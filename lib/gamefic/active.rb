@@ -29,6 +29,10 @@ module Gamefic
     # @return [Class]
     attr_reader :next_scene
 
+    attr_accessor :last_prompt
+
+    attr_accessor :last_input
+
     # The playbooks that will be used to perform commands.
     #
     # @return [Array<Gamefic::Plot::Playbook>]
@@ -50,6 +54,8 @@ module Gamefic
       @state = {}
       @state.merge! scene.state unless scene.nil?
       @state[:output] = messages
+      @state[:last_prompt] = last_prompt
+      @state[:last_input] = last_input
       @state
     end
 

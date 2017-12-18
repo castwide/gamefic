@@ -98,6 +98,8 @@ module Gamefic
       call_before_player_update
       p_players.each { |p|
         p.performed nil
+        p.last_input = p.queue.last
+        p.last_prompt = p.scene.prompt
         p.scene.update
       }
       p_entities.each { |e| e.update }

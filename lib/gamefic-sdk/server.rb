@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'yaml'
-require 'gamefic-sdk/platform/sinatra/user'
 
 module Gamefic
   module Sdk
@@ -33,7 +32,8 @@ module Gamefic
         content_type :json
         @@character = @@plot.get_player_character
         engine = Gamefic::Engine::Base.new(@@plot)
-        @@plot.authorize Gamefic::User::Sinatra.new(engine), @@character
+        ##@@plot.authorize Gamefic::User::Sinatra.new(engine), @@character
+        @@plot.authorize Gamefic::User::Base.new(engine), @@character
         @@plot.introduce @@character
         @@plot.ready
         @@character.state.to_json

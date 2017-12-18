@@ -12,10 +12,12 @@ var PUBLIC_DIR = path.resolve(__dirname, 'public');
 // from webpack-dev-server.
 var usingDevServer = (process.argv[1].indexOf('webpack-dev-server') >= 0);
 var gameBuildCommand;
+var buildEnv = 'development';
 if (usingDevServer) {
   // Quick compilation and watch for dev server
   gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -w -s';
 } else {
+  buildEnv = 'production';
   // Minified compilation for production build
   gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -m';
 }
@@ -29,7 +31,8 @@ var config = {
   resolve: {
     alias: {
       engine: path.resolve(__dirname, 'engine'),
-      media: path.resolve(GAME_DIR, 'media')
+      driver: path.join(__dirname, 'driver', buildEnv),
+      media: path.resolve(GAME_DIR, 'media'),
     }
   },
   plugins: [
@@ -42,7 +45,11 @@ var config = {
     new CopyWebpackPlugin([
       {
         from: PUBLIC_DIR
-      }
+      }/*,
+      {
+        from: path.resolve(GAME_DIR, 'media'),
+        to: 'media'
+      }*/
     ])
   ],
   module : {
@@ -56,7 +63,7 @@ var config = {
         use: 'css-loader'
       },
       {
-        test: require.resolve('./engine/opal.js'),
+        test: path.resolve(ENGINE_DIR),
         use: 'script-loader'
       },
       {
@@ -67,11 +74,20 @@ var config = {
       {
         test: /\.(gif|png|jpe?g|svg|webp)$/i,
         use: [
+          /*'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',*/
           'file-loader?outputPath=media/',
           'image-webpack-loader'
         ]        
       }
     ]
+  },
+  devServer: {
+    proxy: {
+      "/api": {
+        "target": "http://localhost:4342",
+        "pathRewrite": {"^/api": ""}
+      }
+    }
   }
 };
 
