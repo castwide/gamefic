@@ -32,7 +32,6 @@ module Gamefic
         content_type :json
         @@character = @@plot.get_player_character
         engine = Gamefic::Engine::Base.new(@@plot)
-        ##@@plot.authorize Gamefic::User::Sinatra.new(engine), @@character
         @@plot.authorize Gamefic::User::Base.new(engine), @@character
         @@plot.introduce @@character
         @@plot.ready
