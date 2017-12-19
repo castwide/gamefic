@@ -26,11 +26,17 @@ module Gamefic
     # The scene class that will be cued for this entity on the next turn.
     # Usually set with the #prepare method.
     #
-    # @return [Class]
+    # @return [Class<Gamefic::Scene::Base>]
     attr_reader :next_scene
 
+    # The prompt for the previous scene.
+    #
+    # @return [String]
     attr_accessor :last_prompt
 
+    # The input for the previous scene.
+    #
+    # @return [String]
     attr_accessor :last_input
 
     # The playbooks that will be used to perform commands.
