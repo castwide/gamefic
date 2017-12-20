@@ -1,6 +1,5 @@
 require 'gamefic/engine'
 require 'json'
-require 'gamefic/tty'
 
 module Gamefic
   module Tty
