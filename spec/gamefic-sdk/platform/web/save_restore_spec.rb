@@ -19,7 +19,7 @@ describe "Save/Restore on Web", :type => :feature, :js => true do
     fill_in 'command', :with => 'save'
     click_button 'gamefic_submit'
     sleep(0.1)
-    fill_in 'command', :with => 'go north'
+    fill_in 'command', :with => 'drop key'
     click_button 'gamefic_submit'
     sleep(0.1)
     fill_in 'command', :with => 'restore'
@@ -28,6 +28,6 @@ describe "Save/Restore on Web", :type => :feature, :js => true do
     fill_in 'command', :with => 'inventory'
     click_button 'gamefic_submit'
     sleep(0.1)
-    expect(page.has_content? 'You are carrying a key').to eq(true)
+    expect(page.has_content? "You aren't carrying anything").to eq(true)
   end
 end

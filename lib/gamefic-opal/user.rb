@@ -6,12 +6,11 @@ module Gamefic
       end
 
       def save filename, data
-        `Gamefic.save(filename, data);`
+        `localStorage.setItem(filename, data);`
       end
 
       def restore filename
-        data = `Gamefic.restore(filename);`
-        return data
+        `localStorage.getItem(filename);`
       end
     end
   end
