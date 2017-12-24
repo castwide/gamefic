@@ -35,7 +35,7 @@ module Gamefic
         def document_script path
           begin
             config = Gamefic::Sdk::Config.load('.')
-            source = Gamefic::Source::File.new(*([config.script_path, config.import_path] + config.library_paths))
+            source = Gamefic::Plot::Source.new(*([config.script_path, config.import_path] + config.library_paths))
             script = source.export(path)
             c = File.read(script.absolute_path)
             doc = ''

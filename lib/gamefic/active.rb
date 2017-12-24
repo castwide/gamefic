@@ -15,7 +15,7 @@ module Gamefic
 
     # The user connected to this entity (or nil).
     #
-    # @return [Gamefic::User::Base]
+    # @return [Gamefic::User]
     attr_reader :user
 
     # The scene in which the entity is currently participating.
@@ -41,7 +41,7 @@ module Gamefic
 
     # The playbooks that will be used to perform commands.
     #
-    # @return [Array<Gamefic::Plot::Playbook>]
+    # @return [Array<Gamefic::World::Playbook>]
     def playbooks
       @playbooks ||= []
     end

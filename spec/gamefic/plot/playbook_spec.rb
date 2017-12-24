@@ -1,5 +1,5 @@
-describe Plot::Playbook do
-  let(:playbook) { Plot::Playbook.new }
+describe Gamefic::World::Playbook do
+  let(:playbook) { Gamefic::World::Playbook.new }
 
   it "marks actions as meta" do
     action = playbook.meta :verb

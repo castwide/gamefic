@@ -1,14 +1,7 @@
 require 'gamefic/plot'
 
 module Gamefic
-
-  class Subplot
-    include Plot::Theater
-    include Plot::Entities
-    include Plot::Commands
-    include Plot::Callbacks
-    include Plot::Scenes
-
+  class Subplot < Container
     # @return [Gamefic::Plot]
     attr_reader :plot
 

@@ -1,6 +1,6 @@
 module Gamefic
-  class Plot
-    # A collection of rules for performing commands in plots.
+  module World
+    # A collection of rules for performing commands.
     #
     class Playbook
       def initialize commands: {}, syntaxes: [], validators: [], disambiguator: nil

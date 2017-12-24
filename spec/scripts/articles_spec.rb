@@ -1,6 +1,6 @@
 describe 'Articles' do
   before :all do
-    @plot = Gamefic::Plot.new(Source::File.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'articles'
     @plot.stage do
       @thing = make Gamefic::Entity, name: 'thing'

@@ -48,7 +48,7 @@ module Gamefic::Sdk
     def plot
       if @plot.nil?
         paths = [config.script_path, config.import_path] + config.library_paths
-        @plot = Gamefic::Plot.new(Gamefic::Source::File.new(*paths))
+        @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(*paths))
         @plot.script 'main'
       end
       @plot

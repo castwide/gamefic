@@ -10,7 +10,7 @@ module Gamefic
       get '/' do
         config = Gamefic::Sdk::Config.load(settings.source_dir)
         paths = [config.script_path, config.import_path]
-        @@plot = Gamefic::Plot.new Source::File.new(*paths)
+        @@plot = Gamefic::Plot.new Gamefic::Plot::Source.new(*paths)
         @@plot.script 'main'
         index_file = File.join(settings.public_folder, 'index.html')
         if File.file?(index_file)
@@ -31,8 +31,8 @@ module Gamefic
       post '/start' do
         content_type :json
         @@character = @@plot.get_player_character
-        engine = Gamefic::Engine::Base.new(@@plot)
-        @@plot.authorize Gamefic::User::Base.new(engine), @@character
+        engine = Gamefic::Engine.new(@@plot)
+        @@plot.authorize Gamefic::User.new(engine), @@character
         @@plot.introduce @@character
         @@plot.ready
         @@character.state.to_json

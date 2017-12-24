@@ -14,6 +14,8 @@ require "gamefic/scene"
 require "gamefic/query"
 require "gamefic/action"
 require "gamefic/syntax"
+require 'gamefic/world'
+require 'gamefic/container'
 require "gamefic/plot"
 require 'gamefic/subplot'
 require "gamefic/engine"

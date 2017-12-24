@@ -1,13 +1,13 @@
 module Gamefic
   module Tty
-    # Extend Engine::Base to connect with User::Tty, which provides ANSI
+    # Extend Gamefic::Engine to connect with User::Tty, which provides ANSI
     # formatting for HTML.
     #
     # @note Due to their dependency on io/console, User::Tty and Engine::Tty are
     #   not included in the core Gamefic library. `require gamefic/tty` if you
     #   need them.
     #
-    class Engine < Gamefic::Engine::Base
+    class Engine < Gamefic::Engine
       def post_initialize
         self.user_class = Gamefic::Tty::User
       end

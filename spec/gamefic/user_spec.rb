@@ -1,4 +1,4 @@
-describe Gamefic::User::Base do
+describe Gamefic::User do
 =begin
   it "accepts an Actor connection" do
     user = Gamefic::User::Base.new nil

@@ -43,7 +43,7 @@ Dir.mktmpdir do |tmpdir|
   $LOAD_PATH.unshift File.join(tmpdir, 'lib')
   require 'gamefic'
   require 'gamefic-tty'
-  plot = Gamefic::Plot.new(Gamefic::Source::File.new(File.join(tmpdir, 'scripts')))
+  plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(File.join(tmpdir, 'scripts')))
   plot.script 'main'
   engine = Gamefic::Tty::Engine.new(plot)
   engine.connect

@@ -10,7 +10,7 @@ module Gamefic
 
     def post_initialize
       self.type = 'YesOrNo'
-      self.prompt = 'Yes or No?'
+      self.prompt = 'Yes or No:'
     end
 
     # True if the actor's answer is Yes.
@@ -18,7 +18,7 @@ module Gamefic
     #
     # @return [Boolean]
     def yes?
-      input.to_s[0,1].downcase == 'y'
+      input.to_s[0,1].downcase == 'y' or input.to_i == 1
     end
 
     # True if the actor's answer is No.
@@ -26,7 +26,7 @@ module Gamefic
     #
     # @return [Boolean]
     def no?
-      input.to_s[0,1].downcase == 'n'
+      input.to_s[0,1].downcase == 'n' or input.to_i == 2
     end
 
     # The message sent to the user for an invalid answer, i.e., the input
@@ -37,16 +37,16 @@ module Gamefic
       @invalid_message ||= 'Please enter Yes or No.'
     end
 
-    def prompt
-      @prompt ||= 'Yes or No?'
-    end
-
     def finish
       if yes? or no?
         super
       else
         actor.tell invalid_message
       end
+    end
+
+    def state
+      super.merge options: ['Yes', 'No']
     end
   end
 

@@ -1,5 +1,3 @@
-require 'gamefic/source'
-require 'gamefic/script'
 require 'gamefic/query'
 
 module Gamefic
@@ -10,33 +8,28 @@ module Gamefic
   # scope. Game engines use the plot to receive game data and process user
   # input.
   #
-  class Plot
-    autoload :Scenes,    'gamefic/plot/scenes'
-    autoload :Commands,  'gamefic/plot/commands'
-    autoload :Entities,  'gamefic/plot/entities'
+  class Plot < Container
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
-    autoload :Players,   'gamefic/plot/players'
-    autoload :Playbook,  'gamefic/plot/playbook'
-    autoload :Callbacks, 'gamefic/plot/callbacks'
-    autoload :Theater,   'gamefic/plot/theater'
+    autoload :Script,    'gamefic/plot/script'
+    autoload :Source,    'gamefic/plot/source'
 
     # @return [Array<Gamefic::Script::Base>]
     attr_reader :imported_scripts
 
-    # @return [Gamefic::Source::Base]
+    # @return [Gamefic::Source]
     attr_reader :source
 
     # TODO: Metadata could use better protection
     attr_accessor :metadata
 
-    include Theater, Gamefic, Players, Scenes, Commands, Entities, Snapshot
-    include Host, Callbacks
+    include Snapshot
+    include Host
 
     # @param source [Source::Base]
     def initialize(source = nil)
-      @source = source || Source::Text.new({})
+      @source = source || Source.new
       @working_scripts = []
       @imported_scripts = []
       @running = false
@@ -46,11 +39,6 @@ module Gamefic
     def player_class cls = nil
       @player_class = cls unless cls.nil?
       @player_class
-    end
-
-    # @return [Gamefic::Plot::Playbook]
-    def playbook
-      @playbook ||= Gamefic::Plot::Playbook.new
     end
 
     def running?

@@ -1,6 +1,6 @@
 module Gamefic
   module Opal
-    class User < Gamefic::User::Base
+    class User < Gamefic::User
       def update
         #`Gamefic.update(#{character.state.to_json});`
       end

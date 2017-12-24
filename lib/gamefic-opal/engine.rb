@@ -1,5 +1,5 @@
 # HACK: Explicit requires for Opal
-require 'gamefic/plot/playbook'
+require 'gamefic/world/playbook'
 require 'gamefic/plot/darkroom'
 require 'gamefic/grammar'
 require 'gamefic/query'
@@ -8,7 +8,7 @@ require 'gamefic/grammar/conjugator'
 
 module Gamefic
   module Opal
-    class Engine < Gamefic::Engine::Base
+    class Engine < Gamefic::Engine
       attr_reader :user
 
       def post_initialize

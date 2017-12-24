@@ -2,7 +2,7 @@ require 'gamefic-sdk'
 
 describe "Professor" do
   it "concludes with test me" do
-    plot = Plot.new(Source::File.new('examples/professor/scripts', Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Plot.new(Gamefic::Plot::Source.new('examples/professor/scripts', Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'main'
     character = plot.make Character, :name => 'player'
     plot.introduce character

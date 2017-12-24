@@ -3,9 +3,9 @@ require 'json'
 
 module Gamefic
   module Tty
-    # Extend User::Base to convert HTML into ANSI text.
+    # Extend Gamefic::User to convert HTML into ANSI text.
     #
-    class User < Gamefic::User::Base
+    class User < Gamefic::User
       def update
         unless character.state[:options].nil?
           list = '<ol class="multiple_choice">'

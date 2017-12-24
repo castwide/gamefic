@@ -14,6 +14,7 @@ describe Active do
     character.perform "increment number"
     expect(x).to eq(1)
   end
+
   it "formats #tell messages into HTML paragraphs" do
     plot = Plot.new
     character = plot.make Entity
@@ -22,9 +23,10 @@ describe Active do
     character.tell "This is one paragraph."
     expect(character.messages).to eq("<p>This is one paragraph.</p>")
   end
+
   it "splits #tell messages into multiple paragraphs" do
     plot = Plot.new
-    user = User::Base.new(nil)
+    user = User.new(nil)
     character = plot.make Entity
     character.extend Active
     character.playbooks.push plot.playbook

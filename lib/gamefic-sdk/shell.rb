@@ -68,7 +68,7 @@ module Gamefic
         FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
         FileUtils.mkdir_p config.import_path
         paths = [config.script_path] + config.library_paths
-        plot = Gamefic::Plot.new Source::File.new(*paths)
+        plot = Gamefic::Plot.new Gamefic::Plot::Source.new(*paths)
         plot.script 'main'
         plot.imported_scripts.each { |s|
           next if s.absolute_path.start_with?(config.script_path)
@@ -227,7 +227,7 @@ module Gamefic
       end
   
       def run_game(directory)
-        plot = Plot.new(Source::File.new(File.join(directory, 'scripts')))
+        plot = Plot.new(Gamefic::Plot::Source.new(File.join(directory, 'scripts')))
         plot.script 'main'
         plot.metadata = YAML.load_file File.join(directory, 'metadata.yaml')
         Gamefic::Tty::Engine.start(plot)
