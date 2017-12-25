@@ -84,12 +84,12 @@ module Gamefic
     def update
       entities.each { |e| e.flush }
       call_before_player_update
-      p_players.each { |p|
+      p_players.each do |p|
         p.performed nil
         p.last_input = p.queue.last
         p.last_prompt = p.scene.prompt
         p.scene.update
-      }
+      end
       p_entities.each { |e| e.update }
       call_player_update
       call_update

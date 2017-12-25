@@ -17,6 +17,9 @@ module Gamefic
       end
     end
 
+    # @param plot [Gamefic::Plot]
+    # @param introduce [Gamefic::Actor]
+    # @param next_cue [Class<Gamefic::Scene::Base>]
     def initialize plot, introduce: nil, next_cue: nil
       @plot = plot
       @next_cue = next_cue
