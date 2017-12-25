@@ -149,6 +149,25 @@ module Gamefic
         end
       end
 
+      desc 'diagram TYPE', 'Get diagram data.'
+      def diagram type
+        config = Gamefic::Sdk::Config.load('.')
+        if config.auto_import?
+          Shell.start ['import', '.', '--quiet']
+        end
+        paths = [config.script_path, config.import_path] + config.library_paths
+        plot = Gamefic::Sdk::DebugPlot.new Gamefic::Plot::Source.new(*paths)
+        plot.script 'main'
+        diagram = Gamefic::Sdk::Diagram.new(plot)
+        if type == 'rooms'
+          puts diagram.rooms.values.to_json
+        elsif type == 'actions'
+          puts plot.action_info.to_json
+        elsif type == 'entities'
+          puts plot.entity_info.to_json
+        end
+      end
+
       desc 'compile-opal', 'Generate an Opal file'
       option :output, type: :string, aliases: [:o], desc: "The output file"
       option :watch, type: :boolean, aliases: [:w], desc: "Watch for changes", default: false
