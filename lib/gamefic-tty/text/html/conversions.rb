@@ -38,12 +38,7 @@ module Gamefic
       end
 
       def in_block?
-        p = parent
-        while !p.nil?
-          return true if p.kind_of?(BlockNode)
-          p = p.parent
-        end
-        false
+        parent.kind_of?(BlockNode)
       end
     end
     private_constant :AnsiNode

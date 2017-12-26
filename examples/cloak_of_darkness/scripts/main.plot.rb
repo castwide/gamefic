@@ -18,7 +18,6 @@ foyer = make Room,
   :name => "Foyer of the Opera House", 
   :description => "You are standing in a spacious hall, splendidly decorated in red and gold, with glittering chandeliers overhead. The entrance from the street is to the north, and there are doorways south and west."
 
-
 # There's a "fake" door north, which the player can never go through.
 
 frontDoor = make Portal,
@@ -31,7 +30,6 @@ respond :go, Query::Siblings.new(frontDoor) do |actor, dest|
   actor.tell "You've only just arrived, and besides, the weather outside seems to be getting worse."
 end
 
-
 # The cloakroom is west of the foyer. 
 
 cloakroom = make Room, 
@@ -39,7 +37,6 @@ cloakroom = make Room,
   :description => "The walls of this small room were clearly once lined with hooks, though now only one remains. The exit is a door to the east."
 
 connect foyer, cloakroom, "west"
-
 
 # In the cloak room there's a hook where we can hang the cloak. 
 # It doesn't need a new class, it's just a fixture which responds to "put on" and "look".
@@ -94,7 +91,7 @@ connect foyer, bar, "south"
 
 message = make Scenery,
   :name => "message",
-  :description => "", # this is handled in a specific respond :look 
+  :description => "", # this is handled in a specific respond :look
   :parent => bar,
   :synonyms => "scrawl scrawled sawdust dust"
 
@@ -108,7 +105,7 @@ end
 
 xlate "read :message", "look :message"
 
-# Customize the :has_enough_light rule to check if the player has the cloak.
+# Check if the bar is dark
 
 validate do |actor, verb, arguments|
   dark = (cloak.parent == actor)
@@ -123,6 +120,18 @@ validate do |actor, verb, arguments|
     end
   end
   true
+end
+
+# Suppress the room output if the bar is dark
+
+respond :go, Portal do |actor, portal|
+  buffer = actor.proceed quietly: true
+  dark = (cloak.parent == actor)
+  if actor.room == bar and dark
+    actor.tell "It's too dark in here."
+  else
+    actor.stream buffer
+  end
 end
 
 # The player

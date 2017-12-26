@@ -23,7 +23,7 @@ module Gamefic
     def messages
       @messages ||= ''
     end
-    
+
     # Alias for #messages.
     #
     # @return [String]

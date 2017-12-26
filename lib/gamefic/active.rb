@@ -72,7 +72,7 @@ module Gamefic
     # @param message [String]
     def tell(message)
       if buffer_stack > 0
-        append_buffer format(message) + "\n\n"
+        append_buffer format(message)
       else
         super
       end
