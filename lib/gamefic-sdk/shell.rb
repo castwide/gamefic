@@ -19,6 +19,7 @@ module Gamefic
       map %w[--version -v] => :version
       map [:create, :new] => :init
       map ['scripts'] => :script
+      map ['server'] => :serve
 
       desc "--version, -v", "Print the version"
       def version
@@ -53,6 +54,33 @@ module Gamefic
         end
         platform = Gamefic::Sdk::Platform.load(config, target)
         platform.start
+      end
+
+      desc 'serve', 'Test a web-based target'
+      long_desc %(
+        This command will `start` the first servable target it finds for the
+        current project. Servable targets are typically web-based platforms,
+        like Web and ReactApp.
+
+        Example: If a project contains a target called "web" that uses the Web
+        platform, `gamefic serve` will run `gamefic start web`.
+      )
+      def serve
+        config = Gamefic::Sdk::Config.load('.')
+        selected = nil
+        config.targets.each_pair do |k, v|
+          plat = Gamefic::Sdk::Platform.load(config, k)
+          if plat.servable?
+            selected = k
+            break
+          end
+        end
+        if selected.nil?
+          STDERR.puts "Project does not have a servable target."
+        else
+          STDERR.puts "Starting #{selected}..."
+          Shell.start ['start', selected]
+        end
       end
 
       desc 'build [DIRECTORY_NAME]', 'Build the game for specified platforms in DIRECTORY_NAME'
@@ -110,7 +138,7 @@ module Gamefic
         show_exception(e) if options[:verbose]
       end
 
-      desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to a project.'
+      desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to the project'
       long_desc %(
         Add a target to a project.
         Run `gamefic platforms` for a list of available platform names.
@@ -139,7 +167,7 @@ module Gamefic
         new_config.save
       end
 
-      desc 'platforms', 'List available platforms.'
+      desc 'platforms', 'List available platforms'
       def platforms
         names = []
         Gamefic::Sdk::Platform.constants(false).each do |c|
@@ -151,9 +179,12 @@ module Gamefic
         puts names.sort.join("\n")
       end
 
-      desc 'diagram TYPE', 'Get diagram data.'
+      desc 'diagram TYPE', 'Get diagram data'
       long_desc %(
-        Diagram data is returned as JSON.
+        SDK "diagrams" are datasets that can be used in analysis tools and
+        graphical data representations. The dataset is provided in JSON
+        format.
+
         The diagram types are rooms, commands, entities, actions, and syntaxes.
       )
       def diagram type

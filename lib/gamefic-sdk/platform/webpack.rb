@@ -23,6 +23,10 @@ module Gamefic::Sdk
           system "npm", "install", "gamefic-driver", "--save"
         end
       end
+
+      def servable?
+        true
+      end
     end
   end
 end

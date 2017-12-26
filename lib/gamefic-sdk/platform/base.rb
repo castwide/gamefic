@@ -87,6 +87,14 @@ module Gamefic::Sdk
       hash
     end
 
+    # True if this platform is capable of connecting to a server. Even if the
+    # platform's target application does not use a server, the SDK might use a
+    # server for debugging. Servable platforms like Web should override this
+    # method to return true.
+    def servable?
+      false
+    end
+
     protected
 
     # Write the specified directory of files to a target directory.

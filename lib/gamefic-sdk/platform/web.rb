@@ -20,5 +20,9 @@ module Gamefic::Sdk
       Gamefic::Sdk::Server.set :public_folder, target_dir
       Gamefic::Sdk::Server.run!
     end
+
+    def servable?
+      true
+    end
   end
 end
