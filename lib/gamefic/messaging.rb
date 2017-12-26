@@ -40,7 +40,11 @@ module Gamefic
     private
 
     def format message
-      "<p>#{message.strip}</p>".gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, "</p>\n\n<p>").gsub(/[ \t]*\n[ \t]*/, ' ')
+      "<p>#{message.strip}</p>"
+        .gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, "</p>\n\n<p>")
+        .gsub(/[ \t]*\n[ \t]*/, ' ')
+        .gsub(/<p><p>/, '<p>')
+        .gsub(/<\/p><\/p>/, '</p>')
     end
 
     def p_set_messages str

@@ -130,7 +130,7 @@ respond :go, Portal do |actor, portal|
   if actor.room == bar and dark
     actor.tell "It's too dark in here."
   else
-    actor.stream buffer
+    actor.tell buffer
   end
 end
 
