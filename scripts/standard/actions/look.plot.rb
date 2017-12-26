@@ -49,7 +49,7 @@ respond :look, Use.room do |actor, room|
   actor.execute :_itemize_room
 end
 
-respond :_itemize_room do |actor|
+meta :_itemize_room do |actor|
   room = actor.room
   next if room.nil?
   with_locales = []

@@ -17,7 +17,7 @@ respond :go, Use.siblings(Portal) do |actor, portal|
   end
 end
 
-respond :_describe_destination do |actor|
+meta :_describe_destination do |actor|
   actor.tell actor.room.description if actor.room.has_description?
 end
 
