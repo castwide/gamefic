@@ -6,12 +6,7 @@ module Gamefic
     #
     # @param message [String]
     def tell(message)
-      message = "<p>#{message.strip}</p>"
-      # This method uses String#gsub instead of String#gsub! for
-      # compatibility with Opal.
-      message = message.gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, '</p><p>')
-      message = message.gsub(/[ \t]*\n[ \t]*/, ' ')
-      p_set_messages messages + message
+      p_set_messages messages + format(message)
     end
 
     # Send a message to the Character as raw text.
@@ -43,6 +38,10 @@ module Gamefic
     end
 
     private
+
+    def format message
+      "<p>#{message.strip}</p>".gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, "</p>\n\n<p>").gsub(/[ \t]*\n[ \t]*/, ' ')
+    end
 
     def p_set_messages str
       @messages = str

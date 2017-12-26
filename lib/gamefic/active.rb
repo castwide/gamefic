@@ -72,7 +72,7 @@ module Gamefic
     # @param message [String]
     def tell(message)
       if buffer_stack > 0
-        append_buffer message
+        append_buffer format(message) + "\n\n"
       else
         super
       end
@@ -315,7 +315,7 @@ module Gamefic
     end
 
     def clear_buffer
-      @buffer = '' unless @buffer.empty?
+      @buffer.clear
     end
 
     def performance_stack
