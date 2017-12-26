@@ -75,7 +75,7 @@ module Gamefic
       end
 
       def signature
-        "#{self.class.to_s.downcase}(#{@arguments.join(',')})"
+        "#{self.class.to_s.split('::').last.downcase}(#{simplify_arguments.join(', ')})"
       end
 
       # Determine whether the specified entity passes the query's arguments.
@@ -117,6 +117,16 @@ module Gamefic
       end
 
       private
+
+      def simplify_arguments
+        arguments.map do |a|
+          if a.kind_of?(Class) or a.kind_of?(Object)
+            a.to_s.split('::').last.downcase
+          else
+            a.to_s.downcase
+          end
+        end
+      end
 
       def nested?(token)
         !token.match(NEST_REGEXP).nil?

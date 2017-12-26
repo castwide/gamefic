@@ -141,12 +141,14 @@ module Gamefic
 
       desc 'platforms', 'List available platforms.'
       def platforms
+        names = []
         Gamefic::Sdk::Platform.constants(false).each do |c|
           next if c == :Base or c == :Sinatra
           obj = Gamefic::Sdk::Platform.const_get(c)
           next unless obj.kind_of?(Class)
-          puts c.to_s if platform?(obj)
+          names.push c.to_s if platform?(obj)
         end
+        puts names.sort.join("\n")
       end
 
       desc 'diagram TYPE', 'Get diagram data.'
@@ -165,6 +167,14 @@ module Gamefic
           puts plot.action_info.to_json
         elsif type == 'entities'
           puts plot.entity_info.to_json
+        elsif type == 'syntaxes'
+          puts plot.syntaxes.map{|s| {template: s.template, command: s.command}}.to_json
+        elsif type == 'commands'
+          puts({
+            actions: plot.action_info,
+            syntaxes: plot.syntaxes.map{|s| {template: s.template, command: s.command}},
+            verbs: plot.verbs
+          }.to_json)
         end
       end
 
@@ -234,7 +244,7 @@ module Gamefic
         puts exception.inspect
         puts exception.backtrace.join("\n")
       end
-  
+
       def decompress(zipfile, destination)
         Zip::File.open(zipfile) do |z|
           z.each do |entry|
@@ -244,7 +254,7 @@ module Gamefic
           end
         end
       end
-  
+
       def run_game(directory)
         plot = Plot.new(Gamefic::Plot::Source.new(File.join(directory, 'scripts')))
         plot.script 'main'

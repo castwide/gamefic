@@ -98,7 +98,7 @@ module Gamefic
 
       def signature
         # @todo This is clearly unfinished
-        "#{verb} #{queries.map{|m| m.signature}.join(',')}"
+        "#{verb} #{queries.map{|m| m.signature}.join(', ')}"
       end
 
       # True if this action is not intended to be performed directly by a

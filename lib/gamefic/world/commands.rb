@@ -169,7 +169,7 @@ module Gamefic
       end
 
       private
-      
+
       def map_response_args queries
         result = []
         queries.each do |q|

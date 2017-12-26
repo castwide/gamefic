@@ -237,7 +237,7 @@ module Gamefic
           raise "No actions exist for \"#{syntax.verb}\""
         end
         @syntaxes.unshift syntax
-        @syntaxes.uniq!
+        @syntaxes.uniq! &:signature
         @syntaxes.sort! { |a, b|
           if a.token_count == b.token_count
             # For syntaxes of the same length, length of action takes precedence

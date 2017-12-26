@@ -3,7 +3,7 @@ module Gamefic
     class DebugPlot < Gamefic::Plot
       def respond *args, &block
         result = super
-        action_meta.push({verb: result.verb, signature: result.signature, location: get_location(caller), filename: get_location(caller).split(':')[0..-2].join(':'), object: result})
+        action_meta.push({verb: result.verb, signature: result.signature, location: get_location(caller), filename: get_location(caller).split(':')[0..-2].join(':'), line: get_location(caller).split(':').last, object: result})
         result
       end
 
