@@ -96,7 +96,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Class<Gamefic::Action>]
       def respond(verb, *queries, &proc)
-        act = Action.subclass verb, *queries, order_key: raise_order_key, &proc
+        act = Action.subclass verb, *queries, &proc
         add_action act
         act
       end
@@ -249,20 +249,7 @@ module Gamefic
       end
 
       def sort_and_reduce_actions arr
-        arr.sort { |a,b|
-          if a.rank == b.rank
-            b.order_key <=> a.order_key
-          else
-            b.rank <=> a.rank
-          end
-        }.uniq{|a| a.class}
-      end
-
-      def raise_order_key
-        @@order_key ||= 0
-        tmp = @@order_key
-        @@order_key += 1
-        tmp
+        arr.sort_by.with_index{|a, i| [a.rank, -i]}.reverse.uniq(&:class)
       end
     end
   end
