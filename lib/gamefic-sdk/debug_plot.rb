@@ -18,13 +18,7 @@ module Gamefic
       end
 
       def action_info
-        action_meta.sort { |a,b|
-          if a[:object].rank == b[:object].rank
-            b[:object].order_key <=> a[:object].order_key
-          else
-            b[:object].rank <=> a[:object].rank
-          end
-        }
+        action_meta.sort_by.with_index{|a, i| [a[:object].rank, -i]}.reverse
       end
 
       private
