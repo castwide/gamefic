@@ -152,6 +152,10 @@ module Gamefic
       end
 
       desc 'diagram TYPE', 'Get diagram data.'
+      long_desc %(
+        Diagram data is returned as JSON.
+        The diagram types are rooms, commands, entities, actions, and syntaxes.
+      )
       def diagram type
         config = Gamefic::Sdk::Config.load('.')
         if config.auto_import?
