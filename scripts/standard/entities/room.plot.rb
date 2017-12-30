@@ -7,7 +7,6 @@ class Room < Thing
   set_default explicit_exits: true
 
   def explicit_exits?
-    @explicit_exits = self.class.default_attribute[:explicit_exits] if @explicit_exits.nil?
     @explicit_exits
   end
 
@@ -27,12 +26,14 @@ class Room < Thing
     portals[0]
   end
 
-  def self.explicit_exits?
-    default_attributes[:explicit_exits]
-  end
+  class << self
+    def explicit_exits?
+      default_attributes[:explicit_exits]
+    end
 
-  def self.explicit_exits=(bool)
-    set_default explicit_exits: bool
+    def explicit_exits=(bool)
+      set_default explicit_exits: bool
+    end
   end
 end
 

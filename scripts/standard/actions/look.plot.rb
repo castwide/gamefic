@@ -56,10 +56,10 @@ meta :_itemize_room do |actor|
   chars = room.children.that_are(Character).that_are(:itemized?) - [actor]
   charsum = []
   chars.each { |char|
-    if char.locale_description != ""
-      with_locales.push char
-    else
+    if char.locale_description.nil?
       charsum.push char
+    else
+      with_locales.push char
     end
   }
   if charsum.length > 0
@@ -68,10 +68,10 @@ meta :_itemize_room do |actor|
   items = room.children.that_are(:itemized?) - [actor] - room.children.that_are(Character) - room.children.that_are(Portal)
   itemsum = []
   items.each { |item|
-    if item.locale_description != ""
-      with_locales.push item
-    else
+    if item.locale_description.nil?
       itemsum.push item
+    else
+      with_locales.push item
     end
   }
   if itemsum.length > 0

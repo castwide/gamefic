@@ -5,7 +5,6 @@ script 'standard/entities/scenery'
 # Rule of thumb: Scenery is something that can't be carried,
 # like a table or the sky; and Rubble is something that might
 # be portable but is otherwise useless, like trash or debris.
-
+#
 class Rubble < Scenery
-  
 end
