@@ -1,6 +1,4 @@
 class Thing < Gamefic::Entity
-  include ParentRoom
-
   attr_writer :itemized
 
   attr_writer :sticky
@@ -59,12 +57,12 @@ class Thing < Gamefic::Entity
     super
   end
 
-  # The entity's parent room.
+  # The entity's parent room (i.e., the closest ascendant that is a Room).
   #
   # @return [Room]
   def room
     p = parent
-    while !p.kind_of?(Room) and !p.nil?
+    until p.is_a?(Room) or p.nil?
       p = p.parent
     end
     p
