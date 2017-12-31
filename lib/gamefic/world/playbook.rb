@@ -229,7 +229,7 @@ module Gamefic
           user_friendly += " #{new_name}"
           args.push new_name
         }
-        add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}")
+        add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}") unless action.verb.to_s.start_with?('_')
       end
 
       def add_syntax syntax
