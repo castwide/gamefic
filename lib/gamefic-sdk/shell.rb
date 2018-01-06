@@ -93,11 +93,11 @@ module Gamefic
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       def import(directory_name = '.')
         config = Gamefic::Sdk::Config.load directory_name
-        FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
-        FileUtils.mkdir_p config.import_path
         paths = [config.script_path] + config.library_paths
         plot = Gamefic::Plot.new Gamefic::Plot::Source.new(*paths)
         plot.script 'main'
+        FileUtils.remove_entry_secure config.import_path if File.exist?(config.import_path)
+        FileUtils.mkdir_p config.import_path
         plot.imported_scripts.each { |s|
           next if s.absolute_path.start_with?(config.script_path)
           src = File.absolute_path(s.absolute_path)
@@ -189,9 +189,9 @@ module Gamefic
       )
       def diagram type
         config = Gamefic::Sdk::Config.load('.')
-        if config.auto_import?
-          Shell.start ['import', '.', '--quiet']
-        end
+        #if config.auto_import?
+        #  Shell.start ['import', '.', '--quiet']
+        #end
         paths = [config.script_path, config.import_path] + config.library_paths
         plot = Gamefic::Sdk::DebugPlot.new Gamefic::Plot::Source.new(*paths)
         plot.script 'main'
