@@ -12,4 +12,3 @@ end
 
 script 'standard/modules/use'
 script 'standard/modules/enterable'
-script 'standard/modules/parent-room'
