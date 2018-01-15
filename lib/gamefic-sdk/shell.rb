@@ -175,7 +175,7 @@ module Gamefic
         graphical data representations. The dataset is provided in JSON
         format.
 
-        The diagram types are rooms, commands, entities, actions, and syntaxes.
+        The diagram types are rooms, commands, entities, actions, and commands.
       )
       option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       def diagram type
@@ -193,8 +193,6 @@ module Gamefic
           puts plot.action_info.to_json
         elsif type == 'entities'
           puts plot.entity_info.to_json
-        elsif type == 'syntaxes'
-          puts plot.syntaxes.map{|s| {template: s.template, command: s.command}}.to_json
         elsif type == 'commands'
           puts({
             actions: plot.action_info,
