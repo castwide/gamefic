@@ -10,7 +10,6 @@ module Gamefic
     class Shell < Thor
       autoload :Init, 'gamefic-sdk/shell/init'
       autoload :Test, 'gamefic-sdk/shell/test'
-      autoload :Ide, 'gamefic-sdk/shell/ide'
       autoload :Script, 'gamefic-sdk/shell/script'
       autoload :Plotter, 'gamefic-sdk/shell/plotter'
 
@@ -40,17 +39,19 @@ module Gamefic
         ).run
       end
 
-      desc 'test [DIRECTORY_NAME]', 'Run the project in DIRECTORY_NAME'
-      def test(directory_name = '.')
-        Gamefic::Sdk::Shell::Test.new(directory: directory_name).run
+      desc 'test', 'Run the project in DIRECTORY_NAME'
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
+      def test
+        Gamefic::Sdk::Shell::Test.new(directory: options[:directory]).run
       end
 
       desc 'start [TARGET_NAME]', 'Start the specified target'
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       def start target
-        config = Gamefic::Sdk::Config.load('.')
+        config = Gamefic::Sdk::Config.load(options[:directory])
         if config.auto_import?
           puts "Importing scripts..."
-          Shell.start ['import', '.', '--quiet']
+          Shell.start ['import', options[:directory], '--quiet']
         end
         platform = Gamefic::Sdk::Platform.load(config, target)
         platform.start
@@ -65,8 +66,9 @@ module Gamefic
         Example: If a project contains a target called "web" that uses the Web
         platform, `gamefic serve` will run `gamefic start web`.
       )
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       def serve
-        config = Gamefic::Sdk::Config.load('.')
+        config = Gamefic::Sdk::Config.load(options[:directory])
         selected = nil
         config.targets.each_pair do |k, v|
           plat = Gamefic::Sdk::Platform.load(config, k)
@@ -83,15 +85,17 @@ module Gamefic
         end
       end
 
-      desc 'build [DIRECTORY_NAME]', 'Build the game for specified platforms in DIRECTORY_NAME'
+      desc 'build', 'Build the game for configured platforms'
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
-      def build(directory_name = '.')
+      def build(directory_name = options[:directory])
         Gamefic::Sdk::Build.release(directory_name, options[:quiet])
       end
 
-      desc 'import [DIRECTORY_NAME]', 'Copy external scripts to the project'
+      desc 'import', 'Copy external scripts to the project'
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
-      def import(directory_name = '.')
+      def import
         config = Gamefic::Sdk::Config.load directory_name
         paths = [config.script_path] + config.library_paths
         plot = Gamefic::Plot.new Gamefic::Plot::Source.new(*paths)
@@ -109,8 +113,9 @@ module Gamefic
         }
       end
 
-      desc 'default-config [DIRECTORY_NAME]', 'Create or overwrite config.yml with default values'
-      def default_config(directory_name = '.')
+      desc 'default-config', 'Create or overwrite config.yml with default values'
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
+      def default_config
         File.open(File.join(directory_name, 'config.yml'), 'w') do |file|
           file << Gamefic::Sdk::Config.generate
         end
@@ -122,30 +127,15 @@ module Gamefic
         Gamefic::Sdk::Shell::Script.new(path).run
       end
 
-      desc 'play FILE_NAME', 'Run a gamefic (.gfic) file'
-      option :verbose, type: :boolean, aliases: :v, desc: "Don't suppress Ruby exceptions"
-      def play(file)
-        Dir.mktmpdir 'gamefic_' do |dir|
-          puts 'Loading...'
-          decompress file, dir
-          run_game(dir)
-        end
-      rescue Zip::Error => e
-        puts "'#{file}' does not appear to be a valid Gamefic file."
-        show_exception(e) if options[:verbose]
-      rescue StandardError => e
-        puts "An error occurred: #{e.message}"
-        show_exception(e) if options[:verbose]
-      end
-
-      desc 'target PLATFORM_NAME [DIRECTORY_NAME]', 'Add a target to the project'
+      desc 'target PLATFORM_NAME', 'Add a target to the project'
       long_desc %(
         Add a target to a project.
         Run `gamefic platforms` for a list of available platform names.
       )
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       def target platform_name, directory = nil
         directory ||= platform_name.downcase
-        config = Gamefic::Sdk::Config.load('.')
+        config = Gamefic::Sdk::Config.load(options[:directory])
         # @type [Class<Gamefic::Sdk::Platform::Base>]
         begin
           cls = Gamefic::Sdk::Platform.const_get(platform_name)
@@ -163,7 +153,7 @@ module Gamefic
         new_data = config.data.dup
         new_data['targets'] ||= {}
         new_data['targets'][directory] = target
-        new_config = Gamefic::Sdk::Config.new('.', new_data)
+        new_config = Gamefic::Sdk::Config.new(options[:directory], new_data)
         new_config.save
       end
 
@@ -187,8 +177,9 @@ module Gamefic
 
         The diagram types are rooms, commands, entities, actions, and syntaxes.
       )
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       def diagram type
-        config = Gamefic::Sdk::Config.load('.')
+        config = Gamefic::Sdk::Config.load(options[:directory])
         #if config.auto_import?
         #  Shell.start ['import', '.', '--quiet']
         #end
@@ -214,12 +205,13 @@ module Gamefic
       end
 
       desc 'compile-opal', 'Generate an Opal file'
+      option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       option :output, type: :string, aliases: [:o], desc: "The output file"
       option :watch, type: :boolean, aliases: [:w], desc: "Watch for changes", default: false
       option :minify, type: :boolean, aliases: [:m], desc: "Minify the output", default: false
       option :sourcemap, type: :boolean, aliases: [:s], desc: "Include sourcemap", default: false
       def compile_opal
-        config = Gamefic::Sdk::Config.load('.')
+        config = Gamefic::Sdk::Config.load(options[:directory])
         if options[:minify] and options[:sourcemap]
           STDERR.puts "WARNING: Enabling --sourcemap disables --minify in compile-opal options"
           options[:minify] = false
