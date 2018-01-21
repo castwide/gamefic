@@ -30,6 +30,7 @@ module Gamefic
       #   stage "@message = 'hello'"
       #   stage "puts @message" # <- prints 'hello'
       #
+      # @yieldself [self]
       # @return [Object] The value returned by the executed code
       def stage *args, &block
         if block.nil?
