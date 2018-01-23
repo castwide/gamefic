@@ -36,4 +36,14 @@ describe Array do
     array = ["one", "one", "three"]
     expect(array.join_and).to eq("one, one, and three")
   end
+
+  it "handles multiple true arguments" do
+    array = [['one'], ['two'], [], 'four']
+    expect(array.that_are(Array, :any?)).to eq([['one'], ['two']])
+  end
+
+  it "handles multiple false arguments" do
+    array = [['one'], ['two'], '', 'four']
+    expect(array.that_are_not(Array, :empty?)).to eq(['four'])
+  end
 end
