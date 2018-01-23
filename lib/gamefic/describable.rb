@@ -35,7 +35,7 @@ module Gamefic
     # Get a set of keywords associated with the object.
     # Keywords are typically the words in the object's name plus its synonyms.
     #
-    # @return [Keywords]
+    # @return [Array<String>]
     def keywords
       @keywords ||= "#{definite_article} #{indefinite_article} #{name} #{synonyms}".downcase.split(Matchable::SPLIT_REGEXP).uniq
     end
