@@ -15,9 +15,6 @@ module Gamefic
     autoload :Script,    'gamefic/plot/script'
     autoload :Source,    'gamefic/plot/source'
 
-    # @return [Array<Gamefic::Script::Base>]
-    attr_reader :imported_scripts
-
     # @return [Gamefic::Source]
     attr_reader :source
 
@@ -47,7 +44,7 @@ module Gamefic
 
     # Get an Array of all scripts that have been imported into the Plot.
     #
-    # @return [Array<Script>] The imported scripts
+    # @return [Array<Gamefic::Script::Base>]
     def imported_scripts
       @imported_scripts ||= []
     end
@@ -111,6 +108,7 @@ module Gamefic
     # This method is similar to Kernel#require, except that the script is
     # evaluated within the Plot's context via #stage.
     #
+    # @raise [LoadError] if script could not be found
     # @param path [String] The path to the script being evaluated
     # @return [Boolean] true if the script was loaded by this call or false if it was already loaded.
     def script path
