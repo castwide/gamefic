@@ -43,8 +43,8 @@ module Gamefic
           return Matches.new(drill, token, '') unless drill.length != 1
           return Matches.new([], '', token)
         end
-        result = available.select{ |e| e.match?(token) }
-        result = available.select{ |e| e.match?(token, fuzzy: true) } if result.empty?
+        result = available.select{ |e| e.specified?(token) }
+        result = available.select{ |e| e.specified?(token, fuzzy: true) } if result.empty?
         result.keep_if{ |e| accept? e }
         Matches.new(result, (result.empty? ? '' : token), (result.empty? ? token : ''))
       end
@@ -135,13 +135,13 @@ module Gamefic
       def denest(objects, token)
         parts = token.split(NEST_REGEXP)
         current = parts.pop
-        last_result = objects.select{ |e| e.match?(current) }
-        last_result = objects.select{ |e| e.match?(current, fuzzy: true) } if last_result.empty?
+        last_result = objects.select{ |e| e.specified?(current) }
+        last_result = objects.select{ |e| e.specified?(current, fuzzy: true) } if last_result.empty?
         result = last_result
         while parts.length > 0
           current = "#{parts.last} #{current}"
-          result = last_result.select{ |e| e.match?(current) }
-          result = last_result.select{ |e| e.match?(current, fuzzy: true) } if result.empty?
+          result = last_result.select{ |e| e.specified?(current) }
+          result = last_result.select{ |e| e.specified?(current, fuzzy: true) } if result.empty?
           break if result.empty?
           parts.pop
           last_result = result

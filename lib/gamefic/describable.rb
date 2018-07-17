@@ -6,7 +6,7 @@ module Gamefic
   # objects.
   module Describable
     include Grammar::Person, Grammar::Plural
-    include Matchable
+    include Keywords
 
     # Get the name of the object.
     # The name is usually presented without articles (e.g., "object" instead

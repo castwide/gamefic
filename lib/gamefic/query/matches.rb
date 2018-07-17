@@ -21,7 +21,7 @@ module Gamefic
         private
 
         def match_without_remainder objects, description
-          matches = objects.select{ |e| e.match?(description) }
+          matches = objects.select{ |e| e.specified?(description) }
           if matches.empty?
             matching = ''
             remaining = description
@@ -54,7 +54,7 @@ module Gamefic
         def inner_match matching_objects, words, matching_text, i, w
           cursor = []
           matching_objects.each { |o|
-            if o.match?(words[0..i].join(' '), fuzzy: true)
+            if o.specified?(words[0..i].join(' '), fuzzy: true)
               cursor.push o
               matching_text.push w
             end

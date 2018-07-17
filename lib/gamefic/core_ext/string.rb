@@ -1,7 +1,5 @@
-require 'gamefic/matchable'
-
 class String
-  include Gamefic::Matchable
+  include Gamefic::Keywords
 
   # Capitalize the first letter without changing the rest of the string.
   # (String#capitalize makes the rest of the string lower-case.)

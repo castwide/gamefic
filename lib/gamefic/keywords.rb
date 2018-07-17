@@ -1,5 +1,5 @@
 module Gamefic
-  module Matchable
+  module Keywords
     SPLIT_REGEXP = /[\s]+/
 
     # Get an array of keywords associated with this object.
@@ -19,17 +19,17 @@ module Gamefic
     #   dog = "big red dog"
     #   dog.extend Gamefic::Matchable
     #
-    #   dog.match?("red dog")  #=> true
-    #   dog.match?("gray dog") #=> false
-    #   dog.match?("red do")   #=> false
+    #   dog.described?("red dog")  #=> true
+    #   dog.described?("gray dog") #=> false
+    #   dog.described?("red do")   #=> false
     #
-    #   dog.match?("re do", fuzzy: true)  #=> true
-    #   dog.match?("red og", fuzzy: true) #=> false
+    #   dog.described?("re do", fuzzy: true)  #=> true
+    #   dog.described?("red og", fuzzy: true) #=> false
     #
     # @param description [String] The description to be compared
     # @param fuzzy [Boolean] Use fuzzy matching (default is false)
     # @return [Boolean]
-    def match? description, fuzzy: false
+    def specified? description, fuzzy: false
       words = description.split(SPLIT_REGEXP)
       return false if words.empty?
       matches = 0

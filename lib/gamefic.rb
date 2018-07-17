@@ -1,6 +1,6 @@
 require 'gamefic/version'
 
-require 'gamefic/matchable'
+require 'gamefic/keywords'
 require 'gamefic/core_ext/array'
 require 'gamefic/core_ext/string'
 
