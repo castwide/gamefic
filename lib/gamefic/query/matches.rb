@@ -35,7 +35,7 @@ module Gamefic
         def match_with_remainder objects, description
           matching_objects = objects
           matching_text = []
-          words = description.split(Matchable::SPLIT_REGEXP)
+          words = description.split(Keywords::SPLIT_REGEXP)
           i = 0
           #cursor = []
           words.each { |w|

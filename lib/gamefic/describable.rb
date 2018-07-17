@@ -37,7 +37,7 @@ module Gamefic
     #
     # @return [Array<String>]
     def keywords
-      @keywords ||= "#{definite_article} #{indefinite_article} #{name} #{synonyms}".downcase.split(Matchable::SPLIT_REGEXP).uniq
+      @keywords ||= "#{definite_article} #{indefinite_article} #{name} #{synonyms}".downcase.split(Keywords::SPLIT_REGEXP).uniq
     end
 
     # Get the name of the object with an indefinite article.

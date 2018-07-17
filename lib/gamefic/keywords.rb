@@ -19,12 +19,12 @@ module Gamefic
     #   dog = "big red dog"
     #   dog.extend Gamefic::Matchable
     #
-    #   dog.described?("red dog")  #=> true
-    #   dog.described?("gray dog") #=> false
-    #   dog.described?("red do")   #=> false
+    #   dog.specified?("red dog")  #=> true
+    #   dog.specified?("gray dog") #=> false
+    #   dog.specified?("red do")   #=> false
     #
-    #   dog.described?("re do", fuzzy: true)  #=> true
-    #   dog.described?("red og", fuzzy: true) #=> false
+    #   dog.specified?("re do", fuzzy: true)  #=> true
+    #   dog.specified?("red og", fuzzy: true) #=> false
     #
     # @param description [String] The description to be compared
     # @param fuzzy [Boolean] Use fuzzy matching (default is false)
