@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'thor', '~> 0.19', '>= 0.19.4'
   s.add_runtime_dependency 'rubyzip', '~> 1.2', '>= 1.2.0'
 
-  s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
-  s.add_development_dependency 'capybara', '~> 2.0', '>= 2.0'
-  s.add_development_dependency 'selenium-webdriver', '~> 3.4'
+  s.add_development_dependency 'capybara', '~> 3.3'
+  s.add_development_dependency 'selenium-webdriver', '~> 3.13'
+  s.add_development_dependency 'puma', '~> 3'
 end

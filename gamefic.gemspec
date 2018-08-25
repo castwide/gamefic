@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.1.0'
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
-  s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'
+  s.add_development_dependency 'rake', '~> 12.3', '>= 12.3'
   s.add_development_dependency 'simplecov', '~> 0.14'
 end
