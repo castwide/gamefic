@@ -5,7 +5,7 @@ describe "Room" do
     room1 = plot.make Room, name: 'room 1'
     room2 = plot.make Room, name: 'room 2'
     room1.connect room2
-    portal = room1.portal_to(room2)
+    portal = room1.connect(room2)
     expect(portal.destination).to be(room2)
   end
 end
