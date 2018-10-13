@@ -6,6 +6,7 @@ module Gamefic
 
     class Server < Sinatra::Base
       set :port, 4342
+      set :server, :webrick
 
       get '/' do
         config = Gamefic::Sdk::Config.load(settings.source_dir)
