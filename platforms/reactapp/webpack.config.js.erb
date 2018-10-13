@@ -15,11 +15,11 @@ var gameBuildCommand;
 var buildEnv = 'development';
 if (usingDevServer) {
   // Quick compilation and watch for dev server
-  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -w -s';
+  gameBuildCommand = 'gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -d ' + GAME_DIR + ' -w -s';
 } else {
   buildEnv = 'production';
   // Minified compilation for production build
-  gameBuildCommand = 'cd ' + GAME_DIR + ' && gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -m';
+  gameBuildCommand = 'gamefic compile-opal -o ' + path.resolve(ENGINE_DIR, 'opal.js') + ' -d ' + GAME_DIR + ' -m';
 }
 
 var config = {
