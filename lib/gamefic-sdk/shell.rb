@@ -51,7 +51,7 @@ module Gamefic
         config = Gamefic::Sdk::Config.load(options[:directory])
         if config.auto_import?
           puts "Importing scripts..."
-          Shell.start ['import', options[:directory], '--quiet']
+          Shell.start ['import', '-d', options[:directory], '--quiet']
         end
         platform = Gamefic::Sdk::Platform.load(config, target)
         platform.start
@@ -96,6 +96,7 @@ module Gamefic
       option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
       def import
+        directory_name = options[:directory]
         config = Gamefic::Sdk::Config.load directory_name
         paths = [config.script_path] + config.library_paths
         plot = Gamefic::Plot.new Gamefic::Plot::Source.new(*paths)
