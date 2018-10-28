@@ -33,6 +33,10 @@ module Gamefic
       self.introduce introduce unless introduce.nil?
     end
 
+    def players
+      @p_players
+    end
+
     def add_entity e
       @p_entities.push e
     end

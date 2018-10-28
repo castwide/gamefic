@@ -143,11 +143,13 @@ module Gamefic
           return nil if tokens[i].nil? and matches.remaining == ''
           matches = p.resolve(actor, "#{matches.remaining} #{tokens[i]}".strip, continued: (i < queries.length - 1))
           return nil if matches.objects.empty?
+          accepted = matches.objects.select{|o| p.accept?(o)}
+          return nil if accepted.empty?
           if p.ambiguous?
-            result.push matches.objects
+            result.push accepted
           else
-            return nil if matches.objects.length > 1
-            result.push matches.objects[0]
+            return nil if accepted.length != 1
+            result.push accepted.first
           end
           i += 1
         }

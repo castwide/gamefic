@@ -167,7 +167,7 @@ module Gamefic
       # @return [Array<Gamefic::Action>]
       def dispatch_from_string actor, text
         result = []
-        commands = Syntax.tokenize(text, syntaxes)
+        commands = Syntax.tokenize(text, actor.syntaxes)
         commands.each { |c|
           available = actions_for(c.verb)
           available.each { |a|

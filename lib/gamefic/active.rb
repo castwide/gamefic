@@ -46,6 +46,10 @@ module Gamefic
       @playbooks ||= []
     end
 
+    def syntaxes
+      playbooks.map(&:syntaxes).flatten
+    end
+
     # An array of actions waiting to be performed.
     #
     # @return [Array<String>]
