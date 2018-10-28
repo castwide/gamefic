@@ -22,13 +22,14 @@ module Gamefic
     end
 
     # Get the path to a library's scripts.
-    # Raise a NameError if the specified library name does not exist.
+    #
+    # @raise [NameError] if the specified library name does not exist
     #
     # @param name [String]
     # @return [String]
     def self.find name
       return @@libraries[name] if @@libraries.has_key?(name)
-      raise NameError.new("Gamefic library not found: #{name}")
+      raise NameError, "Gamefic library not found: #{name}"
     end
   end
 end
