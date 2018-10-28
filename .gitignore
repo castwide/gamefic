@@ -6,3 +6,5 @@ Gemfile.lock
 coverage
 examples/*/build
 examples/*/release
+.yardoc
+doc
