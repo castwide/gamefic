@@ -20,10 +20,11 @@ module Gamefic
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor]
     # @param next_cue [Class<Gamefic::Scene::Base>]
-    def initialize plot, introduce: nil, next_cue: nil
+    def initialize plot, introduce: nil, next_cue: nil, **more
       @plot = plot
       @next_cue = next_cue
       @concluded = false
+      configure more
       # @todo It's not strictly necessary to pass self as a parameter here.
       #   We're only doing it to give Solargraph a way to provide completion
       #   items for the Subplot instance until we figure out a way to tell it
@@ -34,7 +35,7 @@ module Gamefic
     end
 
     def players
-      @p_players
+      p_players
     end
 
     def add_entity e
@@ -99,6 +100,14 @@ module Gamefic
     def update
       call_player_update
       call_update
+    end
+
+    private
+
+    # Subclasses can override this method to handle additional configuration
+    # options.
+    #
+    def configure more
     end
   end
 end
