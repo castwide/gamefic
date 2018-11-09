@@ -85,11 +85,12 @@ module Gamefic
         end
       end
 
-      desc 'build', 'Build the game for configured platforms'
+      desc 'build', 'Build the game for configured targets'
       option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
+      option :target, type: :string, aliases: :t, desc: 'A specific target', default: nil
       option :quiet, type: :boolean, aliases: :q, desc: 'Suppress output'
-      def build(directory_name = options[:directory])
-        Gamefic::Sdk::Build.release(directory_name, options[:quiet])
+      def build
+        Gamefic::Sdk::Build.release(options[:directory], target: options[:target], quiet: options[:quiet])
       end
 
       desc 'import', 'Copy external scripts to the project'
