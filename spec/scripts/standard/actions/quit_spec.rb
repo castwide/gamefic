@@ -1,6 +1,6 @@
 describe "Quit Action" do
   before :each do
-    @plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
     @character = @plot.make Character, :name => 'character'
     @plot.introduce @character
@@ -8,15 +8,15 @@ describe "Quit Action" do
   it "quits on yes" do
     @character.perform "quit"
     @character.update
-    expect(@character.scene.class <= Scene::YesOrNo).to be(true)
+    expect(@character.scene.class <= Gamefic::Scene::YesOrNo).to be(true)
     @character.queue.push "yes"
     @plot.update
-    expect(@character.scene.class).to be(Scene::Conclusion)
+    expect(@character.scene.class).to be(Gamefic::Scene::Conclusion)
   end
   it "cancels quit on no" do
     @character.perform "quit"
     @character.update
-    expect(@character.scene.class <= Scene::YesOrNo).to be(true)
+    expect(@character.scene.class <= Gamefic::Scene::YesOrNo).to be(true)
     @character.queue.push "no"
     @plot.update
     expect(@character.scene.class).to be(@plot.default_scene)

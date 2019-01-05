@@ -1,4 +1,4 @@
-respond :drop, Query::Children.new(Clothing) do |actor, clothing|
+respond :drop, Gamefic::Query::Children.new(Clothing) do |actor, clothing|
   if clothing.attached?
     actor.perform :doff, clothing
   end

@@ -1,4 +1,4 @@
-meta nil, Query::Text.new() do |actor, string|
+meta nil, Gamefic::Query::Text.new() do |actor, string|
   words = string.split_words
   list = verbs
   if list.include?(words[0])
@@ -26,7 +26,7 @@ meta nil, Query::Text.new() do |actor, string|
   end
 end
 
-meta nil, Query::Text.new(/^it$/) do |actor, string|
+meta nil, Gamefic::Query::Text.new(/^it$/) do |actor, string|
   words = string.split_words
   if verbs(to_s: true).include?(words[0])
     actor.tell "I'm not sure what you mean by \"it.\""

@@ -36,7 +36,7 @@ seat.enterable = true
 
 door = make Portal, :name => 'south', :parent => lobby, :proper_named => true
 
-respond :go, Query::Siblings.new(door) do |actor, door|
+respond :go, Gamefic::Query::Siblings.new(door) do |actor, door|
   # If the player has eaten the chicken, its parent will be nil.
   if chicken.parent != nil
     actor.tell "You can't leave the restaurant yet. You're still hungry!"

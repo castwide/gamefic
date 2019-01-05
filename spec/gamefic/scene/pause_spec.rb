@@ -1,7 +1,7 @@
-describe Scene::Pause do
+describe Gamefic::Scene::Pause do
   it "changes the character's state after a response" do
-    plot = Plot.new
-    c = Class.new(Entity) { include Active }
+    plot = Gamefic::Plot.new
+    c = Class.new(Entity) { include Gamefic::Active }
     character = plot.make c
     character[:has_paused] = false
     paused = plot.pause do |actor|

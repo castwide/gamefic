@@ -1,11 +1,11 @@
 require "gamefic"
-include Gamefic
+# include Gamefic
 
-describe Active do
+describe Gamefic::Active do
   it "performs an action" do
-    plot = Plot.new
-    character = plot.make Entity
-    character.extend Active
+    plot = Gamefic::Plot.new
+    character = plot.make Gamefic::Entity
+    character.extend Gamefic::Active
     character.playbooks.push plot.playbook
     x = 0
     plot.respond :increment_number do |actor|
@@ -16,19 +16,19 @@ describe Active do
   end
 
   it "formats #tell messages into HTML paragraphs" do
-    plot = Plot.new
-    character = plot.make Entity
-    character.extend Active
+    plot = Gamefic::Plot.new
+    character = plot.make Gamefic::Entity
+    character.extend Gamefic::Active
     character.playbooks.push plot.playbook
     character.tell "This is one paragraph."
     expect(character.messages).to eq("<p>This is one paragraph.</p>")
   end
 
   it "splits #tell messages into multiple paragraphs" do
-    plot = Plot.new
-    user = User.new(nil)
-    character = plot.make Entity
-    character.extend Active
+    plot = Gamefic::Plot.new
+    user = Gamefic::User.new(nil)
+    character = plot.make Gamefic::Entity
+    character.extend Gamefic::Active
     character.playbooks.push plot.playbook
     character.tell "This is paragraph 1.\n\nThis is paragraph 2.\r\n\r\nThis is paragraph 3."
     expect(character.messages).to eq("<p>This is paragraph 1.</p><p>This is paragraph 2.</p><p>This is paragraph 3.</p>")

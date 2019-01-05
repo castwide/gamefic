@@ -1,7 +1,7 @@
-describe Scene::YesOrNo do
+describe Gamefic::Scene::YesOrNo do
   before :each do
-    @plot = Plot.new
-    c = Class.new(Entity) { include Active }
+    @plot = Gamefic::Plot.new
+    c = Class.new(Entity) { include Gamefic::Active }
     @character = @plot.make c, :name => 'character'
     @character[:answered] = nil
     @scene = @plot.yes_or_no "Yes or no?" do |actor, scene|

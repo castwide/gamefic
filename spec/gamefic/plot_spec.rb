@@ -1,22 +1,22 @@
 require "gamefic"
-include Gamefic
+# include Gamefic
 
-describe Plot do
+describe Gamefic::Plot do
   it "accepts new entities" do
-    plot = Plot.new
-    plot.make Entity
+    plot = Gamefic::Plot.new
+    plot.make Gamefic::Entity
     expect(plot.entities.length).to eq(1)
   end
 
   it "accepts new actions" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     plot.respond :mycommand do |actor|
     end
     expect(plot.playbook.actions_for(:mycommand).length).to eq(1)
   end
 
   it "adds new actions to the list of command words" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     plot.respond :mycommand do |actor|
       actor.tell "myresult"
     end
@@ -24,16 +24,16 @@ describe Plot do
   end
 
   it "removes destroyed dynamic entities" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     plot.ready
-    entity = plot.make Entity
+    entity = plot.make Gamefic::Entity
     plot.destroy entity
     expect(plot.entities.length).to eq(0)
   end
 
 	it "adds playbook to casted actors" do
-		plot = Plot.new
-		actor = plot.cast Actor
+		plot = Gamefic::Plot.new
+		actor = plot.cast Gamefic::Actor
 		expect(actor.playbooks.length).to eq(1)
 		expect(actor.playbooks[0]).to eq(plot.playbook)
 	end

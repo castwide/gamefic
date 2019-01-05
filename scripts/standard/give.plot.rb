@@ -1,6 +1,6 @@
 # @gamefic.script standard/give
 
-respond :give, Use.available, Query::Children.new do |actor, character, gift|
+respond :give, Use.available, Gamefic::Query::Children.new do |actor, character, gift|
   actor.tell "Nothing happens."
 end
 

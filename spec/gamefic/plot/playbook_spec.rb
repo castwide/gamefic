@@ -90,14 +90,14 @@ describe Gamefic::World::Playbook do
     playbook.respond :command do
       num = 2
     end
-    playbook.respond :dummy, Query::Base.new do
+    playbook.respond :dummy, Gamefic::Query::Base.new do
       # noop
     end
     playbook.respond :command do
       num = 3
     end
     character = Entity.new
-    character.extend Active
+    character.extend Gamefic::Active
     character.playbooks.push playbook
     character.perform 'command'
     expect(num).to eq(3)

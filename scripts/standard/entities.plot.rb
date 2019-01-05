@@ -10,3 +10,5 @@ script 'standard/entities/room'
 script 'standard/entities/scenery'
 script 'standard/entities/rubble'
 script 'standard/entities/supporter'
+
+class Entity < Gamefic::Entity; end

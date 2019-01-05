@@ -1,6 +1,6 @@
 describe "Pathfinder" do
   it "finds a valid path" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/pathfinder'
     room1 = plot.make Room, :name => 'room 1'
@@ -17,7 +17,7 @@ describe "Pathfinder" do
     expect(finder.path).to eq([room2,room3])
   end
   it "finds an invalid path" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/pathfinder'
     room1 = plot.make Room, :name => 'room 1'

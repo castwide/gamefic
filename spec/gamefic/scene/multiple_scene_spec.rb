@@ -1,7 +1,7 @@
-describe Scene::MultipleScene do
+describe Gamefic::Scene::MultipleScene do
   it "prepares the selected scene" do
-    plot = Plot.new
-    c = Class.new(Entity) { include Active }
+    plot = Gamefic::Plot.new
+    c = Class.new(Entity) { include Gamefic::Active }
     character = plot.make c
     scene1 = plot.pause :scene1
     scene2 = plot.pause :scene2
@@ -16,9 +16,9 @@ describe Scene::MultipleScene do
 
   it "tracks entered selections" do
     actor = Gamefic::Actor.new
-    klass1 = Scene::Base.subclass
+    klass1 = Gamefic::Scene::Base.subclass
     klass1.tracked = true
-    klass2 = Scene::Base.subclass
+    klass2 = Gamefic::Scene::Base.subclass
     klass2.tracked = true
     selector = Gamefic::Scene::MultipleScene.subclass do |actor, scene|
       scene.map 'one', klass1

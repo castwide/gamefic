@@ -1,4 +1,4 @@
-respond :doff, Query::Children.new(Clothing) do |actor, clothing|
+respond :doff, Gamefic::Query::Children.new(Clothing) do |actor, clothing|
   if !clothing.attached?
     actor.tell "You're not wearing #{the clothing}."
   else

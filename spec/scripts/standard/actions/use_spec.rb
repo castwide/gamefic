@@ -1,6 +1,6 @@
 describe "Use Action" do
   it "does not raise errors for valid commands" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     tool = plot.make Item, :name => 'tool', :parent => room

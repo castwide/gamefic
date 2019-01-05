@@ -1,7 +1,7 @@
-describe Scene::MultipleChoice do
+describe Gamefic::Scene::MultipleChoice do
   before :each do
-    @plot = Plot.new
-    c = Class.new(Entity) { include Active }
+    @plot = Gamefic::Plot.new
+    c = Class.new(Entity) { include Gamefic::Active }
     @character = @plot.make c, :name => 'character'
     @after = @plot.pause
     @chooser = @plot.multiple_choice "one", "two", "three", "next" do |actor, data|

@@ -1,6 +1,6 @@
 describe "Lock Action" do
   before :each do
-    @plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
     @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'a room'
@@ -18,7 +18,7 @@ end
 
 describe "Unlock Action" do
   before :each do
-    @plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
     @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'a room'
@@ -41,7 +41,7 @@ end
 
 describe "Open Action" do
   it "opens a closed container" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/container'
     room = plot.make Room, :name => 'room'
@@ -52,7 +52,7 @@ describe "Open Action" do
     expect(container.open?).to eq(true)
   end
   it "does not open a locked container" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     room = plot.make Room, :name => 'room'
     container = plot.make Container, :name => 'container', :parent => room
@@ -66,7 +66,7 @@ end
 
 describe "Close Action" do
   it "closes an open container" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'standard/container'
     room = plot.make Room, :name => 'room'

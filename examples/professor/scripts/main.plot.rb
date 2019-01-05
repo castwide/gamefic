@@ -33,15 +33,15 @@ respond :talk, Use.family(professor) do |actor, professor|
   actor.cue @talk_to_professor
 end
 
-respond :talk, Use.family(professor), Query::Text.new do |actor, professor, subject|
+respond :talk, Use.family(professor), Gamefic::Query::Text.new do |actor, professor, subject|
   actor.tell "#{The professor} has nothing to say about #{subject}."
 end
 
-respond :talk, Use.family(professor), Query::Text.new(/name/) do |actor, professor, subject|
+respond :talk, Use.family(professor), Gamefic::Query::Text.new(/name/) do |actor, professor, subject|
   actor.tell "\"Professor Sam Worthington. Pleased to meet you.\""
 end
 
-respond :talk, Use.family(professor), Query::Text.new(/(job|opening|work|interview)/) do |actor, professor, subject|
+respond :talk, Use.family(professor), Gamefic::Query::Text.new(/(job|opening|work|interview)/) do |actor, professor, subject|
   actor.conclude @asked_about_job
 end
 

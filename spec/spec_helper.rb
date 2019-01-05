@@ -7,7 +7,7 @@ require 'gamefic-sdk'
 require 'sinatra/base'
 require 'gamefic-library-standard'
 
-include Gamefic
+# include Gamefic
 
 SimpleCov.start
 

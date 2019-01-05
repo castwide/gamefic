@@ -46,7 +46,7 @@ describe Gamefic::Plot::Snapshot do
 
   it "restores a player" do
     plot = Gamefic::Plot.new
-    player = plot.cast Actor, name: 'old name'
+    player = plot.cast Gamefic::Actor, name: 'old name'
     plot.introduce player
     snapshot = plot.save
     player.name = 'new name'
@@ -57,7 +57,7 @@ describe Gamefic::Plot::Snapshot do
 
   it "restores a hash in an entity session" do
     plot = Gamefic::Plot.new
-    entity = plot.make Entity, name: 'entity'
+    entity = plot.make Gamefic::Entity, name: 'entity'
     hash = { one: 'one', two: 'two' }
     entity[:hash] = hash
     snapshot = plot.save

@@ -1,9 +1,9 @@
 require 'gamefic'
-include Gamefic
+# include Gamefic
 
 describe "Undo Action" do
   it "undoes the previous action" do
-    plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     plot.script 'standard'
     plot.script 'undo'
     room = plot.make Room, :name => "room"
