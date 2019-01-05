@@ -1,5 +1,4 @@
 require "gamefic"
-# include Gamefic
 
 describe Gamefic::Plot do
   it "accepts new entities" do

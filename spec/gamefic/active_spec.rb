@@ -1,5 +1,4 @@
 require "gamefic"
-# include Gamefic
 
 describe Gamefic::Active do
   it "performs an action" do

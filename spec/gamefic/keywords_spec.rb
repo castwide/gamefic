@@ -1,5 +1,3 @@
-# include Gamefic
-
 describe Gamefic::Keywords do
   before :all do
     @string = 'big red dog'

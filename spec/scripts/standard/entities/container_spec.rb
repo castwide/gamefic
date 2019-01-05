@@ -5,7 +5,6 @@ describe "Container" do
     @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'a room'
     @key = @plot.make Item, :name => 'a key', :parent => @room
-    puts "wtf #{Container}"
     @box = @plot.make Container, :name => 'a box', :parent => @room, :lock_key => @key
     @character = @plot.make Character, :name => 'a character', :parent => @room
     @key.parent = @character

@@ -7,8 +7,6 @@ require 'gamefic-sdk'
 require 'sinatra/base'
 require 'gamefic-library-standard'
 
-# include Gamefic
-
 SimpleCov.start
 
 class TestFileServer < Rack::File

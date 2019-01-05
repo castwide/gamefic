@@ -1,5 +1,4 @@
 require "gamefic"
-# include Gamefic
 
 class Described
   include Gamefic::Describable

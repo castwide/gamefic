@@ -1,5 +1,4 @@
 require 'gamefic-tty/text'
-# include Gamefic::Tty::Text
 
 describe Gamefic::Tty::Text::Html::Conversions do
   it "trims extra whitespace" do

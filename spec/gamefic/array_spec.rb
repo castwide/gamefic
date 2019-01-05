@@ -1,5 +1,4 @@
 require "gamefic"
-# include Gamefic
 
 describe Array do
   it "filters by class" do

@@ -1,5 +1,4 @@
 require 'gamefic'
-# include Gamefic
 
 describe "Undo Action" do
   it "undoes the previous action" do
