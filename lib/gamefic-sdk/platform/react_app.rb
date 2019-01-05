@@ -14,6 +14,7 @@ module Gamefic
 
         def start
           Thread.new do
+            STDERR.puts "ROot path: #{config.root_path}"
             Gamefic::Sdk::Server.set :source_dir, config.root_path
             Gamefic::Sdk::Server.set :browser, false
             Gamefic::Sdk::Server.set :public_folder, target_dir
@@ -21,7 +22,7 @@ module Gamefic
           end
           Dir.chdir target_dir do
             STDERR.puts "Target dir: #{target_dir}"
-            pid = Process.spawn "npm", "run", "start"
+            pid = Process.spawn "npm", "--prefix", target_dir, "run", "start"
             Process.wait pid
           end
         end
