@@ -8,3 +8,4 @@ examples/*/build
 examples/*/release
 .yardoc
 doc
+.vscode
