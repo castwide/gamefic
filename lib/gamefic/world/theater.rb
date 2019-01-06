@@ -1,3 +1,5 @@
+# @note Theater is implemented this way so the clean room object defines its
+#   classes and modules in the root namespace.
 Gamefic::World::Theater = Module.new do
   define_method :stage do |*args, &block|
     if block.nil?
@@ -21,8 +23,11 @@ Gamefic::World::Theater = Module.new do
       theater
     end
   end
+  alias cleanroom theater
 end
 
+# The Theater provides a clean room for executing plot scripts.
+#
 module Gamefic::World::Theater
   # @!method stage(*args, &block)
   #   Execute a block of code in a subset of the object's scope. An object's
