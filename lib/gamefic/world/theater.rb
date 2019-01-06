@@ -22,3 +22,43 @@ Gamefic::World::Theater = Module.new do
     end
   end
 end
+
+module Gamefic::World::Theater
+  # @!method stage(*args, &block)
+  #   Execute a block of code in a subset of the object's scope. An object's
+  #   stage is an isolated namespace that has its own instance variables and
+  #   access to its owner's public methods.
+  #
+  #   There are two ways to execute code on the stage. It will accept either a
+  #   string of code with an optional file name and line number, or a proc
+  #   with optional arguments. See module_eval and module_exec for more
+  #   information.
+  #
+  #   @example Evaluate a string of code
+  #     stage "puts 'Hello'"
+  #
+  #   @example Evaluate a string of code with a file name and line number
+  #     stage "puts 'Hello'", "file.rb", 1
+  #
+  #   @example Execute a block of code
+  #     stage {
+  #       puts 'Hello'
+  #     }
+  #
+  #   @example Execute a block of code with arguments
+  #     stage 'hello' { |message|
+  #       puts message # <- prints 'hello'
+  #     }
+  #
+  #   @example Use an instance variable
+  #     stage "@message = 'hello'"
+  #     stage "puts @message" # <- prints 'hello'
+  #
+  #   @yieldself [self]
+  #   @return [Object] The value returned by the executed code
+
+  # @!method theater
+  #   The module that acts as an isolated namespace for staged code.
+  #
+  #   @return [Object]
+end
