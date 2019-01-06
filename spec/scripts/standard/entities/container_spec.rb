@@ -1,7 +1,8 @@
 describe "Container" do
   before :each do
-    @plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
+    @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'a room'
     @key = @plot.make Item, :name => 'a key', :parent => @room
     @box = @plot.make Container, :name => 'a box', :parent => @room, :lock_key => @key

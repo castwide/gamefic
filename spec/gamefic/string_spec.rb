@@ -1,5 +1,4 @@
 require "gamefic"
-include Gamefic
 
 describe String do
   it "capitalizes the first letter without changing the rest" do

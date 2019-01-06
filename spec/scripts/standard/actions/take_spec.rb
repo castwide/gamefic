@@ -1,6 +1,6 @@
 describe "Take Action" do
   before :each do
-    @plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
     # @todo Maybe move the container stuff to a separate spec file
     @plot.script 'standard/container'

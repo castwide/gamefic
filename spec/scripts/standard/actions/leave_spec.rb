@@ -1,6 +1,6 @@
 describe "Leave Action" do
   before :each do
-    @plot = Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
+    @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(Gamefic::Sdk::GLOBAL_SCRIPT_PATH))
     @plot.script 'standard'
     @plot.script 'standard/container'
     @room = @plot.make Room, :name => 'room'

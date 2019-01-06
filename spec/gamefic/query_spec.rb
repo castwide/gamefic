@@ -7,7 +7,7 @@ end
 =begin
 describe Query::Base do
   it "finds an object by a word in its name" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     object1 = plot.make Entity, :name => 'object one'
     object2 = plot.make Entity, :name => 'object two'
     query = Query::Base.new
@@ -16,7 +16,7 @@ describe Query::Base do
     expect(result.objects[0]).to eq(object1)
   end
   it "returns a remainder for an unmatched description" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     object1 = plot.make Entity, :name => 'object one'
     object2 = plot.make Entity, :name => 'object two'
     query = Query::Base.new
@@ -25,7 +25,7 @@ describe Query::Base do
     expect(result.remainder).to eq('three')
   end
   it "finds an object by a synonym" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     object1 = plot.make Entity, :name => 'object one', :synonyms => 'first primary'
     object2 = plot.make Entity, :name => 'object two', :synonyms => 'second subsequent'
     query = Query::Base.new
@@ -34,7 +34,7 @@ describe Query::Base do
     expect(result.objects[0]).to eq(object2)
   end
   it "separates matching text from remainder" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     object1 = plot.make Entity, :name => 'object one', :synonyms => 'first primary'
     query = Query::Base.new
     result = query.execute(plot.entities, 'primary object superfluous')
@@ -42,7 +42,7 @@ describe Query::Base do
     expect(result.remainder).to eq('superfluous')
   end
   it "checks for an exact match in a subquery for prepositional phrases" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     table = plot.make Entity, :name => 'the table'
     book1 = plot.make Entity, :name => 'a book', :parent => table
     book2 = plot.make Entity, :name => 'a book'
@@ -54,7 +54,7 @@ describe Query::Base do
     expect(result.objects[0]).to eq(book1)
   end
   it "recognizes \"it\" as the last object of the caller" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     object1 = plot.make Entity, :name => 'object one'
     object2 = plot.make Entity, :name => 'object two'
     array = plot.entities
@@ -66,7 +66,7 @@ describe Query::Base do
     expect(result.objects[0]).to eq(object1)
   end
   it "uses conjunctions to add more entities to matches" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     object1 = plot.make Entity, :name => 'object one'
     object2 = plot.make Entity, :name => 'object two'
     array = plot.entities
@@ -83,7 +83,7 @@ describe Query::Base do
     expect(result.objects.length).to eq(2)
   end
   it "requires at least three characters for a partial match" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     entity = plot.make Entity, :name => 'dictionary'
     query = Query::Base.new
     matches = query.match('di', [entity])
@@ -92,7 +92,7 @@ describe Query::Base do
     expect(matches.objects.length).to eq(1)    
   end
   it "does case-insensitive matching" do
-    plot = Plot.new
+    plot = Gamefic::Plot.new
     entity = plot.make Entity, :name => 'dictionary'
     query = Query::Base.new
     matches = query.match('dictionary', [entity])

@@ -26,7 +26,7 @@ frontDoor = make Portal,
   :parent => foyer,
   :proper_named => true
 
-respond :go, Query::Siblings.new(frontDoor) do |actor, dest|
+respond :go, Gamefic::Query::Siblings.new(frontDoor) do |actor, dest|
   actor.tell "You've only just arrived, and besides, the weather outside seems to be getting worse."
 end
 
@@ -47,7 +47,7 @@ hook = make Supporter,
   :parent => cloakroom, 
   :synonyms => "peg"
 
-respond :look, Query::Family.new(hook) do |actor, hook|
+respond :look, Gamefic::Query::Family.new(hook) do |actor, hook|
   if hook.children.empty?
     actor.tell "It's just a brass hook, screwed to the wall."
   else
@@ -68,7 +68,7 @@ cloak = make Item,
 
 # Stop the player from dropping the cloak except in the cloak room.
 
-respond :drop, Query::Children.new(cloak) do |actor, message|
+respond :drop, Gamefic::Query::Children.new(cloak) do |actor, message|
   if actor.parent != cloakroom then 
       actor.tell "This isn't the best place to leave a smart cloak lying around."
   else
@@ -95,7 +95,7 @@ message = make Scenery,
   :parent => bar,
   :synonyms => "scrawl scrawled sawdust dust"
 
-respond :look, Query::Siblings.new(message) do |actor, message|
+respond :look, Gamefic::Query::Siblings.new(message) do |actor, message|
   if actor.session[:disturbed] then 
     actor.conclude @you_have_lost
   else

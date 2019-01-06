@@ -1,5 +1,4 @@
 require 'gamefic-tty/text'
-include Gamefic::Tty::Text
 
 describe Gamefic::Tty::Text::Html::Conversions do
   it "trims extra whitespace" do
@@ -41,21 +40,21 @@ describe Gamefic::Tty::Text::Html::Conversions do
   # text after the end of a strong tag.
 
   it "adds bold formatting" do
-    normal = Ansi.graphics_mode Ansi::Code::Attribute::NORMAL
-    bold = Ansi.graphics_mode Ansi::Code::Attribute::NORMAL, Ansi::Code::Attribute::BOLD
+    normal = Gamefic::Tty::Text::Ansi.graphics_mode Gamefic::Tty::Text::Ansi::Code::Attribute::NORMAL
+    bold = Gamefic::Tty::Text::Ansi.graphics_mode Gamefic::Tty::Text::Ansi::Code::Attribute::NORMAL, Gamefic::Tty::Text::Ansi::Code::Attribute::BOLD
     %w(strong b em).each { |tag|
       html = "normal <#{tag}>bold</#{tag}>"
-      ansi = Html::Conversions.html_to_ansi html
+      ansi = Gamefic::Tty::Text::Html::Conversions.html_to_ansi html
       expect(ansi).to eq "#{normal}normal #{bold}bold#{normal}"
     }
   end
 
   it "underscores" do
-    normal = Ansi.graphics_mode Ansi::Code::Attribute::NORMAL
-    under = Ansi.graphics_mode Ansi::Code::Attribute::NORMAL, Ansi::Code::Attribute::UNDERSCORE
+    normal = Gamefic::Tty::Text::Ansi.graphics_mode Gamefic::Tty::Text::Ansi::Code::Attribute::NORMAL
+    under = Gamefic::Tty::Text::Ansi.graphics_mode Gamefic::Tty::Text::Ansi::Code::Attribute::NORMAL, Gamefic::Tty::Text::Ansi::Code::Attribute::UNDERSCORE
     %w(u i).each { |tag|
       html = "normal <#{tag}>under</#{tag}>"
-      ansi = Html::Conversions.html_to_ansi html
+      ansi = Gamefic::Tty::Text::Html::Conversions.html_to_ansi html
       expect(ansi).to eq "#{normal}normal #{under}under#{normal}"
     }
   end
@@ -79,7 +78,7 @@ describe Gamefic::Tty::Text::Html::Conversions do
   end
 
   it "bolds and uppercases headers" do
-    bold = Ansi::Code::Attribute::BOLD.to_s
+    bold = Gamefic::Tty::Text::Ansi::Code::Attribute::BOLD.to_s
     %w(h1 h2 h3 h4 h5).each { |h|
       html = "<#{h}>header</#{h}>"
       ansi = Gamefic::Tty::Text::Html::Conversions.html_to_ansi html

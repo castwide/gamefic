@@ -9,7 +9,7 @@ module Gamefic
     end
 
     def restore snapshot
-      # HACK Force conclusion of current subplots
+      # HACK: Force conclusion of current subplots
       p_subplots.each { |s| s.conclude }
       p_subplots.clear
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)

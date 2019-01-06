@@ -1,11 +1,10 @@
 require "gamefic"
-include Gamefic
 
 class Described
-  include Describable
+  include Gamefic::Describable
 end
 
-describe Describable do
+describe Gamefic::Describable do
   it "determines indefinite article from name" do
     d = Described.new
     d.name = "a thing"

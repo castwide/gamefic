@@ -1,9 +1,7 @@
-include Gamefic
-
-describe Keywords do
+describe Gamefic::Keywords do
   before :all do
     @string = 'big red dog'
-    @string.extend Keywords
+    @string.extend Gamefic::Keywords
   end
 
   it "matches exact phrase" do
