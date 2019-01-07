@@ -17,7 +17,11 @@ Gamefic::World::Theater = Module.new do
       theater ||= Object.new
       theater.instance_exec do
         define_singleton_method :method_missing do |symbol, *args, &block|
-          instance.public_send :public_send, symbol, *args, &block
+          if instance.respond_to?(symbol)
+            instance.public_send :public_send, symbol, *args, &block
+          else
+            super
+          end
         end
       end
       theater
