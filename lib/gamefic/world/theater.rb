@@ -30,13 +30,14 @@ end
 #
 module Gamefic::World::Theater
   # @!method stage(*args, &block)
-  #   Execute a block of code in a subset of the object's scope. An object's
-  #   stage is an isolated namespace that has its own instance variables and
-  #   access to its owner's public methods.
+  #   Execute a block of code in a subset of the owner's scope.
+  #
+  #   The provided code is evaluated inside a clean room object that has its
+  #   own instance variables and access to the owner's public methods.
   #
   #   There are two ways to execute code on the stage. It will accept either a
   #   string of code with an optional file name and line number, or a proc
-  #   with optional arguments. See module_eval and module_exec for more
+  #   with optional arguments. See instace_exec and instance_eval for more
   #   information.
   #
   #   @example Evaluate a string of code
