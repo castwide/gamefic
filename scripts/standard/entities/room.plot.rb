@@ -37,11 +37,13 @@ class Room < Thing
   end
 end
 
+# @todo Monkey patching might not be the best way to handle this. It's only
+#   necessary because of specs that make Plot#connect calls. Consider
+#   changing the specs instead.
 module Gamefic::World
   # Create portals between rooms.
   #
   # @return [Portal]
-  # define_singleton_method :connect do |origin, destination, direction = nil, type: Portal, two_way: true|
   def connect origin, destination, direction = nil, type: Portal, two_way: true
     if direction.nil?
       portal = make type, :parent => origin, :destination => destination
