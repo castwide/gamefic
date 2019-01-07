@@ -8,7 +8,7 @@ module Gamefic
   # scope. Game engines use the plot to receive game data and process user
   # input.
   #
-  class Plot < Container
+  class Plot #< Container
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
@@ -21,6 +21,7 @@ module Gamefic
     # TODO: Metadata could use better protection
     attr_accessor :metadata
 
+    include World
     include Snapshot
     include Host
 
