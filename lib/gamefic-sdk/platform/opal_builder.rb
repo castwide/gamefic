@@ -15,17 +15,16 @@ module Gamefic::Sdk
             require 'gamefic-opal/engine'
             require 'gamefic-opal/user'
             $plot = Gamefic::Opal::Plot.new
-            def method_missing symbol, *args, &block
-              $plot.public_send :public_send, symbol, *args, &block
-            end
-            def Object.const_missing symbol
-              Gamefic.const_get symbol
-            end
             $engine = Gamefic::Opal::Engine.new($plot)
           )
           plot.imported_scripts.each do |script|
-            @opal_engine_code += "require '#{script.path}.plot'\n"
+            @opal_engine_code += %(
+              $plot.prepare_script '#{script.path}' do
+                #{File.read script.absolute_path}
+              end
+            )
           end
+          @opal_engine_code += "$plot.script 'main'\n"
         end
         @opal_engine_code
       end
