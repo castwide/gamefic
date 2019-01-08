@@ -1,7 +1,9 @@
 require 'gamefic/plot'
 
 module Gamefic
-  class Subplot < Container
+  class Subplot #< Container
+    include World
+
     # @return [Gamefic::Plot]
     attr_reader :plot
 

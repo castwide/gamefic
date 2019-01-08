@@ -1,6 +1,3 @@
-# @!method connect destination, direction = nil, type: Portal, two_way: true
-#   Create a portal to connect this room to a destination.
-#   @return [Portal]
 class Room < Thing
   attr_writer :explicit_exits
 
@@ -37,7 +34,10 @@ class Room < Thing
   end
 end
 
-module StandardMethods
+# @todo Monkey patching might not be the best way to handle this. It's only
+#   necessary because of specs that make Plot#connect calls. Consider
+#   changing the specs instead.
+module Gamefic::World
   # Create portals between rooms.
   #
   # @return [Portal]
@@ -71,4 +71,9 @@ Room.module_exec self do |plot|
   define_method :connect do |destination, direction = nil, type: Portal, two_way: true|
     plot.connect self, destination, direction, type: Portal, two_way: true
   end
+end
+class Room
+  # @!method connect destination, direction = nil, type: Portal, two_way: true
+  #   Create a portal to connect this room to a destination.
+  #   @return [Portal]
 end
