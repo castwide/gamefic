@@ -8,7 +8,7 @@ module Gamefic::Sdk
       raise "Invalid target #{target}" unless target.nil? or config.targets.key?(target)
       if config.auto_import?
         puts "Importing scripts..."
-        Shell.start ['import', directory, '--quiet']
+        Shell.start ['import', '-d', directory, '--quiet']
       end
       config.targets.each_pair { |k, v|
         next unless target.nil? or k == target
