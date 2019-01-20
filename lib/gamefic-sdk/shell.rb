@@ -219,6 +219,7 @@ module Gamefic
         begin
           write_opal_files config, options[:output], options[:minify], options[:sourcemap]
         rescue Exception => e
+          STDERR.puts e.message
           STDERR.puts e.inspect
         end
         if options[:watch]
@@ -230,6 +231,7 @@ module Gamefic
                 puts "Rebuilding #{File.basename(options[:output])}"
                 write_opal_files config, options[:output], options[:minify], options[:sourcemap]
               rescue Exception => e
+                STDERR.puts e.message
                 STDERR.puts e.inspect
               end
               compile_time = latest
