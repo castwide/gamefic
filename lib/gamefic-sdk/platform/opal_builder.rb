@@ -42,6 +42,9 @@ module Gamefic::Sdk
           @opal_builder = ::Opal::Builder.new
           @opal_builder.use_gem 'gamefic'
           @opal_builder.use_gem 'gamefic-sdk'
+          config.libraries.each do |lib|
+            @opal_builder.use_gem "gamefic-#{lib}" unless lib == 'standard'
+          end
           @opal_builder.append_paths config.script_path, config.import_path
           @opal_builder.build_str(opal_engine_code, '(inline)')
         end
