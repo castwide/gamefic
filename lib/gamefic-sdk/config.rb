@@ -194,7 +194,7 @@ module Gamefic
       #
       def require_libraries
         $LOAD_PATH.unshift File.join(source_dir, 'lib')
-        libraries.each { |lib| require "gamefic-library-#{lib}" }
+        libraries.each { |lib| require "gamefic-#{lib}" }
         $LOAD_PATH.shift
       end
     end
