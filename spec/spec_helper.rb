@@ -5,7 +5,7 @@ require 'simplecov'
 require 'gamefic'
 require 'gamefic-sdk'
 require 'sinatra/base'
-require 'gamefic-library-standard'
+require 'gamefic-standard'
 
 SimpleCov.start
 
