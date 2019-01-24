@@ -8,15 +8,10 @@ module Gamefic
   # scope. Game engines use the plot to receive game data and process user
   # input.
   #
-  class Plot #< Container
+  class Plot
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
-    autoload :Script,    'gamefic/plot/script'
-    autoload :Source,    'gamefic/plot/source'
-
-    # @return [Gamefic::Source]
-    attr_reader :source
 
     # TODO: Metadata could use better protection
     attr_accessor :metadata
@@ -27,9 +22,6 @@ module Gamefic
 
     # @param structure [Gamefic::Structure]
     def initialize structure: Gamefic::BASE
-      @source = source || Source.new
-      @working_scripts = []
-      @imported_scripts = []
       @running = false
       post_initialize
       structure.blocks.each { |blk| stage &blk }
@@ -42,13 +34,6 @@ module Gamefic
 
     def running?
       @running
-    end
-
-    # Get an Array of all scripts that have been imported into the Plot.
-    #
-    # @return [Array<Gamefic::Script::Base>]
-    def imported_scripts
-      @imported_scripts ||= []
     end
 
     def post_initialize
@@ -104,34 +89,6 @@ module Gamefic
       entities.each { |entity|
         entity.tell message
       }
-    end
-
-    # Load a script into the current Plot.
-    # This method is similar to Kernel#require, except that the script is
-    # evaluated within the Plot's context via #stage.
-    #
-    # @raise [LoadError] if script could not be found
-    # @param path [String] The path to the script being evaluated
-    # @return [Boolean] true if the script was loaded by this call or false if it was already loaded.
-    def script path
-      imported_script = source.export(path)
-      if imported_script.nil?
-        raise LoadError.new("cannot load script -- #{path}")
-      end
-      if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
-        @working_scripts.push imported_script
-        # HACK: Arguments need to be in different order if source returns proc
-        if imported_script.read.kind_of?(Proc)
-          stage &imported_script.read
-        else
-          stage imported_script.read, imported_script.absolute_path
-        end
-        @working_scripts.pop
-        imported_scripts.push imported_script
-        true
-      else
-        false
-      end
     end
   end
 end
