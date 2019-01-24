@@ -25,16 +25,14 @@ module Gamefic
     include Snapshot
     include Host
 
-    # @param source [Source::Base]
-    def initialize(source = nil)
+    # @param structure [Gamefic::Structure]
+    def initialize structure: Gamefic::BASE
       @source = source || Source.new
       @working_scripts = []
       @imported_scripts = []
       @running = false
       post_initialize
-      Gamefic.scripts.each do |scr|
-        stage &scr
-      end
+      structure.blocks.each { |blk| stage &blk }
     end
 
     def player_class cls = nil
