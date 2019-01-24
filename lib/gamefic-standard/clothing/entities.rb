@@ -1,0 +1,7 @@
+script 'standard/clothing/entities/clothing'
+script 'standard/clothing/entities/coat'
+script 'standard/clothing/entities/gloves'
+script 'standard/clothing/entities/hat'
+script 'standard/clothing/entities/pants'
+script 'standard/clothing/entities/shirt'
+script 'standard/clothing/entities/shoes'

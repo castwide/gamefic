@@ -32,6 +32,9 @@ module Gamefic
       @imported_scripts = []
       @running = false
       post_initialize
+      Gamefic.scripts.each do |scr|
+        stage &scr
+      end
     end
 
     def player_class cls = nil

@@ -19,3 +19,15 @@ require "gamefic/plot"
 require 'gamefic/subplot'
 require "gamefic/engine"
 require "gamefic/user"
+
+module Gamefic
+  class << self
+    def scripts
+      @scripts ||= []
+    end
+
+    def script &block
+      scripts.push block
+    end
+  end
+end

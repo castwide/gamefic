@@ -1,0 +1,3 @@
+class Fixture < Thing
+
+end
