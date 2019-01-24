@@ -8,16 +8,12 @@ module Gamefic
     attr_reader :plot
 
     class << self
-      def start_procs
-        @start_procs ||= []
+      def script &block
+        structure.script &block
       end
 
-      # Define a proc to be executed when the subplot is initialized.
-      #
-      # @yieldparam self [Gamefic::Subplot] The subplot instance
-      # @yieldself [Gamefic::Subplot]
-      def on_start &block
-        start_procs.push block
+      def structure
+        @structure ||= Structure.new
       end
     end
 
@@ -28,44 +24,10 @@ module Gamefic
       @plot = plot
       @next_cue = next_cue
       @concluded = false
-      @working_scripts = []
       configure more
-      # @todo It's not strictly necessary to pass self as a parameter here.
-      #   We're only doing it to give Solargraph a way to provide completion
-      #   items for the Subplot instance until we figure out a way to tell it
-      #   the block's execution scope.
-      # stage self, &self.class.start_proc unless self.class.start_proc.nil?
-      self.class.start_procs.each { |block| stage &block }
+      self.class.structure.blocks.each { |blk| stage &blk }
       playbook.freeze
       self.introduce introduce unless introduce.nil?
-    end
-
-    def script path
-      imported_script = plot.source.export(path)
-      if imported_script.nil?
-        raise LoadError.new("cannot load script -- #{path}")
-      end
-      if !@working_scripts.include?(imported_script) and !imported_scripts.include?(imported_script)
-        @working_scripts.push imported_script
-        # HACK: Arguments need to be in different order if source returns proc
-        if imported_script.read.kind_of?(Proc)
-          stage &imported_script.read
-        else
-          stage imported_script.read, imported_script.absolute_path
-        end
-        @working_scripts.pop
-        imported_scripts.push imported_script
-        true
-      else
-        false
-      end
-    end
-
-    # Get an Array of all scripts that have been imported into the Plot.
-    #
-    # @return [Array<Gamefic::Script::Base>]
-    def imported_scripts
-      @imported_scripts ||= []
     end
 
     def players
