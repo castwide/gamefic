@@ -23,8 +23,6 @@ module Gamefic
           write_config_yaml
           write_uuid_file
           write_gemfile
-          write_yardopts
-          write_solargraph_yml
           write_gitignore
           puts "Game directory '#{@directory}' initialized." unless @quiet
         end
@@ -93,31 +91,10 @@ module Gamefic
           end
         end
 
-        def write_yardopts
-          File.open("#{@directory}/.yardopts", 'w') do |file|
-            file.puts 'scripts/**/*.rb'
-            file.puts 'imports/**/*.rb'
-          end
-        end
-
-        def write_solargraph_yml
-          File.open("#{@directory}/.solargraph.yml", 'w') do |file|
-            file.puts 'include:'
-            file.puts '- scripts/**/*.rb'
-            file.puts '- imports/**/*.rb'
-            file.puts 'domains:'
-            file.puts '- Gamefic::Plot'
-            file.puts 'required:'
-            file.puts '- gamefic'
-          end
-        end
-
         def write_gitignore
           File.open("#{@directory}/.gitignore", 'w') do |file|
             file.puts "./builds"
             file.puts "node_modules"
-            file.puts "Gemfile.lock"
-            file.puts "_opal.js"
           end
         end
       end
