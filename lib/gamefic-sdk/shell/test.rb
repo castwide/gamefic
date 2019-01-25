@@ -4,8 +4,6 @@ module Gamefic
   module Sdk
     class Shell
       class Test
-        include Gamefic::Sdk::Shell::Plotter
-
         def initialize(directory:)
           @path = directory
           raise "Invalid path: #{@path}" unless File.exist?(@path)
@@ -13,7 +11,10 @@ module Gamefic
 
         def run
           puts "Loading..."
-          plot = load_project(@path)
+          config = Gamefic::Sdk::Config.new(@path)
+          $LOAD_PATH.unshift config.lib_path
+          require 'main'
+          plot = Gamefic::Plot.new
           engine = Gamefic::Tty::Engine.new plot
           engine.connect
           puts "\n"
