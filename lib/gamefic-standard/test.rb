@@ -16,13 +16,21 @@ module Tester
   end
 end
 
-extend Tester
+class Gamefic::Plot
+  include Tester
+end
 
-meta :test, Gamefic::Query::Text.new do |actor, name|
-  sym = name.to_sym
-  if test_procs[sym].nil?
-    actor.tell "There's no test named '#{name}' in this game."
-  else
-    run_test sym, actor
+class Gamefic::Subplot
+  include Tester
+end
+
+Gamefic.script do
+  meta :test, Gamefic::Query::Text.new do |actor, name|
+    sym = name.to_sym
+    if test_procs[sym].nil?
+      actor.tell "There's no test named '#{name}' in this game."
+    else
+      run_test sym, actor
+    end
   end
 end
