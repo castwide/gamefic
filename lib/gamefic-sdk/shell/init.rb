@@ -8,9 +8,9 @@ module Gamefic
         def initialize(directory:, standard: true, quiet: false, scripts: [], title: nil, author: nil)
           @quiet = quiet
           @directory = directory
-          @scripts = []
-          @scripts.push('standard') if standard
-          @scripts += scripts if scripts
+          # @scripts = []
+          # @scripts.push('standard') if standard
+          # @scripts += scripts if scripts
           @title = title
           @author = author
         end
@@ -18,7 +18,8 @@ module Gamefic
         def run
           make_game_directories
           write_main_script
-          write_test_script
+          # @todo Temporarily disabled
+          # write_test_script
           write_config_yaml
           write_uuid_file
           write_gemfile
@@ -38,18 +39,22 @@ module Gamefic
             Dir.mkdir(@directory)
           end
 
-          Dir.mkdir(File.join(@directory, 'scripts'))
-          Dir.mkdir(File.join(@directory, 'imports'))
+          Dir.mkdir(File.join(@directory, 'lib'))
+          # Dir.mkdir(File.join(@directory, 'imports'))
           Dir.mkdir(File.join(@directory, 'media'))
           Dir.mkdir(File.join(@directory, 'builds'))
         end
 
         def write_main_script
-          main_file = File.join(@directory, 'scripts', 'main.plot.rb')
+          main_file = File.join(@directory, 'lib', 'main.rb')
           File.open(main_file, 'w') do |file|
-            @scripts.each do |script|
-              file.puts "script '#{script}'"
-            end
+            file.puts "require 'gamefic-standard'"
+            file.puts "\n"
+            file.puts "Gamefic.script do"
+            file.puts "  introduction do |actor|"
+            file.puts "    actor.tell 'Hello, world!'"
+            file.puts "  end"
+            file.puts "end"
           end
         end
 
@@ -80,6 +85,7 @@ module Gamefic
             file.puts "source 'https://rubygems.org'"
             file.puts ""
             file.puts "gem 'gamefic'"
+            file.puts "gem 'gamefic-standard'"
             file.puts ""
             file.puts "group :development do"
             file.puts "  gem 'gamefic-sdk'"

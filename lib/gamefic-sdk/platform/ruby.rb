@@ -17,11 +17,11 @@ module Gamefic::Sdk
       dir = File.dirname(File.dirname(`gem which gamefic-sdk`))
       gem = Gem::Specification.find_by_name('gamefic-sdk')
       files.merge! hash_files(gem.lib_files.select{|f| f.start_with?('lib/gamefic-tty')}, dir)
-      plot.imported_scripts.each do |script|
-        code = File.read(script.absolute_path)
-        comp = Zlib::Deflate.deflate(code)
-        files["scripts/#{script.path}.plot.rb"] = Base64.encode64(comp)
-      end
+      # plot.imported_scripts.each do |script|
+      #   code = File.read(script.absolute_path)
+      #   comp = Zlib::Deflate.deflate(code)
+      #   files["scripts/#{script.path}.plot.rb"] = Base64.encode64(comp)
+      # end
       program = %(
 #!/usr/bin/env ruby
 require 'tmpdir'

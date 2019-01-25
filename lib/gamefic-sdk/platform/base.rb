@@ -46,12 +46,13 @@ module Gamefic::Sdk
     #
     # @return [Gamefic::Plot]
     def plot
-      if @plot.nil?
-        paths = [config.script_path, config.import_path] + config.library_paths
-        @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(*paths))
-        @plot.script 'main'
-      end
-      @plot
+      # if @plot.nil?
+      #   paths = [config.script_path, config.import_path] + config.library_paths
+      #   @plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(*paths))
+      #   @plot.script 'main'
+      # end
+      # @plot
+      @plot ||= Gamefic::Plot.new
     end
 
     # Build the target. Subclasses should override this method with the

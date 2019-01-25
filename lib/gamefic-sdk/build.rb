@@ -6,10 +6,10 @@ module Gamefic::Sdk
     def self.release directory, target: nil, quiet: false
       config = Gamefic::Sdk::Config.load(directory)
       raise "Invalid target #{target}" unless target.nil? or config.targets.key?(target)
-      if config.auto_import?
-        puts "Importing scripts..."
-        Shell.start ['import', '-d', directory, '--quiet']
-      end
+      # if config.auto_import?
+      #   puts "Importing scripts..."
+      #   Shell.start ['import', '-d', directory, '--quiet']
+      # end
       config.targets.each_pair { |k, v|
         next unless target.nil? or k == target
         plat = Gamefic::Sdk::Platform.load(config, k)

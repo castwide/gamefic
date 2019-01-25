@@ -11,20 +11,12 @@ module Gamefic::Sdk
             require 'native'
             require 'gamefic'
             require 'gamefic/query'
-            require 'gamefic-opal/plot'
             require 'gamefic-opal/engine'
             require 'gamefic-opal/user'
-            $plot = Gamefic::Opal::Plot.new
+            require '#{config.main}'
+            $plot = Gamefic::Plot.new
             $engine = Gamefic::Opal::Engine.new($plot)
           )
-          plot.imported_scripts.each do |script|
-            @opal_engine_code += %(
-              $plot.prepare_script '#{script.path}' do
-                #{File.read script.absolute_path}
-              end
-            )
-          end
-          @opal_engine_code += "$plot.script 'main'\n"
         end
         @opal_engine_code
       end
@@ -42,10 +34,11 @@ module Gamefic::Sdk
           @opal_builder = ::Opal::Builder.new
           @opal_builder.use_gem 'gamefic'
           @opal_builder.use_gem 'gamefic-sdk'
-          config.libraries.each do |lib|
-            @opal_builder.use_gem "gamefic-#{lib}" unless lib == 'standard'
-          end
-          @opal_builder.append_paths config.script_path, config.import_path
+          # config.libraries.each do |lib|
+          #   @opal_builder.use_gem "gamefic-#{lib}" unless lib == 'standard'
+          # end
+          # @opal_builder.append_paths config.script_path, config.import_path
+          @opal_builder.append_paths config.lib_path
           @opal_builder.build_str(opal_engine_code, '(inline)')
         end
         @opal_builder
