@@ -55,6 +55,13 @@ module Gamefic
         @lib_path ||= File.absolute_path(Pathname.new(source_dir).join(data['lib_path'] || './lib').to_s)
       end
 
+      # The path that is required to initialize the plot.
+      #
+      # @return [String]
+      def main
+        data['main']
+      end
+
       # The absolute path to the project's builds directory.
       #
       # @return [String]
@@ -135,6 +142,7 @@ module Gamefic
           title: 'Untitled',
           author: 'Anonymous',
           lib_path: './lib',
+          main: 'main',
           media_path: './media',
           target_path: './targets',
           build_path: './builds',

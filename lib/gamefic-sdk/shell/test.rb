@@ -13,7 +13,7 @@ module Gamefic
           puts "Loading..."
           config = Gamefic::Sdk::Config.new(@path)
           $LOAD_PATH.unshift config.lib_path
-          require 'main'
+          require config.main
           plot = Gamefic::Plot.new
           engine = Gamefic::Tty::Engine.new plot
           engine.connect
