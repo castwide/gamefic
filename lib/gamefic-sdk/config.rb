@@ -15,7 +15,6 @@ module Gamefic
       def initialize directory, data = Config.defaults
         @source_dir = File.absolute_path(directory)
         @data = data
-        require_libraries
 
         @source_dir.freeze
         @data.freeze
@@ -35,20 +34,6 @@ module Gamefic
         @author ||= (data['author'] || 'Anonymous')
       end
 
-      # The absolute path to the project's script directory.
-      #
-      # @return [String]
-      def script_path
-        @script_path ||= File.absolute_path(Pathname.new(source_dir).join(data['script_path'] || './scripts').to_s)
-      end
-
-      # The absolute path to the project's import directory.
-      #
-      # @return [String]
-      def import_path
-        @import_paths ||= File.absolute_path(Pathname.new(source_dir).join(data['import_path'] || './imports').to_s)
-      end
-
       # The absolute path to the project's media directory.
       #
       # @return [String]
@@ -63,6 +48,13 @@ module Gamefic
         @root_path ||= File.absolute_path(source_dir)
       end
 
+      # The absolute path to the project's lib directory.
+      #
+      # @return [String]
+      def lib_path
+        @lib_path ||= File.absolute_path(Pathname.new(source_dir).join(data['lib_path'] || './lib').to_s)
+      end
+
       # The absolute path to the project's builds directory.
       #
       # @return [String]
@@ -75,34 +67,6 @@ module Gamefic
       # @return [String]
       def target_path
         @target_path ||= File.absolute_path(Pathname.new(source_dir).join(data['target_path'] || './targets').to_s)
-      end
-
-      # An array of library names to be used as sources for imported scripts.
-      #
-      # @return [Array<String>]
-      def libraries
-        @libraries ||= data['libraries'] || []
-      end
-
-      # An array of absolute paths to all of the project's imported libraries.
-      #
-      # @return [Array<String>]
-      def library_paths
-        if @library_paths.nil?
-          @library_paths = []
-          libraries.each do |l|
-            @library_paths.push Gamefic::Library.find(l)
-          end
-        end
-        @library_paths
-      end
-
-      # True if the project should automatically import scripts from shared
-      # libraries before common SDK operations (build, test, etc.)
-      #
-      # @return [Boolean]
-      def auto_import?
-        @auto_import ||= (data['auto_import'] || true)
       end
 
       # A hash of each target's name and its configuration options.
@@ -170,13 +134,10 @@ module Gamefic
         @defaults ||= JSON.parse({
           title: 'Untitled',
           author: 'Anonymous',
-          script_path: './scripts',
-          import_path: './imports',
+          lib_path: './lib',
           media_path: './media',
-          libraries: ['standard'],
           target_path: './targets',
           build_path: './builds',
-          auto_import: true,
           targets: {
             ruby: {
               platform: 'Ruby',
@@ -184,18 +145,6 @@ module Gamefic
             }
           }
         }.to_json)
-      end
-
-      private
-
-      # Ensure that the project's libaries have been included.
-      # Gamefic assumes the convention gamefic-library-[name], e.g., the
-      # standard library's required path is gamefic-library-standard.
-      #
-      def require_libraries
-        $LOAD_PATH.unshift File.join(source_dir, 'lib')
-        libraries.each { |lib| require "gamefic-#{lib}" }
-        $LOAD_PATH.shift
       end
     end
   end
