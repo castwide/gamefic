@@ -13,15 +13,17 @@ module Gamefic
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
 
-    # TODO: Metadata could use better protection
-    attr_accessor :metadata
+    # @return [Hash]
+    attr_reader :metadata
 
     include World
     include Snapshot
     include Host
 
     # @param structure [Gamefic::Structure]
-    def initialize structure: Gamefic::BASE
+    # @param metadata [Hash]
+    def initialize structure: Gamefic::BASE, metadata: {}
+      @metadata = metadata
       @running = false
       post_initialize
       structure.blocks.each { |blk| stage &blk }
