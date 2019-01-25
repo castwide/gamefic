@@ -17,11 +17,12 @@ module Gamefic::Sdk
       dir = File.dirname(File.dirname(`gem which gamefic-sdk`))
       gem = Gem::Specification.find_by_name('gamefic-sdk')
       files.merge! hash_files(gem.lib_files.select{|f| f.start_with?('lib/gamefic-tty')}, dir)
-      # plot.imported_scripts.each do |script|
-      #   code = File.read(script.absolute_path)
-      #   comp = Zlib::Deflate.deflate(code)
-      #   files["scripts/#{script.path}.plot.rb"] = Base64.encode64(comp)
-      # end
+      files.merge! hash_files(gem.lib_files.select{|f| f.start_with?('lib/gamefic-standard')}, dir)
+      Dir[File.join(config.lib_path, '**', '*')].each do |file|
+        code = File.read(file)
+        comp = Zlib::Deflate.deflate(code)
+        files["lib/#{file[config.lib_path.length+1..-1]}"] = Base64.encode64(comp)
+      end
       program = %(
 #!/usr/bin/env ruby
 require 'tmpdir'
@@ -43,8 +44,8 @@ Dir.mktmpdir do |tmpdir|
   $LOAD_PATH.unshift File.join(tmpdir, 'lib')
   require 'gamefic'
   require 'gamefic-tty'
-  plot = Gamefic::Plot.new(Gamefic::Plot::Source.new(File.join(tmpdir, 'scripts')))
-  plot.script 'main'
+  require '#{config.main}'
+  plot = Gamefic::Plot.new
   engine = Gamefic::Tty::Engine.new(plot)
   engine.connect
   puts "\n"

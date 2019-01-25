@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files = Dir['lib/gamefic-sdk.rb', 'lib/gamefic-tty.rb', 'lib/gamefic-library.rb', 'lib/gamefic-sdk/**/*.rb', 'lib/gamefic-tty/**/*.rb', 'lib/gamefic-library/**/*.rb', 'html/**/*', 'scripts/**/*']
+  s.files = Dir['lib/gamefic-sdk.rb', 'lib/gamefic-tty.rb', 'lib/gamefic-standard.rb', 'lib/gamefic-sdk/**/*.rb', 'lib/gamefic-tty/**/*.rb', 'lib/gamefic-standard/**/*.rb', 'html/**/*', 'scripts/**/*']
   s.executables   = ['gfk', 'gamefic']
   s.require_paths = ['lib']
 
