@@ -1,5 +1,6 @@
 require 'opal'
 require 'uglifier'
+require 'rubygems'
 
 module Gamefic::Sdk
   module Platform
@@ -33,11 +34,9 @@ module Gamefic::Sdk
         if @opal_builder.nil?
           @opal_builder = ::Opal::Builder.new
           @opal_builder.use_gem 'gamefic'
-          @opal_builder.use_gem 'gamefic-sdk'
-          # config.libraries.each do |lib|
-          #   @opal_builder.use_gem "gamefic-#{lib}" unless lib == 'standard'
-          # end
-          # @opal_builder.append_paths config.script_path, config.import_path
+          Gem::Specification.find_all { |spec| spec.name.start_with?('gamefic-') }.each do |spec|
+            @opal_builder.use_gem spec.name
+          end
           @opal_builder.append_paths config.lib_path
           @opal_builder.build_str(opal_engine_code, '(inline)')
         end
