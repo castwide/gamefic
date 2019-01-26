@@ -32,7 +32,7 @@ module Gamefic
   #     stage "@message = 'hello'"
   #     stage "puts @message" # <- prints 'hello'
   #
-  #   @yieldself [self]
+  #   @yieldpublic [Gamefic::Plot]
   #   @return [Object] The value returned by the executed code
   #
   # @!method theater
@@ -49,6 +49,7 @@ module Gamefic
 
       # Add a block to be executed by the instance's `stage` method.
       #
+      # @yieldpublic [Gamefic::Plot]
       def script &block
         blocks.push block
       end

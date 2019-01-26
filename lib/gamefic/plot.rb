@@ -93,6 +93,7 @@ module Gamefic
 end
 
 module Gamefic
+  # @yieldpublic [Gamefic::Plot]
   def self.script &block
     Gamefic::Plot.script &block
   end
