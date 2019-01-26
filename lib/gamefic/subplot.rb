@@ -3,19 +3,11 @@ require 'gamefic/plot'
 module Gamefic
   class Subplot #< Container
     include World
+    include Scriptable
+    # @!parse extend Scriptable::ClassMethods
 
     # @return [Gamefic::Plot]
     attr_reader :plot
-
-    class << self
-      def script &block
-        structure.script &block
-      end
-
-      def structure
-        @structure ||= Structure.new
-      end
-    end
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor]
@@ -25,7 +17,7 @@ module Gamefic
       @next_cue = next_cue
       @concluded = false
       configure more
-      self.class.structure.blocks.each { |blk| stage &blk }
+      run_scripts
       playbook.freeze
       self.introduce introduce unless introduce.nil?
     end

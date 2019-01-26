@@ -51,7 +51,7 @@ Dir.mktmpdir do |tmpdir|
   puts "\n"
   engine.run
 end
-).strip
+).lstrip
       FileUtils.mkdir_p build_dir
       File.open(filename, 'w') do |file|
         file << program

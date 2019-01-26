@@ -17,16 +17,17 @@ module Gamefic
     attr_reader :metadata
 
     include World
+    include Scriptable
+    # @!parse extend Scriptable::ClassMethods
     include Snapshot
     include Host
 
     # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
-    def initialize structure: Gamefic::BASE, metadata: {}
+    def initialize metadata: {}
       @metadata = metadata
       @running = false
-      post_initialize
-      structure.blocks.each { |blk| stage &blk }
+      run_scripts
     end
 
     def player_class cls = nil
@@ -36,10 +37,6 @@ module Gamefic
 
     def running?
       @running
-    end
-
-    def post_initialize
-      # TODO: Should this method be required by extended classes?
     end
 
     # Get an Array of the Plot's current Syntaxes.
@@ -92,5 +89,11 @@ module Gamefic
         entity.tell message
       }
     end
+  end
+end
+
+module Gamefic
+  def self.script &block
+    Gamefic::Plot.script &block
   end
 end

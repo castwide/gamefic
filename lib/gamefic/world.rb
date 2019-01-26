@@ -6,13 +6,11 @@ module Gamefic
     autoload :Callbacks, 'gamefic/world/callbacks'
     autoload :Scenes,    'gamefic/world/scenes'
     autoload :Players,   'gamefic/world/players'
-    autoload :Theater,   'gamefic/world/theater'
 
     include Entities
     include Commands
     include Callbacks
     include Scenes
     include Players
-    include Theater
   end
 end
