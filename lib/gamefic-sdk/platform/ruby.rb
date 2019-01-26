@@ -19,6 +19,7 @@ module Gamefic::Sdk
       files.merge! hash_files(gem.lib_files.select{|f| f.start_with?('lib/gamefic-tty')}, dir)
       files.merge! hash_files(gem.lib_files.select{|f| f.start_with?('lib/gamefic-standard')}, dir)
       Dir[File.join(config.lib_path, '**', '*')].each do |file|
+        next if File.directory?(file)
         code = File.read(file)
         comp = Zlib::Deflate.deflate(code)
         files["lib/#{file[config.lib_path.length+1..-1]}"] = Base64.encode64(comp)
