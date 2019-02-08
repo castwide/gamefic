@@ -49,10 +49,10 @@ module Gamefic
       option :directory, type: :string, aliases: :d, desc: 'The project directory', default: '.'
       def start target
         config = Gamefic::Sdk::Config.load(options[:directory])
-        if config.auto_import?
-          puts "Importing scripts..."
-          Shell.start ['import', '-d', options[:directory], '--quiet']
-        end
+        # if config.auto_import?
+        #   puts "Importing scripts..."
+        #   Shell.start ['import', '-d', options[:directory], '--quiet']
+        # end
         platform = Gamefic::Sdk::Platform.load(config, target)
         platform.start
       end
@@ -225,7 +225,8 @@ module Gamefic
         if options[:watch]
           compile_time = Time.now
           while true
-            latest = Dir[config.script_path + '/**/*', config.import_path + '/**/*', config.media_path + '/**/*'].map{|f| File.mtime(f)}.max
+            # latest = Dir[config.script_path + '/**/*', config.import_path + '/**/*', config.media_path + '/**/*'].map{|f| File.mtime(f)}.max
+            latest = Dir[config.source_dir + '/**/*.rb'].map { |f| File.mtime(f) }.max
             if latest > compile_time
               begin
                 puts "Rebuilding #{File.basename(options[:output])}"
@@ -253,7 +254,8 @@ module Gamefic
         platform = opal_builder_platform(config)
         code = platform.build_opal_str(minify)
         if sourcemap
-          code += "\n//# sourceMappingURL=#{File.basename(output)}.map"
+          # @todo Don't hardcode this
+          code += "\n//# sourceMappingURL=file:///D:/Users/fsnyd/Documents/code/games/opencases/targets/reactapp/engine/#{File.basename(output)}.map"
         end
         File.write output, code
         if sourcemap

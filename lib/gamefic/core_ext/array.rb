@@ -61,7 +61,7 @@ class Array
     join_and(sep, orSep, serial)
   end
 
-  private
+  # private
 
   def _keep(arr, cls, bool)
     if (cls.kind_of?(Class) or cls.kind_of?(Module))
