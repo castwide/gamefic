@@ -1,3 +1,0 @@
-class Gloves < Clothing
-
-end

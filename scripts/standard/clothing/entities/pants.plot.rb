@@ -1,3 +1,0 @@
-class Pants < Clothing
-
-end

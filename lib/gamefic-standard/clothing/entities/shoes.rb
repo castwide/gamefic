@@ -1,3 +1,0 @@
-class Shoes < Clothing
-
-end
