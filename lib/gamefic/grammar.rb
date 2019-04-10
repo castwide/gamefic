@@ -1,13 +1,9 @@
-module Gamefic
-  module Grammar
-    autoload :Tense, 'gamefic/grammar/tense'
-    autoload :Pronouns, 'gamefic/grammar/pronouns'
-    autoload :Conjugator, 'gamefic/grammar/conjugator'
-    autoload :Verbs, 'gamefic/grammar/verbs'
-    autoload :VerbSet, 'gamefic/grammar/verb_set'
-    autoload :Person, 'gamefic/grammar/person'
-    autoload :Plural, 'gamefic/grammar/plural'
-    autoload :Gender, 'gamefic/grammar/gender'
-    autoload :WordAdapter, 'gamefic/grammar/word_adapter'
-  end
-end
+require 'gamefic/grammar/tense'
+require 'gamefic/grammar/pronouns'
+require 'gamefic/grammar/verb_set'
+require 'gamefic/grammar/conjugator'
+require 'gamefic/grammar/verbs'
+require 'gamefic/grammar/person'
+require 'gamefic/grammar/plural'
+require 'gamefic/grammar/gender'
+require 'gamefic/grammar/word_adapter'

@@ -1,5 +1,3 @@
-require 'gamefic/grammar'
-
 module Gamefic::Grammar
   module Plural
     attr_writer :plural

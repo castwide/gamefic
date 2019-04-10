@@ -1,5 +1,3 @@
-require 'gamefic/grammar'
-
 module Gamefic::Grammar
   class Verbs
     extend Gamefic::Grammar::Conjugator::ClassMethods

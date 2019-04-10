@@ -1,6 +1,3 @@
-require 'gamefic/grammar'
-require 'gamefic/grammar/gender'
-
 module Gamefic::Grammar
   module WordAdapter
     include Gender
