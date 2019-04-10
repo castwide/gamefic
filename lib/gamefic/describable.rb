@@ -1,7 +1,6 @@
 require 'gamefic/grammar'
 
 module Gamefic
-
   # Add a variety of text properties for naming, describing, and referencing
   # objects.
   module Describable

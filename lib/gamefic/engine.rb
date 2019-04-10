@@ -1,7 +1,6 @@
 module Gamefic
-
   class Engine
-    # @return [Class]
+    # @return [Class<Gamefic::User>]
     attr_writer :user_class
 
     # @return [Gamefic::Plot]
@@ -16,6 +15,7 @@ module Gamefic
       # Override in subclasses
     end
 
+    # @return [Class<Gamefic::User>]
     def user_class
       @user_class ||= Gamefic::User
     end
@@ -48,5 +48,4 @@ module Gamefic
       @user.character.queue.push input unless input.nil?
     end
   end
-
 end

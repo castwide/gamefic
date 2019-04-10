@@ -1,5 +1,4 @@
 module Gamefic
-
   class User
     # @return [Gamefic::Actor]
     attr_reader :character
@@ -23,5 +22,4 @@ module Gamefic
       raise 'Unimplemented'
     end
   end
-
 end

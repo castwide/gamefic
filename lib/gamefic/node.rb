@@ -1,10 +1,8 @@
 # Exception raised when setting a node's parent would cause
 # a circular reference, e.g., A -> A or A -> B -> A
-class CircularNodeReferenceError < Exception
-end
+class CircularNodeReferenceError < RuntimeError; end
 
 module Gamefic
-
   module Node
     # An array of the object's children.
     #
@@ -93,5 +91,4 @@ module Gamefic
       return array
     end
   end
-
 end

@@ -1,6 +1,5 @@
 module Gamefic
-  class NotConclusionError < Exception
-  end
+  class NotConclusionError < RuntimeError; end
 
   # The Active module gives entities the ability to perform actions and
   # participate in scenes. The Actor class, for example, is an Entity

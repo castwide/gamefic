@@ -1,5 +1,4 @@
 module Gamefic
-
   module Scene
     autoload :Base, 'gamefic/scene/base'
     autoload :Custom, 'gamefic/scene/custom'
@@ -10,5 +9,4 @@ module Gamefic
     autoload :MultipleScene, 'gamefic/scene/multiple_scene'
     autoload :YesOrNo, 'gamefic/scene/yes_or_no'
   end
-
 end
