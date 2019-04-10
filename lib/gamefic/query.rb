@@ -1,5 +1,4 @@
 module Gamefic
-
   module Query
     autoload :Base, 'gamefic/query/base'
     autoload :Children, 'gamefic/query/children'
@@ -12,5 +11,4 @@ module Gamefic
     autoload :Siblings, 'gamefic/query/siblings'
     autoload :Text, 'gamefic/query/text'
   end
-
 end

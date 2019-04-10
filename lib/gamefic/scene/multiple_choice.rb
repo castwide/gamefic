@@ -1,5 +1,4 @@
 module Gamefic
-
   # Provide a list of options and process the selection in the scene's finish
   # block. After the scene is finished, the :active scene will be cued unless
   # some other scene has already been prepared or cued.
@@ -88,5 +87,4 @@ module Gamefic
       actor.tell list
     end
   end
-
 end

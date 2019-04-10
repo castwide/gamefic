@@ -1,5 +1,4 @@
 module Gamefic
-  
   # The Base Scene is not intended for instantiation. Other Scene classes
   # should inherit from it.
   #
@@ -123,5 +122,4 @@ module Gamefic
       end
     end
   end
-
 end

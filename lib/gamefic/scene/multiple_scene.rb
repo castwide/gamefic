@@ -1,5 +1,4 @@
 module Gamefic
-
   class Scene::MultipleScene < Scene::MultipleChoice
     def option_map
       @option_map ||= {}

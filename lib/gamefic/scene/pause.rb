@@ -1,5 +1,4 @@
 module Gamefic
-
   # Pause for user input.
   #
   class Scene::Pause < Scene::Custom
@@ -15,5 +14,4 @@ module Gamefic
       end
     end
   end
-  
 end
