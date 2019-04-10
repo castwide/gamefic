@@ -17,10 +17,7 @@ module Gamefic
     end
 
     def initial_state
-      if @initial_state.nil?
-        @initial_state = internal_save(false)
-      end
-      @initial_state
+      @initial_state ||= internal_save(false)
     end
 
     private
