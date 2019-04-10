@@ -10,15 +10,6 @@ module Gamefic
         entities.that_are(Gamefic::Active).reject{|e| e.user.nil?}
       end
 
-      # Connect a user to a character.
-      #
-      # @param user [Gamefic::User]
-      # @param actor [Gamefic::Actor]
-      def authorize user, actor
-        user.instance_variable_set(:@character, actor)
-        actor.instance_variable_set(:@user, user)
-      end
-
       # Set the character that the player will control on introduction.
       #
       # @param actor [Gamefic::Actor]

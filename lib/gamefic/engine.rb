@@ -1,51 +1,48 @@
 module Gamefic
   class Engine
-    # @return [Class<Gamefic::User>]
-    attr_writer :user_class
-
-    # @return [Gamefic::Plot]
-    attr_reader :plot
-
-    def initialize(plot)
+    def initialize(plot: Gamefic::Plot.new)
       @plot = plot
-      post_initialize
     end
 
-    def post_initialize
-      # Override in subclasses
+    # @return [Gamefic::Active]
+    def connect user, character: nil
+      character ||= begin
+        fresh = plot.get_player_character
+        plot.introduce fresh
+        fresh
+      end
+      user_char[user] = character
     end
 
-    # @return [Class<Gamefic::User>]
-    def user_class
-      @user_class ||= Gamefic::User
-    end
-
-    def connect
-      character = plot.get_player_character
-      @user = user_class.new(self)
-      plot.authorize @user, character
-    end
-
-    def run
-      connect
-      plot.introduce @user.character
-      turn until @user.character.concluded?
-      @user.update
+    def disconnect user
+      return unless user_char.key?(user)
+      user_char[user].queue.clear
+      user_char.delete user
     end
 
     def turn
       plot.ready
-      @user.update
-      if @user.character.queue.empty?
-        receive
-      end
+      update_users
       plot.update
     end
 
-    def receive
-      print @user.character.scene.prompt + ' '
-      input = STDIN.gets
-      @user.character.queue.push input unless input.nil?
+    private
+
+    # @return [Gamefic::Plot]
+    attr_reader :plot
+
+    def user_char
+      @user_char ||= {}
+    end
+
+    def update_users
+      user_char.each_pair do |user, char|
+        user.update char.state
+        next if char.concluded?
+        input = user.query
+        next if input.nil?
+        char.queue.push input
+      end
     end
   end
 end
