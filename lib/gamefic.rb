@@ -18,5 +18,3 @@ require 'gamefic/world'
 require 'gamefic/scriptable'
 require "gamefic/plot"
 require 'gamefic/subplot'
-require "gamefic/engine"
-require "gamefic/user"
