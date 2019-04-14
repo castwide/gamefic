@@ -1,35 +1,29 @@
 require 'gamefic/plot'
 
 module Gamefic
-
-  class Subplot
-    include Plot::Theater
-    include Plot::Entities
-    include Plot::Commands
-    include Plot::Callbacks
-    include Plot::Scenes
-    include Plot::Articles
+  class Subplot #< Container
+    include World
+    include Scriptable
+    # @!parse extend Scriptable::ClassMethods
 
     # @return [Gamefic::Plot]
     attr_reader :plot
 
-    class << self
-      attr_reader :start_proc
-
-      protected
-
-      def on_start &block
-        @start_proc = block
-      end
-    end
-
-    def initialize plot, introduce: nil, next_cue: nil
+    # @param plot [Gamefic::Plot]
+    # @param introduce [Gamefic::Actor]
+    # @param next_cue [Class<Gamefic::Scene::Base>]
+    def initialize plot, introduce: nil, next_cue: nil, **more
       @plot = plot
       @next_cue = next_cue
       @concluded = false
-      stage &self.class.start_proc unless self.class.start_proc.nil?
+      configure more
+      run_scripts
       playbook.freeze
       self.introduce introduce unless introduce.nil?
+    end
+
+    def players
+      p_players
     end
 
     def add_entity e
@@ -95,6 +89,13 @@ module Gamefic
       call_player_update
       call_update
     end
-  end
 
+    private
+
+    # Subclasses can override this method to handle additional configuration
+    # options.
+    #
+    def configure more
+    end
+  end
 end

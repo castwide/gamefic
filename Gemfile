@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-gemspec name: 'gamefic'
-gemspec name: 'gamefic-sdk'
+gemspec
 
 group :test do
   gem "simplecov"

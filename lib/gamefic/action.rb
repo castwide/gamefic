@@ -18,15 +18,23 @@ module Gamefic
       parameters
     end
 
+    # Perform the action.
+    #
     def execute
       @executed = true
       self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
     end
 
+    # True if the #execute method has been called for this action.
+    #
+    # @return [Boolean]
     def executed?
       @executed
     end
 
+    # The verb associated with this action.
+    #
+    # @return [Symbol] The symbol representing the verb
     def verb
       self.class.verb
     end
@@ -39,19 +47,17 @@ module Gamefic
       self.class.rank
     end
 
+    # True if the action is flagged as meta.
+    #
+    # @return [Boolean]
     def meta?
       self.class.meta?
     end
 
-    def order_key
-      self.class.order_key
-    end
-
-    def self.subclass verb, *q, meta: false, order_key: 0, &block
+    def self.subclass verb, *q, meta: false, &block
       act = Class.new(self) do
         self.verb = verb
         self.meta = meta
-        self.order_key = order_key
         q.each { |q|
           add_query q
         }
@@ -87,19 +93,25 @@ module Gamefic
 
       def signature
         # @todo This is clearly unfinished
-        "#{verb} #{queries.map{|m| m.signature}.join(',')}"
+        "#{verb} #{queries.map{|m| m.signature}.join(', ')}"
       end
 
+      # True if this action is not intended to be performed directly by a
+      # character.
+      # If the action is hidden, users should not be able to perform it with a
+      # direct command. By default, any action whose verb starts with an
+      # underscore is hidden.
+      #
+      # @return [Boolean]
       def hidden?
         verb.to_s.start_with?('_')
       end
 
+      # The proc to call when the action is executed
+      #
+      # @return [Proc]
       def executor
         @executor
-      end
-
-      def order_key
-        @order_key ||= 0
       end
 
       def rank
@@ -131,11 +143,13 @@ module Gamefic
           return nil if tokens[i].nil? and matches.remaining == ''
           matches = p.resolve(actor, "#{matches.remaining} #{tokens[i]}".strip, continued: (i < queries.length - 1))
           return nil if matches.objects.empty?
+          accepted = matches.objects.select{|o| p.accept?(o)}
+          return nil if accepted.empty?
           if p.ambiguous?
-            result.push matches.objects
+            result.push accepted
           else
-            return nil if matches.objects.length > 1
-            result.push matches.objects[0]
+            return nil if accepted.length != 1
+            result.push accepted.first
           end
           i += 1
         }
@@ -150,10 +164,6 @@ module Gamefic
 
       def meta= bool
         @meta = bool
-      end
-
-      def order_key= num
-        @order_key = num
       end
     end
   end

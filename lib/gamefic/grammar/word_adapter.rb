@@ -1,23 +1,25 @@
-require 'gamefic/grammar'
-require 'gamefic/grammar/gender'
-
 module Gamefic::Grammar
   module WordAdapter
     include Gender
     include Person
     include Plural
+
     # @return [Gamefic::Grammar::Pronouns]
     def pronoun
       @pronoun ||= Gamefic::Grammar::Pronouns.new(self)
     end
+
     # @return [Gamefic::Grammar::Verbs]
     def verb
       @verb ||= Gamefic::Grammar::Verbs.new(self)
     end
+
     def contract words
       contractions[words] || words
     end
+
     private
+
     def contractions
       if @contractions.nil?
         @contractions ||= {

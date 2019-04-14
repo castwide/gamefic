@@ -1,31 +1,37 @@
 # Exception raised when setting a node's parent would cause
 # a circular reference, e.g., A -> A or A -> B -> A
-class CircularNodeReferenceError < Exception
-end
+class CircularNodeReferenceError < RuntimeError; end
 
 module Gamefic
-
   module Node
+    # An array of the object's children.
+    #
     # @return [Array]
     def children
       @children ||= []
       @children.clone
     end
 
+    # Get a flat array of all descendants.
+    #
     # @return [Array]
     def flatten
       array = Array.new
       children.each { |child|
         array = array + recurse_flatten(child)
       }
-      return array
+      array
     end
 
+    # The object's parent.
+    #
     # @return [Object]
     def parent
       @parent
     end
 
+    # Set the object's parent.
+    #
     def parent=(node)
       return if node == @parent 
       if node == self
@@ -49,6 +55,10 @@ module Gamefic
       end
     end
 
+    # Determine if external objects can interact with this object's children.
+    # For example, a game can designate that the contents of a bowl are
+    # accessible, while the contents of a locked safe are not.
+    #
     # @return [Boolean]
     def accessible?
       true
@@ -81,5 +91,4 @@ module Gamefic
       return array
     end
   end
-
 end

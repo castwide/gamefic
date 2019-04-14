@@ -1,3 +1,0 @@
-class Coat < Clothing
-
-end

@@ -9,6 +9,13 @@ module Gamefic
         @arguments = args
       end
 
+      # Determine whether the query allows ambiguous entity references.
+      # If false, actions that use this query will only be valid if the token
+      # passed into it resolves to a single entity. If true, actions will
+      # accept an array of matching entities instead.
+      # Queries are not ambiguous by default (ambiguous? == false).
+      #
+      # @return [Boolean]
       def ambiguous?
         false
       end
@@ -36,8 +43,8 @@ module Gamefic
           return Matches.new(drill, token, '') unless drill.length != 1
           return Matches.new([], '', token)
         end
-        result = available.select{ |e| e.match?(token) }
-        result = available.select{ |e| e.match?(token, fuzzy: true) } if result.empty?
+        result = available.select{ |e| e.specified?(token) }
+        result = available.select{ |e| e.specified?(token, fuzzy: true) } if result.empty?
         result.keep_if{ |e| accept? e }
         Matches.new(result, (result.empty? ? '' : token), (result.empty? ? token : ''))
       end
@@ -52,15 +59,6 @@ module Gamefic
         if @precision.nil?
           @precision = 1
           arguments.each { |a|
-            #if a.kind_of?(Symbol) or a.kind_of?(Regexp)
-            #  @precision += 1
-            #elsif a.kind_of?(Class)
-            #  @precision += (count_superclasses(a) * 100)
-            #elsif a.kind_of?(Module)
-            #  @precision += 10
-            #elsif a.kind_of?(Object)
-            #  @precision += 1000
-            #end
             if a.kind_of?(Class)
               @precision += 100
             elsif a.kind_of?(Gamefic::Entity)
@@ -77,9 +75,12 @@ module Gamefic
       end
 
       def signature
-        "#{self.class.to_s.downcase}(#{@arguments.join(',')})"
+        "#{self.class.to_s.split('::').last.downcase}(#{simplify_arguments.join(', ')})"
       end
 
+      # Determine whether the specified entity passes the query's arguments.
+      #
+      # @return [Boolean]
       def accept?(entity)
         result = true
         arguments.each { |a|
@@ -98,8 +99,8 @@ module Gamefic
       end
 
       protected
-      
-      # Return an array of the entity's children. If the child is neighborly,
+
+      # Return an array of the entity's children. If the child is accessible,
       # recursively append its children.
       # The result will NOT include the original entity itself.
       #
@@ -117,6 +118,16 @@ module Gamefic
 
       private
 
+      def simplify_arguments
+        arguments.map do |a|
+          if a.kind_of?(Class) or a.kind_of?(Object)
+            a.to_s.split('::').last.downcase
+          else
+            a.to_s.downcase
+          end
+        end
+      end
+
       def nested?(token)
         !token.match(NEST_REGEXP).nil?
       end
@@ -124,13 +135,13 @@ module Gamefic
       def denest(objects, token)
         parts = token.split(NEST_REGEXP)
         current = parts.pop
-        last_result = objects.select{ |e| e.match?(current) }
-        last_result = objects.select{ |e| e.match?(current, fuzzy: true) } if last_result.empty?
+        last_result = objects.select{ |e| e.specified?(current) }
+        last_result = objects.select{ |e| e.specified?(current, fuzzy: true) } if last_result.empty?
         result = last_result
         while parts.length > 0
           current = "#{parts.last} #{current}"
-          result = last_result.select{ |e| e.match?(current) }
-          result = last_result.select{ |e| e.match?(current, fuzzy: true) } if result.empty?
+          result = last_result.select{ |e| e.specified?(current) }
+          result = last_result.select{ |e| e.specified?(current, fuzzy: true) } if result.empty?
           break if result.empty?
           parts.pop
           last_result = result

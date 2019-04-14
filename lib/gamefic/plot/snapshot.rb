@@ -9,7 +9,7 @@ module Gamefic
     end
 
     def restore snapshot
-      # HACK Force conclusion of current subplots
+      # HACK: Force conclusion of current subplots
       p_subplots.each { |s| s.conclude }
       p_subplots.clear
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)
@@ -17,16 +17,13 @@ module Gamefic
     end
 
     def initial_state
-      if @initial_state.nil?
-        @initial_state = internal_save
-      end
-      @initial_state
+      @initial_state ||= internal_save(false)
     end
 
     private
 
-    def internal_save
-      Gamefic::Plot::Darkroom.new(self).save
+    def internal_save reduce = true
+      Gamefic::Plot::Darkroom.new(self).save(reduce: reduce)
     end
   end
 end

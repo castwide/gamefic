@@ -54,7 +54,7 @@ module Gamefic
     # Convert a String into a Command.
     #
     # @param text [String]
-    # @return [Command]
+    # @return [Gamefic::Command]
     def tokenize text
       m = text.match(@regexp)
       return nil if m.nil?
@@ -71,7 +71,11 @@ module Gamefic
       }
       Command.new @verb, arguments
     end
-    
+
+    # Determine if the specified text matches the syntax's expected pattern.
+    #
+    # @param text [String]
+    # @return [Boolean]
     def accept? text
       !text.match(@regexp).nil?
     end
@@ -82,16 +86,16 @@ module Gamefic
     def signature
       [@regexp, @replace]
     end
-    
+
     def ==(other)
       signature == other.signature
     end
-    
+
     # Tokenize an Array of Commands from the specified text.
     #
     # @param text [String] The text to tokenize.
-    # @param syntaxes [Array<Syntax>] The Syntaxes to use.
-    # @return [Array<Command>] The tokenized commands.
+    # @param syntaxes [Array<Gamefic::Syntax>] The Syntaxes to use.
+    # @return [Array<Gamefic::Command>] The tokenized commands.
     def self.tokenize text, syntaxes
       matches = []
       syntaxes.each { |syntax|

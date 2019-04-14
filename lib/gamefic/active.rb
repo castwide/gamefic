@@ -1,32 +1,52 @@
 module Gamefic
-  class NotConclusionError < Exception
-  end
+  class NotConclusionError < RuntimeError; end
 
   # The Active module gives entities the ability to perform actions and
-  # participate in scenes.
+  # participate in scenes. The Actor class, for example, is an Entity
+  # subclass that includes this module.
   #
   module Active
+    # The last action executed by the entity, as reported by the
+    # Active#performed method.
+    #
     # @return [Gamefic::Action]
     attr_reader :last_action
 
-    # @return [Gamefic::User::Base]
+    # The user connected to this entity (or nil).
+    #
+    # @return [Gamefic::User]
     attr_reader :user
 
+    # The scene in which the entity is currently participating.
+    #
     # @return [Gamefic::Scene::Base]
     attr_reader :scene
 
+    # The scene class that will be cued for this entity on the next turn.
+    # Usually set with the #prepare method.
+    #
+    # @return [Class<Gamefic::Scene::Base>]
     attr_reader :next_scene
 
-    # @return [Gamefic::Plot::Playbook]
-    #attr_accessor :playbook
+    # The prompt for the previous scene.
+    #
+    # @return [String]
+    attr_accessor :last_prompt
 
-    # @return [Array<Gamefic::Plot::Playbook>]
+    # The input for the previous scene.
+    #
+    # @return [String]
+    attr_accessor :last_input
+
+    # The playbooks that will be used to perform commands.
+    #
+    # @return [Array<Gamefic::World::Playbook>]
     def playbooks
       @playbooks ||= []
     end
 
-    def connect user
-      @user = user
+    def syntaxes
+      playbooks.map(&:syntaxes).flatten
     end
 
     # An array of actions waiting to be performed.
@@ -43,6 +63,8 @@ module Gamefic
       @state = {}
       @state.merge! scene.state unless scene.nil?
       @state[:output] = messages
+      @state[:last_prompt] = last_prompt
+      @state[:last_input] = last_input
       @state
     end
 
@@ -53,7 +75,7 @@ module Gamefic
     # @param message [String]
     def tell(message)
       if buffer_stack > 0
-        append_buffer message
+        append_buffer format(message)
       else
         super
       end
@@ -92,7 +114,7 @@ module Gamefic
       playbooks.reverse.each { |p| actions.concat p.dispatch(self, *command) }
       execute_stack actions
     end
-    
+
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
@@ -148,7 +170,6 @@ module Gamefic
     #   end
     #
     def proceed quietly: false
-      #Director::Delegate.proceed_for self
       return if performance_stack.empty?
       a = performance_stack.last.shift
       unless a.nil?
@@ -170,6 +191,7 @@ module Gamefic
     # Use #prepare if you want to declare a scene to be started at the
     # beginning of the next turn.
     #
+    # @param new_scene [Class]
     def cue new_scene
       @next_scene = nil
       if new_scene.nil?
@@ -181,10 +203,12 @@ module Gamefic
     end
 
     # Prepare a scene to be started for this character at the beginning of the
-    # next turn.
+    # next turn. As opposed to #cue, a prepared scene will not start until the
+    # current scene fnishes.
     #
-    def prepare s
-      @next_scene = s
+    # @param new_scene [Class]
+    def prepare new_scene
+      @next_scene = new_scene
     end
 
     # Return true if the character is expected to be in the specified scene on
@@ -210,9 +234,12 @@ module Gamefic
       !scene.nil? and scene.kind_of?(Scene::Conclusion)
     end
 
-    def performed order
-      order.freeze
-      @last_action = order
+    # Record the last action the entity executed. This method is typically
+    # called when the entity performs an action in response to user input.
+    #
+    def performed action
+      action.freeze
+      @last_action = action
     end
 
     def accessible?
@@ -223,7 +250,27 @@ module Gamefic
       to_s
     end
 
+    # Track the entity's performance of a scene.
+    #
+    def entered scene
+      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
+      entered_scenes.push klass unless entered_scenes.include?(klass)
+    end
+
+    # Determine whether the entity has performed the specified scene.
+    #
+    # @return [Boolean]
+    def entered? scene
+      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
+      entered_scenes.include?(klass)
+    end
+
     private
+
+    # @return [Array<Gamefic::Scene::Base>]
+    def entered_scenes
+      @entered_scenes ||= []    
+    end
 
     def execute_stack actions, quietly: false
       return nil if actions.empty?
@@ -261,6 +308,7 @@ module Gamefic
       @buffer_stack = num
     end
 
+    # @return [String]
     def buffer
       @buffer ||= ''
     end
@@ -270,7 +318,7 @@ module Gamefic
     end
 
     def clear_buffer
-      @buffer = '' unless @buffer.empty?
+      @buffer.clear
     end
 
     def performance_stack

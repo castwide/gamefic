@@ -14,14 +14,12 @@ Gem::Specification.new do |s|
   s.homepage      = 'http://gamefic.com'
   s.license       = 'MIT'
 
-  s.files = ['lib/gamefic.rb'] + Dir['lib/gamefic/**/*.rb']
-  s.executables   = ['gamefic']
+  s.files = Dir['lib/gamefic.rb', 'lib/gamefic/**/*.rb']
   s.require_paths = ['lib']
 
   s.required_ruby_version = '>= 2.1.0'
-  s.add_runtime_dependency 'thor', '~> 0.19', '>= 0.19.4'
-  s.add_runtime_dependency 'rubyzip', '~> 1.2', '>= 1.2.0'
 
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
-  s.add_development_dependency 'rake', '~> 11.3', '>= 11.3.0'
+  s.add_development_dependency 'rake', '~> 12.3', '>= 12.3'
+  s.add_development_dependency 'simplecov', '~> 0.14'
 end

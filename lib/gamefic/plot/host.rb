@@ -1,7 +1,8 @@
 require 'gamefic/subplot'
 
 module Gamefic
-
+  # Methods for hosting and managing subplots.
+  #
   module Plot::Host
     # Get an array of all the current subplots.
     #
@@ -9,13 +10,13 @@ module Gamefic
     def subplots
       p_subplots.clone
     end
-    
+
     # Start a new subplot based on the provided class.
     #
-    # @param subplot_class [Class] The class of the subplot to be created (Subplot by default)
-    # @return [Subplot]
-    def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil
-      subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue)
+    # @param subplot_class [Class<Gamefic::Subplot>] The class of the subplot to be created (Subplot by default)
+    # @return [Gamefic::Subplot]
+    def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, **more
+      subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, **more)
       p_subplots.push subplot
       subplot
     end
@@ -44,5 +45,4 @@ module Gamefic
       @p_subplots ||= []
     end
   end
-
 end
