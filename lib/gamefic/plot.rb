@@ -32,7 +32,7 @@ module Gamefic
 
     def player_class cls = nil
       @player_class = cls unless cls.nil?
-      @player_class
+      @player_class ||= Gamefic::Actor
     end
 
     def running?
