@@ -35,5 +35,13 @@ describe Gamefic::Plot do
 		actor = plot.cast Gamefic::Actor
 		expect(actor.playbooks.length).to eq(1)
 		expect(actor.playbooks[0]).to eq(plot.playbook)
-	end
+  end
+  
+  it "tracks player subplots" do
+    plot = Gamefic::Plot.new
+    actor = plot.cast Gamefic::Actor
+    plot.branch Gamefic::Subplot, introduce: actor
+    expect(plot.subplots_featuring(actor)).not_to be_empty
+    expect(plot.in_subplot?(actor)).to be(true)
+  end
 end
