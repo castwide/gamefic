@@ -6,7 +6,7 @@ module Gamefic
     #
     # @param message [String]
     def tell(message)
-      p_set_messages messages + format(message)
+      messages.concat format(message)
     end
 
     # Send a message to the Character as raw text.
@@ -14,7 +14,7 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      p_set_messages messages + message.strip
+      messages.concat message.strip
     end
 
     # Get all the currently buffered messages consolidated in a single string.
@@ -23,18 +23,12 @@ module Gamefic
     def messages
       @messages ||= ''
     end
-
-    # Alias for #messages.
-    #
-    # @return [String]
-    def output
-      messages
-    end
+    alias output messages
 
     # Clear the buffered messages.
     #
     def flush
-      p_set_messages '' unless messages.empty?
+      messages.clear
     end
 
     private
@@ -45,10 +39,6 @@ module Gamefic
         .gsub(/[ \t]*\n[ \t]*/, ' ')
         .gsub(/<p>[\s]*<p>/, '<p>')
         .gsub(/<\/p>[\s]*<\/p>/, '</p>')
-    end
-
-    def p_set_messages str
-      @messages = str
     end
   end
 end
