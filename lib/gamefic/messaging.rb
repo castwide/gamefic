@@ -6,7 +6,7 @@ module Gamefic
     #
     # @param message [String]
     def tell(message)
-      messages.concat format(message)
+      @messages = @messages.to_s + format(message)
     end
 
     # Send a message to the Character as raw text.
@@ -14,7 +14,7 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      messages.concat message.strip
+      @messages = @messages.to_s + message.stip
     end
 
     # Get all the currently buffered messages consolidated in a single string.
@@ -28,7 +28,7 @@ module Gamefic
     # Clear the buffered messages.
     #
     def flush
-      messages.clear
+      @messages = ''
     end
 
     private
