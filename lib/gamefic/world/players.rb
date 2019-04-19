@@ -7,7 +7,7 @@ module Gamefic
       #
       # @return [Array<Gamefic::Actor>]
       def players
-        entities.that_are(Gamefic::Active).reject{|e| e.user.nil?}
+        p_players
       end
 
       # Get the character that the player will control on introduction.

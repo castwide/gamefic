@@ -175,7 +175,7 @@ module Gamefic
         queries.each do |q|
           if q.is_a?(Gamefic::Query::Base)
             result.push q
-          elsif q.is_a?(Gamefic::Element) or q <= Gamefic::Element
+          elsif q.is_a?(Gamefic::Element) || q <= Gamefic::Element
             result.push get_default_query.new(q)
           elsif q.is_a?(Regexp)
             result.push Gamefic::Query::Text.new(q)

@@ -41,7 +41,7 @@ module Gamefic
       # Get the action for handling ambiguous entity references.
       #
       def disambiguator
-        @disambiguator ||= Action.new(nil, Query::Base.new) do |actor, entities|
+        @disambiguator ||= Action.subclass(nil, Query::Base.new) do |actor, entities|
           definites = []
           entities.each { |entity|
             definites.push entity.definitely
@@ -53,8 +53,7 @@ module Gamefic
       # Set the action for handling ambiguous entity references.
       #
       def disambiguate &block
-        @disambiguator = Action.new(nil, Query::Base.new, &block)
-        @disambiguator.meta = true
+        @disambiguator = Action.subclass(nil, Query::Base.new, meta: true, &block)
         @disambiguator
       end
 
