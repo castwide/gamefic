@@ -12,11 +12,6 @@ module Gamefic
     # @return [Gamefic::Action]
     attr_reader :last_action
 
-    # The user connected to this entity (or nil).
-    #
-    # @return [Gamefic::User]
-    attr_reader :user
-
     # The scene in which the entity is currently participating.
     #
     # @return [Gamefic::Scene::Base]
