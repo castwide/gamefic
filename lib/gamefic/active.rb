@@ -199,7 +199,7 @@ module Gamefic
 
     # Prepare a scene to be started for this character at the beginning of the
     # next turn. As opposed to #cue, a prepared scene will not start until the
-    # current scene fnishes.
+    # current scene finishes.
     #
     # @param new_scene [Class]
     def prepare new_scene
