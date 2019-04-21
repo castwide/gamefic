@@ -12,8 +12,10 @@ describe Gamefic::Scene::Pause do
     end
     plot.introduce character
     character.cue paused
+    plot.ready
     expect(character.scene.class).to eq(paused)
     character.queue.push ""
+    plot.update
     plot.ready
     expect(character.scene.class).to eq(plot.default_scene)
     expect(character[:has_paused]).to eq(true)

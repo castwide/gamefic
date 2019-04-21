@@ -30,18 +30,35 @@ describe Gamefic::Plot do
     expect(plot.entities.length).to eq(0)
   end
 
-	it "adds playbook to casted actors" do
-		plot = Gamefic::Plot.new
-		actor = plot.cast Gamefic::Actor
-		expect(actor.playbooks.length).to eq(1)
-		expect(actor.playbooks[0]).to eq(plot.playbook)
+  it "adds playbook to casted actors" do
+    plot = Gamefic::Plot.new
+    actor = plot.cast Gamefic::Actor
+    expect(actor.playbooks.length).to eq(1)
+    expect(actor.playbooks[0]).to eq(plot.playbook)
   end
-  
+
   it "tracks player subplots" do
     plot = Gamefic::Plot.new
     actor = plot.cast Gamefic::Actor
     plot.branch Gamefic::Subplot, introduce: actor
     expect(plot.subplots_featuring(actor)).not_to be_empty
     expect(plot.in_subplot?(actor)).to be(true)
+  end
+
+  it "pauses on a pause scene" do
+    plot = Gamefic::Plot.new
+    actor = plot.cast Gamefic::Actor
+    plot.stage do
+      @pause = pause do |actor|
+        actor.tell "Paused"
+      end
+      introduction do |actor|
+        actor.cue @pause
+      end
+    end
+    plot.introduce actor
+    plot.ready
+    puts actor.scene.inspect
+    expect(actor.scene.type).to eq('Pause')
   end
 end
