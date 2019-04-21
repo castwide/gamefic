@@ -21,4 +21,18 @@ describe Gamefic::World::Commands do
     expect(object.playbook.actions.first.verb).to eq(:command)
     expect(object.playbook.actions.first).to be_meta
   end
+
+  it 'parses an action' do
+    plot = Gamefic::Plot.new
+    plot.make Gamefic::Entity, name: 'a thing'
+    action = plot.parse(:touch, 'thing')
+    expect(action.verb).to eq(:touch)
+  end
+
+  it 'raises errors on parses with bad tokens' do
+    plot = Gamefic::Plot.new
+    expect {
+      plot.parse(:touch, 'a nonexistent thing')
+    }.to raise_error(ArgumentError)
+  end
 end

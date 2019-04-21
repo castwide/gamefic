@@ -36,6 +36,7 @@ module Gamefic
       def respond(command, *queries, &proc)
         playbook.respond(command, *map_response_args(queries), &proc)
       end
+      alias action respond
 
       # Parse a verb and a list of arguments into an action.
       # This method serves as a shortcut to creating an action with one or more
@@ -47,6 +48,8 @@ module Gamefic
       #     actor.tell "You use it."
       #   end
       #
+      # @raise [ArgumentError] if tokens are unrecognized or ambiguous
+      #
       # @param verb [String, Symbol] The command's verb
       # @param tokens [Array<String>] The arguments passed to the action
       # @return [Class] The resulting Action subclass
@@ -55,8 +58,8 @@ module Gamefic
         params = []
         tokens.each do |arg|
           matches = query.resolve(nil, arg)
-          raise "Unable to resolve token '#{arg}'" if matches.objects.empty?
-          raise "Ambiguous results for '#{arg}'" if matches.objects.length > 1
+          raise ArgumentError, "Unable to resolve token '#{arg}'" if matches.objects.empty?
+          raise ArgumentError, "Ambiguous results for '#{arg}'" if matches.objects.length > 1
           params.push Query::Family.new(matches.objects[0])
         end
         respond(verb.to_sym, *params, &proc)
@@ -90,11 +93,6 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       def meta(command, *queries, &proc)
         playbook.meta command, *queries, &proc
-      end
-
-      # @deprecated
-      def action(command, *queries, &proc)
-        respond command, *queries, &proc
       end
 
       # Declare a dismabiguation response for actions.
@@ -140,11 +138,7 @@ module Gamefic
       def interpret command, translation
         playbook.interpret command, translation
       end
-
-      # @deprecated Use #interpret instead.
-      def xlate command, translation
-        interpret command, translation
-      end
+      alias xlate interpret
 
       # Get an Array of available verbs.
       #

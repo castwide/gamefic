@@ -14,7 +14,7 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      @messages = @messages.to_s + message.stip
+      @messages = @messages.to_s + message.strip
     end
 
     # Get all the currently buffered messages consolidated in a single string.
