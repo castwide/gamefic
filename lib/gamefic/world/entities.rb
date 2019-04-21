@@ -7,6 +7,8 @@ module Gamefic
       #   chair = make Entity, name: 'red chair'
       #   chair.name #=> 'red chair'
       #
+      # @raise [ArgumentError] if class is not an Entity
+      #
       # @param cls [Class] The Class of the Entity to be created.
       # @param args [Hash] The entity's properties.
       # @!macro [attach] make_entity
@@ -14,7 +16,7 @@ module Gamefic
       def make cls, args = {}, &block
         ent = cls.new args, &block
         if ent.kind_of?(Entity) == false
-          raise "Invalid entity class"
+          raise ArgumentError, "Invalid entity class"
         end
         p_entities.push ent
         p_dynamic.push ent if running?
