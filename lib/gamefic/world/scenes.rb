@@ -125,7 +125,7 @@ module Gamefic
         scene_classes.push s
         s
       end
-      
+
       # Create a conclusion.
       # The game (or the character's participation in it) will end after this
       # scene is complete.
