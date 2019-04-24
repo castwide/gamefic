@@ -1,11 +1,9 @@
 require 'gamefic/command'
 
 module Gamefic
-
   class Syntax
     attr_reader :token_count, :first_word, :verb, :template, :command
-    @@phrase = '([\w\W\s\S]*?)'
-    
+
     def initialize template, command
       words = template.split_words
       @token_count = words.length
@@ -15,9 +13,9 @@ module Gamefic
         @token_count -= 1
         @first_word = ''
       else
-        @verb = command_words[0].to_sym if !command_words[0].nil?
         @first_word = words[0].to_s
       end
+      @verb = command_words[0].to_sym if !command_words[0].nil?
       @command = command_words.join(' ')
       @template = words.join(' ')
       tokens = []
@@ -29,7 +27,7 @@ module Gamefic
           if last_token_is_reg
             next
           else
-            tokens.push @@phrase
+            tokens.push '([\w\W\s\S]*?)'
             last_token_is_reg = true
           end
         else
@@ -50,7 +48,7 @@ module Gamefic
       @replace = subs.join(' ')
       @regexp = Regexp.new("^#{tokens.join(' ')}$", Regexp::IGNORECASE)
     end
-    
+
     # Convert a String into a Command.
     #
     # @param text [String]
@@ -112,5 +110,4 @@ module Gamefic
       matches
     end
   end
-
 end
