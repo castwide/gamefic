@@ -49,6 +49,9 @@ module Gamefic
 
       # Add a block to be executed by the instance's `stage` method.
       #
+      # Note that `script` does not execute the block instantly, but stores
+      # it in the `blocks` array to be executed later.
+      #
       # @yieldpublic [Gamefic::Plot]
       def script &block
         blocks.push block

@@ -58,7 +58,6 @@ describe Gamefic::Plot do
     end
     plot.introduce actor
     plot.ready
-    puts actor.scene.inspect
     expect(actor.scene.type).to eq('Pause')
   end
 end
