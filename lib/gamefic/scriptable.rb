@@ -5,18 +5,8 @@ module Gamefic
   #   Execute a block of code in a subset of the owner's scope.
   #
   #   The provided code is evaluated inside a clean room object that has its
-  #   own instance variables and access to the owner's public methods.
-  #
-  #   There are two ways to execute code on the stage. It will accept either a
-  #   string of code with an optional file name and line number, or a proc
-  #   with optional arguments. See instance_exec and instance_eval for more
-  #   information.
-  #
-  #   @example Evaluate a string of code
-  #     stage "puts 'Hello'"
-  #
-  #   @example Evaluate a string of code with a file name and line number
-  #     stage "puts 'Hello'", "file.rb", 1
+  #   own instance variables and access to the owner's public methods. The proc
+  #   can accept the method call's arguments.
   #
   #   @example Execute a block of code
   #     stage {
@@ -29,8 +19,8 @@ module Gamefic
   #     }
   #
   #   @example Use an instance variable
-  #     stage "@message = 'hello'"
-  #     stage "puts @message" # <- prints 'hello'
+  #     stage { @message = 'hello'" }
+  #     stage { puts @message } # <- prints 'hello'
   #
   #   @yieldpublic [Gamefic::Plot]
   #   @return [Object] The value returned by the executed code
@@ -76,13 +66,7 @@ end
 #   defines its classes and modules in the root namespace.
 Gamefic::Scriptable.module_exec do
   define_method :stage do |*args, &block|
-    if block.nil?
-      theater.instance_exec do
-        eval *([args[0], theater.send(:binding)] + args[1..-1])
-      end
-    else
-      theater.instance_exec *args, &block
-    end
+    theater.instance_exec *args, &block
   end
 
   define_method :theater do
