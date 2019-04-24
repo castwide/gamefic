@@ -35,4 +35,45 @@ describe Gamefic::World::Commands do
       plot.parse(:touch, 'a nonexistent thing')
     }.to raise_error(ArgumentError)
   end
+
+  it 'overrides commands' do
+    plot = Gamefic::Plot.new
+    actor = Gamefic::Actor.new
+    thing = plot.make Gamefic::Entity, name: 'a thing'
+    base = plot.respond :handle, Gamefic::Query::Family.new(Gamefic::Entity) do |actor, thing|
+      actor.tell "Version 1"
+    end
+    act1 = base.new(actor, [thing])
+    act1.execute
+    expect(actor.messages).to include('Version 1')
+    over = plot.override 'handle a thing' do |actor, thing|
+      actor.tell "Version 2"
+    end
+    expect(over.superclass).to be(Gamefic::Action)
+    act2 = over.new(actor, [thing])
+    act2.execute
+    expect(actor.messages).to include('Version 2')
+  end
+
+  it 'maps entity arguments to default queries' do
+    plot = Gamefic::Plot.new
+    entity = plot.make Gamefic::Entity, name: 'an entity'
+    action = plot.respond(:handle, entity) { |actor, entity| }
+    expect(action.queries.length).to eq(1)
+    expect(action.queries.first).to be_a(plot.get_default_query)
+  end
+
+  it 'maps regular expressions to text queries' do
+    plot = Gamefic::Plot.new
+    action = plot.respond(:handle, /text/) { |actor, text| }
+    expect(action.queries.length).to eq(1)
+    expect(action.queries.first).to be_a(Gamefic::Query::Text)
+  end
+
+  it 'raises ArgumentError for invalid parameters' do
+    plot = Gamefic::Plot.new
+    expect {
+      plot.respond(:handle, Object.new)
+    }.to raise_error(ArgumentError)
+  end
 end

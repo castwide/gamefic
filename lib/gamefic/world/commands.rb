@@ -167,12 +167,12 @@ module Gamefic
       def map_response_args queries
         result = []
         queries.each do |q|
-          if q.is_a?(Gamefic::Query::Base)
-            result.push q
-          elsif q.is_a?(Gamefic::Element) || q <= Gamefic::Element
-            result.push get_default_query.new(q)
-          elsif q.is_a?(Regexp)
+          if q.is_a?(Regexp)
             result.push Gamefic::Query::Text.new(q)
+          elsif q.is_a?(Gamefic::Query::Base)
+            result.push q
+          elsif q.is_a?(Gamefic::Element)
+            result.push get_default_query.new(q)
           else
             raise ArgumentError.new("Invalid argument for response: #{q}")
           end
