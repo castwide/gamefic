@@ -5,24 +5,24 @@ module Gamefic
   end
 
   class Action
-    attr_reader :parameters
+    # An array of objects on which the action will operate, e.g., an entity
+    # that is a direct object of a command.
+    #
+    # @return [Array<Object>]
+    attr_reader :arguments
+    alias parameters arguments
 
-    def initialize actor, parameters
+    def initialize actor, arguments
       @actor = actor
-      @parameters = parameters
+      @arguments = arguments
       @executed = false
-    end
-
-    # @todo Determine whether to call them parameters, arguments, or both.
-    def arguments
-      parameters
     end
 
     # Perform the action.
     #
     def execute
       @executed = true
-      self.class.executor.call(@actor, *@parameters) unless self.class.executor.nil?
+      self.class.executor.call(@actor, *arguments) unless self.class.executor.nil?
     end
 
     # True if the #execute method has been called for this action.
