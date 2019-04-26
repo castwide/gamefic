@@ -28,6 +28,8 @@ module Gamefic
   # @!method theater
   #   The object that acts as an isolated namespace for staged code.
   #   @return [Object]
+  #
+  # @!parse alias cleanroom theater
   module Scriptable
     module ClassMethods
       # An array of blocks that were added by the `script` class method.
