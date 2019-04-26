@@ -14,8 +14,8 @@ module Gamefic
         @first_word = ''
       else
         @first_word = words[0].to_s
+        @verb = command_words[0].to_sym
       end
-      @verb = command_words[0].to_sym if !command_words[0].nil?
       @command = command_words.join(' ')
       @template = words.join(' ')
       tokens = []
