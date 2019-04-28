@@ -76,4 +76,10 @@ describe Gamefic::World::Commands do
       plot.respond(:handle, Object.new)
     }.to raise_error(ArgumentError)
   end
+
+  it 'maps entity classes to default queries' do
+    plot = Gamefic::Plot.new
+    action = plot.respond(:handle, Gamefic::Entity) { |actor, entity| }
+    expect(action.queries.first.arguments.first).to be(Gamefic::Entity)
+  end
 end

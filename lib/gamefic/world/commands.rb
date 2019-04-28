@@ -171,7 +171,7 @@ module Gamefic
             result.push Gamefic::Query::Text.new(q)
           elsif q.is_a?(Gamefic::Query::Base)
             result.push q
-          elsif q.is_a?(Gamefic::Element)
+          elsif q.is_a?(Gamefic::Element) || (q.is_a?(Class) && q <= Gamefic::Element)
             result.push get_default_query.new(q)
           else
             raise ArgumentError.new("Invalid argument for response: #{q}")
