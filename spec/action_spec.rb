@@ -4,11 +4,20 @@ describe Gamefic::Action do
     action2 = Gamefic::Action.subclass(:foo, Gamefic::Query::Base.new)
     expect(action2.rank > action1.rank).to eq(true)
   end
+
   it "assigns lower rank to a nil command" do
     action1 = Gamefic::Action.subclass(nil)
     action2 = Gamefic::Action.subclass(:foo)
     expect(action2.rank > action1.rank).to eq(true)  
   end
+
+  it 'assigns higher rank to an action with a specific object' do
+    entity = Gamefic::Entity.new
+    general = Gamefic::Action.subclass(:command, Gamefic::Query::Base.new(Gamefic::Entity))
+    specific = Gamefic::Action.subclass(:command, Gamefic::Query::Base.new(entity))
+    expect(specific.rank).to be > general.rank
+  end
+
   it "accepts valid proc arity" do
     expect {
       Gamefic::Action.subclass :foo do |arg1|
@@ -26,11 +35,32 @@ describe Gamefic::Action do
       end
     }.to_not raise_error
   end
+
   it "raises an exception for invalid proc arity" do
     expect {
       Gamefic::Action.subclass :foo, Gamefic::Query::Base.new do |arg1|
         # This proc should have two arguments
       end
     }.to raise_error Gamefic::ActionArgumentError
+  end
+
+  it "marks actions executed" do
+    klass = Gamefic::Action.subclass(:command) {}
+    actor = Gamefic::Actor.new
+    action = klass.new(actor, [])
+    action.execute
+    expect(action).to be_executed
+  end
+
+  it "validates matching arguments" do
+    klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
+    actor = Gamefic::Actor.new
+    expect(klass.valid?(actor, ['foo'])).to be(true)
+  end
+
+  it "invalidates non-matching arguments" do
+    klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
+    actor = Gamefic::Actor.new
+    expect(klass.valid?(actor, ['bar'])).to be(false)
   end
 end
