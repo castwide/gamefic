@@ -1,7 +1,17 @@
 module Gamefic
   module Query
     class Matches
-      attr_accessor :objects, :matching, :remaining
+      # The resolved tokens
+      # @return [Array<Object>]
+      attr_reader :objects
+
+      # The matching string
+      # @return [String]
+      attr_reader :matching
+
+      # The remaining (unmatched) string
+      # @return [String]
+      attr_reader :remaining
 
       def initialize objects, matching, remaining
         @objects = objects
@@ -37,7 +47,6 @@ module Gamefic
           matching_text = []
           words = description.split(Keywords::SPLIT_REGEXP)
           i = 0
-          #cursor = []
           words.each { |w|
             cursor = inner_match matching_objects, words, matching_text, i, w
             break if cursor.empty? or (cursor & matching_objects).empty?
@@ -47,8 +56,7 @@ module Gamefic
           objects = matching_objects
           matching = matching_text.uniq.join(' ')
           remaining = words[i..-1].join(' ')
-          m = Matches.new(objects, matching, remaining)
-          m
+          Matches.new(objects, matching, remaining)
         end
 
         def inner_match matching_objects, words, matching_text, i, w
