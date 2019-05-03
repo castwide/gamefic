@@ -106,6 +106,7 @@ module Gamefic
       #
       # @return [Array<Object>]
       def subquery_accessible entity
+        return [] if entity.nil?
         result = []
         if entity.accessible?
           entity.children.each { |c|
