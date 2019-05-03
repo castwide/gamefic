@@ -66,8 +66,7 @@ module Gamefic
       # @param  description [String] The description of the entity
       # @return [Gamefic::Entity] The entity that matches the description
       def pick(description)
-        query = Gamefic::Query::Base.new
-        result = query.match(description, entities)
+        result = Query::Matches.execute(entities, description)
         if result.objects.length == 0
           raise IndexError.new("Unable to find entity from '#{description}'")
         elsif result.objects.length > 1
