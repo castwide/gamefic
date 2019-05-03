@@ -65,4 +65,21 @@ describe Gamefic::Plot::Snapshot do
     plot.restore snapshot
     expect(entity[:hash]).to eq(hash)
   end
+
+  it 'restores a static entity in place' do
+    Gamefic.script do
+      @entity = make Gamefic::Entity, name: 'old name'
+    end
+    plot = Gamefic::Plot.new
+    Gamefic::Plot.blocks.pop
+    snapshot = plot.save
+    entity = plot.stage { @entity }
+    plot.stage do
+      @entity.name = 'new name'
+    end
+    expect(entity.name).to eq('new name')
+    plot.restore snapshot
+    expect(entity).to be(plot.entities.first)
+    expect(entity.name).to eq('old name')
+  end
 end
