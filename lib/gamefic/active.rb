@@ -313,7 +313,7 @@ module Gamefic
     end
 
     def clear_buffer
-      @buffer.clear
+      @buffer = ''
     end
 
     def performance_stack

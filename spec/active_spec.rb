@@ -31,4 +31,16 @@ describe Gamefic::Active do
     character.tell "This is paragraph 1.\n\nThis is paragraph 2.\r\n\r\nThis is paragraph 3."
     expect(character.messages).to eq("<p>This is paragraph 1.</p><p>This is paragraph 2.</p><p>This is paragraph 3.</p>")
   end
+
+  it 'performs actions quietly' do
+    plot = Gamefic::Plot.new
+    plot.respond :message do |actor|
+      actor.tell 'Message command'
+    end
+    character = plot.get_player_character
+    plot.introduce character
+    buffer = character.quietly('message')
+    expect(buffer).to include('Message command')
+    expect(character.messages).to be_empty
+  end
 end
