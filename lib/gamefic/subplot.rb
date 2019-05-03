@@ -52,11 +52,6 @@ module Gamefic
       ent
     end
 
-    # HACK: Always assume subplots are running for the sake of entity destruction
-    def running?
-      true
-    end
-
     def exeunt player
       player.playbooks.delete playbook
       player.cue (@next_cue || default_scene)

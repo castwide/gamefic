@@ -19,7 +19,6 @@ module Gamefic
           raise ArgumentError, "Invalid entity class"
         end
         p_entities.push ent
-        p_dynamic.push ent if running?
         ent
       end
 
@@ -37,6 +36,7 @@ module Gamefic
       end
 
       # Safely remove an entity from a plot.
+      #
       # If the entity is dynamic (e.g., created after a plot is already
       # running), it is safe to delete it completely. Otherwise the entity
       # will still be referenced in the entities array, but its parent will be
@@ -44,12 +44,11 @@ module Gamefic
       #
       # @param [Gamefic::Entity] The entity to remove
       def destroy entity
-        if p_dynamic.include?(entity)
-          p_entities.delete entity
-          p_dynamic.delete entity
-          p_players.delete entity
-        end
         entity.parent = nil
+        index = entities.index(entity)
+        return if index.nil? || index < static_entity_index
+        p_entities.delete_at index
+        p_players.delete entity
       end
 
       # Pick an entity based on its description.
@@ -91,16 +90,20 @@ module Gamefic
 
       private
 
+      def mark_static_entities
+        @static_entity_index ||= p_entities.length
+      end
+
+      def static_entity_index
+        @static_entity_index || 0
+      end
+
       def p_entities
         @p_entities ||= []
       end
 
       def p_players
         @p_players ||= []
-      end
-
-      def p_dynamic
-        @p_dynamic ||= []
       end
     end
   end

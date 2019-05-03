@@ -6,7 +6,7 @@ describe Gamefic::Plot::Snapshot do
     expect(snapshot[:entities].length).to eq(1)
   end
 
-  it "restores entities" do
+  it "restores dynamic entities" do
     plot = Gamefic::Plot.new
     entity = plot.make Gamefic::Entity, name: 'old name'
     snapshot = plot.save

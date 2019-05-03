@@ -26,17 +26,13 @@ module Gamefic
     # @param metadata [Hash]
     def initialize metadata: {}
       @metadata = metadata
-      @running = false
       run_scripts
+      mark_static_entities
     end
 
     def player_class cls = nil
       @player_class = cls unless cls.nil?
       @player_class ||= Gamefic::Actor
-    end
-
-    def running?
-      @running
     end
 
     # Get an Array of the Plot's current Syntaxes.
@@ -52,7 +48,6 @@ module Gamefic
     #
     def ready
       playbook.freeze
-      @running = true
       # Call the initial state to make sure it's set
       initial_state
       call_ready
