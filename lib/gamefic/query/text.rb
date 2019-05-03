@@ -10,6 +10,7 @@ module Gamefic
         super
       end
       def resolve(subject, token, continued: false)
+        return Matches.new([], '', token) unless accept?(token)
         parts = token.split(Keywords::SPLIT_REGEXP)
         cursor = []
         matches = []
