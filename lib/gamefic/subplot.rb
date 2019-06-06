@@ -26,10 +26,6 @@ module Gamefic
       p_players
     end
 
-    def add_entity e
-      @p_entities.push e
-    end
-
     def subplot
       self
     end
