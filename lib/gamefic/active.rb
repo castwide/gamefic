@@ -169,14 +169,14 @@ module Gamefic
       a = performance_stack.last.shift
       unless a.nil?
         if quietly
-          if @buffer_stack == 0
+          if buffer_stack == 0
             @buffer = ""
           end
-          @buffer_stack += 1
+          set_buffer_stack(buffer_stack + 1)
         end
         a.execute
         if quietly
-          @buffer_stack -= 1
+          set_buffer_stack(buffer_stack - 1)
           @buffer
         end
       end
