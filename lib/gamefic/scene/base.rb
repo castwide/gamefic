@@ -23,8 +23,11 @@ module Gamefic
     # @return [String]
     attr_reader :input
 
-    def initialize actor
+    attr_reader :options
+
+    def initialize actor, **options
       @actor = actor
+      @options = options
       post_initialize
     end
 

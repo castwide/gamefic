@@ -83,7 +83,7 @@ module Gamefic
       def call_player_ready
         p_players.each { |player|
           unless player.next_scene.nil? || !player.scene.finished?
-            player.cue player.next_scene
+            player.cue player.next_scene, **player.next_options
           end
           player.cue default_scene if player.scene.nil?
           #player.prepare nil

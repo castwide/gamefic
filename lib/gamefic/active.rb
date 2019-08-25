@@ -23,6 +23,8 @@ module Gamefic
     # @return [Class<Gamefic::Scene::Base>]
     attr_reader :next_scene
 
+    attr_reader :next_options
+
     # The prompt for the previous scene.
     #
     # @return [String]
@@ -187,12 +189,12 @@ module Gamefic
     # beginning of the next turn.
     #
     # @param new_scene [Class]
-    def cue new_scene
+    def cue new_scene, **options
       @next_scene = nil
       if new_scene.nil?
         @scene = nil
       else
-        @scene = new_scene.new(self)
+        @scene = new_scene.new(self, **options)
         @scene.start
       end
     end
@@ -202,8 +204,9 @@ module Gamefic
     # current scene finishes.
     #
     # @param new_scene [Class]
-    def prepare new_scene
+    def prepare new_scene, **options
       @next_scene = new_scene
+      @next_options = options
     end
 
     # Return true if the character is expected to be in the specified scene on
@@ -211,7 +214,7 @@ module Gamefic
     #
     # @return [Boolean]
     def will_cue? scene
-      (@scene.class == scene and @next_scene.nil?) or @next_scene == scene
+      (@scene.class == scene and @next_scene.nil?) || @next_scene == scene
     end
 
     # Cue a conclusion. This method works like #cue, except it will raise a
