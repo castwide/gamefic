@@ -49,6 +49,7 @@ module Gamefic
     end
 
     def exeunt player
+      p_player_conclude_procs.each { |block| block.call player }
       player.playbooks.delete playbook
       player.cue (@next_cue || default_scene)
       p_players.delete player
@@ -56,12 +57,8 @@ module Gamefic
 
     def conclude
       @concluded = true
-      entities.each { |e|
-        destroy e
-      }
-      players.each { |p|
-        exeunt p
-      }
+      players.each { |p| exeunt p }
+      entities.each { |e| destroy e }
     end
 
     def concluded?

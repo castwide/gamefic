@@ -196,6 +196,9 @@ module Gamefic
       else
         @scene = new_scene.new(self, **options)
         @scene.start
+        if @scene.is_a?(Scene::Conclusion)
+          p_player_conclude_procs.each { |block| block.call self }
+        end
       end
     end
 
@@ -229,7 +232,7 @@ module Gamefic
     #
     # @return [Boolean]
     def concluded?
-      !scene.nil? and scene.kind_of?(Scene::Conclusion)
+      !scene.nil? && scene.kind_of?(Scene::Conclusion)
     end
 
     # Record the last action the entity executed. This method is typically
