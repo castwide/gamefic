@@ -78,6 +78,7 @@ module Gamefic
       #
       # @return [Array<Gamefic::Entity>]
       def entities
+        # @todo All this cloning is probably a waste of time and resources
         p_entities.clone
       end
 
