@@ -23,12 +23,21 @@ module Gamefic
     # @return [String]
     attr_reader :input
 
+    # @return [Hash{Symbol => Object}]
     attr_reader :options
 
     def initialize actor, **options
       @actor = actor
       @options = options
       post_initialize
+    end
+
+    # A shortcut for the #options hash.
+    #
+    # @param key [Symbol]
+    # @return [Object]
+    def [] key
+      options[key]
     end
 
     def post_initialize
