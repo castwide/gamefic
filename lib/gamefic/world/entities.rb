@@ -14,10 +14,8 @@ module Gamefic
       # @!macro [attach] make_entity
       #   @return [$1]
       def make cls, args = {}, &block
+        raise ArgumentError, "Invalid Entity class" unless cls <= Entity
         ent = cls.new args, &block
-        if ent.kind_of?(Entity) == false
-          raise ArgumentError, "Invalid entity class"
-        end
         p_entities.push ent
         ent
       end

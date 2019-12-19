@@ -26,7 +26,7 @@ describe Gamefic::World::Entities do
 
   it 'raises ArgumentError for invalid classes' do
     expect {
-      entity = object.make(String)
+      object.make(String)
     }.to raise_error(ArgumentError)
   end
 end
