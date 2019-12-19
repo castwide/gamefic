@@ -24,11 +24,11 @@ module Gamefic
     attr_reader :input
 
     # @return [Hash{Symbol => Object}]
-    attr_reader :options
+    attr_reader :data
 
-    def initialize actor, **options
+    def initialize actor, **data
       @actor = actor
-      @options = options
+      @data = data
       post_initialize
     end
 
@@ -37,7 +37,7 @@ module Gamefic
     # @param key [Symbol]
     # @return [Object]
     def [] key
-      options[key]
+      data[key]
     end
 
     def post_initialize
