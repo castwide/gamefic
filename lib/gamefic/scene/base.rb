@@ -32,7 +32,7 @@ module Gamefic
       post_initialize
     end
 
-    # A shortcut for the #options hash.
+    # A shortcut for the #data hash.
     #
     # @param key [Symbol]
     # @return [Object]
