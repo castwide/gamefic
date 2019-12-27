@@ -16,7 +16,7 @@ module Gamefic
       def make cls, args = {}, &block
         raise ArgumentError, "Invalid Entity class" unless cls.is_a?(Class) && cls <= Entity
         ent = cls.new args, &block
-        p_entities.push ent
+        entities.push ent
         ent
       end
 
@@ -45,8 +45,8 @@ module Gamefic
         entity.parent = nil
         index = entities.index(entity)
         return if index.nil? || index < static_entity_index
-        p_entities.delete_at index
-        p_players.delete entity
+        entities.delete_at index
+        players.delete entity
       end
 
       # Pick an entity based on its description.
@@ -76,33 +76,24 @@ module Gamefic
       #
       # @return [Array<Gamefic::Entity>]
       def entities
-        # @todo All this cloning is probably a waste of time and resources
-        p_entities#.clone
+        @entities ||= []
       end
 
       # Get an array of players associated with this plot.
       #
       # @return [Array<Gamefic::Actor>]
       def players
-        p_players.clone
+        @players ||= []
       end
 
       private
 
       def mark_static_entities
-        @static_entity_index ||= p_entities.length
+        @static_entity_index ||= entities.length
       end
 
       def static_entity_index
         @static_entity_index || 0
-      end
-
-      def p_entities
-        @p_entities ||= []
-      end
-
-      def p_players
-        @p_players ||= []
       end
     end
   end

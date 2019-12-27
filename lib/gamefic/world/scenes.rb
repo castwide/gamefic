@@ -32,7 +32,7 @@ module Gamefic
       def introduce(player)
         player.playbooks.push playbook unless player.playbooks.include?(playbook)
         player.cue default_scene
-        p_players.push player
+        players.push player
         @introduction.call(player) unless @introduction.nil?
       end
 

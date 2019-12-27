@@ -11,8 +11,8 @@ module Gamefic
     def restore snapshot
       snapshot = JSON.parse(snapshot, symbolize_names: true) if snapshot.is_a?(String)
       # HACK: Force conclusion of current subplots
-      p_subplots.each { |s| s.conclude }
-      p_subplots.clear
+      subplots.each { |s| s.conclude }
+      subplots.clear
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)
       entities.each { |e| e.flush }
     end

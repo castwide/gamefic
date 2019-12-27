@@ -10,13 +10,13 @@ module Gamefic
       #   end
       #
       def on_ready &block
-        p_ready_procs.push block
+        ready_procs.push block
       end
 
       # Add a block to be executed after the Plot is finished updating a turn.
       #
       def on_update &block
-        p_update_procs.push block
+        update_procs.push block
       end
 
       # Add a block to be executed for each player at the beginning of a turn.
@@ -32,28 +32,52 @@ module Gamefic
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
-        p_player_ready_procs.push block
+        player_ready_procs.push block
       end
 
       # Add a block to be executed for each player before an update.
       #
       # @yieldparam[Gamefic::Actor]
       def before_player_update &block
-        p_before_player_update_procs.push block
+        before_player_update_procs.push block
       end
 
       # Add a block to be executed for each player at the end of a turn.
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
-        p_player_update_procs.push block
+        player_update_procs.push block
       end
 
       # Add a block to be executed at the conclusion of the plot.
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_conclude &block
-        p_player_conclude_procs.push block
+        player_conclude_procs.push block
+      end
+
+      def player_conclude_procs
+        @player_conclude_procs ||= []
+      end
+
+      def ready_procs
+        @ready_procs ||= []
+      end
+
+      def update_procs
+        @update_procs ||= []
+      end
+
+      def player_ready_procs
+        @player_ready_procs ||= []
+      end
+
+      def before_player_update_procs
+        @before_player_update_procs ||= []
+      end
+
+      def player_update_procs
+        @player_update_procs ||= []
       end
 
       private
@@ -62,14 +86,14 @@ module Gamefic
       # Plot while beginning a turn.
       #
       def call_ready
-        p_ready_procs.each { |p| p.call }
+        ready_procs.each { |p| p.call }
       end
 
       # Execute the on_update blocks. This method is typically called by the
       # Plot while ending a turn.
       #
       def call_update
-        p_update_procs.each { |p| p.call }
+        update_procs.each { |p| p.call }
       end
 
       # Execute the before_player_update blocks for each player. This method is
@@ -77,9 +101,9 @@ module Gamefic
       # processing player input.
       #
       def call_before_player_update
-        p_players.each { |player|
+        players.each { |player|
           player.flush
-          p_before_player_update_procs.each { |block| block.call player }
+          before_player_update_procs.each { |block| block.call player }
         }
       end
 
@@ -88,14 +112,12 @@ module Gamefic
       # the on_ready blocks.
       #
       def call_player_ready
-        p_players.each { |player|
+        players.each { |player|
           unless player.next_scene.nil? || !player.scene.finished?
             player.cue player.next_scene, **player.next_options
           end
           player.cue default_scene if player.scene.nil?
-          #player.prepare nil
-          #player.cue this_scene #unless player.scene.class == this_scene
-          p_player_ready_procs.each { |block| block.call player }
+          player_ready_procs.each { |block| block.call player }
         }
       end
 
@@ -104,33 +126,9 @@ module Gamefic
       # on_ready blocks.
       #
       def call_player_update
-        p_players.each { |player|
-          p_player_update_procs.each { |block| block.call player }
+        players.each { |player|
+          player_update_procs.each { |block| block.call player }
         }
-      end
-
-      def p_ready_procs
-        @p_ready_procs ||= []
-      end
-
-      def p_update_procs
-        @p_update_procs ||= []
-      end
-
-      def p_before_player_update_procs
-        @p_before_player_update_procs ||= []
-      end
-
-      def p_player_ready_procs
-        @p_player_ready_procs ||= []
-      end
-
-      def p_player_update_procs
-        @p_player_update_procs ||= []
-      end
-
-      def p_player_conclude_procs
-        @p_player_conclude_procs ||= []
       end
     end
   end

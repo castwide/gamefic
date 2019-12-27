@@ -52,7 +52,7 @@ module Gamefic
       initial_state
       call_ready
       call_player_ready
-      p_subplots.each { |s| s.ready }
+      subplots.each { |s| s.ready }
     end
 
     # Update the Plot's current turn of gameplay.
@@ -62,17 +62,17 @@ module Gamefic
     def update
       entities.each { |e| e.flush }
       call_before_player_update
-      p_players.each do |p|
+      players.each do |p|
         p.performed nil
         p.last_input = p.queue.last
         p.last_prompt = p.scene.prompt
         p.scene.update
       end
-      p_entities.each { |e| e.update }
+      entities.each { |e| e.update }
       call_player_update
       call_update
-      p_subplots.each { |s| s.update unless s.concluded? }
-      p_subplots.delete_if { |s| s.concluded? }
+      subplots.each { |s| s.update unless s.concluded? }
+      subplots.delete_if { |s| s.concluded? }
     end
 
     # Send a message to a group of entities.

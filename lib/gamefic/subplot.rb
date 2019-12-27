@@ -23,7 +23,7 @@ module Gamefic
     end
 
     def players
-      p_players
+      @players ||= []
     end
 
     def subplot
@@ -49,10 +49,10 @@ module Gamefic
     end
 
     def exeunt player
-      p_player_conclude_procs.each { |block| block.call player }
+      player_conclude_procs.each { |block| block.call player }
       player.playbooks.delete playbook
       player.cue (@next_cue || default_scene)
-      p_players.delete player
+      players.delete player
     end
 
     def conclude

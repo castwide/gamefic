@@ -8,8 +8,7 @@ module Gamefic
     #
     # @return [Array<Subplot>]
     def subplots
-      # @todo Cloning might be overkill
-      p_subplots#.clone
+      @subplots ||= []
     end
 
     # Start a new subplot based on the provided class.
@@ -18,7 +17,7 @@ module Gamefic
     # @return [Gamefic::Subplot]
     def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, **more
       subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, **more)
-      p_subplots.push subplot
+      subplots.push subplot
       subplot
     end
 
@@ -38,12 +37,6 @@ module Gamefic
     # @return [Boolean]
     def in_subplot? player
       !subplots_featuring(player).empty?
-    end
-
-    private
-
-    def p_subplots
-      @p_subplots ||= []
     end
   end
 end

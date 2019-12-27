@@ -7,7 +7,7 @@ module Gamefic
       #
       # @return [Array<Gamefic::Actor>]
       def players
-        p_players
+        @players ||= []
       end
 
       # Get the character that the player will control on introduction.
