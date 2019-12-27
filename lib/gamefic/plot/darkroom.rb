@@ -75,12 +75,16 @@ module Gamefic
         }
         snapshot[:subplots].each { |s|
           cls = namespace_to_constant(s[:class])
-          sp = plot.stage do
-            branch cls
-          end
+          sp = cls.allocate
           # @todo Assuming one player
-          sp.introduce player_store[0] unless player_store.empty?
+          # sp.introduce player_store[0] unless player_store.empty?
+          unless player_store.empty?
+            sp.players.push player_store[0]
+            player_store[0].playbooks.push sp.playbook unless player_store[0].playbooks.include?(sp.playbook)
+          end
           rebuild_subplot sp, s
+          sp.send(:run_scripts)
+          plot.subplots.push sp
         }
         i = 0
         snapshot[:entities].each { |h|
@@ -259,16 +263,14 @@ module Gamefic
         s.entities.each { |e|
           s.destroy e
         }
+        h[:entities].each { |e|
+          s.entities.push unserialize(e)
+        }
         h[:instance_variables].each_pair { |k, v|
           s.instance_variable_set(k, unserialize(v))
         }
         h[:theater_instance_variables].each_pair { |k, v|
           s.theater.instance_variable_set(k, unserialize(v))
-        }
-        i = 0
-        h[:entities].each { |e|
-          s.add_entity unserialize(e)
-          i += 1
         }
       end
 

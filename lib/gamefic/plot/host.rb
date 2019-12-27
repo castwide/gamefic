@@ -8,7 +8,8 @@ module Gamefic
     #
     # @return [Array<Subplot>]
     def subplots
-      p_subplots.clone
+      # @todo Cloning might be overkill
+      p_subplots#.clone
     end
 
     # Start a new subplot based on the provided class.
