@@ -94,6 +94,7 @@ module Gamefic
         i = 0
         snapshot[:players].each { |p|
           rebuild1 player_store[i], p
+          player_store[i].prepare plot.default_scene unless player_store[i].next_scene
           i += 1
         }
         i = 0
@@ -122,7 +123,7 @@ module Gamefic
       end
 
       def hash_blacklist
-        [:@parent, :@children, :@last_action, :@scene, :@next_scene, :@playbook, :@performance_stack, :@buffer_stack, :@messages, :@state]
+        [:@parent, :@children, :@last_action, :@scene, :@playbook, :@performance_stack, :@buffer_stack, :@messages, :@state]
       end
 
       def can_serialize? v
