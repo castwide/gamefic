@@ -178,6 +178,8 @@ module Gamefic
             result[serialize(k)] = serialize(v)
           end
           result
+        elsif v.is_a?(Symbol)
+          "#<SYM:#{v}>"
         elsif is_scene_class?(v)
           i = plot.scene_classes.index(v)
           "#<SIN_#{i}>"
@@ -219,6 +221,8 @@ module Gamefic
             entity_store[m[1].to_i]
           elsif m = v.match(/#<PIN_([0-9]+)>/)
             player_store[m[1].to_i]
+          elsif m = v.match(/#<SYM:(.*?)>/)
+            m[1].to_sym
           else
             v
           end
