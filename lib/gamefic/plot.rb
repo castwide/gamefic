@@ -68,6 +68,11 @@ module Gamefic
         p.last_input = p.queue.last
         p.last_prompt = p.scene.prompt
         p.scene.update
+        if p.scene.is_a?(Scene::Conclusion)
+          player_conclude_procs.each do |proc|
+            proc.call p
+          end
+        end
       end
       entities.each { |e| e.update }
       call_player_update

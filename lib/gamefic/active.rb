@@ -196,9 +196,6 @@ module Gamefic
       else
         @scene = new_scene.new(self, **options)
         @scene.start
-        if @scene.is_a?(Scene::Conclusion)
-          player_conclude_procs.each { |block| block.call self }
-        end
       end
     end
 

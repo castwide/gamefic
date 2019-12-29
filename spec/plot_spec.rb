@@ -60,4 +60,20 @@ describe Gamefic::Plot do
     plot.ready
     expect(actor.scene.type).to eq('Pause')
   end
+
+  it 'runs conclude procs' do
+    plot = Gamefic::Plot.new
+    actor = plot.cast Gamefic::Actor
+    ran = false
+    plot.stage do
+      on_player_conclude do |player|
+        ran = true
+      end
+    end
+    plot.introduce actor
+    plot.ready
+    actor.cue plot.default_conclusion
+    plot.update
+    expect(ran).to be true
+  end
 end
