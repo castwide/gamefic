@@ -9,3 +9,4 @@ examples/*/release
 .yardoc
 doc
 .vscode
+/tmp/
