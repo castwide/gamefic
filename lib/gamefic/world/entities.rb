@@ -44,7 +44,7 @@ module Gamefic
       def destroy entity
         entity.parent = nil
         index = entities.index(entity)
-        return if index.nil? || index < static_entity_index
+        return if index.nil? || index < static_entity_length - 1
         entities.delete_at index
         players.delete entity
       end
@@ -89,11 +89,11 @@ module Gamefic
       private
 
       def mark_static_entities
-        @static_entity_index ||= entities.length
+        @static_entity_length ||= entities.length
       end
 
-      def static_entity_index
-        @static_entity_index || 0
+      def static_entity_length
+        @static_entity_length || 0
       end
     end
   end
