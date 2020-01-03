@@ -14,105 +14,45 @@ module Gamefic
       #
       # @return [Hash]
       def save reduce: false
-        result = { entities: [], players: [], subplots: [], instance_variables: {}, metadata: plot.metadata }
-        entity_store.clear
-        player_store.clear
-        entity_store.concat plot.entities
-        player_store.concat plot.players
-        plot.subplots.each { |s| entity_store.concat s.entities }
-        entity_store.uniq!
-        i = 0
-        entity_store.each do |e|
-          he = hash_entity(e)
-          if reduce
-            unless plot.initial_state[:entities][i].nil?
-              plot.initial_state[:entities][i].each_pair do |k, v|
-                he.delete k if he[k] == v
-              end
-            end
-          end
-          result[:entities].push he
-          i += 1
-        end
-        player_store.each do |p|
-          result[:players].push hash_entity(p)
-        end
-        plot.theater.instance_variables.each { |i|
-          v = plot.theater.instance_variable_get(i)
-          result[:instance_variables][i] = serialize(v) if can_serialize?(v)
+        result = {
+          # entities: plot.entities.map(&:to_serial),
+          elements: Gamefic::Index.serials,
+          players: plot.players.map(&:to_serial),
+          instance_variables: instance_variable_hash(plot.theater),
+          subplots: plot.subplots.map { |s| hash_subplot(s) },
+          metadata: plot.metadata
         }
-        plot.subplots.each { |s|
-          result[:subplots].push hash_subplot(s)
-        }
-        result
       end
 
       # Restore a snapshot.
       #
       # @param snapshot [Hash]
       def restore snapshot
-        entity_store.clear
-        player_store.clear
-        plot.subplots.each { |s| s.conclude }
-        plot.entities[plot.initial_state[:entities].length..-1].each { |e| plot.destroy e }
-        entity_store.concat plot.entities[0..plot.initial_state[:entities].length-1]
-        entity_store.uniq!
-        player_store.concat plot.players
-        i = 0
-        snapshot[:entities].each { |h|
-          if entity_store[i].nil?
-            cls = namespace_to_constant(h[:class])
-            e = plot.stage do
-              make cls
-            end
-            entity_store.push e
-          end
-          unless plot.initial_state[:entities][i].nil?
-            rebuild1 entity_store[i], plot.initial_state[:entities][i]
-            rebuild2 entity_store[i], plot.initial_state[:entities][i]
-          end
-          i += 1
-        }
-        snapshot[:subplots].each { |s|
-          cls = namespace_to_constant(s[:class])
-          sp = cls.allocate
-          # @todo Assuming one player
-          # sp.introduce player_store[0] unless player_store.empty?
-          unless player_store.empty?
-            sp.players.push player_store[0]
-            player_store[0].playbooks.push sp.playbook unless player_store[0].playbooks.include?(sp.playbook)
-          end
-          rebuild_subplot sp, s
-          sp.send(:run_scripts)
-          plot.subplots.push sp
-        }
-        i = 0
-        snapshot[:entities].each { |h|
-          rebuild1 entity_store[i], h
-          i += 1
-        }
-        i = 0
-        snapshot[:players].each { |p|
-          rebuild1 player_store[i], p
-          player_store[i].prepare plot.default_scene unless player_store[i].next_scene
-          i += 1
-        }
-        i = 0
-        snapshot[:entities].each { |h|
-          rebuild2 entity_store[i], h
-          i += 1
-        }
-        i = 0
-        snapshot[:players].each { |h|
-          rebuild2 player_store[i], h
-          i += 1
-        }
-        snapshot[:instance_variables].each_pair { |k, v|
-          plot.theater.instance_variable_set(k, unserialize(v))
-        }
+        Gamefic::Index.elements.map(&:destroy)
+        Gamefic::Index.unserialize snapshot[:elements]
+        plot.entities.clear
+        Gamefic::Index.elements.each_with_index do |e, i|
+          plot.entities.push e
+        end
+        snapshot[:instance_variables].each_pair do |k, e|
+          v = Gamefic::Index.from_element(e)
+          next if v == "#<UNKNOWN>"
+          plot.instance_variable_set(k, v)
+        end
+        # snapshot[:players].each_with do |p|
+        # end
+        # @todo Rebuild subplots
       end
 
       private
+
+      def instance_variable_hash obj
+        result = {}
+        obj.instance_variables.each do |k|
+          result[k] = obj.instance_variable_get(k).to_serial
+        end
+        result
+      end
 
       def namespace_to_constant string
         space = Object

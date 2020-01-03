@@ -25,9 +25,11 @@ module Gamefic
     # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
+      Gamefic::Index.clear
       @metadata = metadata
       run_scripts
       mark_static_entities
+      Gamefic::Index.stick
     end
 
     def player_class cls = nil

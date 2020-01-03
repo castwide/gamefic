@@ -94,6 +94,10 @@ module Gamefic
       @@stuck_length = @@elements.length
     end
 
+    def self.stuck
+      @@stuck_length
+    end
+
     def self.clear
       @@stuck_length = 0
       @@elements.clear
