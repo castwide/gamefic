@@ -64,7 +64,7 @@ describe Gamefic::Plot::Snapshot do
     snapshot = plot.save
     entity[:hash] = nil
     plot.restore snapshot
-    expect(entity[:hash]).to eq(hash)
+    expect(plot.entities.first[:hash]).to eq(hash)
   end
 
   it 'restores a static entity in place' do
