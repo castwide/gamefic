@@ -50,8 +50,6 @@ module Gamefic
     #
     def ready
       playbook.freeze
-      # Call the initial state to make sure it's set
-      initial_state
       call_ready
       call_player_ready
       subplots.each { |s| s.ready }
