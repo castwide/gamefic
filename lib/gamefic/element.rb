@@ -7,14 +7,15 @@ module Gamefic
   #
   class Element
     include Gamefic::Describable
+    include Gamefic::Index
 
-    def initialize(args = {})
-      self.class.default_attributes.merge(args).each { |key, value|
-        send "#{key}=", value
-      }
-      post_initialize
-      yield self if block_given?
-    end
+    # def initialize(args = {})
+    #   self.class.default_attributes.merge(args).each { |key, value|
+    #     send "#{key}=", value
+    #   }
+    #   post_initialize
+    #   yield self if block_given?
+    # end
 
     def post_initialize
       # raise NotImplementedError, "#{self.class} must implement post_initialize"

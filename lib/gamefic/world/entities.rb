@@ -47,6 +47,7 @@ module Gamefic
         return if index.nil? || index < static_entity_length - 1
         entities.delete_at index
         players.delete entity
+        entity.destroy
       end
 
       # Pick an entity based on its description.

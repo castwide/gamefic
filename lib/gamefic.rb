@@ -6,6 +6,8 @@ require 'gamefic/core_ext/string'
 
 require 'gamefic/grammar'
 require 'gamefic/describable'
+require 'gamefic/index'
+require 'gamefic/serialize'
 require 'gamefic/element'
 require 'gamefic/entity'
 require 'gamefic/active'
