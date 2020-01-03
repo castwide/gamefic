@@ -1,13 +1,9 @@
 module Gamefic
   module Serialize
     def to_serial
-      d = {}
-      d['class'] = self.class.to_s
-      instance_variables.each do |k|
-        v = instance_variable_get(k)
-        d[k] = v.to_serial
-      end
-      d
+      {
+        'class' => self.class.to_s
+      }.merge serialize_instance_variables
     end
   end
 end
@@ -22,7 +18,7 @@ class Object
   def serialize_instance_variables
     result = {}
     instance_variables.each do |k|
-      result[k] = instance_variable_get(k).to_serial
+      result[k.to_s] = instance_variable_get(k).to_serial
     end
     result
   end
