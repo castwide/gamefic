@@ -16,11 +16,11 @@ module Gamefic
       def save reduce: false
         result = {
           # entities: plot.entities.map(&:to_serial),
-          elements: Gamefic::Index.serials,
-          players: plot.players.map(&:to_serial),
-          instance_variables: instance_variable_hash(plot.theater),
-          subplots: plot.subplots.map { |s| hash_subplot(s) },
-          metadata: plot.metadata
+          'elements' => Gamefic::Index.serials,
+          'players' => plot.players.map(&:to_serial),
+          'instance_variables' => instance_variable_hash(plot.theater),
+          'subplots' => plot.subplots.map { |s| hash_subplot(s) },
+          'metadata' => plot.metadata
         }
       end
 
@@ -30,16 +30,16 @@ module Gamefic
       def restore snapshot
         Gamefic::Index.elements.map(&:destroy)
         Gamefic::Index.unserialize snapshot['elements']
-        # plot.entities.clear
-        # Gamefic::Index.elements.each_with_index do |e, i|
-        #   plot.entities.push e
-        # end
+        plot.entities.clear
+        Gamefic::Index.elements.each_with_index do |e, i|
+          plot.entities.push e
+        end
 
-        # snapshot['instance_variables'].each_pair do |k, e|
-        #   v = Gamefic::Index.from_element(e)
-        #   next if v == "#<UNKNOWN>"
-        #   plot.theater.instance_variable_set(k, v)
-        # end
+        snapshot['instance_variables'].each_pair do |k, e|
+          v = Gamefic::Index.from_element(e)
+          next if v == "#<UNKNOWN>"
+          plot.theater.instance_variable_set(k, v)
+        end
 
         # snapshot[:players].each_with do |p|
         # end

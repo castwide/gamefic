@@ -2,7 +2,7 @@ module Gamefic
   module Serialize
     def to_serial
       d = {}
-      d[:class] = self.class.to_s
+      d['class'] = self.class.to_s
       instance_variables.each do |k|
         v = instance_variable_get(k)
         d[k] = v.to_serial

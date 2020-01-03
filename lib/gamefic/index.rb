@@ -30,7 +30,7 @@ module Gamefic
       result = []
       @@elements.each do |e|
         d = {}
-        d[:class] = e.class.to_s
+        d['class'] = e.class.to_s
         e.instance_variables.each do |k|
           v = e.instance_variable_get(k)
           d[k] = v.to_serial
