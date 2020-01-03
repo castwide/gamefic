@@ -15,12 +15,11 @@ module Gamefic
       # @return [Hash]
       def save reduce: false
         result = {
-          # entities: plot.entities.map(&:to_serial),
           'elements' => Gamefic::Index.serials,
+          'entities' => plot.entities.map(&:to_serial),
           'players' => plot.players.map(&:to_serial),
           'theater_instance_variables' => plot.theater.serialize_instance_variables,
-          # 'subplots' => plot.subplots.map(&:to_serial),
-          'subplots' => plot.subplots.map { |s| serialize_subplot(s) },
+          'subplots' => plot.subplots.reject(&:concluded?).map { |s| serialize_subplot(s) },
           'metadata' => plot.metadata
         }
       end
@@ -32,8 +31,8 @@ module Gamefic
         Gamefic::Index.elements.map(&:destroy)
         Gamefic::Index.unserialize snapshot['elements']
         plot.entities.clear
-        Gamefic::Index.elements.each_with_index do |e, i|
-          plot.entities.push e
+        snapshot['entities'].each do |ser|
+          plot.entities.push Index.from_serial(ser)
         end
 
         snapshot['theater_instance_variables'].each_pair do |k, s|
@@ -81,6 +80,9 @@ module Gamefic
         cls = namespace_to_constant(s['class'])
         sp = cls.allocate
         sp.instance_variable_set(:@plot, plot)
+        s['entities'].each do |e|
+          sp.entities.push Gamefic::Index.from_serial(e)
+        end
         s['instance_variables'].each_pair do |k, v|
           next if v == "#<UNKNOWN>"
           sp.instance_variable_set(k, Gamefic::Index.from_serial(v))
