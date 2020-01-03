@@ -9,13 +9,12 @@ module Gamefic
     include Gamefic::Describable
     include Gamefic::Index
 
-    # def initialize(args = {})
-    #   self.class.default_attributes.merge(args).each { |key, value|
-    #     send "#{key}=", value
-    #   }
-    #   post_initialize
-    #   yield self if block_given?
-    # end
+    # @todo It would be nice if this initialization wasn't necessary.
+    def initialize(args = {})
+      super self.class.default_attributes.merge(args)
+      post_initialize
+      yield self if block_given?
+    end
 
     def post_initialize
       # raise NotImplementedError, "#{self.class} must implement post_initialize"
