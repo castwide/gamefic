@@ -18,6 +18,14 @@ class Object
     STDERR.puts "Unable to convert #{self} to element"
     "#<UNKNOWN>"
   end
+
+  def serialize_instance_variables
+    result = {}
+    instance_variables.each do |k|
+      result[k] = instance_variable_get(k).to_serial
+    end
+    result
+  end
 end
 
 class Symbol
