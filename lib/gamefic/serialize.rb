@@ -40,7 +40,11 @@ end
 
 class Array
   def to_serial
-    map(&:to_serial)
+    map do |e|
+      s = e.to_serial
+      return "#<UNKNOWN>" if s == "#<UNKNOWN>"
+      s
+    end
   end
 end
 
@@ -48,7 +52,10 @@ class Hash
   def to_serial
     result = {}
     each_pair do |key, value|
-      result[key.to_serial] = value.to_serial
+      k2 = key.to_serial
+      v2 = value.to_serial
+      return "#<UNKNOWN>" if k2 == "#<UNKNOWN>" || v2 == "#<UNKNOWN>"
+      result[k2] = v2
     end
     result
   end

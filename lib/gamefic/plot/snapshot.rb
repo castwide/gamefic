@@ -10,7 +10,7 @@ module Gamefic
     end
 
     def restore snapshot
-      snapshot = JSON.parse(snapshot, symbolize_names: true) if snapshot.is_a?(String)
+      snapshot = JSON.parse(snapshot, symbolize_names: false) if snapshot.is_a?(String)
       # HACK: Force conclusion of current subplots
       subplots.each { |s| s.conclude }
       subplots.clear

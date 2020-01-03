@@ -41,8 +41,8 @@ module Gamefic
     end
 
     def self.from_element element
-      if element.is_a?(Hash) && element[:class]
-        klass = eval(element[:class])
+      if element.is_a?(Hash) && element['class']
+        klass = eval(element['class'])
         object = klass.allocate
         element.each_pair do |k, v|
           next unless k.to_s.start_with?('@')
@@ -58,12 +58,22 @@ module Gamefic
         return match[1].to_sym if match
         element
       elsif element.is_a?(Array)
-        element.map { |e| from_element(e) }
+        result = element.map { |e| from_element(e) }
+        result = "#<UNKNOWN>" if result.any? { |e| e == "#<UNKNOWN>" }
+        result
       elsif element.is_a?(Hash)
         result = {}
+        unknown = false
         element.each_pair do |k, v|
-          result[from_element(k)] = from_element(v)
+          k2 = from_element(k)
+          v2 = from_element(v)
+          if k2 == "#<UNKNOWN>" || v2 == "#<UNKNOWN>"
+            unknown = true
+            break
+          end
+          result[k2] = from_element(v2)
         end
+        result = "#<UNKNOWN>" if unknown
         result
       elsif element && element != true
         STDERR.puts "Unable to unserialize #{element.class}"
@@ -77,7 +87,7 @@ module Gamefic
     def self.unserialize serials
       serials.each_with_index do |s, i|
         next if elements[i]
-        klass = eval(s[:class])
+        klass = eval(s['class'])
         klass.new
       end
       serials.each_with_index do |s, i|

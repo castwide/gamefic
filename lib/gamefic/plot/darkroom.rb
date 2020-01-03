@@ -29,36 +29,40 @@ module Gamefic
       # @param snapshot [Hash]
       def restore snapshot
         Gamefic::Index.elements.map(&:destroy)
-        Gamefic::Index.unserialize snapshot[:elements]
+        Gamefic::Index.unserialize snapshot['elements']
         # plot.entities.clear
         # Gamefic::Index.elements.each_with_index do |e, i|
         #   plot.entities.push e
         # end
-        snapshot[:instance_variables].each_pair do |k, e|
-          v = Gamefic::Index.from_element(e)
-          next if v == "#<UNKNOWN>"
-          plot.instance_variable_set(k, v)
-        end
+
+        # snapshot['instance_variables'].each_pair do |k, e|
+        #   v = Gamefic::Index.from_element(e)
+        #   next if v == "#<UNKNOWN>"
+        #   plot.theater.instance_variable_set(k, v)
+        # end
+
         # snapshot[:players].each_with do |p|
         # end
         # @todo Rebuild subplots
-        snapshot[:subplots].each do |s|
-          cls = namespace_to_constant(s[:class])
-          sp = cls.allocate
-          # sp.introduce player_store[0] unless player_store.empty?
-          # unless player_store.empty?
-          #   sp.players.push player_store[0]
-          #   player_store[0].playbooks.push sp.playbook unless player_store[0].playbooks.include?(sp.playbook)
-          # end
-          # @todo Assuming one player
-          if plot.players.first
-            sp.players.push plot.players.first
-            plot.players.first.playbooks.push sp.playbook unless plot.players.first.playbooks.include?(sp.playbook)
-          end
-          rebuild_subplot sp, s
-          sp.send(:run_scripts)
-          plot.subplots.push sp
-        end
+        # snapshot[:subplots].each do |s|
+        #   cls = namespace_to_constant(s[:class])
+        #   sp = cls.allocate
+        #   # sp.introduce player_store[0] unless player_store.empty?
+        #   # unless player_store.empty?
+        #   #   sp.players.push player_store[0]
+        #   #   player_store[0].playbooks.push sp.playbook unless player_store[0].playbooks.include?(sp.playbook)
+        #   # end
+        #   # @todo Assuming one player
+        #   if plot.players.first
+        #     sp.players.push plot.players.first
+        #     plot.players.first.playbooks.push sp.playbook unless plot.players.first.playbooks.include?(sp.playbook)
+        #     # @todo Assuming default scene
+        #     plot.players.first.cue plot.default_scene
+        #   end
+        #   rebuild_subplot sp, s
+        #   sp.send(:run_scripts)
+        #   plot.subplots.push sp
+        # end
       end
 
       private
