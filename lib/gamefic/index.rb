@@ -71,7 +71,7 @@ module Gamefic
             unknown = true
             break
           end
-          result[k2] = from_serial(v2)
+          result[k2] = v2
         end
         result = "#<UNKNOWN>" if unknown
         result
