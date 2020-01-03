@@ -79,8 +79,8 @@ module Gamefic
 
       def unserialize_subplot s
         cls = namespace_to_constant(s['class'])
-        # sp = cls.allocate
-        sp = cls.new(plot)
+        sp = cls.allocate
+        sp.instance_variable_set(:@plot, plot)
         s['instance_variables'].each_pair do |k, v|
           next if v == "#<UNKNOWN>"
           sp.instance_variable_set(k, Gamefic::Index.from_serial(v))
@@ -90,6 +90,9 @@ module Gamefic
           sp.theater.instance_variable_set(k, Gamefic::Index.from_serial(v))
         end
         plot.subplots.push sp
+        sp.send(:run_scripts)
+        # @todo Assuming one player
+        plot.players.first.playbooks.push sp.playbook unless plot.players.first.playbooks.include?(sp.playbook)
         sp
       end
     end
