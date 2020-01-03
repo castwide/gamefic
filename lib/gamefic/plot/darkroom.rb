@@ -54,19 +54,6 @@ module Gamefic
         space
       end
 
-      def is_scene_class?(v)
-        if v.kind_of?(Class)
-          s = v
-          until s.nil?
-            return true if s == Gamefic::Scene::Base
-            s = s.superclass
-          end
-          false
-        else
-          false
-        end
-      end
-
       def serialize_subplot s
         {
           'class' => s.class.to_s,
