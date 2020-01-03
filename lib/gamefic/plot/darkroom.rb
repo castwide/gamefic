@@ -18,8 +18,9 @@ module Gamefic
           # entities: plot.entities.map(&:to_serial),
           'elements' => Gamefic::Index.serials,
           'players' => plot.players.map(&:to_serial),
-          'instance_variables' => instance_variable_hash(plot.theater),
-          'subplots' => plot.subplots.map { |s| hash_subplot(s) },
+          'theater_instance_variables' => plot.theater.serialize_instance_variables,
+          # 'subplots' => plot.subplots.map(&:to_serial),
+          'subplots' => plot.subplots.map { |s| serialize_subplot(s) },
           'metadata' => plot.metadata
         }
       end
@@ -35,8 +36,8 @@ module Gamefic
           plot.entities.push e
         end
 
-        snapshot['instance_variables'].each_pair do |k, e|
-          v = Gamefic::Index.from_element(e)
+        snapshot['theater_instance_variables'].each_pair do |k, s|
+          v = Gamefic::Index.from_serial(s)
           next if v == "#<UNKNOWN>"
           plot.theater.instance_variable_set(k, v)
         end
@@ -67,13 +68,13 @@ module Gamefic
 
       private
 
-      def instance_variable_hash obj
-        result = {}
-        obj.instance_variables.each do |k|
-          result[k] = obj.instance_variable_get(k).to_serial
-        end
-        result
-      end
+      # def instance_variable_hash obj
+      #   result = {}
+      #   obj.instance_variables.each do |k|
+      #     result[k] = obj.instance_variable_get(k).to_serial
+      #   end
+      #   result
+      # end
 
       def namespace_to_constant string
         space = Object
@@ -208,21 +209,29 @@ module Gamefic
         end
       end
 
-      def hash_subplot s
-        result = { entities: [], instance_variables: {}, theater_instance_variables: {} }
-        s.instance_variables.each { |i|
-          v = s.instance_variable_get(i)
-          result[:instance_variables][i] = serialize(v) if can_serialize?(v)
+      # def hash_subplot s
+      #   result = { entities: [], instance_variables: {}, theater_instance_variables: {} }
+      #   s.instance_variables.each { |i|
+      #     v = s.instance_variable_get(i)
+      #     result[:instance_variables][i] = serialize(v) if can_serialize?(v)
+      #   }
+      #   s.theater.instance_variables.each { |i|
+      #     v = s.theater.instance_variable_get(i)
+      #     result[:theater_instance_variables][i] = serialize(v) if can_serialize?(v)
+      #   }
+      #   s.entities.each { |s|
+      #     result[:entities].push serialize(s)
+      #   }
+      #   result[:class] = s.class.to_s
+      #   result
+      # end
+
+      def serialize_subplot s
+        {
+          'entities' => s.entities.map(&:to_serial),
+          'instance_variables' => s.serialize_instance_variables,
+          'theater_instance_variables' => s.theater.serialize_instance_variables
         }
-        s.theater.instance_variables.each { |i|
-          v = s.theater.instance_variable_get(i)
-          result[:theater_instance_variables][i] = serialize(v) if can_serialize?(v)
-        }
-        s.entities.each { |s|
-          result[:entities].push serialize(s)
-        }
-        result[:class] = s.class.to_s
-        result
       end
 
       def rebuild_subplot s, h
