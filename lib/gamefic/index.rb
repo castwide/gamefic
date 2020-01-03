@@ -40,47 +40,47 @@ module Gamefic
       result
     end
 
-    def self.from_element element
-      if element.is_a?(Hash) && element['class']
-        klass = eval(element['class'])
+    def self.from_serial serial
+      if serial.is_a?(Hash) && serial['class']
+        klass = eval(serial['class'])
         object = klass.allocate
-        element.each_pair do |k, v|
+        serial.each_pair do |k, v|
           next unless k.to_s.start_with?('@')
-          object.instance_variable_set(k, from_element(v))
+          object.instance_variable_set(k, from_serial(v))
         end
         object
-      elsif element.is_a?(Numeric)
-        element
-      elsif element.is_a?(String)
-        match = element.match(/#<ELE_([0-9]+)>/)
+      elsif serial.is_a?(Numeric)
+        serial
+      elsif serial.is_a?(String)
+        match = serial.match(/#<ELE_([0-9]+)>/)
         return Gamefic::Index.elements[match[1].to_i] if match
-        match = element.match(/#<SYM:([a-z0-9_\?\!]+)>/i)
+        match = serial.match(/#<SYM:([a-z0-9_\?\!]+)>/i)
         return match[1].to_sym if match
-        element
-      elsif element.is_a?(Array)
-        result = element.map { |e| from_element(e) }
+        serial
+      elsif serial.is_a?(Array)
+        result = serial.map { |e| from_serial(e) }
         result = "#<UNKNOWN>" if result.any? { |e| e == "#<UNKNOWN>" }
         result
-      elsif element.is_a?(Hash)
+      elsif serial.is_a?(Hash)
         result = {}
         unknown = false
-        element.each_pair do |k, v|
-          k2 = from_element(k)
-          v2 = from_element(v)
+        serial.each_pair do |k, v|
+          k2 = from_serial(k)
+          v2 = from_serial(v)
           if k2 == "#<UNKNOWN>" || v2 == "#<UNKNOWN>"
             unknown = true
             break
           end
-          result[k2] = from_element(v2)
+          result[k2] = from_serial(v2)
         end
         result = "#<UNKNOWN>" if unknown
         result
-      elsif element && element != true
-        STDERR.puts "Unable to unserialize #{element.class}"
+      elsif serial && serial != true
+        STDERR.puts "Unable to unserialize #{serial.class}"
         nil
       else
         # true, false, or nil
-        element
+        serial
       end
     end
 
@@ -94,7 +94,7 @@ module Gamefic
         s.each_pair do |k, v|
           next unless k.to_s.start_with?('@')
           next if v == "#<UNKNOWN>"
-          elements[i].instance_variable_set(k, from_element(v))
+          elements[i].instance_variable_set(k, from_serial(v))
         end
       end
       elements
