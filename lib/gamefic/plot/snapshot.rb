@@ -4,8 +4,6 @@ module Gamefic
   module Plot::Snapshot
     # @return [Hash]
     def save
-      # initial_state
-      # internal_save
       Gamefic::Plot::Darkroom.new(self).save
     end
 
@@ -17,15 +15,5 @@ module Gamefic
       Gamefic::Plot::Darkroom.new(self).restore(snapshot)
       entities.each { |e| e.flush }
     end
-
-    # def initial_state
-    #   @initial_state ||= internal_save(false)
-    # end
-
-    # private
-
-    # def internal_save reduce = true
-    #   Gamefic::Plot::Darkroom.new(self).save(reduce: reduce)
-    # end
   end
 end
