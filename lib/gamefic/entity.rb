@@ -12,12 +12,6 @@ module Gamefic
     include Messaging
     include Grammar::WordAdapter
 
-    # This method is typically called by the Engine that manages game execution.
-    # The base method does nothing. Subclasses can override it.
-    #
-    def update
-    end
-
     # Set the Entity's parent.
     #
     # @param node [Gamefic::Entity] The new parent.

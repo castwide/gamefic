@@ -74,7 +74,6 @@ module Gamefic
           end
         end
       end
-      entities.each { |e| e.update }
       call_player_update
       call_update
       subplots.each { |s| s.update unless s.concluded? }
