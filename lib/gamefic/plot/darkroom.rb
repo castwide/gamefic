@@ -82,6 +82,7 @@ module Gamefic
         sp.send(:run_scripts)
         # @todo Assuming one player
         if plot.players.first
+          sp.players.push plot.players.first
           plot.players.first.playbooks.push sp.playbook unless plot.players.first.playbooks.include?(sp.playbook)
         end
         sp
