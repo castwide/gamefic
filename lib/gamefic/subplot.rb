@@ -60,7 +60,9 @@ module Gamefic
       # Players needed to exit first in case any player_conclude procs need to
       # interact with the subplot's entities.
       players.each { |p| exeunt p }
-      entities.each { |e| destroy e }
+      # @todo I'm not sure why rejecting nils is necessary here. It's only an
+      #   issue in Opal.
+      entities.reject(&:nil?).each { |e| destroy e }
     end
 
     def concluded?
