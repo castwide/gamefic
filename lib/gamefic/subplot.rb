@@ -82,8 +82,6 @@ module Gamefic
       call_update
     end
 
-    private
-
     # Subclasses can override this method to handle additional configuration
     # options.
     #
