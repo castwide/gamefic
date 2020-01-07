@@ -11,7 +11,9 @@ end
 class Object
   def to_serial
     return self if [true, false, nil].include?(self)
-    STDERR.puts "Unable to convert #{self} to element"
+    # @todo This warning is a little too spammy. Set up a logger so it can be
+    # limited to an info or debug level.
+    # STDERR.puts "Unable to convert #{self} to element"
     "#<UNKNOWN>"
   end
 
