@@ -70,6 +70,9 @@ module Gamefic
     end
 
     def ready
+      # @todo We might not want to conclude subplots without players. There
+      #   might be cases where a subplot gets created with the intention of
+      #   introducing players in a later turn.
       conclude if players.empty?
       return if concluded?
       playbook.freeze
