@@ -1,10 +1,7 @@
-require 'gamefic/grammar'
-
 module Gamefic
   # Add a variety of text properties for naming, describing, and referencing
   # objects.
   module Describable
-    include Grammar::Person, Grammar::Plural
     include Keywords
 
     # Get the name of the object.

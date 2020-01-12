@@ -10,7 +10,6 @@ module Gamefic
   class Entity < Element
     include Node
     include Messaging
-    include Grammar::WordAdapter
 
     # Set the Entity's parent.
     #
