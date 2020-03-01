@@ -4,11 +4,13 @@ module Gamefic
   #
   class Command
     # A Symbol representing the command's verb or verbal phrase.
+    #
     # @return [Symbol]
     attr_reader :verb
 
-    # @!attribute [r] arguments
-    #   @return [Array<String>] An Array of arguments to be mapped to an Action's Queries.
+    # An Array of arguments to be mapped to an Action's Queries.
+    #
+    # @return [Array<String>]
     attr_reader :arguments
 
     def initialize verb, arguments
