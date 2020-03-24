@@ -55,14 +55,13 @@ module Gamefic
 
     # A hash of values representing the state of a performing entity.
     #
-    # @return [Hash]
+    # @return [Hash{Symbol => Object}]
     def state
-      @state = {}
-      @state.merge! scene.state unless scene.nil?
-      @state[:output] = messages
-      @state[:last_prompt] = last_prompt
-      @state[:last_input] = last_input
-      @state
+      @state ||= {}
+    end
+
+    def output
+      @output ||= {}
     end
 
     # Send a message to the entity.

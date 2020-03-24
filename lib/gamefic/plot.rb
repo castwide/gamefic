@@ -53,6 +53,19 @@ module Gamefic
       call_ready
       call_player_ready
       subplots.each { |s| s.ready }
+      players.each do |p|
+        p.state.replace(
+          p.scene.state
+          .merge({
+            messages: p.messages,
+            last_prompt: p.last_prompt,
+            last_input: p.last_input
+          })
+          .merge(p.state)
+        )
+        p.output.replace(p.state)
+        p.state.clear
+      end
     end
 
     # Update the Plot's current turn of gameplay.

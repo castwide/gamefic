@@ -23,7 +23,6 @@ module Gamefic
     def messages
       @messages ||= ''
     end
-    alias output messages
 
     # Clear the buffered messages.
     #
