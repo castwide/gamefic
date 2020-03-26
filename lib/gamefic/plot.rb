@@ -59,7 +59,8 @@ module Gamefic
           .merge({
             messages: p.messages,
             last_prompt: p.last_prompt,
-            last_input: p.last_input
+            last_input: p.last_input,
+            queue: p.queue
           })
           .merge(p.state)
         )
