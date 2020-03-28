@@ -12,9 +12,14 @@ module Gamefic
       @@elements.push self
     end
 
+    def inherited subclass
+      super
+      @@elements.push subclass
+    end
+
     def to_serial
       index = @@elements.index(self)
-      raise RuntimeError, "#{self} is not an indexed element" unless index
+      raise RuntimeError, "#{self} is not an indexed element #{@@elements.map(&:name)}" unless index
       "#<ELE_#{index}>"
     end
 
@@ -24,6 +29,11 @@ module Gamefic
 
     def self.elements
       @@elements
+    end
+
+    def self.element_name obj
+      return nil unless @@elements.include?(obj)
+      "#<ELE_#{@@elements.index(obj)}>"
     end
 
     def self.serials
@@ -91,6 +101,7 @@ module Gamefic
         klass.new
       end
       serials.each_with_index do |s, i|
+        next if elements[i].class == Class || elements[i].class == Module
         s.each_pair do |k, v|
           next unless k.to_s.start_with?('@')
           next if v == "#<UNKNOWN>"
@@ -110,7 +121,8 @@ module Gamefic
 
     def self.clear
       @@stuck_length = 0
-      @@elements.clear
+      @@elements.keep_if { |e| e && e.is_a?(Class) && e.name && e.name.start_with?('Gamefic::') }
+      stick
     end
 
     def self.stuck? thing

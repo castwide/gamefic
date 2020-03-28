@@ -3,6 +3,8 @@ module Gamefic
   # should inherit from it.
   #
   class Scene::Base
+    extend Gamefic::Index
+
     # The scene's primary actor.
     #
     # @return [Gamefic::Actor]

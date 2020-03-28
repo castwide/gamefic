@@ -2,8 +2,12 @@ module Gamefic
   module Serialize
     def to_serial
       {
-        'class' => self.class.to_s
+        'class' => serialized_class
       }.merge serialize_instance_variables
+    end
+
+    def serialized_class
+      Index.element_name(self.class) || self.class.to_s
     end
   end
 end

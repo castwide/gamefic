@@ -3,7 +3,7 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.make Gamefic::Entity, name: 'entity'
     snapshot = plot.save
-    expect(snapshot['elements'].length).to eq(1)
+    expect(snapshot['elements'].length).to eq(Gamefic::Index.stuck + 1)
   end
 
   it "restores dynamic entities" do
@@ -82,5 +82,26 @@ describe Gamefic::Plot::Snapshot do
     plot.restore snapshot
     expect(entity).to be(plot.entities.first)
     expect(entity.name).to eq('old name')
+  end
+
+  it 'restores scenes' do
+    Gamefic.script do
+      @pause_scene = pause do |actor, scene|
+        actor.tell "pause"
+        actor.prepare default_scene
+      end
+
+      introduction do |actor|
+        actor.cue @pause_scene
+      end
+    end
+    plot = Gamefic::Plot.new
+    pause_scene = plot.stage { @pause_scene }
+    actor = plot.get_player_character
+    plot.introduce actor
+    snapshot = plot.save
+    plot.restore snapshot
+    plot.ready
+    expect(plot.players.first.scene.class).to eq(pause_scene)
   end
 end
