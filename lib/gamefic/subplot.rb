@@ -9,6 +9,8 @@ module Gamefic
     # @return [Gamefic::Plot]
     attr_reader :plot
 
+    attr_reader :static
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor]
     # @param next_cue [Class<Gamefic::Scene::Base>]
@@ -20,6 +22,13 @@ module Gamefic
       run_scripts
       playbook.freeze
       self.introduce introduce unless introduce.nil?
+      # @index = Plot::Index.new(entities)
+      # @static = Plot::Index.new(plot.static + scene_classes + entities)
+      plot.static.concat(scene_classes + entities)
+    end
+
+    def static
+      plot.static
     end
 
     def players
@@ -63,6 +72,7 @@ module Gamefic
       # @todo I'm not sure why rejecting nils is necessary here. It's only an
       #   issue in Opal.
       entities.reject(&:nil?).each { |e| destroy e }
+      plot.static.remove(scene_classes + entities)
     end
 
     def concluded?

@@ -3,7 +3,7 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.make Gamefic::Entity, name: 'entity'
     snapshot = plot.save
-    expect(snapshot['elements'].length).to eq(Gamefic::Index.stuck + 1)
+    expect(snapshot['entities']).to be_one
   end
 
   it "restores dynamic entities" do

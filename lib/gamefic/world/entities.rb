@@ -43,11 +43,18 @@ module Gamefic
       # @param [Gamefic::Entity] The entity to remove
       def destroy entity
         entity.parent = nil
-        index = entities.index(entity)
-        return if index.nil? || index < static_entity_length - 1
-        entities.delete_at index
+        # index = entities.index(entity)
+        # return if index.nil? || index < static_entity_length - 1
+        # entities.delete_at index
+        # players.delete entity
+        # entity.destroy
+
+        # @todo It might make sense to destroy the entity completely now. It
+        #   will still have a reference in the index, but that shouldn't impact
+        #   the current state of the plot.
+        return if static.include?(entity)
+        entities.delete entity
         players.delete entity
-        entity.destroy
       end
 
       # Pick an entity based on its description.
@@ -87,15 +94,15 @@ module Gamefic
         @players ||= []
       end
 
-      private
+      # private
 
-      def mark_static_entities
-        @static_entity_length ||= entities.length
-      end
+      # def mark_static_entities
+      #   @static_entity_length ||= entities.length
+      # end
 
-      def static_entity_length
-        @static_entity_length || 0
-      end
+      # def static_entity_length
+      #   @static_entity_length || 0
+      # end
     end
   end
 end

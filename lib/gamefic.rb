@@ -5,7 +5,7 @@ require 'gamefic/core_ext/array'
 require 'gamefic/core_ext/string'
 
 require 'gamefic/describable'
-require 'gamefic/index'
+# require 'gamefic/index'
 require 'gamefic/serialize'
 require 'gamefic/element'
 require 'gamefic/entity'
@@ -17,5 +17,6 @@ require "gamefic/action"
 require "gamefic/syntax"
 require 'gamefic/world'
 require 'gamefic/scriptable'
-require "gamefic/plot"
+require 'gamefic/plot'
+require 'gamefic/plot/index'
 require 'gamefic/subplot'

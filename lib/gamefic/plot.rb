@@ -16,6 +16,8 @@ module Gamefic
     # @return [Hash]
     attr_reader :metadata
 
+    attr_reader :static
+
     include World
     include Scriptable
     # @!parse extend Scriptable::ClassMethods
@@ -25,11 +27,12 @@ module Gamefic
     # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
-      Gamefic::Index.clear
+      # Gamefic::Index.clear
       @metadata = metadata
       run_scripts
-      mark_static_entities
-      Gamefic::Index.stick
+      # mark_static_entities
+      # Gamefic::Index.stick
+      @static = Index.new(scene_classes + entities)
     end
 
     def player_class cls = nil

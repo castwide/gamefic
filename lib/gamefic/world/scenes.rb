@@ -35,7 +35,7 @@ module Gamefic
         players.push player
         @introduction.call(player) unless @introduction.nil?
         # @todo Find a better way to persist player characters
-        Gamefic::Index.stick
+        # Gamefic::Index.stick
       end
 
       # Create a multiple-choice scene.
