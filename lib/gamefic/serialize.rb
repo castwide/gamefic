@@ -1,11 +1,8 @@
 module Gamefic
   module Serialize
     def to_serial(static)
-      # static.id_for(self) ||
       if static.include?(self)
-        {
-          'element' => static.all.index(self)
-        }.merge(serialize_instance_variables(static))
+        static.id_for(self)
       else
         {
           'class' => serialized_class(static)

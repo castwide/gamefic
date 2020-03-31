@@ -9,8 +9,6 @@ module Gamefic
     # @return [Gamefic::Plot]
     attr_reader :plot
 
-    attr_reader :static
-
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor]
     # @param next_cue [Class<Gamefic::Scene::Base>]

@@ -1,4 +1,8 @@
 describe Gamefic::Plot::Snapshot do
+  after :each do
+    Gamefic::Plot.blocks.clear
+  end
+
   it "saves entities" do
     plot = Gamefic::Plot.new
     plot.make Gamefic::Entity, name: 'entity'
@@ -103,5 +107,62 @@ describe Gamefic::Plot::Snapshot do
     plot.restore snapshot
     plot.ready
     expect(plot.players.first.scene.class).to eq(pause_scene)
+  end
+
+  it 'restores subplots' do
+    Gamefic.script do
+      @next_scene = pause do |actor|
+        actor.tell "Done!"
+        actor.prepare default_scene
+      end
+
+      introduction do |actor|
+        branch Gamefic::Subplot, introduce: actor, next_cue: @next_scene
+      end
+    end
+    plot = Gamefic::Plot.new
+    next_scene = plot.stage { @next_scene }
+    actor = plot.get_player_character
+    plot.introduce actor
+    snapshot = plot.save
+    plot.subplots_featuring(actor).first.conclude
+    expect(plot.subplots_featuring(actor)).to be_empty
+    plot.restore snapshot
+    plot.ready
+    expect(plot.subplots_featuring(actor)).to be_one
+    subplot = plot.subplots.first
+    next_cue = subplot.instance_variable_get(:@next_cue)
+    expect(next_cue).to be(next_scene)
+  end
+
+  it 'restores scene classes' do
+    Gamefic.script do
+      @pause_scene = pause do |actor|
+        actor.tell "Done!"
+        actor.prepare default_scene
+      end
+    end
+    plot = Gamefic::Plot.new
+    saved_scene = plot.stage { @pause_scene }
+    snapshot = plot.save
+    plot.stage { @pause_scene = nil }
+    nil_scene = plot.stage { @pause_scene }
+    expect(saved_scene).not_to be(nil_scene)
+    plot.restore snapshot
+    restored_scene = plot.stage { @pause_scene }
+    expect(saved_scene).to be(restored_scene)
+  end
+
+  it 'restores stage instance variables' do
+    Gamefic.script do
+      @entity = make Gamefic::Entity, name: 'old'
+    end
+
+    plot = Gamefic::Plot.new
+    snapshot = plot.save
+    plot.stage { @entity.name = 'new' }
+    expect(plot.stage { @entity.name }).to eq('new')
+    plot.restore snapshot
+    expect(plot.stage { @entity.name }).to eq('old')
   end
 end

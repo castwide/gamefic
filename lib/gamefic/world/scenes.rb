@@ -144,7 +144,7 @@ module Gamefic
         scene_classes.push s
         s
       end
-      
+
       # Create a custom scene.
       #
       # Custom scenes should always specify the next scene to be cued or

@@ -8,4 +8,9 @@ describe Gamefic::World::Scenes do
   it 'sets a default conclusion' do
     expect(object.default_conclusion).to be(Gamefic::Scene::Conclusion)
   end
+
+  it 'tracks created scenes' do
+    ps = object.pause { puts 'test' }
+    expect(object.scene_classes).to include(ps)
+  end
 end

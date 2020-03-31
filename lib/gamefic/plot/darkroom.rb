@@ -14,9 +14,8 @@ module Gamefic
       #
       # @return [Hash]
       def save reduce: false
-        result = {
-          # 'elements' => Gamefic::Index.serials,
-          'elements' => plot.static.all.map { |e| e.to_serial(plot.static) },
+        {
+          'elements' => plot.static.all.map { |e| e.serialize_instance_variables(plot.static) },
           'entities' => plot.entities.map { |e| e.to_serial(plot.static) },
           'players' => plot.players.map { |e| e.to_serial(plot.static) },
           'theater_instance_variables' => plot.theater.serialize_instance_variables(plot.static),
@@ -31,6 +30,9 @@ module Gamefic
       def restore snapshot
         # Gamefic::Index.elements.map(&:destroy)
         # Gamefic::Index.unserialize snapshot['elements']
+        snapshot['elements'].each_with_index do |ele, idx|
+          unserialize_instance_variables(plot.static.element(idx), ele)
+        end
         plot.entities.clear
         snapshot['entities'].each do |ser|
           plot.entities.push Index.from_serial(ser, plot.static)
@@ -47,6 +49,13 @@ module Gamefic
 
       private
 
+      def unserialize_instance_variables object, instance_variables
+        instance_variables.each_pair do |k, v|
+          next unless k.start_with?('@')
+          object.instance_variable_set(k, Index.from_serial(v, plot.static))
+        end
+      end
+
       def namespace_to_constant string
         space = Object
         string.split('::').each do |part|
@@ -58,7 +67,7 @@ module Gamefic
       def serialize_subplot s
         {
           'class' => s.class.to_s,
-          'entities' => s.entities.map(&:to_serial),
+          'entities' => s.entities.map { |e| e.to_serial(plot.static) },
           'instance_variables' => s.serialize_instance_variables(plot.static),
           'theater_instance_variables' => s.theater.serialize_instance_variables(plot.static)
         }
@@ -69,7 +78,7 @@ module Gamefic
         sp = cls.allocate
         sp.instance_variable_set(:@plot, plot)
         s['entities'].each do |e|
-          sp.entities.push Gamefic::Index.from_serial(e, plot.static)
+          sp.entities.push Index.from_serial(e, plot.static)
         end
         s['instance_variables'].each_pair do |k, v|
           next if v == "#<UNKNOWN>"
