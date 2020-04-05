@@ -1,13 +1,6 @@
 module Gamefic
   module Serialize
     def to_serial(index = [])
-      # if static.include?(self)
-      #   static.id_for(self)
-      # else
-      #  {
-      #    'class' => serialized_class(static)
-      #  }.merge(serialize_instance_variables(static))
-      # end
       if index.include?(self)
         {
           # 'class' => "#<ELE_#{index.index(self)}>",
@@ -31,8 +24,6 @@ module Gamefic
     end
 
     def serialized_class index
-      # return self.class.to_s # @todo Maybe don't sweat dynamic classes
-      # static.id_for(self.class) || self.class.to_s
       if index.include?(self.class)
         "#<ELE_#{index.index(self.class)}>"
       else
@@ -73,7 +64,7 @@ class Object
       if self['instance']
         elematch = self['instance'].match(/^#<ELE_([\d]+)>$/)
         object = index[elematch[1].to_i]
-        raise "Unable to load indexed element ##{elematch[1]}" if object.nil?
+        raise "Unable to load indexed element ##{elematch[1]} #{self}" if object.nil?
       elsif self['class']
         if self['class'] == 'Class'
           return eval(self['name'])
@@ -129,16 +120,13 @@ class Object
     result = {}
     instance_variables.each do |k|
       next if self.class.excluded_from_serial.include?(k)
-      # result[k.to_s] = instance_variable_get(k).to_serial(static)
       val = instance_variable_get(k)
       if index.include?(val)
         result[k.to_s] = {
           'instance' => "#<ELE_#{index.index(val)}>",
-          # 'ivars' => val.serialize_instance_variables(index)
           'ivars' => {}
         }
       else
-        # index.push val if val.is_a?(Gamefic::Serialize) && val.class != Class
         result[k.to_s] = val.to_serial(index)
         index.push val if val.is_a?(Gamefic::Serialize) && val.class != Class
       end

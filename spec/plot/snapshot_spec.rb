@@ -8,7 +8,6 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.make Gamefic::Entity, name: 'entity'
     snapshot = plot.save
-    puts snapshot.inspect
     plot.restore(snapshot)
     expect(plot.entities).to be_one
   end
@@ -27,7 +26,7 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.branch Gamefic::Subplot
     snapshot = plot.save
-    expect(snapshot['ivars']['@subplots'].length).to eq(1)
+    expect(snapshot['plot']['ivars']['@subplots'].length).to eq(1)
   end
 
   it "restores subplots" do
@@ -153,8 +152,6 @@ describe Gamefic::Plot::Snapshot do
     expect(saved_scene).not_to be(nil_scene)
     plot.restore snapshot
     restored_scene = plot.stage { @pause_scene }
-    puts saved_scene.inspect
-    puts restored_scene.inspect
     expect(saved_scene).to be(restored_scene)
   end
 

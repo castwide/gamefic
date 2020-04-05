@@ -15,15 +15,11 @@ module Gamefic
       # @return [Hash]
       def save reduce: false
         index = plot.static + plot.players
-        # result = {
-        #   'elements' => Gamefic::Index.serials,
-        #   'entities' => plot.entities.map(&:to_serial),
-        #   'players' => plot.players.map(&:to_serial),
-        #   'theater_instance_variables' => plot.theater.serialize_instance_variables,
-        #   'subplots' => plot.subplots.reject(&:concluded?).map { |s| serialize_subplot(s) },
-        #   'metadata' => plot.metadata
-        # }
-        plot.to_serial(index)
+        original = index.clone
+        {
+          'plot' => plot.to_serial(index),
+          'index' => index.map { |i| i.to_serial(original.clone) }
+        }
       end
 
       # Restore a snapshot.
@@ -48,10 +44,23 @@ module Gamefic
 
       def restore snapshot
         index = plot.static + plot.players
-        plot.instance_variables.each do |k|
-          # current = Gamefic::Serialize.instances
-          plot.instance_variable_set(k, snapshot['ivars'][k.to_s].from_serial(index))
-          # index.concat(Gamefic::Serialize.instances - current)
+        snapshot['index'].each_with_index do |obj, idx|
+          next if index[idx]
+          elematch = obj['class'].match(/^#<ELE_([\d]+)>$/)
+          if elematch
+            klass = index[elematch[1].to_i]
+          else
+            klass = eval(obj['class'])
+          end
+          index.push klass.allocate
+        end
+        snapshot['index'].each_with_index do |obj, idx|
+          obj['ivars'].each_pair do |k, v|
+            index[idx].instance_variable_set(k, v.from_serial(index))
+          end
+        end
+        snapshot['plot']['ivars'].each_pair do |k, v|
+          plot.instance_variable_set(k, v.from_serial(index))
         end
       end
 
