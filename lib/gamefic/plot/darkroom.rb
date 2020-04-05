@@ -28,6 +28,8 @@ module Gamefic
       #
       # @param snapshot [Hash]
       def restore snapshot
+        plot.subplots.each(&:conclude)
+
         index = plot.static + plot.players
         snapshot.each_with_index do |obj, idx|
           next if index[idx]
@@ -39,12 +41,14 @@ module Gamefic
           end
           index.push klass.allocate
         end
+
         snapshot.each_with_index do |obj, idx|
           if index[idx].class.to_s != obj['class']
             STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
             STDERR.puts obj.inspect
           end
           obj['ivars'].each_pair do |k, v|
+            next if k == '@subplots'
             uns = v.from_serial(index)
             next if uns == "#<UNKNOWN>"
             index[idx].instance_variable_set(k, uns)
@@ -57,6 +61,7 @@ module Gamefic
               pl.playbooks.push index[idx].playbook unless pl.playbooks.include?(index[idx].playbook)
             end
             index[idx].instance_variable_set(:@static, [index[idx]] + index[idx].scene_classes + index[idx].entities)
+            plot.subplots.push index[idx]
           end
         end
       end
