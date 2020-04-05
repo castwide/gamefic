@@ -15,9 +15,13 @@ module Gamefic
       # @return [Hash]
       def save reduce: false
         index = plot.static + plot.players
-        original = index.clone
         plot.to_serial(index)
-        index.map { |i| i.to_serial(original.clone) }
+        index.map do |i|
+          {
+            'class' => i.class.to_s,
+            'ivars' => i.serialize_instance_variables(index)
+          }
+        end
       end
 
       # Restore a snapshot.
@@ -36,8 +40,26 @@ module Gamefic
           index.push klass.allocate
         end
         snapshot.each_with_index do |obj, idx|
+          if index[idx].class.to_s != obj['class']
+            STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
+            STDERR.puts obj.inspect
+          end
+          if index[idx].is_a?(Gamefic::Subplot)
+            more = obj['ivars']['@more'].from_serial(index)
+            index[idx].instance_variable_set(:@plot, index[0])
+            index[idx].configure more
+            index[idx].send(:run_scripts)
+          end
           obj['ivars'].each_pair do |k, v|
-            index[idx].instance_variable_set(k, v.from_serial(index))
+            uns = v.from_serial(index)
+            next if uns == "#<UNKNOWN>"
+            index[idx].instance_variable_set(k, uns)
+          end
+          if index[idx].is_a?(Gamefic::Subplot)
+            index[idx].players.each do |pl|
+              pl.playbooks.push index[idx].playbook unless pl.playbooks.include?(index[idx].playbook)
+            end
+            index[idx].instance_variable_set(:@static, [index[idx]] + index[idx].scene_classes + index[idx].entities)
           end
         end
       end
