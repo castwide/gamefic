@@ -29,6 +29,7 @@ module Gamefic
       # @param snapshot [Hash]
       def restore snapshot
         plot.subplots.each(&:conclude)
+        plot.subplots.clear
 
         index = plot.static + plot.players
         snapshot.each_with_index do |obj, idx|
