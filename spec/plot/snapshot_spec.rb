@@ -7,7 +7,8 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.make Gamefic::Entity, name: 'entity'
     snapshot = plot.save
-    expect(snapshot['entities']).to be_one
+    plot.restore(snapshot)
+    expect(plot.entities).to be_one
   end
 
   it "restores dynamic entities" do
@@ -24,7 +25,8 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.branch Gamefic::Subplot
     snapshot = plot.save
-    expect(snapshot['subplots'].length).to eq(1)
+    pp snapshot
+    expect(snapshot['ivars']['@subplots'].length).to eq(1)
   end
 
   it "restores subplots" do

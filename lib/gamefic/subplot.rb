@@ -4,6 +4,7 @@ module Gamefic
   class Subplot #< Container
     include World
     include Scriptable
+    include Gamefic::Serialize
     # @!parse extend Scriptable::ClassMethods
 
     # @return [Gamefic::Plot]
@@ -98,5 +99,15 @@ module Gamefic
     #
     def configure more
     end
+
+    def to_serial(index)
+      puts "Serializing #{self}"
+      super
+    end
+
+    # def from_serial index = []
+    #   # @todo Customize subplot unserialization
+    #   super
+    # end
   end
 end

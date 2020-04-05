@@ -80,6 +80,7 @@ Gamefic::Scriptable.module_exec do
           instance.public_send :public_send, symbol, *args, &block
         end
       end
+      theater.extend Gamefic::Serialize
       theater
     end
   end

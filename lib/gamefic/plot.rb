@@ -11,6 +11,7 @@ module Gamefic
   class Plot
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
+    autoload :Darkroom2, 'gamefic/plot/darkroom2'
     autoload :Host,      'gamefic/plot/host'
 
     # @return [Hash]
@@ -23,16 +24,23 @@ module Gamefic
     # @!parse extend Scriptable::ClassMethods
     include Snapshot
     include Host
+    include Serialize
+
+    exclude_from_serial [:@static, :@subplots]
 
     # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
       # Gamefic::Index.clear
+      current = Gamefic::Serialize.instances
       @metadata = metadata
       run_scripts
       # mark_static_entities
       # Gamefic::Index.stick
-      @static = Index.new(scene_classes + entities)
+      # @static = Index.new(scene_classes + entities)
+      # @initial = Darkroom2.new(self).save
+      # pp @initial
+      @static = [self] + (Gamefic::Serialize.instances - current)
     end
 
     def player_class cls = nil
