@@ -14,47 +14,57 @@ module Gamefic
       #
       # @return [Hash]
       def save reduce: false
+        index = plot.static + plot.players
+        original = index.clone
         {
-          'elements' => plot.static.all.map { |e| e.serialize_instance_variables(plot.static) },
-          'entities' => plot.entities.map { |e| e.to_serial(plot.static) },
-          'players' => plot.players.map { |e| e.to_serial(plot.static) },
-          'theater_instance_variables' => plot.theater.serialize_instance_variables(plot.static),
-          'subplots' => plot.subplots.reject(&:concluded?).map { |s| serialize_subplot(s) },
-          'metadata' => plot.metadata
+          'plot' => plot.to_serial(index),
+          'index' => index.map { |i| i.to_serial(original.clone) }
         }
       end
 
       # Restore a snapshot.
       #
       # @param snapshot [Hash]
+      # def restore snapshot
+      #   Gamefic::Index.elements.map(&:destroy)
+      #   Gamefic::Index.unserialize snapshot['elements']
+      #   plot.entities.clear
+      #   snapshot['entities'].each do |ser|
+      #     plot.entities.push Index.from_serial(ser)
+      #   end
+
+      #   snapshot['theater_instance_variables'].each_pair do |k, s|
+      #     v = Gamefic::Index.from_serial(s)
+      #     next if v == "#<UNKNOWN>"
+      #     plot.theater.instance_variable_set(k, v)
+      #   end
+
+      #   snapshot['subplots'].each { |s| unserialize_subplot(s) }
+      # end
+
       def restore snapshot
-        # Gamefic::Index.elements.map(&:destroy)
-        # Gamefic::Index.unserialize snapshot['elements']
-        snapshot['elements'].each_with_index do |ele, idx|
-          unserialize_instance_variables(plot.static.element(idx), ele)
+        index = plot.static + plot.players
+        snapshot['index'].each_with_index do |obj, idx|
+          next if index[idx]
+          elematch = obj['class'].match(/^#<ELE_([\d]+)>$/)
+          if elematch
+            klass = index[elematch[1].to_i]
+          else
+            klass = eval(obj['class'])
+          end
+          index.push klass.allocate
         end
-        plot.entities.clear
-        snapshot['entities'].each do |ser|
-          plot.entities.push Index.from_serial(ser, plot.static)
+        snapshot['index'].each_with_index do |obj, idx|
+          obj['ivars'].each_pair do |k, v|
+            index[idx].instance_variable_set(k, v.from_serial(index))
+          end
         end
-
-        snapshot['theater_instance_variables'].each_pair do |k, s|
-          v = Index.from_serial(s, plot.static)
-          next if v == "#<UNKNOWN>"
-          plot.theater.instance_variable_set(k, v)
+        snapshot['plot']['ivars'].each_pair do |k, v|
+          plot.instance_variable_set(k, v.from_serial(index))
         end
-
-        snapshot['subplots'].each { |s| unserialize_subplot(s) }
       end
 
       private
-
-      def unserialize_instance_variables object, instance_variables
-        instance_variables.each_pair do |k, v|
-          next unless k.start_with?('@')
-          object.instance_variable_set(k, Index.from_serial(v, plot.static))
-        end
-      end
 
       def namespace_to_constant string
         space = Object
@@ -67,9 +77,9 @@ module Gamefic
       def serialize_subplot s
         {
           'class' => s.class.to_s,
-          'entities' => s.entities.map { |e| e.to_serial(plot.static) },
-          'instance_variables' => s.serialize_instance_variables(plot.static),
-          'theater_instance_variables' => s.theater.serialize_instance_variables(plot.static)
+          'entities' => s.entities.map(&:to_serial),
+          'instance_variables' => s.serialize_instance_variables,
+          'theater_instance_variables' => s.theater.serialize_instance_variables
         }
       end
 
@@ -78,15 +88,15 @@ module Gamefic
         sp = cls.allocate
         sp.instance_variable_set(:@plot, plot)
         s['entities'].each do |e|
-          sp.entities.push Index.from_serial(e, plot.static)
+          sp.entities.push Gamefic::Index.from_serial(e)
         end
         s['instance_variables'].each_pair do |k, v|
           next if v == "#<UNKNOWN>"
-          sp.instance_variable_set(k, Index.from_serial(v, plot.static))
+          sp.instance_variable_set(k, Gamefic::Index.from_serial(v))
         end
         s['theater_instance_variables'].each_pair do |k, v|
           next if v == "#<UNKNOWN>"
-          sp.theater.instance_variable_set(k, Index.from_serial(v, plot.static))
+          sp.theater.instance_variable_set(k, Gamefic::Index.from_serial(v))
         end
         plot.subplots.push sp
         sp.send(:run_scripts)

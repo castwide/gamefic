@@ -11,7 +11,6 @@ module Gamefic
   class Plot
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
-    autoload :Darkroom2, 'gamefic/plot/darkroom2'
     autoload :Host,      'gamefic/plot/host'
 
     # @return [Hash]
