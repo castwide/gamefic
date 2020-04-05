@@ -3,7 +3,6 @@ module Gamefic
     def to_serial(index = [])
       if index.include?(self)
         {
-          # 'class' => "#<ELE_#{index.index(self)}>",
           'instance' => "#<ELE_#{index.index(self)}>",
           'ivars' => serialize_instance_variables(index)
         }

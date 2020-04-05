@@ -40,9 +40,6 @@ module Gamefic
             index[idx].instance_variable_set(k, v.from_serial(index))
           end
         end
-        # snapshot['plot']['ivars'].each_pair do |k, v|
-        #   plot.instance_variable_set(k, v.from_serial(index))
-        # end
       end
 
       private
