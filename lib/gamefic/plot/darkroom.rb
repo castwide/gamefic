@@ -44,18 +44,15 @@ module Gamefic
             STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
             STDERR.puts obj.inspect
           end
-          if index[idx].is_a?(Gamefic::Subplot)
-            more = obj['ivars']['@more'].from_serial(index)
-            index[idx].instance_variable_set(:@plot, index[0])
-            index[idx].configure more
-            index[idx].send(:run_scripts)
-          end
           obj['ivars'].each_pair do |k, v|
             uns = v.from_serial(index)
             next if uns == "#<UNKNOWN>"
             index[idx].instance_variable_set(k, uns)
           end
           if index[idx].is_a?(Gamefic::Subplot)
+            index[idx].extend Gamefic::Scriptable
+            index[idx].instance_variable_set(:@theater, nil)
+            index[idx].send(:run_scripts)
             index[idx].players.each do |pl|
               pl.playbooks.push index[idx].playbook unless pl.playbooks.include?(index[idx].playbook)
             end
