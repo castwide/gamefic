@@ -30,10 +30,9 @@ module Gamefic
     # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
-      current = Gamefic::Serialize.instances
       @metadata = metadata
       run_scripts
-      @static = [self] + (Gamefic::Serialize.instances - current)
+      @static = [self] + scene_classes + entities
     end
 
     def player_class cls = nil
