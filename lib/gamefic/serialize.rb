@@ -4,7 +4,7 @@ module Gamefic
       if index.include?(self)
         {
           'instance' => "#<ELE_#{index.index(self)}>",
-          'ivars' => serialize_instance_variables(index)
+          'ivars' => {}
         }
       else
         if self.class == Class && self.name
@@ -127,7 +127,6 @@ class Object
         }
       else
         result[k.to_s] = val.to_serial(index)
-        index.push val if val.is_a?(Gamefic::Serialize) && val.class != Class
       end
     end
     result
