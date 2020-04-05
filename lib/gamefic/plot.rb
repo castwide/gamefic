@@ -26,20 +26,14 @@ module Gamefic
     include Host
     include Serialize
 
-    exclude_from_serial [:@static, :@subplots]
+    exclude_from_serial [:@static]
 
     # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
-      # Gamefic::Index.clear
       current = Gamefic::Serialize.instances
       @metadata = metadata
       run_scripts
-      # mark_static_entities
-      # Gamefic::Index.stick
-      # @static = Index.new(scene_classes + entities)
-      # @initial = Darkroom2.new(self).save
-      # pp @initial
       @static = [self] + (Gamefic::Serialize.instances - current)
     end
 

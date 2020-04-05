@@ -14,6 +14,7 @@ module Gamefic
     # @param introduce [Gamefic::Actor]
     # @param next_cue [Class<Gamefic::Scene::Base>]
     def initialize plot, introduce: nil, next_cue: nil, **more
+      current = Gamefic::Serialize.instances
       @plot = plot
       @next_cue = next_cue
       @concluded = false
@@ -23,7 +24,8 @@ module Gamefic
       self.introduce introduce unless introduce.nil?
       # @index = Plot::Index.new(entities)
       # @static = Plot::Index.new(plot.static + scene_classes + entities)
-      plot.static.concat(scene_classes + entities)
+      # plot.static.concat(scene_classes + entities)
+      @static = Gamefic::Serialize.instances - current
     end
 
     def static
@@ -71,7 +73,7 @@ module Gamefic
       # @todo I'm not sure why rejecting nils is necessary here. It's only an
       #   issue in Opal.
       entities.reject(&:nil?).each { |e| destroy e }
-      plot.static.remove(scene_classes + entities)
+      # plot.static.remove(scene_classes + entities)
     end
 
     def concluded?
@@ -100,10 +102,10 @@ module Gamefic
     def configure more
     end
 
-    def to_serial(index)
-      puts "Serializing #{self}"
-      super
-    end
+    # def to_serial(index)
+    #   puts "Serializing #{self}"
+    #   super
+    # end
 
     # def from_serial index = []
     #   # @todo Customize subplot unserialization

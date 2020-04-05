@@ -10,22 +10,34 @@ module Gamefic
       # end
       if index.include?(self)
         {
-          'class' => "#<ELE_#{index.index(self)}>",
+          # 'class' => "#<ELE_#{index.index(self)}>",
+          'instance' => "#<ELE_#{index.index(self)}>",
           'ivars' => serialize_instance_variables(index)
         }
-
       else
-        {
-          'class' => self.class.to_s,
-          'ivars' => serialize_instance_variables(index)
-        }
+        if self.class == Class && self.name
+          {
+            'class' => 'Class',
+            'name' => name
+          }
+        else
+          index.push self if self.is_a?(Gamefic::Serialize)
+          {
+            'class' => serialized_class(index),
+            'ivars' => serialize_instance_variables(index)
+          }
+        end
       end
     end
 
-    # @todo Deprecate?
-    def serialized_class(static)
-      return self.class.to_s # @todo Maybe don't sweat dynamic classes
-      static.id_for(self.class) || self.class.to_s
+    def serialized_class index
+      # return self.class.to_s # @todo Maybe don't sweat dynamic classes
+      # static.id_for(self.class) || self.class.to_s
+      if index.include?(self.class)
+        "#<ELE_#{index.index(self.class)}>"
+      else
+        self.class.to_s
+      end
     end
 
     def self.instances
@@ -57,15 +69,25 @@ class Object
   end
 
   def from_serial(index = [])
-    if self.is_a?(Hash) && (self['class'])
-      if self['class']
-        elematch = self['class'].match(/^#<ELE_([\d]+)>$/)
-        if elematch
-          klass = index[elematch[1].to_i]
+    if self.is_a?(Hash) && (self['class'] || self['instance'])
+      if self['instance']
+        elematch = self['instance'].match(/^#<ELE_([\d]+)>$/)
+        object = index[elematch[1].to_i]
+        raise "Unable to load indexed element ##{elematch[1]}" if object.nil?
+      elsif self['class']
+        if self['class'] == 'Class'
+          return eval(self['name'])
         else
-          klass = eval(self['class'])
+          elematch = self['class'].match(/^#<ELE_([\d]+)>$/)
+          if elematch
+            klass = index[elematch[1].to_i]
+          else
+            klass = eval(self['class'])
+          end
+          raise "Unable to find class #{self['class']} #{self}" if klass.nil?
+          object = klass.allocate
+          index.push object if object.is_a?(Gamefic::Serialize)
         end
-        object = klass.allocate
       end
       self['ivars'].each_pair do |k, v|
         object.instance_variable_set(k, v.from_serial(index))
@@ -78,6 +100,7 @@ class Object
       return index.index(match[1].to_i) if match
       match = self.match(/#<SYM:([a-z0-9_\?\!]+)>/i)
       return match[1].to_sym if match
+      # return nil if self == '#<UNKNOWN>'
       self
     elsif self.is_a?(Hash)
       result = {}
@@ -107,9 +130,33 @@ class Object
     instance_variables.each do |k|
       next if self.class.excluded_from_serial.include?(k)
       # result[k.to_s] = instance_variable_get(k).to_serial(static)
-      result[k.to_s] = instance_variable_get(k).to_serial(index)
+      val = instance_variable_get(k)
+      if index.include?(val)
+        result[k.to_s] = {
+          'instance' => "#<ELE_#{index.index(val)}>",
+          # 'ivars' => val.serialize_instance_variables(index)
+          'ivars' => {}
+        }
+      else
+        # index.push val if val.is_a?(Gamefic::Serialize) && val.class != Class
+        result[k.to_s] = val.to_serial(index)
+        index.push val if val.is_a?(Gamefic::Serialize) && val.class != Class
+      end
     end
     result
+  end
+end
+
+class Class
+  def to_serial(index = [])
+    if name.nil?
+      super
+    else
+      {
+        'class' => 'Class',
+        'name' => name
+      }
+    end
   end
 end
 

@@ -3,6 +3,7 @@ module Gamefic
   # should inherit from it.
   #
   class Scene::Base
+    include Gamefic::Serialize
     extend Gamefic::Serialize
 
     # The scene's primary actor.

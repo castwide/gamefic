@@ -14,7 +14,7 @@ module Gamefic
       #
       # @return [Hash]
       def save reduce: false
-        index = plot.static.clone
+        index = plot.static + plot.players
         # result = {
         #   'elements' => Gamefic::Index.serials,
         #   'entities' => plot.entities.map(&:to_serial),
@@ -47,11 +47,11 @@ module Gamefic
       # end
 
       def restore snapshot
-        index = plot.static
+        index = plot.static + plot.players
         plot.instance_variables.each do |k|
-          current = Gamefic::Serialize.instances
+          # current = Gamefic::Serialize.instances
           plot.instance_variable_set(k, snapshot['ivars'][k.to_s].from_serial(index))
-          index.concat(Gamefic::Serialize.instances - current)
+          # index.concat(Gamefic::Serialize.instances - current)
         end
       end
 
