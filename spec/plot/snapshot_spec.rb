@@ -197,4 +197,13 @@ describe Gamefic::Plot::Snapshot do
 
     expect(plot.stage { @hash}).to eq(original_hash)
   end
+
+  it 'converts JSON strings' do
+    plot = Gamefic::Plot.new
+    plot.make Gamefic::Entity, name: 'old'
+    snapshot = plot.save.to_json
+    plot.entities.first.name = 'new'
+    plot.restore snapshot
+    expect(plot.entities.first.name).to eq('old')
+  end
 end
