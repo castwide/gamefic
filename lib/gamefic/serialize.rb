@@ -36,6 +36,16 @@ module Gamefic
       ObjectSpace.each_object(Gamefic::Serialize) { |obj| result.push obj }
       result
     end
+
+    # @param string [String]
+    # @return [Object]
+    def self.string_to_constant string
+      space = Object
+      string.split('::').each do |part|
+        space = space.const_get(part)
+      end
+      space
+    end
   end
 end
 
@@ -72,13 +82,13 @@ class Object
           end
           return object
         elsif self['class'] == 'Class'
-          return eval(self['name'])
+          return Gamefic::Serialize.string_to_constant(self['name'])
         else
           elematch = self['class'].match(/^#<ELE_([\d]+)>$/)
           if elematch
             klass = index[elematch[1].to_i]
           else
-            klass = eval(self['class'])
+            klass = Gamefic::Serialize.string_to_constant(self['class'])
           end
           raise "Unable to find class #{self['class']} #{self}" if klass.nil?
           object = klass.allocate

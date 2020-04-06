@@ -47,7 +47,7 @@ module Gamefic
           if elematch
             klass = index[elematch[1].to_i]
           else
-            klass = namespace_to_constant(obj['class'])
+            klass = Gamefic::Serialize.string_to_constant(obj['class'])
           end
           index.push klass.allocate
         end
@@ -74,16 +74,6 @@ module Gamefic
             plot.subplots.push index[idx]
           end
         end
-      end
-
-      private
-
-      def namespace_to_constant string
-        space = Object
-        string.split('::').each do |part|
-          space = space.const_get(part)
-        end
-        space
       end
     end
   end
