@@ -13,7 +13,7 @@ module Gamefic
       # Create a snapshot of the plot.
       #
       # @return [Hash]
-      def save reduce: false
+      def save
         index = plot.static + plot.players
         plot.to_serial(index)
         {
