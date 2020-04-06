@@ -16,27 +16,32 @@ module Gamefic
       def save reduce: false
         index = plot.static + plot.players
         plot.to_serial(index)
-        index.map do |i|
-          if i.is_a?(Gamefic::Serialize)
-            {
-              'class' => i.class.to_s,
-              'ivars' => i.serialize_instance_variables(index)
-            }
-          else
-            i.to_serial(index)
+        {
+          'program' => {}, # @todo Metadata for version control, etc.
+          'index' => index.map do |i|
+            if i.is_a?(Gamefic::Serialize)
+              {
+                'class' => i.class.to_s,
+                'ivars' => i.serialize_instance_variables(index)
+              }
+            else
+              i.to_serial(index)
+            end
           end
-        end
+        }
       end
 
       # Restore a snapshot.
       #
       # @param snapshot [Hash]
       def restore snapshot
+        # @todo Use `program` for verification
+
         plot.subplots.each(&:conclude)
         plot.subplots.clear
 
         index = plot.static + plot.players
-        snapshot.each_with_index do |obj, idx|
+        snapshot['index'].each_with_index do |obj, idx|
           next if index[idx]
           elematch = obj['class'].match(/^#<ELE_([\d]+)>$/)
           if elematch
@@ -47,7 +52,7 @@ module Gamefic
           index.push klass.allocate
         end
 
-        snapshot.each_with_index do |obj, idx|
+        snapshot['index'].each_with_index do |obj, idx|
           if index[idx].class.to_s != obj['class']
             STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
             STDERR.puts obj.inspect
