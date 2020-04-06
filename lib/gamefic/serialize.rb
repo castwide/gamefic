@@ -65,7 +65,13 @@ class Object
         object = index[elematch[1].to_i]
         raise "Unable to load indexed element ##{elematch[1]} #{self}" if object.nil?
       elsif self['class']
-        if self['class'] == 'Class'
+        if self['class'] == 'Hash'
+          object = {}
+          self['data'].each do |arr|
+            object[arr[0].from_serial(index)] = arr[1].from_serial(index)
+          end
+          return object
+        elsif self['class'] == 'Class'
           return eval(self['name'])
         else
           elematch = self['class'].match(/^#<ELE_([\d]+)>$/)
@@ -182,12 +188,12 @@ end
 
 class Hash
   def to_serial(index = [])
-    result = {}
+    result = {'class' => 'Hash', 'data' => []}
     each_pair do |key, value|
       k2 = key.to_serial(index)
       v2 = value.to_serial(index)
       return "#<UNKNOWN>" if k2 == "#<UNKNOWN>" || v2 == "#<UNKNOWN>"
-      result[k2] = v2
+      result['data'].push [k2, v2]
     end
     result
   end

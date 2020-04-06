@@ -1,3 +1,19 @@
+class TestSubplot < Gamefic::Subplot
+  def thing
+    @thing ||= make(Gamefic::Entity, name: 'thing')
+  end
+
+  def test_hash
+    @test_hash ||= {}
+  end
+
+  script do
+    introduction do |actor|
+      test_hash[actor] = thing
+    end
+  end
+end
+
 describe Gamefic::Plot::Snapshot do
   after :each do
     Gamefic::Plot.blocks.clear
@@ -166,5 +182,19 @@ describe Gamefic::Plot::Snapshot do
     expect(plot.stage { @entity.name }).to eq('new')
     plot.restore snapshot
     expect(plot.stage { @entity.name }).to eq('old')
+  end
+
+  it 'restores hash key objects converted from JSON' do
+    Gamefic.script do
+      @entity = make Gamefic::Entity, name: 'entity'
+      @hash = { @entity => 1 }
+    end
+
+    plot = Gamefic::Plot.new
+    original_hash = plot.stage { @hash }
+    snapshot = plot.save.to_json
+    plot.restore JSON.parse(snapshot)
+
+    expect(plot.stage { @hash}).to eq(original_hash)
   end
 end

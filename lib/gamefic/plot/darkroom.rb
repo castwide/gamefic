@@ -17,10 +17,14 @@ module Gamefic
         index = plot.static + plot.players
         plot.to_serial(index)
         index.map do |i|
-          {
-            'class' => i.class.to_s,
-            'ivars' => i.serialize_instance_variables(index)
-          }
+          if i.is_a?(Gamefic::Serialize)
+            {
+              'class' => i.class.to_s,
+              'ivars' => i.serialize_instance_variables(index)
+            }
+          else
+            i.to_serial(index)
+          end
         end
       end
 
