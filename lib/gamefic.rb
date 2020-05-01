@@ -5,7 +5,6 @@ require 'gamefic/core_ext/array'
 require 'gamefic/core_ext/string'
 
 require 'gamefic/describable'
-# require 'gamefic/index'
 require 'gamefic/serialize'
 require 'gamefic/element'
 require 'gamefic/entity'
