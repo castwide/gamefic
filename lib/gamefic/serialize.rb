@@ -1,3 +1,5 @@
+require 'set'
+
 module Gamefic
   module Serialize
     def to_serial(index = [])
@@ -83,6 +85,8 @@ class Object
           return object
         elsif self['class'] == 'Class'
           return Gamefic::Serialize.string_to_constant(self['name'])
+        elsif self['class'] == 'Set'
+          return Set.new(self['data'].map { |el| el.from_serial(index) })
         else
           elematch = self['class'].match(/^#<ELE_([\d]+)>$/)
           if elematch
@@ -206,5 +210,14 @@ class Hash
       result['data'].push [k2, v2]
     end
     result
+  end
+end
+
+class Set
+  def to_serial(index = [])
+    {
+      'class' => 'Set',
+      'data' => to_a.map { |el| el.to_serial(index) }
+    }
   end
 end
