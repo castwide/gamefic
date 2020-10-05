@@ -5,9 +5,9 @@ module Gamefic
         result = []
         children = super
         result.concat children
-        children.each { |c|
+        children.each do |c|
           result.concat subquery_accessible(c)
-        }
+        end
         result
       end
     end
