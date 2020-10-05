@@ -2,14 +2,15 @@ module Gamefic
   module Query
     class Text < Base
       def initialize *arguments
-        arguments.each { |a|
-          if (a.kind_of?(Symbol) or a.kind_of?(String)) and !a.to_s.end_with?('?')
+        arguments.each do |a|
+          if (a.kind_of?(Symbol) || a.kind_of?(String)) && !a.to_s.end_with?('?')
             raise ArgumentError.new("Text query arguments can only be boolean method names (:method?) or regular expressions")
           end
-        }
+        end
         super
       end
-      def resolve(subject, token, continued: false)
+
+      def resolve _subject, token, continued: false
         return Matches.new([], '', token) unless accept?(token)
         parts = token.split(Keywords::SPLIT_REGEXP)
         cursor = []
@@ -22,20 +23,18 @@ module Gamefic
         }
         if continued
           Matches.new([matches.join(' ')], matches.join(' '), parts[i..-1].join(' '))
+        elsif matches.length == parts.length
+          Matches.new([matches.join(' ')], matches.join(' '), '')
         else
-          if matches.length == parts.length
-            Matches.new([matches.join(' ')], matches.join(' '), '')
-          else
-            Matches.new([], '', parts.join(' '))
-          end
+          Matches.new([], '', parts.join(' '))
         end
       end
 
-      def include?(subject, token)
+      def include? _subject, token
         accept?(token)
       end
 
-      def accept?(entity)
+      def accept? entity
         return false unless entity.kind_of?(String) and !entity.empty?
         super
       end

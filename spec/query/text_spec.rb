@@ -70,4 +70,20 @@ describe Gamefic::Query::Text do
     expect(matches.matching).to be_empty
     expect(matches.remaining).to eq('foo bar')
   end
+
+  it 'rejects empty text' do
+    query = Gamefic::Query::Text.new
+    matches = query.resolve(nil, '')
+    expect(matches.objects).to be_empty
+    expect(matches.matching).to be_empty
+    expect(matches.remaining).to be_empty
+  end
+
+  it 'accepts arbitrary text' do
+    query = Gamefic::Query::Text.new
+    matches = query.resolve(nil, 'foo bar')
+    expect(matches.objects).to eq(['foo bar'])
+    expect(matches.matching).to eq('foo bar')
+    expect(matches.remaining).to be_empty
+  end
 end
