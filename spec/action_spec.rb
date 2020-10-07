@@ -63,4 +63,9 @@ describe Gamefic::Action do
     actor = Gamefic::Actor.new
     expect(klass.valid?(actor, ['bar'])).to be(false)
   end
+
+  it 'has a signature' do
+    klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
+    expect(klass.signature).to start_with('command text')
+  end
 end
