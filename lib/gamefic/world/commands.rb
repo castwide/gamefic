@@ -96,7 +96,7 @@ module Gamefic
       end
 
       # Declare a dismabiguation response for actions.
-      # The disambigurator is executed when an action expects an argument to
+      # The disambiguator is executed when an action expects an argument to
       # reference a specific entity but its query matched more than one. For
       # example, "red" might refer to either a red key or a red book.
       #
