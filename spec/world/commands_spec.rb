@@ -82,4 +82,12 @@ describe Gamefic::World::Commands do
     action = plot.respond(:handle, Gamefic::Entity) { |actor, entity| }
     expect(action.queries.first.arguments.first).to be(Gamefic::Entity)
   end
+
+  it 'sets a default query' do
+    object.set_default_query Gamefic::Query::Tree
+    thing = Gamefic::Entity.new
+    # @type [Class<Gamefic::Action>]
+    action = object.respond(:command, thing)
+    expect(action.queries.map(&:class)).to eq([Gamefic::Query::Tree])
+  end
 end

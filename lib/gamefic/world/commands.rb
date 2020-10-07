@@ -144,7 +144,7 @@ module Gamefic
       #
       # @return [Array<String>]
       def verbs
-        playbook.verbs.map { |v| v.to_s }.reject{ |v| v.start_with?('_') }
+        playbook.verbs.map(&:to_s).reject { |v| v.start_with?('_') }
       end
 
       # Get an Array of all Actions defined in the Plot.
@@ -164,20 +164,20 @@ module Gamefic
 
       private
 
+      # @param queries [Array]
+      # @return [Array<Query::Base>]
       def map_response_args queries
-        result = []
-        queries.each do |q|
+        queries.map do |q|
           if q.is_a?(Regexp)
-            result.push Gamefic::Query::Text.new(q)
+            Gamefic::Query::Text.new(q)
           elsif q.is_a?(Gamefic::Query::Base)
-            result.push q
+            q
           elsif q.is_a?(Gamefic::Element) || (q.is_a?(Class) && q <= Gamefic::Element)
-            result.push get_default_query.new(q)
+            get_default_query.new(q)
           else
             raise ArgumentError.new("Invalid argument for response: #{q}")
           end
         end
-        result
       end
     end
   end
