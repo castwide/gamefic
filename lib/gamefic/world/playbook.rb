@@ -62,7 +62,7 @@ module Gamefic
       # Get an Array of all Actions associated with the specified verb.
       #
       # @param verb [Symbol] The Symbol for the verb (e.g., :go or :look)
-      # @return [Array<Action>] The verb's associated Actions
+      # @return [Array<Class<Action>>] The verb's associated Actions
       def actions_for verb
         @commands[verb] || []
       end
@@ -162,7 +162,6 @@ module Gamefic
         commands.each do |c|
           actions_for(c.verb).each do |a|
             next if a.hidden?
-
             o = a.attempt(actor, c.arguments)
             result.unshift o unless o.nil?
           end

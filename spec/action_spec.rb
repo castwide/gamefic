@@ -68,4 +68,14 @@ describe Gamefic::Action do
     klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
     expect(klass.signature).to start_with('command text')
   end
+
+  it 'returns an Action instance for valid attempts' do
+    klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
+    expect(klass.attempt(nil, ['foo'])).to be_a(klass)
+  end
+
+  it 'returns nil for invalid attempts' do
+    klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
+    expect(klass.attempt(nil, ['bar'])).to be_nil
+  end
 end

@@ -136,11 +136,16 @@ module Gamefic
         true
       end
 
+      # Return an instance of this Action if the actor can execute it with the
+      # provided tokens, or nil if the tokens are invalid.
+      #
+      # @param action [Gamefic::Entity]
+      # @param tokens [Array<String>]
+      # @return [self, nil]
       def attempt actor, tokens
-        i = 0
         result = []
         matches = Gamefic::Query::Matches.new([], '', '')
-        queries.each do |p|
+        queries.each_with_index do |p, i|
           return nil if tokens[i].nil? && matches.remaining == ''
           matches = p.resolve(actor, "#{matches.remaining} #{tokens[i]}".strip, continued: (i < queries.length - 1))
           return nil if matches.objects.empty?
@@ -152,7 +157,6 @@ module Gamefic
             return nil if accepted.length != 1
             result.push accepted.first
           end
-          i += 1
         end
         new(actor, result)
       end
