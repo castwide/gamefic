@@ -35,12 +35,22 @@ describe Gamefic::Active do
   it 'performs actions quietly' do
     plot = Gamefic::Plot.new
     plot.respond :message do |actor|
-      actor.tell 'Message command'
+      actor.tell 'Told message'
+      actor.stream 'Streamed message'
     end
     character = plot.get_player_character
     plot.introduce character
     buffer = character.quietly('message')
-    expect(buffer).to include('Message command')
+    expect(buffer).to include('Told message')
+    expect(buffer).to include('Streamed message')
     expect(character.messages).to be_empty
+  end
+
+  it 'streams a message' do
+    character = Gamefic::Entity.new
+    character.extend Gamefic::Active
+    message = '<p>unprocessed text'.freeze
+    character.stream message
+    expect(character.messages).to eq(message)
   end
 end
