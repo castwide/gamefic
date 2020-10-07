@@ -28,4 +28,28 @@ describe Gamefic::Query::Base do
     entity = Gamefic::Entity.new
     expect(query.accept?(entity)).to be(false)
   end
+
+  it 'finds nested objects' do
+    query = Gamefic::Query::Base.new(Gamefic::Entity)
+    parent = Gamefic::Entity.new name: 'parent'
+    child = Gamefic::Entity.new name: 'child', parent: parent
+    # HACK: Force context_from to use the test objects
+    query.define_singleton_method :context_from do |_|
+      [parent, child]
+    end
+    matches = query.resolve(nil, 'child in parent')
+    expect(matches.objects).to eq([child])
+  end
+
+  it 'rejects improperly nested objects' do
+    query = Gamefic::Query::Base.new(Gamefic::Entity)
+    parent = Gamefic::Entity.new name: 'parent'
+    child = Gamefic::Entity.new name: 'child', parent: parent
+    # HACK: Force context_from to use the test objects
+    query.define_singleton_method :context_from do |_|
+      [parent, child]
+    end
+    matches = query.resolve(nil, 'parent in child')
+    expect(matches.objects).to be_empty
+  end
 end

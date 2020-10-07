@@ -55,13 +55,18 @@ module Gamefic
         result.include?(object)
       end
 
+      # A ranking of how precise the query's arguments are.
+      #
+      # Query precision is a factor in calculating Action#rank.
+      #
+      # @return [Integer]
       def precision
         if @precision.nil?
           @precision = 1
           arguments.each { |a|
-            if a.kind_of?(Class)
+            if a.is_a?(Class)
               @precision += 100
-            elsif a.kind_of?(Gamefic::Entity)
+            elsif a.is_a?(Gamefic::Entity)
               @precision += 1000
             end
           }
@@ -69,10 +74,7 @@ module Gamefic
         end
         @precision
       end
-
-      def rank
-        precision
-      end
+      alias rank precision
 
       def signature
         "#{self.class.to_s.split('::').last.downcase}(#{simplify_arguments.join(', ')})"
@@ -83,18 +85,18 @@ module Gamefic
       # @return [Boolean]
       def accept?(entity)
         result = true
-        arguments.each { |a|
-          if a.kind_of?(Symbol)
-            result = (entity.send(a) != false)
-          elsif a.kind_of?(Regexp)
-            result = (!entity.to_s.match(a).nil?)
-          elsif a.is_a?(Module) or a.is_a?(Class)
-            result = (entity.is_a?(a))
+        arguments.each do |a|
+          result = if a.is_a?(Symbol)
+            (entity.send(a) != false)
+          elsif a.is_a?(Regexp)
+            !entity.to_s.match(a).nil?
+          elsif a.is_a?(Module) || a.is_a?(Class)
+            entity.is_a?(a)
           else
-            result = (entity == a)
+            (entity == a)
           end
           break if result == false
-        }
+        end
         result
       end
 
@@ -109,10 +111,10 @@ module Gamefic
         return [] if entity.nil?
         result = []
         if entity.accessible?
-          entity.children.each { |c|
+          entity.children.each do |c|
             result.push c
             result.concat subquery_accessible(c)
-          }
+          end
         end
         result
       end
@@ -121,7 +123,7 @@ module Gamefic
 
       def simplify_arguments
         arguments.map do |a|
-          if a.kind_of?(Class) or a.kind_of?(Object)
+          if a.is_a?(Class) || a.is_a?(Object)
             a.to_s.split('::').last.downcase
           else
             a.to_s.downcase
@@ -136,13 +138,12 @@ module Gamefic
       def denest(objects, token)
         parts = token.split(NEST_REGEXP)
         current = parts.pop
-        last_result = objects.select{ |e| e.specified?(current) }
-        last_result = objects.select{ |e| e.specified?(current, fuzzy: true) } if last_result.empty?
-        result = last_result
-        while parts.length > 0
+        last_result = objects.select { |e| e.specified?(current) }
+        last_result = objects.select { |e| e.specified?(current, fuzzy: true) } if last_result.empty?
+        until parts.empty?
           current = "#{parts.last} #{current}"
-          result = last_result.select{ |e| e.specified?(current) }
-          result = last_result.select{ |e| e.specified?(current, fuzzy: true) } if result.empty?
+          result = last_result.select { |e| e.specified?(current) }
+          result = last_result.select { |e| e.specified?(current, fuzzy: true) } if result.empty?
           break if result.empty?
           parts.pop
           last_result = result
