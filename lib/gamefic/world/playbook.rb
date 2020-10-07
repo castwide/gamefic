@@ -3,18 +3,21 @@ module Gamefic
     # A collection of rules for performing commands.
     #
     class Playbook
+      # An array of available syntaxes.
+      #
+      # @return [Array<Gamefic::Syntax>]
+      attr_reader :syntaxes
+
+      # An array of defined validators.
+      #
+      # @return [Array<Proc>]
+      attr_reader :validators
+
       def initialize commands: {}, syntaxes: [], validators: [], disambiguator: nil
         @commands = commands
         @syntaxes = syntaxes
         @validators = validators
         @disambiguator = disambiguator
-      end
-
-      # An array of available syntaxes.
-      #
-      # @return [Array<Gamefic::Syntax>]
-      def syntaxes
-        @syntaxes
       end
 
       # An array of available actions.
@@ -31,21 +34,14 @@ module Gamefic
         @commands.keys
       end
 
-      # An array of defined validators.
-      #
-      # @return [Array<Proc>]
-      def validators
-        @validators
-      end
-
       # Get the action for handling ambiguous entity references.
       #
       def disambiguator
         @disambiguator ||= Action.subclass(nil, Query::Base.new) do |actor, entities|
           definites = []
-          entities.each { |entity|
+          entities.each do |entity|
             definites.push entity.definitely
-          }
+          end
           actor.tell "I don't know which you mean: #{definites.join_or}."
         end
       end
@@ -150,12 +146,8 @@ module Gamefic
       # @return [Array<Gamefic::Action>]
       def dispatch(actor, *command)
         result = []
-        if command.length > 1
-          result.concat dispatch_from_params(actor, command[0], command[1..-1])
-        end
-        if result.empty?
-          result.concat dispatch_from_string(actor, command.join(' '))
-        end
+        result.concat dispatch_from_params(actor, command[0], command[1..-1]) if command.length > 1
+        result.concat dispatch_from_string(actor, command.join(' ')) if result.empty?
         result
       end
 
@@ -167,14 +159,14 @@ module Gamefic
       def dispatch_from_string actor, text
         result = []
         commands = Syntax.tokenize(text, actor.syntaxes)
-        commands.each { |c|
-          available = actions_for(c.verb)
-          available.each { |a|
+        commands.each do |c|
+          actions_for(c.verb).each do |a|
             next if a.hidden?
+
             o = a.attempt(actor, c.arguments)
             result.unshift o unless o.nil?
-          }
-        }
+          end
+        end
         sort_and_reduce_actions result
       end
 
@@ -185,9 +177,9 @@ module Gamefic
       def dispatch_from_params actor, verb, params
         result = []
         available = actions_for(verb)
-        available.each { |a|
+        available.each do |a|
           result.unshift a.new(actor, params) if a.valid?(actor, params)
-        }
+        end
         sort_and_reduce_actions result
       end
 
@@ -217,38 +209,37 @@ module Gamefic
         user_friendly = action.verb.to_s.gsub(/_/, ' ')
         args = []
         used_names = []
-        action.queries.each { |c|
+        action.queries.each do |_c|
           num = 1
           new_name = ":var"
           while used_names.include? new_name
-            num = num + 1
+            num += 1
             new_name = ":var#{num}"
           end
           used_names.push new_name
           user_friendly += " #{new_name}"
           args.push new_name
-        }
+        end
         add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}") unless action.verb.to_s.start_with?('_')
       end
 
       def add_syntax syntax
-        if @commands[syntax.verb] == nil
-          raise "No actions exist for \"#{syntax.verb}\""
-        end
+        raise "No actions exist for \"#{syntax.verb}\"" if @commands[syntax.verb].nil?
+
         @syntaxes.unshift syntax
-        @syntaxes.uniq! &:signature
-        @syntaxes.sort! { |a, b|
+        @syntaxes.uniq!(&:signature)
+        @syntaxes.sort! do |a, b|
           if a.token_count == b.token_count
             # For syntaxes of the same length, length of action takes precedence
             b.first_word <=> a.first_word
           else
             b.token_count <=> a.token_count
           end
-        }
+        end
       end
 
       def sort_and_reduce_actions arr
-        arr.sort_by.with_index{|a, i| [a.rank, -i]}.reverse.uniq(&:class)
+        arr.sort_by.with_index { |a, i| [a.rank, -i]}.reverse.uniq(&:class)
       end
     end
   end
