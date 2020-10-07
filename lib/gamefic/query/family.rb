@@ -1,5 +1,7 @@
 module Gamefic
   module Query
+    # Query to retrieve the subject's siblings and all accessible descendants.
+    #
     class Family < Base
       def context_from(subject)
         result = []
