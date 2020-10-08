@@ -13,11 +13,10 @@ module Gamefic
       # @return [Array<Proc>]
       attr_reader :validators
 
-      def initialize commands: {}, syntaxes: [], validators: [], disambiguator: nil
+      def initialize commands: {}, syntaxes: [], validators: []
         @commands = commands
         @syntaxes = syntaxes
         @validators = validators
-        @disambiguator = disambiguator
       end
 
       # An array of available actions.
@@ -32,25 +31,6 @@ module Gamefic
       # @return [Array<Symbol>]
       def verbs
         @commands.keys
-      end
-
-      # Get the action for handling ambiguous entity references.
-      #
-      def disambiguator
-        @disambiguator ||= Action.subclass(nil, Query::Base.new) do |actor, entities|
-          definites = []
-          entities.each do |entity|
-            definites.push entity.definitely
-          end
-          actor.tell "I don't know which you mean: #{definites.join_or}."
-        end
-      end
-
-      # Set the action for handling ambiguous entity references.
-      #
-      def disambiguate &block
-        @disambiguator = Action.subclass(nil, Query::Base.new, meta: true, &block)
-        @disambiguator
       end
 
       # Add a block that determines whether an action can be executed.

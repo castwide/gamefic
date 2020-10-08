@@ -95,25 +95,6 @@ module Gamefic
         playbook.meta command, *queries, &proc
       end
 
-      # Declare a dismabiguation response for actions.
-      # The disambiguator is executed when an action expects an argument to
-      # reference a specific entity but its query matched more than one. For
-      # example, "red" might refer to either a red key or a red book.
-      #
-      # If a disambiguator is not defined, the playbook will use its default
-      # implementation.
-      #
-      # @example Tell the player the list of ambiguous entities.
-      #   disambiguate do |actor, entities|
-      #     actor.tell "I don't know which you mean: #{entities.join_or}."
-      #   end
-      #
-      # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Array<Gamefic::Entity>]
-      def disambiguate &block
-        playbook.disambiguate &block
-      end
-
       # Validate an order before a character can execute its command.
       #
       # @yieldparam [Gamefic::Director::Order]

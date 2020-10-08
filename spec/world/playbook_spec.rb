@@ -28,27 +28,6 @@ describe Gamefic::World::Playbook do
     expect(playbook.validators.length).to eq(1)
   end
 
-  it "has a disambiguator" do
-    playbook = Gamefic::World::Playbook.new
-    actor = Gamefic::Actor.new
-    one = Gamefic::Entity.new(name: 'one')
-    two = Gamefic::Entity.new(name: 'two')
-    playbook.disambiguator.new(actor, [[one, two]]).execute
-    expect(actor.messages).to include('the one or the two')
-  end
-
-  it "sets a disambiguator" do
-    playbook = Gamefic::World::Playbook.new
-    playbook.disambiguate do |actor, entities|
-      actor.tell entities.map(&:name).join(',')
-    end
-    actor = Gamefic::Actor.new
-    one = Gamefic::Entity.new(name: 'one')
-    two = Gamefic::Entity.new(name: 'two')
-    playbook.disambiguator.new(actor, [[one, two]]).execute
-    expect(actor.messages).to include('one,two')
-  end
-
   it "dispatches commands" do
     playbook = Gamefic::World::Playbook.new
     playbook.respond :command do; end
