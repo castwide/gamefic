@@ -17,5 +17,4 @@ require "gamefic/syntax"
 require 'gamefic/world'
 require 'gamefic/scriptable'
 require 'gamefic/plot'
-require 'gamefic/plot/index'
 require 'gamefic/subplot'
