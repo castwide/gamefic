@@ -41,7 +41,7 @@ describe Gamefic::Action do
       Gamefic::Action.subclass :foo, Gamefic::Query::Base.new do |arg1|
         # This proc should have two arguments
       end
-    }.to raise_error Gamefic::ActionArgumentError
+    }.to raise_error ArgumentError
   end
 
   it "marks actions executed" do
