@@ -35,11 +35,6 @@ module Gamefic
       @static = [self] + scene_classes + entities
     end
 
-    def player_class cls = nil
-      @player_class = cls unless cls.nil?
-      @player_class ||= Gamefic::Actor
-    end
-
     # Get an Array of the Plot's current Syntaxes.
     #
     # @return [Array<Syntax>]
