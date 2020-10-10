@@ -269,6 +269,8 @@ module Gamefic
       @entered_scenes ||= []    
     end
 
+    # @param actions [Array<Gamefic::Action>]
+    # @param quietly [Boolean]
     def execute_stack actions, quietly: false
       return nil if actions.empty?
       a = actions.first

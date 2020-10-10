@@ -14,7 +14,7 @@ module Gamefic
 
     # The one-based index of the selected option.
     #
-    # @return [Number]
+    # @return [Integer]
     attr_reader :number
 
     # The full text of the selected option.

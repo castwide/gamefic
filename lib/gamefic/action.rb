@@ -50,7 +50,7 @@ module Gamefic
     end
 
     # @param verb [Symbol]
-    # @param queries [Array<Gamefic::Query::Base]
+    # @param queries [Array<Gamefic::Query::Base>]
     # @param meta [Boolean]
     # @return [Class<Action>]
     def self.subclass verb, *queries, meta: false, &block

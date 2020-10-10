@@ -27,7 +27,6 @@ module Gamefic
 
     exclude_from_serial [:@static]
 
-    # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
       @metadata = metadata
