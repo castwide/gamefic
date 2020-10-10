@@ -16,8 +16,9 @@ module Gamefic
         @player_class ||= Gamefic::Actor
       end
 
+      # @param cls [Class]
       def set_player_class cls
-        unless cls.is_a?(Gamefic::Active) && cls.is_a?(Gamefic::Entity)
+        unless cls < Gamefic::Active && cls <= Gamefic::Entity
           raise ArgumentError, "Player class must be an active entity"
         end
         @player_class = cls
