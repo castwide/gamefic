@@ -87,8 +87,8 @@ module Gamefic
       end
       call_player_update
       call_update
-      subplots.each { |s| s.update unless s.concluded? }
-      subplots.delete_if { |s| s.concluded? }
+      subplots.delete_if(&:concluded?)
+      subplots.each(&:update)
     end
 
     # Send a message to a group of entities.

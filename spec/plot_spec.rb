@@ -45,6 +45,15 @@ describe Gamefic::Plot do
     expect(plot.in_subplot?(actor)).to be(true)
   end
 
+  it 'deletes concluded subplots on update' do
+    plot = Gamefic::Plot.new
+    subplot = plot.branch Gamefic::Subplot
+    expect(plot.subplots).to include(subplot)
+    subplot.conclude
+    plot.update
+    expect(plot.subplots).to be_empty
+  end
+
   it "pauses on a pause scene" do
     plot = Gamefic::Plot.new
     actor = plot.cast Gamefic::Actor
