@@ -20,4 +20,9 @@ describe Gamefic::World::Players do
       object.set_player_class klass
     }.to raise_error(ArgumentError)
   end
+
+  it 'creates a player character' do
+    player = object.make_player_character
+    expect(player).to be_a(object.player_class)
+  end
 end

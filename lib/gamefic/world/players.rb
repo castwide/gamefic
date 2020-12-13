@@ -2,6 +2,7 @@ module Gamefic
   module World
     module Players
       include Gamefic::World::Entities
+      include Gamefic::World::Commands
 
       # An array of entities that are currently connected to users.
       #
