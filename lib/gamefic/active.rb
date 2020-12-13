@@ -117,9 +117,7 @@ module Gamefic
     #
     # @return [String] The output that resulted from performing the command.
     def quietly(*command)
-      if buffer_stack == 0
-        clear_buffer
-      end
+      clear_buffer if buffer_stack == 0
       set_buffer_stack buffer_stack + 1
       self.perform *command
       set_buffer_stack buffer_stack - 1
@@ -152,10 +150,12 @@ module Gamefic
     #   introduction do |actor|
     #     actor[:has_eaten] = false # Initial value
     #   end
+    #
     #   respond :eat do |actor|
     #     actor.tell "You eat something."
     #     actor[:has_eaten] = true
     #   end
+    #
     #   respond :eat do |actor|
     #     # This version will be executed first because it was implemented last
     #     if actor[:has_eaten]
@@ -187,13 +187,14 @@ module Gamefic
     # Use #prepare if you want to declare a scene to be started at the
     # beginning of the next turn.
     #
-    # @param new_scene [Class]
-    def cue new_scene, **options
+    # @param new_scene [Class<Scene::Base>]
+    # @param data [Hash] Additional scene data
+    def cue new_scene, **data
       @next_scene = nil
       if new_scene.nil?
         @scene = nil
       else
-        @scene = new_scene.new(self, **options)
+        @scene = new_scene.new(self, **data)
         @scene.start
       end
     end
@@ -202,10 +203,11 @@ module Gamefic
     # next turn. As opposed to #cue, a prepared scene will not start until the
     # current scene finishes.
     #
-    # @param new_scene [Class]
-    def prepare new_scene, **options
+    # @param new_scene [Class<Scene::Base>]
+    # @oaram data [Hash] Additional scene data
+    def prepare new_scene, **data
       @next_scene = new_scene
-      @next_options = options
+      @next_options = data
     end
 
     # Return true if the character is expected to be in the specified scene on
@@ -219,9 +221,11 @@ module Gamefic
     # Cue a conclusion. This method works like #cue, except it will raise a
     # NotConclusionError if the scene is not a Scene::Conclusion.
     #
-    def conclude scene
-      raise NotConclusionError unless scene <= Scene::Conclusion
-      cue scene
+    # @param new_scene [Class<Scene::Base>]
+    # @oaram data [Hash] Additional scene data
+    def conclude new_scene, **data
+      raise NotConclusionError unless new_scene <= Scene::Conclusion
+      cue new_scene, **data
     end
 
     # True if the character is in a conclusion.
