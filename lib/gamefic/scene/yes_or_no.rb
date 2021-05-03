@@ -4,7 +4,7 @@ module Gamefic
   # block. After the scene is finished, the :active scene will be cued if no
   # other scene has been prepared or cued.
   #
-  class Scene::YesOrNo < Scene::Custom
+  class Scene::YesOrNo < Scene::Base
     attr_writer :invalid_message
 
     def post_initialize

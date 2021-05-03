@@ -1,3 +1,6 @@
+# 2.1.0
+- Deprecate Scene::Custom
+
 # 2.0.3 - December 14, 2020
 - Remove unused Index class
 - Active#conclude accepts data argument

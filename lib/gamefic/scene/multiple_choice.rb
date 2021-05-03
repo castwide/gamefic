@@ -6,7 +6,7 @@ module Gamefic
   # The finish block's input parameter receives a MultipleChoice::Input object
   # instead of a String.
   #
-  class Scene::MultipleChoice < Scene::Custom
+  class Scene::MultipleChoice < Scene::Base
     # The zero-based index of the selected option.
     #
     # @return [Integer]

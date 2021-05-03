@@ -1,6 +1,8 @@
 module Gamefic
-  # The Base Scene is not intended for instantiation. Other Scene classes
-  # should inherit from it.
+  # An abstract class for building different types of scenes. It can be
+  # extended either through concrete subclasses or by creating anonymous
+  # subclasses through a scene helper method like
+  # `Gamefic::World::Scenes#custom`.
   #
   class Scene::Base
     include Gamefic::Serialize

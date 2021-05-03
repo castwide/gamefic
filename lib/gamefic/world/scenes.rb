@@ -95,10 +95,10 @@ module Gamefic
       #
       # @param prompt [String]
       # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Gamefic::Scene::Custom]
-      # @return [Class<Gamefic::Scene::Custom>]
+      # @yieldparam [Gamefic::Scene::Base]
+      # @return [Class<Gamefic::Scene::Base>]
       def question prompt = 'What is your answer?', &block
-        s = Scene::Custom.subclass do |actor, scene|
+        s = Scene::Base.subclass do |actor, scene|
           scene.prompt = prompt
           scene.on_finish &block
         end
@@ -150,23 +150,23 @@ module Gamefic
       # Custom scenes should always specify the next scene to be cued or
       # prepared. If not, the scene will get repeated on the next turn.
       #
-      # This method creates a Scene::Custom by default. You can customize other
+      # This method creates a Scene::Base by default. You can customize other
       # scene types by specifying the class to create.
       #
       # @example Ask the user for a name
-      #   @scene = custom do |scene|
-      #     data.prompt = "What's your name?"
-      #     scene.on_finish do |actor, data|
-      #       actor.name = data.input
+      #   @scene = custom do |actor, scene|
+      #     scene.prompt = "What's your name?"
+      #     scene.on_finish do
+      #       actor.name = scene.input
       #       actor.tell "Hello, #{actor.name}!"
-      #       actor.cue :active
+      #       actor.cue default_scene
       #     end
       #   end
       #
       # @param cls [Class] The class of scene to be instantiated.
       # @yieldparam [Gamefic::Actor]
-      # @return [Class<Gamefic::Scene::Custom>]
-      def custom cls = Scene::Custom, &block
+      # @return [Class<Gamefic::Scene::Base>]
+      def custom cls = Scene::Base, &block
         s = cls.subclass &block
         scene_classes.push s
         s
