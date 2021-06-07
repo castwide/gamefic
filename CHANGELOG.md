@@ -1,4 +1,5 @@
 # 2.1.0
+- Remove redundant MultipleChoice prompt
 - Deprecate Scene::Custom
 
 # 2.0.3 - December 14, 2020
