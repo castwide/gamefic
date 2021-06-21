@@ -1,4 +1,4 @@
-# 2.1.0
+# 2.1.0 - June 21, 2021
 - Remove redundant MultipleChoice prompt
 - Deprecate Scene::Custom
 
