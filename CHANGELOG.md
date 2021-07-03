@@ -1,3 +1,6 @@
+# 2.1.1 - July 23, 2021
+- Remove gamefic/scene/custom autoload
+
 # 2.1.0 - June 21, 2021
 - Remove redundant MultipleChoice prompt
 - Deprecate Scene::Custom

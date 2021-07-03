@@ -1,7 +1,6 @@
 module Gamefic
   module Scene
     autoload :Base, 'gamefic/scene/base'
-    autoload :Custom, 'gamefic/scene/custom'
     autoload :Activity, 'gamefic/scene/activity'
     autoload :Pause, 'gamefic/scene/pause'
     autoload :Conclusion, 'gamefic/scene/conclusion'
