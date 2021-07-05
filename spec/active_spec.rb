@@ -78,4 +78,18 @@ describe Gamefic::Active do
     character.execute :think
     expect(character.messages).to include("Thinking")
   end
+
+  it 'executes actions with parameters' do
+    plot = Gamefic::Plot.new
+    room = plot.make Gamefic::Entity
+    item = plot.make Gamefic::Entity, name: 'item', description: 'item description', parent: room
+    plot.respond :look, item do |actor, _|
+      actor.tell item.description
+    end
+    character = plot.make Gamefic::Actor
+    plot.introduce character
+    character.parent = room
+    character.execute :look, item
+    expect(character.messages).to include(item.description)
+  end
 end

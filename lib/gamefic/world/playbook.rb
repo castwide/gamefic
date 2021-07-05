@@ -157,7 +157,7 @@ module Gamefic
       def dispatch_from_params actor, verb, params
         result = []
         available = actions_for(verb)
-        Dispatcher.new(actor, [Command.new(verb, params.map(&:name))], sort_and_reduce_actions(available))
+        Dispatcher.new(actor, [Command.new(verb, params)], sort_and_reduce_actions(available))
       end
 
       # Duplicate the playbook.
