@@ -162,7 +162,7 @@ module Gamefic
         commands.each do |c|
           actions_for(c.verb).each do |a|
             next if a.hidden?
-            o = a.attempt(actor, c.arguments)
+            o = a.attempt(actor, c)
             result.unshift o unless o.nil?
           end
         end

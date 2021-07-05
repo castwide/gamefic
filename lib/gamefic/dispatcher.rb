@@ -1,5 +1,10 @@
 module Gamefic
+  # The action selector for character commands.
+  #
   class Dispatcher
+    # @param actor [Actor]
+    # @param commands [Array<Command>]
+    # @param actions [Array<Action>]
     def initialize actor, commands = [], actions = []
       @actor = actor
       @commands = commands
@@ -17,7 +22,7 @@ module Gamefic
         action = actions.shift
         commands.each do |cmd|
           next if cmd.verb != action.verb
-          instance = action.attempt(actor, cmd.arguments)
+          instance = action.attempt(actor, cmd)
           if instance
             unless instance.meta?
               actor.playbooks.reverse.each do |playbook|
@@ -40,10 +45,13 @@ module Gamefic
 
     protected
 
+    # @return [Actor]
     attr_reader :actor
 
+    # @return [Array<Command>]
     attr_reader :commands
 
+    # @return [Array<Action>]
     attr_reader :actions
 
     private

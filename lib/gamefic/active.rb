@@ -276,7 +276,7 @@ module Gamefic
 
     # @return [Array<Gamefic::Scene::Base>]
     def entered_scenes
-      @entered_scenes ||= []    
+      @entered_scenes ||= []
     end
 
     def validate_playbook playbook, action

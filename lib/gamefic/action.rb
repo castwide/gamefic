@@ -135,9 +135,10 @@ module Gamefic
       # provided tokens, or nil if the tokens are invalid.
       #
       # @param action [Gamefic::Entity]
-      # @param tokens [Array<String>]
+      # @param command [Command]
       # @return [self, nil]
-      def attempt actor, tokens
+      def attempt actor, command
+        tokens = command.arguments
         result = []
         matches = Gamefic::Query::Matches.new([], '', '')
         queries.each_with_index do |p, i|
