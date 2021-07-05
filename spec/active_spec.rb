@@ -66,4 +66,16 @@ describe Gamefic::Active do
     character.stream message
     expect(character.messages).to eq(message)
   end
+
+  it 'executes actions' do
+    plot = Gamefic::Plot.new
+    plot.respond :think do |actor|
+      actor.tell "Thinking"
+    end
+    character = plot.make Gamefic::Entity
+    character.extend Gamefic::Active
+    character.playbooks.push plot.playbook
+    character.execute :think
+    expect(character.messages).to include("Thinking")
+  end
 end
