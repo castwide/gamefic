@@ -147,7 +147,7 @@ module Gamefic
       dispatcher = Dispatcher.new(self)
       group.each { |d| dispatcher.merge d }
       dispatchers.push dispatcher
-      proceed
+      proceed quietly: quietly
       dispatchers.pop
     end
 

@@ -108,4 +108,15 @@ describe Gamefic::Active do
     expect(character.messages).not_to include('hidden')
     expect(character.messages).to include('visible')
   end
+
+  it 'proceeds quietly' do
+    playbook = Gamefic::World::Playbook.new
+    playbook.respond :command do |actor|
+      actor.tell "message"
+    end
+    character = Gamefic::Actor.new
+    character.playbooks.push playbook
+    character.execute :command, quietly: true
+    expect(character.messages).not_to include('message')
+  end
 end
