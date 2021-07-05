@@ -92,4 +92,20 @@ describe Gamefic::Active do
     character.execute :look, item
     expect(character.messages).to include(item.description)
   end
+
+  it 'proceeds quietly' do
+    playbook = Gamefic::World::Playbook.new
+    playbook.respond :command do |actor|
+      actor.tell "hidden"
+    end
+    playbook.respond :command do |actor|
+      actor.proceed quietly: true
+      actor.tell "visible"
+    end
+    character = Gamefic::Actor.new
+    character.playbooks.push playbook
+    character.execute :command
+    expect(character.messages).not_to include('hidden')
+    expect(character.messages).to include('visible')
+  end
 end
