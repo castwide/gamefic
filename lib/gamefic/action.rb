@@ -138,6 +138,7 @@ module Gamefic
       # @param command [Command]
       # @return [self, nil]
       def attempt actor, command
+        return nil if command.verb != verb
         tokens = command.arguments
         result = []
         matches = Gamefic::Query::Matches.new([], '', '')

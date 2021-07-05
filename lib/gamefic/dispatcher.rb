@@ -21,7 +21,6 @@ module Gamefic
       while instance.nil? && !@actions.empty?
         action = actions.shift
         commands.each do |cmd|
-          next if cmd.verb != action.verb
           instance = action.attempt(actor, cmd)
           if instance
             unless instance.meta?
