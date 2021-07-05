@@ -94,4 +94,22 @@ describe Gamefic::Plot do
     plot.introduce player2
     expect(plot.players).to eq([player1, player2])
   end
+
+  it 'validates actions' do
+    plot = Gamefic::Plot.new
+    plot.respond :command do |actor|
+      actor.tell 'executed'
+    end
+    plot.validate do |actor, verb, _arguments|
+      if verb == :command
+        actor.tell 'cancelled'
+        false
+      end
+    end
+    player = plot.make_player_character
+    plot.introduce player
+    player.perform 'command'
+    expect(player.messages).to include('cancelled')
+    expect(player.messages).not_to include('executed')
+  end
 end
