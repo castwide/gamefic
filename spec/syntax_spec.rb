@@ -62,4 +62,22 @@ describe Gamefic::Syntax do
     expect(command.verb).to eq(nil)
     expect(command.arguments).to eq(['bob', 'manufacture', 'cookies'])
   end
+
+  it 'equals other based on signature' do
+    s1 = Gamefic::Syntax.new 'make :a from :b', 'make :a :b'
+    s2 = Gamefic::Syntax.new 'make :x from :y', 'make :x :y'
+    expect(s1).to eq(s2)
+  end
+
+  it 'does not equal other based on words in signature' do
+    s1 = Gamefic::Syntax.new 'make :a from :b', 'make :a :b'
+    s2 = Gamefic::Syntax.new 'make :x out of :y', 'make :x :y'
+    expect(s1).not_to eq(s2)
+  end
+
+  it 'does not equal other based on verbs' do
+    s1 = Gamefic::Syntax.new 'make :a from :b', 'make :a :b'
+    s2 = Gamefic::Syntax.new 'make :x from :y', 'manufacture :x :y'
+    expect(s1).not_to eq(s2)
+  end
 end

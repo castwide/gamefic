@@ -89,7 +89,9 @@ module Gamefic
       signature == other.signature
     end
 
-    # Tokenize an Array of Commands from the specified text.
+    # Tokenize an Array of Commands from the specified text. The resulting
+    # array is in descending order of specificity, i.e., most to least matched
+    # tokens.
     #
     # @param text [String] The text to tokenize.
     # @param syntaxes [Array<Gamefic::Syntax>] The Syntaxes to use.
