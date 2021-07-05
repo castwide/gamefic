@@ -104,6 +104,11 @@ module Gamefic
     # @example Send a command as a verb with parameters
     #   character.perform :take, @key
     #
+    # @todo Modify this method so it only accepts a single command.
+    #   Verbs with parameters should use Active#execute instead.
+    #   It might be necessary to support command splats with a deprecation
+    #   warning until version 3.
+    #
     # @return [Gamefic::Action]
     def perform(*command)
       if command.length > 1 || command.first.is_a?(Symbol)
@@ -118,6 +123,9 @@ module Gamefic
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
+    #
+    # @todo Modify this method so it only accepts a single command.
+    #   See Active#perform for more information.
     #
     # @return [String] The output that resulted from performing the command.
     def quietly(*command)
