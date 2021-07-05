@@ -41,7 +41,7 @@ describe Gamefic::Action do
       Gamefic::Action.subclass :foo, Gamefic::Query::Base.new do |arg1|
         # This proc should have two arguments
       end
-    }.to raise_error Gamefic::ActionArgumentError
+    }.to raise_error ArgumentError
   end
 
   it "marks actions executed" do
@@ -71,11 +71,11 @@ describe Gamefic::Action do
 
   it 'returns an Action instance for valid attempts' do
     klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
-    expect(klass.attempt(nil, ['foo'])).to be_a(klass)
+    expect(klass.attempt(nil, Gamefic::Command.new(:command, ['foo']))).to be_a(klass)
   end
 
   it 'returns nil for invalid attempts' do
     klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
-    expect(klass.attempt(nil, ['bar'])).to be_nil
+    expect(klass.attempt(nil, Gamefic::Command.new(nil, ['bar']))).to be_nil
   end
 end

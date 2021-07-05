@@ -1,7 +1,7 @@
 module Gamefic
   # Pause for user input.
   #
-  class Scene::Pause < Scene::Custom
+  class Scene::Pause < Scene::Base
     def post_initialize
       self.type = 'Pause'
       self.prompt = 'Press enter to continue...'

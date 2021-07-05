@@ -93,16 +93,6 @@ module Gamefic
       def players
         @players ||= []
       end
-
-      # private
-
-      # def mark_static_entities
-      #   @static_entity_length ||= entities.length
-      # end
-
-      # def static_entity_length
-      #   @static_entity_length || 0
-      # end
     end
   end
 end

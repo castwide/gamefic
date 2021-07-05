@@ -11,8 +11,9 @@ module Gamefic
     attr_reader :plot
 
     # @param plot [Gamefic::Plot]
-    # @param introduce [Gamefic::Actor]
-    # @param next_cue [Class<Gamefic::Scene::Base>]
+    # @param introduce [Gamefic::Actor, nil]
+    # @param next_cue [Class<Gamefic::Scene::Base>, nil]
+    # @param more [Hash]
     def initialize plot, introduce: nil, next_cue: nil, **more
       @plot = plot
       @next_cue = next_cue
@@ -98,15 +99,5 @@ module Gamefic
     #
     def configure more
     end
-
-    # def to_serial(index)
-    #   puts "Serializing #{self}"
-    #   super
-    # end
-
-    # def from_serial index = []
-    #   # @todo Customize subplot unserialization
-    #   super
-    # end
   end
 end

@@ -27,17 +27,11 @@ module Gamefic
 
     exclude_from_serial [:@static]
 
-    # @param structure [Gamefic::Structure]
     # @param metadata [Hash]
     def initialize metadata: {}
       @metadata = metadata
       run_scripts
       @static = [self] + scene_classes + entities
-    end
-
-    def player_class cls = nil
-      @player_class = cls unless cls.nil?
-      @player_class ||= Gamefic::Actor
     end
 
     # Get an Array of the Plot's current Syntaxes.
@@ -80,7 +74,6 @@ module Gamefic
       entities.each { |e| e.flush }
       call_before_player_update
       players.each do |p|
-        p.performed nil
         next unless p.scene
         p.last_input = p.queue.last
         p.last_prompt = p.scene.prompt
@@ -93,8 +86,8 @@ module Gamefic
       end
       call_player_update
       call_update
-      subplots.each { |s| s.update unless s.concluded? }
-      subplots.delete_if { |s| s.concluded? }
+      subplots.delete_if(&:concluded?)
+      subplots.each(&:update)
     end
 
     # Send a message to a group of entities.

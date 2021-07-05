@@ -6,12 +6,6 @@ module Gamefic
   # subclass that includes this module.
   #
   module Active
-    # The last action executed by the entity, as reported by the
-    # Active#performed method.
-    #
-    # @return [Gamefic::Action]
-    attr_reader :last_action
-
     # The scene in which the entity is currently participating.
     #
     # @return [Gamefic::Scene::Base]
@@ -104,22 +98,32 @@ module Gamefic
     # @example Send a command as a verb with parameters
     #   character.perform :take, @key
     #
+    # @todo Modify this method so it only accepts a single command.
+    #   Verbs with parameters should use Active#execute instead.
+    #   It might be necessary to support command splats with a deprecation
+    #   warning until version 3.
+    #
     # @return [Gamefic::Action]
     def perform(*command)
-      actions = []
-      playbooks.reverse.each { |p| actions.concat p.dispatch(self, *command) }
-      execute_stack actions
+      if command.length > 1
+        execute command.first, *command[1..-1]
+      else
+        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
+        proceed
+        dispatchers.pop
+      end
     end
 
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
     #
+    # @todo Modify this method so it only accepts a single command.
+    #   See Active#perform for more information.
+    #
     # @return [String] The output that resulted from performing the command.
     def quietly(*command)
-      if buffer_stack == 0
-        clear_buffer
-      end
+      clear_buffer if buffer_stack == 0
       set_buffer_stack buffer_stack + 1
       self.perform *command
       set_buffer_stack buffer_stack - 1
@@ -139,9 +143,12 @@ module Gamefic
     #
     # @return [Gamefic::Action]
     def execute(verb, *params, quietly: false)
-      actions = []
-      playbooks.reverse.each { |p| actions.concat p.dispatch_from_params(self, verb, params) }
-      execute_stack actions, quietly: quietly
+      group = playbooks.reverse.map { |p| p.dispatch_from_params(self, verb, params) }
+      dispatcher = Dispatcher.new(self)
+      group.each { |d| dispatcher.merge d }
+      dispatchers.push dispatcher
+      proceed
+      dispatchers.pop
     end
 
     # Proceed to the next Action in the current stack.
@@ -152,10 +159,12 @@ module Gamefic
     #   introduction do |actor|
     #     actor[:has_eaten] = false # Initial value
     #   end
+    #
     #   respond :eat do |actor|
     #     actor.tell "You eat something."
     #     actor[:has_eaten] = true
     #   end
+    #
     #   respond :eat do |actor|
     #     # This version will be executed first because it was implemented last
     #     if actor[:has_eaten]
@@ -166,20 +175,19 @@ module Gamefic
     #   end
     #
     def proceed quietly: false
-      return if performance_stack.empty?
-      a = performance_stack.last.shift
-      unless a.nil?
-        if quietly
-          if buffer_stack == 0
-            @buffer = ""
-          end
-          set_buffer_stack(buffer_stack + 1)
+      return if dispatchers.empty?
+      a = dispatchers.last.next
+      return if a.nil?
+      if quietly
+        if buffer_stack == 0
+          @buffer = ""
         end
-        a.execute
-        if quietly
-          set_buffer_stack(buffer_stack - 1)
-          @buffer
-        end
+        set_buffer_stack(buffer_stack + 1)
+      end
+      a.execute
+      if quietly
+        set_buffer_stack(buffer_stack - 1)
+        @buffer
       end
     end
 
@@ -187,13 +195,14 @@ module Gamefic
     # Use #prepare if you want to declare a scene to be started at the
     # beginning of the next turn.
     #
-    # @param new_scene [Class]
-    def cue new_scene, **options
+    # @param new_scene [Class<Scene::Base>]
+    # @param data [Hash] Additional scene data
+    def cue new_scene, **data
       @next_scene = nil
       if new_scene.nil?
         @scene = nil
       else
-        @scene = new_scene.new(self, **options)
+        @scene = new_scene.new(self, **data)
         @scene.start
       end
     end
@@ -202,10 +211,11 @@ module Gamefic
     # next turn. As opposed to #cue, a prepared scene will not start until the
     # current scene finishes.
     #
-    # @param new_scene [Class]
-    def prepare new_scene, **options
+    # @param new_scene [Class<Scene::Base>]
+    # @oaram data [Hash] Additional scene data
+    def prepare new_scene, **data
       @next_scene = new_scene
-      @next_options = options
+      @next_options = data
     end
 
     # Return true if the character is expected to be in the specified scene on
@@ -219,9 +229,11 @@ module Gamefic
     # Cue a conclusion. This method works like #cue, except it will raise a
     # NotConclusionError if the scene is not a Scene::Conclusion.
     #
-    def conclude scene
-      raise NotConclusionError unless scene <= Scene::Conclusion
-      cue scene
+    # @param new_scene [Class<Scene::Base>]
+    # @oaram data [Hash] Additional scene data
+    def conclude new_scene, **data
+      raise NotConclusionError unless new_scene <= Scene::Conclusion
+      cue new_scene, **data
     end
 
     # True if the character is in a conclusion.
@@ -229,14 +241,6 @@ module Gamefic
     # @return [Boolean]
     def concluded?
       !scene.nil? && scene.kind_of?(Scene::Conclusion)
-    end
-
-    # Record the last action the entity executed. This method is typically
-    # called when the entity performs an action in response to user input.
-    #
-    def performed action
-      action.freeze
-      @last_action = action
     end
 
     def accessible?
@@ -266,25 +270,7 @@ module Gamefic
 
     # @return [Array<Gamefic::Scene::Base>]
     def entered_scenes
-      @entered_scenes ||= []    
-    end
-
-    def execute_stack actions, quietly: false
-      return nil if actions.empty?
-      a = actions.first
-      okay = true
-      unless a.meta?
-        playbooks.reverse.each do |playbook|
-          okay = validate_playbook playbook, a
-          break unless okay
-        end
-      end
-      if okay
-        performance_stack.push actions
-        proceed quietly: quietly
-        performance_stack.pop
-      end
-      a
+      @entered_scenes ||= []
     end
 
     def validate_playbook playbook, action
@@ -318,8 +304,8 @@ module Gamefic
       @buffer = ''
     end
 
-    def performance_stack
-      @performance_stack ||= []
+    def dispatchers
+      @dispatchers ||= []
     end
   end
 end

@@ -12,7 +12,6 @@ module Gamefic
       super
       o = nil
       o = actor.perform input.strip unless input.to_s.strip.empty?
-      actor.performed o
     end
 
     class << self

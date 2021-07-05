@@ -6,7 +6,7 @@ module Gamefic
   # The finish block's input parameter receives a MultipleChoice::Input object
   # instead of a String.
   #
-  class Scene::MultipleChoice < Scene::Custom
+  class Scene::MultipleChoice < Scene::Base
     # The zero-based index of the selected option.
     #
     # @return [Integer]
@@ -14,7 +14,7 @@ module Gamefic
 
     # The one-based index of the selected option.
     #
-    # @return [Number]
+    # @return [Integer]
     attr_reader :number
 
     # The full text of the selected option.
@@ -33,7 +33,6 @@ module Gamefic
       get_choice
       if selection.nil?
         actor.tell invalid_message
-        tell_options
       else
         super
       end
@@ -76,15 +75,6 @@ module Gamefic
           i += 1
         }
       end
-    end
-
-    def tell_options
-      list = '<ol class="multiple_choice">'
-      options.each { |o|
-        list += "<li><a href=\"#\" rel=\"gamefic\" data-command=\"#{o}\">#{o}</a></li>"
-      }
-      list += "</ol>"
-      actor.tell list
     end
   end
 end

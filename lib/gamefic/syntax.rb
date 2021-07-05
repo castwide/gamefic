@@ -1,5 +1,3 @@
-require 'gamefic/command'
-
 module Gamefic
   class Syntax
     attr_reader :token_count, :first_word, :verb, :template, :command

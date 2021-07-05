@@ -1,9 +1,4 @@
 module Gamefic
-  # Exception raised when the Action's proc arity is not compatible with the
-  # number of queries
-  class ActionArgumentError < ArgumentError
-  end
-
   class Action
     # An array of objects on which the action will operate, e.g., an entity
     # that is a direct object of a command.
@@ -55,7 +50,7 @@ module Gamefic
     end
 
     # @param verb [Symbol]
-    # @param queries [Array<Gamefic::Query::Base]
+    # @param queries [Array<Gamefic::Query::Base>]
     # @param meta [Boolean]
     # @return [Class<Action>]
     def self.subclass verb, *queries, meta: false, &block
@@ -68,7 +63,7 @@ module Gamefic
         on_execute &block
       end
       if !block.nil? && act.queries.length + 1 != block.arity && block.arity > 0
-        raise ActionArgumentError.new("Number of parameters is not compatible with proc arguments")
+        raise ArgumentError.new("Number of parameters is not compatible with proc arguments")
       end
       act
     end
@@ -140,9 +135,11 @@ module Gamefic
       # provided tokens, or nil if the tokens are invalid.
       #
       # @param action [Gamefic::Entity]
-      # @param tokens [Array<String>]
+      # @param command [Command]
       # @return [self, nil]
-      def attempt actor, tokens
+      def attempt actor, command
+        return nil if command.verb != verb
+        tokens = command.arguments
         result = []
         matches = Gamefic::Query::Matches.new([], '', '')
         queries.each_with_index do |p, i|

@@ -12,12 +12,12 @@ module Gamefic
 
     # @todo It would be nice if this initialization wasn't necessary.
     def initialize(args = {})
-    # super self.class.default_attributes.merge(args)
-    self.class.default_attributes.merge(args).each_pair do |k, v|
-      public_send "#{k}=", v
-    end
-    post_initialize
-    yield self if block_given?
+      # super self.class.default_attributes.merge(args)
+      self.class.default_attributes.merge(args).each_pair do |k, v|
+        public_send "#{k}=", v
+      end
+      post_initialize
+      yield self if block_given?
     end
 
     def post_initialize

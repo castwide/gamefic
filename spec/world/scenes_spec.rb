@@ -31,7 +31,7 @@ describe Gamefic::World::Scenes do
       actor.tell data.input
     end
     scene = question.new(actor)
-    expect(scene).to be_a(Gamefic::Scene::Custom)
+    expect(scene).to be_a(Gamefic::Scene::Base)
     actor.queue.push "the answer"
     run scene
     expect(actor.messages).to include("the answer")
@@ -43,7 +43,7 @@ describe Gamefic::World::Scenes do
       actor.tell "Custom"
     end
     scene = custom.new(actor)
-    expect(scene).to be_a(Gamefic::Scene::Custom)
+    expect(scene).to be_a(Gamefic::Scene::Base)
     run scene
     expect(actor.messages).to include("Custom")
   end

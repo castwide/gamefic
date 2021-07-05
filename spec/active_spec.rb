@@ -14,6 +14,19 @@ describe Gamefic::Active do
     expect(x).to eq(1)
   end
 
+  it 'performs an action with multiple arguments' do
+    plot = Gamefic::Plot.new
+    executed = false
+    plot.respond :count, Gamefic::Query::Text.new(/one/), Gamefic::Query::Text.new(/two/) do |_actor, _one, _two|
+      executed = true
+    end
+    plot.interpret 'count :one and :two', 'count :one :two'
+    character = plot.make_player_character
+    plot.introduce character
+    character.perform "count one and two"
+    expect(executed).to eq(true)
+  end
+
   it "formats #tell messages into HTML paragraphs" do
     plot = Gamefic::Plot.new
     character = plot.make Gamefic::Entity
@@ -52,5 +65,31 @@ describe Gamefic::Active do
     message = '<p>unprocessed text'.freeze
     character.stream message
     expect(character.messages).to eq(message)
+  end
+
+  it 'executes actions' do
+    plot = Gamefic::Plot.new
+    plot.respond :think do |actor|
+      actor.tell "Thinking"
+    end
+    character = plot.make Gamefic::Entity
+    character.extend Gamefic::Active
+    character.playbooks.push plot.playbook
+    character.execute :think
+    expect(character.messages).to include("Thinking")
+  end
+
+  it 'executes actions with parameters' do
+    plot = Gamefic::Plot.new
+    room = plot.make Gamefic::Entity
+    item = plot.make Gamefic::Entity, name: 'item', description: 'item description', parent: room
+    plot.respond :look, item do |actor, _|
+      actor.tell item.description
+    end
+    character = plot.make Gamefic::Actor
+    plot.introduce character
+    character.parent = room
+    character.execute :look, item
+    expect(character.messages).to include(item.description)
   end
 end
