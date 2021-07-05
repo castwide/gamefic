@@ -6,6 +6,7 @@ describe Gamefic::Query::Family do
     query = Gamefic::Query::Family.new
     result = query.context_from(entity)
     expect(result).to eq([sibling])
+    expect(query.include?(entity, sibling)).to be(true)
   end
 
   it 'finds child entities' do
@@ -14,6 +15,7 @@ describe Gamefic::Query::Family do
     query = Gamefic::Query::Family.new
     result = query.context_from(entity)
     expect(result).to eq([child])
+    expect(query.include?(entity, child)).to be(true)
   end
 
   it 'does not include the subject' do
@@ -21,5 +23,6 @@ describe Gamefic::Query::Family do
     query = Gamefic::Query::Family.new
     result = query.context_from(entity)
     expect(result).to be_empty
+    expect(query.include?(entity, subject)).to be(false)
   end
 end

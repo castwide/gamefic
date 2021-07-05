@@ -52,16 +52,24 @@ describe Gamefic::Action do
     expect(action).to be_executed
   end
 
-  it "validates matching arguments" do
+  it "validates matching text queries" do
     klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
     actor = Gamefic::Actor.new
     expect(klass.valid?(actor, ['foo'])).to be(true)
   end
 
-  it "invalidates non-matching arguments" do
+  it "invalidates non-matching text queries" do
     klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
     actor = Gamefic::Actor.new
     expect(klass.valid?(actor, ['bar'])).to be(false)
+  end
+
+  it 'validates matching entity queries' do
+    parent = Gamefic::Entity.new
+    actor = Gamefic::Actor.new parent: parent
+    thing = Gamefic::Entity.new parent: parent
+    klass = Gamefic::Action.subclass(:command, Gamefic::Query::Family.new)
+    expect(klass.valid?(actor, [thing])).to be(true)
   end
 
   it 'has a signature' do

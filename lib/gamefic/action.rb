@@ -123,10 +123,8 @@ module Gamefic
 
       def valid? actor, objects
         return false if objects.length != queries.length
-        i = 0
-        queries.each do |p|
+        queries.each_with_index do |p, i|
           return false unless p.include?(actor, objects[i])
-          i += 1
         end
         true
       end
