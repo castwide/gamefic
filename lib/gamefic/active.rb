@@ -111,7 +111,7 @@ module Gamefic
     #
     # @return [Gamefic::Action]
     def perform(*command)
-      if command.length > 1 || command.first.is_a?(Symbol)
+      if command.length > 1
         execute command.first, *command[1..-1]
       else
         dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
