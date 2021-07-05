@@ -85,4 +85,13 @@ describe Gamefic::Plot do
     plot.update
     expect(ran).to be true
   end
+
+  it 'supports multiple players' do
+    plot = Gamefic::Plot.new
+    player1 = plot.make_player_character
+    plot.introduce player1
+    player2 = plot.make_player_character
+    plot.introduce player2
+    expect(plot.players).to eq([player1, player2])
+  end
 end
