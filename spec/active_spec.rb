@@ -14,6 +14,19 @@ describe Gamefic::Active do
     expect(x).to eq(1)
   end
 
+  it 'performs an action with multiple arguments' do
+    plot = Gamefic::Plot.new
+    executed = false
+    plot.respond :count, Gamefic::Query::Text.new(/one/), Gamefic::Query::Text.new(/two/) do |_actor, _one, _two|
+      executed = true
+    end
+    plot.interpret 'count :one and :two', 'count :one :two'
+    character = plot.make_player_character
+    plot.introduce character
+    character.perform "count one and two"
+    expect(executed).to eq(true)
+  end
+
   it "formats #tell messages into HTML paragraphs" do
     plot = Gamefic::Plot.new
     character = plot.make Gamefic::Entity
