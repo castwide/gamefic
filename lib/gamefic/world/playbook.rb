@@ -138,35 +138,16 @@ module Gamefic
         syn
       end
 
-      # Get an array of actions, derived from the specified command, that the
-      # actor can potentially execute.
-      # The command can either be a single string (e.g., "examine book") or a
-      # list of tokens (e.g., :examine, @book).
+      # Get a Dispatcher to select actions that can potentially be executed
+      # from the specified command string.
       #
+      # @param actor [Actor]
+      # @param text [String]
       # @return [Dispatcher]
-      def dispatch(actor, *command)
-        text = command.join(' ')
+      def dispatch(actor, text)
         commands = Syntax.tokenize(text, actor.syntaxes)
         actions = commands.flat_map { |cmd| actions_for(cmd.verb).reject(&:hidden?) }
         Dispatcher.new(actor, commands, sort_and_reduce_actions(actions))
-      end
-
-      # Get an array of actions, derived from the specified command, that the
-      # actor can potentially execute.
-      # The command should be a plain-text string, e.g., "examine the book."
-      #
-      # @return [Array<Gamefic::Action>]
-      def dispatch_from_string actor, text
-        result = []
-        commands = Syntax.tokenize(text, actor.syntaxes)
-        commands.each do |c|
-          actions_for(c.verb).each do |a|
-            next if a.hidden?
-            o = a.attempt(actor, c)
-            result.unshift o unless o.nil?
-          end
-        end
-        sort_and_reduce_actions result
       end
 
       # Get an array of actions, derived from the specified verb and params,
