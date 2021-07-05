@@ -74,7 +74,6 @@ module Gamefic
       entities.each { |e| e.flush }
       call_before_player_update
       players.each do |p|
-        p.performed nil
         next unless p.scene
         p.last_input = p.queue.last
         p.last_prompt = p.scene.prompt

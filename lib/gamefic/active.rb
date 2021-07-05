@@ -6,12 +6,6 @@ module Gamefic
   # subclass that includes this module.
   #
   module Active
-    # The last action executed by the entity, as reported by the
-    # Active#performed method.
-    #
-    # @return [Gamefic::Action]
-    attr_reader :last_action
-
     # The scene in which the entity is currently participating.
     #
     # @return [Gamefic::Scene::Base]
@@ -247,14 +241,6 @@ module Gamefic
     # @return [Boolean]
     def concluded?
       !scene.nil? && scene.kind_of?(Scene::Conclusion)
-    end
-
-    # Record the last action the entity executed. This method is typically
-    # called when the entity performs an action in response to user input.
-    #
-    def performed action
-      action.freeze
-      @last_action = action
     end
 
     def accessible?
