@@ -143,12 +143,12 @@ module Gamefic
       # The command can either be a single string (e.g., "examine book") or a
       # list of tokens (e.g., :examine, @book).
       #
-      # @return [Array<Gamefic::Action>]
+      # @return [Dispatcher]
       def dispatch(actor, *command)
-        result = []
-        result.concat dispatch_from_params(actor, command[0], command[1..-1]) if command.length > 1
-        result.concat dispatch_from_string(actor, command.join(' ')) if result.empty?
-        result
+        text = command.join(' ')
+        commands = Syntax.tokenize(text, actor.syntaxes)
+        actions = commands.flat_map { |cmd| actions_for(cmd.verb).reject(&:hidden?) }
+        Dispatcher.new(actor, commands, sort_and_reduce_actions(actions))
       end
 
       # Get an array of actions, derived from the specified command, that the
@@ -176,10 +176,7 @@ module Gamefic
       def dispatch_from_params actor, verb, params
         result = []
         available = actions_for(verb)
-        available.each do |a|
-          result.unshift a.new(actor, params) if a.valid?(actor, params)
-        end
-        sort_and_reduce_actions result
+        Dispatcher.new(actor, [Command.new(verb, params.map(&:name))], sort_and_reduce_actions(available))
       end
 
       # Duplicate the playbook.
@@ -238,7 +235,7 @@ module Gamefic
       end
 
       def sort_and_reduce_actions arr
-        arr.sort_by.with_index { |a, i| [a.rank, -i]}.reverse.uniq(&:class)
+        arr.sort_by.with_index { |a, i| [a.rank, i] }.reverse.uniq
       end
     end
   end

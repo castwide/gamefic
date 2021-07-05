@@ -106,9 +106,13 @@ module Gamefic
     #
     # @return [Gamefic::Action]
     def perform(*command)
-      actions = []
-      playbooks.reverse.each { |p| actions.concat p.dispatch(self, *command) }
-      execute_stack actions
+      if command.length > 1 || command.first.is_a?(Symbol)
+        execute command.first, *command[1..-1]
+      else
+        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
+        proceed
+        dispatchers.pop
+      end
     end
 
     # Quietly perform a command.
@@ -137,9 +141,12 @@ module Gamefic
     #
     # @return [Gamefic::Action]
     def execute(verb, *params, quietly: false)
-      actions = []
-      playbooks.reverse.each { |p| actions.concat p.dispatch_from_params(self, verb, params) }
-      execute_stack actions, quietly: quietly
+      group = playbooks.reverse.map { |p| p.dispatch_from_params(self, verb, params) }
+      dispatcher = Dispatcher.new(self)
+      group.each { |d| dispatcher.merge d }
+      dispatchers.push dispatcher
+      proceed
+      dispatchers.pop
     end
 
     # Proceed to the next Action in the current stack.
@@ -166,20 +173,19 @@ module Gamefic
     #   end
     #
     def proceed quietly: false
-      return if performance_stack.empty?
-      a = performance_stack.last.shift
-      unless a.nil?
-        if quietly
-          if buffer_stack == 0
-            @buffer = ""
-          end
-          set_buffer_stack(buffer_stack + 1)
+      return if dispatchers.empty?
+      a = dispatchers.last.next
+      return if a.nil?
+      if quietly
+        if buffer_stack == 0
+          @buffer = ""
         end
-        a.execute
-        if quietly
-          set_buffer_stack(buffer_stack - 1)
-          @buffer
-        end
+        set_buffer_stack(buffer_stack + 1)
+      end
+      a.execute
+      if quietly
+        set_buffer_stack(buffer_stack - 1)
+        @buffer
       end
     end
 
@@ -273,26 +279,6 @@ module Gamefic
       @entered_scenes ||= []    
     end
 
-    # @param actions [Array<Gamefic::Action>]
-    # @param quietly [Boolean]
-    def execute_stack actions, quietly: false
-      return nil if actions.empty?
-      a = actions.first
-      okay = true
-      unless a.meta?
-        playbooks.reverse.each do |playbook|
-          okay = validate_playbook playbook, a
-          break unless okay
-        end
-      end
-      if okay
-        performance_stack.push actions
-        proceed quietly: quietly
-        performance_stack.pop
-      end
-      a
-    end
-
     def validate_playbook playbook, action
       okay = true
       playbook.validators.each { |v|
@@ -324,8 +310,8 @@ module Gamefic
       @buffer = ''
     end
 
-    def performance_stack
-      @performance_stack ||= []
+    def dispatchers
+      @dispatchers ||= []
     end
   end
 end

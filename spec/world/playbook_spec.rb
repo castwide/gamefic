@@ -51,10 +51,11 @@ describe Gamefic::World::Playbook do
 
   it "dispatches commands" do
     playbook = Gamefic::World::Playbook.new
-    playbook.respond :command do; end
+    action = playbook.respond(:command) do; end
     actor = Gamefic::Actor.new
     actor.playbooks.push playbook
-    commands = playbook.dispatch(actor, 'command')
-    expect(commands.length).to eq(1)
+    dispatcher = playbook.dispatch(actor, 'command')
+    result = dispatcher.next
+    expect(result).to be_a(action)
   end
 end
