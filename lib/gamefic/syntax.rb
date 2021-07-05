@@ -97,19 +97,16 @@ module Gamefic
     # @param syntaxes [Array<Gamefic::Syntax>] The Syntaxes to use.
     # @return [Array<Gamefic::Command>] The tokenized commands.
     def self.tokenize text, syntaxes
-      matches = []
-      syntaxes.each { |syntax|
-        result = syntax.tokenize text
-        matches.push(result) if !result.nil?
-      }
-      matches.sort! { |a,b|
-        if a.arguments.length == b.arguments.length
-          b.verb.to_s <=> a.verb.to_s
-        else
-          b.arguments.length <=> a.arguments.length
+      syntaxes
+        .map { |syn| syn.tokenize(text) }
+        .reject(&:nil?)
+        .sort do |a, b|
+          if a.arguments.length == b.arguments.length
+            b.verb.to_s <=> a.verb.to_s
+          else
+            b.arguments.length <=> a.arguments.length
+          end
         end
-      }
-      matches
     end
   end
 end
