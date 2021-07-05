@@ -1,3 +1,5 @@
+require 'set'
+
 module Gamefic
   module World
     # A collection of rules for performing commands.
@@ -13,9 +15,13 @@ module Gamefic
       # @return [Array<Proc>]
       attr_reader :validators
 
+      # @param commands [Hash]
+      # @param syntaxes [Array<Syntax>, Set<Syntax>]
+      # @param validators [Array]
       def initialize commands: {}, syntaxes: [], validators: []
         @commands = commands
-        @syntaxes = syntaxes
+        @syntax_set = syntaxes.to_set
+        sort_syntaxes
         @validators = validators
       end
 
@@ -182,21 +188,22 @@ module Gamefic
 
       def add_syntax syntax
         raise "No actions exist for \"#{syntax.verb}\"" if @commands[syntax.verb].nil?
+        sort_syntaxes if @syntax_set.add?(syntax)
+      end
 
-        @syntaxes.unshift syntax
-        @syntaxes.uniq!(&:signature)
-        @syntaxes.sort! do |a, b|
+      def sort_and_reduce_actions arr
+        arr.sort_by.with_index { |a, i| [a.rank, i] }.reverse.uniq
+      end
+
+      def sort_syntaxes
+        @syntaxes = @syntax_set.sort do |a, b|
           if a.token_count == b.token_count
-            # For syntaxes of the same length, length of action takes precedence
+            # For syntaxes of the same length, sort first word
             b.first_word <=> a.first_word
           else
             b.token_count <=> a.token_count
           end
         end
-      end
-
-      def sort_and_reduce_actions arr
-        arr.sort_by.with_index { |a, i| [a.rank, i] }.reverse.uniq
       end
     end
   end

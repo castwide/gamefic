@@ -108,4 +108,14 @@ describe Gamefic::World::Playbook do
     playbook.respond :action2 do;end
     expect(playbook.actions.length).to eq(2)
   end
+
+  it 'skips duplicate syntaxes' do
+    playbook.respond(:make, Gamefic::Query::Family.new, Gamefic::Query::Family.new) { |_, _, _| }
+    # Making the action creates a default syntax `make :var1 :var2`
+    expect(playbook.syntaxes.length).to eq(1)
+    playbook.interpret 'make :a from :b', 'make :a :b'
+    playbook.interpret 'make :x from :y', 'make :x :y'
+    # The above syntaxes are equivalent, so the second is ignored
+    expect(playbook.syntaxes.length).to eq(2)
+  end
 end

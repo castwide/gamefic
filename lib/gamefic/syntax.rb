@@ -89,6 +89,14 @@ module Gamefic
       signature == other.signature
     end
 
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      signature.hash
+    end
+
     # Tokenize an Array of Commands from the specified text. The resulting
     # array is in descending order of specificity, i.e., most to least matched
     # tokens.
