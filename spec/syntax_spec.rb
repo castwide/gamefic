@@ -49,11 +49,17 @@ describe Gamefic::Syntax do
     expect(syn.accept? "FOOBAR").to be true
   end
 
-  it "tokenizes commands that begin with an argument" do
-    # @todo This doesn't work yet
-    # syn = Gamefic::Syntax.new ":vendor make :product", "order :vendor :product"
-    # command = Gamefic::Syntax.tokenize('bob make cookies', [syn]).first
-    # expect(command.verb).to eq(:order)
-    # expect(command.arguments).to eq(['bob', 'cookies'])
+  it "tokenizes syntaxes that switch from opening argument to command" do
+    syntax = Gamefic::Syntax.new ":vendor make :product", "order :vendor :product"
+    command = syntax.tokenize('bob make cookies')
+    expect(command.verb).to eq(:order)
+    expect(command.arguments).to eq(['bob', 'cookies'])
+  end
+
+  it "tokenizes syntaxes that have commands without opening verbs" do
+    syntax = Gamefic::Syntax.new ":vendor make :product", ":vendor manufacture :product"
+    command = syntax.tokenize('bob make cookies')
+    expect(command.verb).to eq(nil)
+    expect(command.arguments).to eq(['bob', 'manufacture', 'cookies'])
   end
 end

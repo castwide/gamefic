@@ -55,17 +55,18 @@ module Gamefic
       m = text.match(@regexp)
       return nil if m.nil?
       arguments = []
-      # HACK: Skip the first word if the verb is not nil.
-      # This is ugly.
       b = @verb.nil? ? 0 : 1
+      xverb = @verb
       @replace.to_s.split_words[b..-1].each { |r|
         if r.match(/^\{\$[0-9]+\}$/)
           arguments.push m[r[2..-2].to_i]
+        elsif arguments.empty? && xverb.nil?
+          xverb = r.to_sym
         else
           arguments.push r
         end
       }
-      Command.new @verb, arguments
+      Command.new xverb, arguments
     end
 
     # Determine if the specified text matches the syntax's expected pattern.
