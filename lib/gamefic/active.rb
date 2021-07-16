@@ -143,10 +143,7 @@ module Gamefic
     #
     # @return [Gamefic::Action]
     def execute(verb, *params, quietly: false)
-      group = playbooks.reverse.map { |p| p.dispatch_from_params(self, verb, params) }
-      dispatcher = Dispatcher.new(self)
-      group.each { |d| dispatcher.merge d }
-      dispatchers.push dispatcher
+      dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
       proceed quietly: quietly
       dispatchers.pop
     end

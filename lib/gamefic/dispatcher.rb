@@ -35,8 +35,22 @@ module Gamefic
       instance
     end
 
+    # @param actor [Active]
+    # @param command [String]
+    # @return [Dispatcher]
     def self.dispatch actor, command
       group = actor.playbooks.reverse.map { |p| p.dispatch(actor, command) }
+      dispatcher = Dispatcher.new(actor)
+      group.each { |d| dispatcher.merge d }
+      dispatcher
+    end
+
+    # @param actor [Active]
+    # @param verb [Symbol]
+    # @param params [Array<Object>]
+    # @return [Dispatcher]
+    def self.dispatch_from_params actor, verb, params
+      group = actor.playbooks.reverse.map { |p| p.dispatch_from_params(actor, verb, params) }
       dispatcher = Dispatcher.new(actor)
       group.each { |d| dispatcher.merge d }
       dispatcher
