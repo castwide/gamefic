@@ -7,13 +7,16 @@ module Gamefic
   #
   class Element
     include Gamefic::Describable
-    # include Gamefic::Index
     include Gamefic::Serialize
 
-    # @todo It would be nice if this initialization wasn't necessary.
     def initialize(args = {})
-      # super self.class.default_attributes.merge(args)
-      self.class.default_attributes.merge(args).each_pair do |k, v|
+      klass = self.class
+      defaults = {}
+      while klass <= Element
+        defaults = klass.default_attributes.merge(defaults)
+        klass = klass.superclass
+      end
+      defaults.merge(args).each_pair do |k, v|
         public_send "#{k}=", v
       end
       post_initialize
@@ -37,10 +40,6 @@ module Gamefic
       # @return [Hash]
       def default_attributes
         @default_attributes ||= {}
-      end
-
-      def inherited subclass
-        subclass.set_default default_attributes
       end
     end
   end
