@@ -6,15 +6,9 @@ class String
   #
   # @return [String] The capitalized text
   def capitalize_first
-    "#{self[0,1].upcase}#{self[1,self.length]}"
+    "#{self[0, 1].upcase}#{self[1, self.length]}"
   end
-
-  # An alias for #capitalize_first.
-  #
-  # @return [String]
-  def cap_first
-    self.capitalize_first
-  end
+  alias cap_first capitalize_first
 
   # Get an array of words split by any whitespace.
   #
