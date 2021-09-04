@@ -1,4 +1,4 @@
-## 2.2.0
+## 2.2.0 - September 4, 2021
 - Dynamically inherit default attributes
 
 ## 2.1.1 - July 23, 2021
