@@ -7,7 +7,7 @@ describe Gamefic::Active do
     character.extend Gamefic::Active
     character.playbooks.push plot.playbook
     x = 0
-    plot.respond :increment_number do |actor|
+    plot.respond :increment_number do |_actor|
       x += 1
     end
     character.perform "increment number"
@@ -118,5 +118,22 @@ describe Gamefic::Active do
     character.playbooks.push playbook
     character.execute :command, quietly: true
     expect(character.messages).not_to include('message')
+  end
+
+  describe '#conclude' do
+    before :each do
+      @plot = Gamefic::Plot.new
+      @actor = @plot.make_player_character
+      @plot.introduce @actor
+    end
+
+    it 'sets concluded' do
+      @actor.conclude @plot.default_conclusion
+      expect(@actor).to be_concluded
+    end
+
+    it 'raises for other scene types' do
+      expect { @actor.conclude @plot.default_scene }.to raise_error(Gamefic::NotConclusionError)
+    end
   end
 end

@@ -270,16 +270,6 @@ module Gamefic
       @entered_scenes ||= []
     end
 
-    def validate_playbook playbook, action
-      okay = true
-      playbook.validators.each { |v|
-        result = v.call(self, action.verb, action.parameters)
-        okay = (result != false)
-        break unless okay
-      }
-      okay
-    end
-
     def buffer_stack
       @buffer_stack ||= 0
     end
