@@ -32,13 +32,6 @@ module Gamefic
       end
     end
 
-    def self.instances
-      GC.start
-      result = []
-      ObjectSpace.each_object(Gamefic::Serialize) { |obj| result.push obj }
-      result
-    end
-
     # @param string [String]
     # @return [Object]
     def self.string_to_constant string
@@ -71,7 +64,7 @@ class Object
   end
 
   def from_serial(index = [])
-    if self.is_a?(Hash) && (self['class'] || self['instance'])
+    if self.is_a?(Hash)
       if self['instance']
         elematch = self['instance'].match(/^#<ELE_([\d]+)>$/)
         object = index[elematch[1].to_i]
@@ -110,25 +103,8 @@ class Object
       return index.index(match[1].to_i) if match
       match = self.match(/#<SYM:([a-z0-9_\?\!]+)>/i)
       return match[1].to_sym if match
-      # return nil if self == '#<UNKNOWN>'
+      return nil if self == '#<UNKNOWN>'
       self
-    elsif self.is_a?(Hash)
-      result = {}
-      unknown = false
-      self.each_pair do |k, v|
-        k2 = k.from_serial(index)
-        v2 = v.from_serial(index)
-        if k2 == "#<UNKNOWN>" || v2 == "#<UNKNOWN>"
-          unknown = true
-          break
-        end
-        result[k2] = v2
-      end
-      result = "#<UNKNOWN>" if unknown
-      result
-    elsif self && self != true
-      STDERR.puts "Unable to unserialize #{self.class}"
-      nil
     else
       # true, false, or nil
       self

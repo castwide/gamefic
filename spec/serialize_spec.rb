@@ -1,5 +1,5 @@
 describe Gamefic::Serialize do
-  before :all do
+  before :each do
     @entity = Gamefic::Entity.new
     @index = [@entity]
   end
@@ -26,5 +26,13 @@ describe Gamefic::Serialize do
     hash2 = ser.from_serial(@index)
     expect(hash2).to be_a(Hash)
     expect(hash1).to eq(hash2)
+  end
+
+  it 'returns unknown for unserializable objects' do
+    obj1 = Mutex.new
+    ser = obj1.to_serial(@index)
+    expect(ser).to eq("#<UNKNOWN>")
+    obj2 = ser.from_serial(@index)
+    expect(obj2).to be_nil
   end
 end
