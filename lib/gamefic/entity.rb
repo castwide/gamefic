@@ -13,10 +13,10 @@ module Gamefic
 
     # Set the Entity's parent.
     #
-    # @param node [Gamefic::Entity] The new parent.
+    # @param node [Gamefic::Entity, nil] The new parent.
     def parent=(node)
-      if node != nil and node.kind_of?(Entity) == false
-        raise "Entity's parent must be an Entity"
+      if node && node.is_a?(Entity) == false
+        raise ArgumentError, "Entity's parent must be an Entity"
       end
       super
     end
