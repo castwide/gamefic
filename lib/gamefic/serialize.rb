@@ -15,7 +15,6 @@ module Gamefic
             'name' => name
           }
         else
-          index.push self if self.is_a?(Gamefic::Serialize)
           {
             'class' => serialized_class(index),
             'ivars' => serialize_instance_variables(index)
@@ -89,7 +88,6 @@ class Object
           end
           raise "Unable to find class #{self['class']} #{self}" if klass.nil?
           object = klass.allocate
-          index.push object if object.is_a?(Gamefic::Serialize)
         end
       end
       self['ivars'].each_pair do |k, v|

@@ -1,3 +1,6 @@
+## 2.2.2 - September 6, 2021
+- Darkroom indexes non-static elements
+
 ## 2.2.1 - September 5, 2021
 - Retain unknown values in restored snapshots
 

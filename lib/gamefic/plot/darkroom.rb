@@ -3,9 +3,10 @@ module Gamefic
   #
   class Plot
     class Darkroom
-      # @return [Gamefic::Plot]
+      # @return [Plot]
       attr_reader :plot
 
+      # @param plot [Plot]
       def initialize plot
         @plot = plot
       end
@@ -14,20 +15,9 @@ module Gamefic
       #
       # @return [Hash]
       def save
-        index = plot.static + plot.players
-        plot.to_serial(index)
         {
           'program' => {}, # @todo Metadata for version control, etc.
-          'index' => index.map do |i|
-            if i.is_a?(Gamefic::Serialize)
-              {
-                'class' => i.class.to_s,
-                'ivars' => i.serialize_instance_variables(index)
-              }
-            else
-              i.to_serial(index)
-            end
-          end
+          'index' => index.map { |obj| serialize_indexed(obj) }
         }
       end
 
@@ -73,6 +63,56 @@ module Gamefic
             index[idx].instance_variable_set(:@static, [index[idx]] + index[idx].scene_classes + index[idx].entities)
             plot.subplots.push index[idx]
           end
+        end
+      end
+
+      private
+
+      def index
+        @index ||= begin
+          populate_full_index_from(plot)
+          Set.new(plot.static + plot.players).merge(full_index).to_a
+        end
+      end
+
+      def full_index
+        @full_index ||= Set.new
+      end
+
+      def populate_full_index_from(object)
+        return if full_index.include?(object)
+        if object.is_a?(Array) || object.is_a?(Set)
+          object.each { |ele| populate_full_index_from(ele) }
+        elsif object.is_a?(Hash)
+          object.each_pair do |k, v|
+            populate_full_index_from(k)
+            populate_full_index_from(v)
+          end
+        else
+          if object.is_a?(Gamefic::Serialize)
+            full_index.add object unless object.is_a?(Module) && object.name
+            object.instance_variables.each do |v|
+              next if object.class.excluded_from_serial.include?(v)
+              populate_full_index_from(object.instance_variable_get(v))
+            end
+          else
+            object.instance_variables.each do |v|
+              populate_full_index_from(object.instance_variable_get(v))
+            end
+          end
+        end
+      end
+
+      def serialize_indexed object
+        if object.is_a?(Gamefic::Serialize)
+          # Serialized objects in the index should be a full serialization.
+          # Serialize#to_serial rturns a reference to the indexed object.
+          {
+            'class' => object.class.to_s,
+            'ivars' => object.serialize_instance_variables(index)
+          }
+        else
+          object.to_serial(index)
         end
       end
     end
