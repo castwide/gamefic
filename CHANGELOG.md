@@ -1,3 +1,6 @@
+## 2.2.1 - September 5, 2021
+- Retain unknown values in restored snapshots
+
 ## 2.2.0 - September 4, 2021
 - Dynamically inherit default attributes
 

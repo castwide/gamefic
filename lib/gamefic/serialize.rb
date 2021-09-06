@@ -103,7 +103,6 @@ class Object
       return index.index(match[1].to_i) if match
       match = self.match(/#<SYM:([a-z0-9_\?\!]+)>/i)
       return match[1].to_sym if match
-      return nil if self == '#<UNKNOWN>'
       self
     else
       # true, false, or nil

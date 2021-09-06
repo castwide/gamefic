@@ -33,6 +33,6 @@ describe Gamefic::Serialize do
     ser = obj1.to_serial(@index)
     expect(ser).to eq("#<UNKNOWN>")
     obj2 = ser.from_serial(@index)
-    expect(obj2).to be_nil
+    expect(obj2).to eq("#<UNKNOWN>")
   end
 end
