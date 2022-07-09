@@ -19,7 +19,7 @@ module Gamefic
       @next_cue = next_cue
       @concluded = false
       @more = more
-      configure more
+      configure **more
       run_scripts
       playbook.freeze
       self.introduce introduce unless introduce.nil?
@@ -97,7 +97,7 @@ module Gamefic
     # Subclasses can override this method to handle additional configuration
     # options.
     #
-    def configure more
+    def configure **more
     end
   end
 end
