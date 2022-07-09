@@ -76,8 +76,9 @@ Gamefic::Scriptable.module_exec do
       instance = self
       theater ||= Object.new
       theater.instance_exec do
-        define_singleton_method :method_missing do |symbol, *args, &block|
-          instance.public_send :public_send, symbol, *args, &block
+        define_singleton_method :method_missing do |symbol, *args, **splat, &block|
+          result = instance.public_send :public_send, symbol, *args, **splat, &block
+          result
         end
       end
       theater.extend Gamefic::Serialize

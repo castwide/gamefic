@@ -1,3 +1,6 @@
+## 2.2.3 - July 9, 2022
+- Fix Ruby version incompatibilities
+
 ## 2.2.2 - September 6, 2021
 - Darkroom indexes non-static elements
 
