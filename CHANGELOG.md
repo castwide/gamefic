@@ -1,5 +1,6 @@
 ## 2.2.3 - July 9, 2022
 - Fix Ruby version incompatibilities
+- Fix private attr_accessor call
 
 ## 2.2.2 - September 6, 2021
 - Darkroom indexes non-static elements
