@@ -63,6 +63,7 @@ module Gamefic
         )
         p.output.replace(p.state)
         p.state.clear
+        p.actions.clear
       end
     end
 

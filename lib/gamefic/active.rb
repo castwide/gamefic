@@ -13,6 +13,15 @@ module Gamefic
     # @return [Gamefic::Scene::Base]
     attr_reader :scene
 
+    # The most recently performed actions.
+    #
+    # The array gets reset every game turn by `Plot#ready`.
+    #
+    # @return [Array<Action>]
+    def actions
+      @actions ||= []
+    end
+
     # The scene class that will be cued for this entity on the next turn.
     # Usually set with the #prepare method.
     #
@@ -86,28 +95,18 @@ module Gamefic
     end
 
     # Perform a command.
-    # The command can be specified as a String or a verb with a list of
-    # parameters. Either form should yield the same result, but the
-    # verb/parameter form can yield better performance since it bypasses the
-    # parser.
     #
-    # The command will be executed immediately regardless of the entity's
-    # state.
+    # The command's action will be executed immediately regardless of the
+    # entity's state.
     #
     # @example Send a command as a string
     #   character.perform "take the key"
     #
-    # @example Send a command as a verb with parameters
-    #   character.perform :take, @key
-    #
-    # @todo Modify this method so it only accepts a single command.
-    #   Verbs with parameters should use Active#execute instead.
-    #   It might be necessary to support command splats with a deprecation
-    #   warning until version 3.
-    #
+    # @param command [String, Symbol]
     # @return [Gamefic::Action]
     def perform(*command)
       if command.length > 1
+        STDERR.puts "[WARN] #{caller[0]}: Passing a verb and arguments to #perform is deprecated. Use #execute instead."
         execute command.first, *command[1..-1]
       else
         dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
@@ -120,16 +119,18 @@ module Gamefic
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
     #
-    # @todo Modify this method so it only accepts a single command.
-    #   See Active#perform for more information.
-    #
+    # @param command [String, Symbol]
     # @return [String] The output that resulted from performing the command.
     def quietly(*command)
-      clear_buffer if buffer_stack == 0
-      set_buffer_stack buffer_stack + 1
-      self.perform *command
-      set_buffer_stack buffer_stack - 1
-      buffer
+      if command.length > 1
+        STDERR.puts "#{caller[0]}: Passing a verb and arguments to #quietly is deprecated. Use #execute instead"
+        execute command.first, *command[1..-1], quietly: true
+      else
+        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
+        result = proceed quietly: true
+        dispatchers.pop
+        result
+      end
     end
 
     # Perform an action.
@@ -143,6 +144,9 @@ module Gamefic
     # @example
     #   character.execute :take, @key
     #
+    # @param verb [Symbol]
+    # @param params [Array]
+    # @params quietly [Boolean]
     # @return [Gamefic::Action]
     def execute(verb, *params, quietly: false)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
@@ -173,12 +177,15 @@ module Gamefic
     #     end
     #   end
     #
+    # @param quietly [Boolean] If true, return the action's output instead of appending it to #messages
+    # @return [String, nil]
     def proceed quietly: false
       return if dispatchers.empty?
       a = dispatchers.last.next
       return if a.nil?
       prepare_buffer quietly
       a.execute
+      actions.push a
       flush_buffer quietly
     end
 
