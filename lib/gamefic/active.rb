@@ -1,3 +1,5 @@
+require 'set'
+
 module Gamefic
   class NotConclusionError < RuntimeError; end
 
@@ -244,7 +246,7 @@ module Gamefic
     #
     def entered scene
       klass = (scene.is_a?(Gamefic::Scene::Base) ? scene.class : scene)
-      entered_scenes.push klass unless entered_scenes.include?(klass)
+      entered_scenes.add klass
     end
 
     # Determine whether the entity has performed the specified scene.
@@ -273,9 +275,9 @@ module Gamefic
       end
     end
 
-    # @return [Array<Gamefic::Scene::Base>]
+    # @return [Set<Gamefic::Scene::Base>]
     def entered_scenes
-      @entered_scenes ||= []
+      @entered_scenes ||= Set.new
     end
 
     def buffer_stack
