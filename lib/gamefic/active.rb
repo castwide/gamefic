@@ -37,7 +37,7 @@ module Gamefic
     end
 
     def syntaxes
-      playbooks.map(&:syntaxes).flatten
+      playbooks.flat_map(&:syntaxes)
     end
 
     # An array of actions waiting to be performed.
@@ -175,17 +175,9 @@ module Gamefic
       return if dispatchers.empty?
       a = dispatchers.last.next
       return if a.nil?
-      if quietly
-        if buffer_stack == 0
-          @buffer = ""
-        end
-        set_buffer_stack(buffer_stack + 1)
-      end
+      prepare_buffer quietly
       a.execute
-      if quietly
-        set_buffer_stack(buffer_stack - 1)
-        @buffer
-      end
+      flush_buffer quietly
     end
 
     # Immediately start a new scene for the character.
@@ -251,7 +243,7 @@ module Gamefic
     # Track the entity's performance of a scene.
     #
     def entered scene
-      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
+      klass = (scene.is_a?(Gamefic::Scene::Base) ? scene.class : scene)
       entered_scenes.push klass unless entered_scenes.include?(klass)
     end
 
@@ -264,6 +256,22 @@ module Gamefic
     end
 
     private
+
+    def prepare_buffer quietly
+      if quietly
+        if buffer_stack == 0
+          @buffer = ""
+        end
+        set_buffer_stack(buffer_stack + 1)
+      end
+    end
+
+    def flush_buffer quietly
+      if quietly
+        set_buffer_stack(buffer_stack - 1)
+        @buffer
+      end
+    end
 
     # @return [Array<Gamefic::Scene::Base>]
     def entered_scenes
