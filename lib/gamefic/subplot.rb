@@ -1,7 +1,10 @@
 require 'gamefic/plot'
 
 module Gamefic
-  class Subplot #< Container
+  # Subplots are disposable plots that run inside a parent plot. They can be
+  # started and concluded at any time during the parent plot's execution.
+  #
+  class Subplot
     include World
     include Scriptable
     include Gamefic::Serialize
