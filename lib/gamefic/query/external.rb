@@ -10,7 +10,7 @@ module Gamefic
       def context_from subject
         Set.new
            .merge(container_entities)
-           .merge(container_subplots_for(@ontainer, subject))
+           .merge(container_subplots_for(@container, subject))
            .to_a
       end
 
@@ -31,7 +31,7 @@ module Gamefic
       def container_subplots_for container, subject
         return [] unless container.is_a?(Plot::Host)
         container.subplots_featuring(subject).flat_map do |subplot|
-          subplot.entities + container_subplots_for(subjplot, subject)
+          subplot.entities + container_subplots_for(subplot, subject)
         end
       end
     end
