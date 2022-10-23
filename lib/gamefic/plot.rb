@@ -34,6 +34,10 @@ module Gamefic
       @static = [self] + scene_classes + entities
     end
 
+    def plot
+      self
+    end
+
     # Get an Array of the Plot's current Syntaxes.
     #
     # @return [Array<Syntax>]

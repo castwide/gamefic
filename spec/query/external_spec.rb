@@ -39,4 +39,27 @@ describe Gamefic::Query::External do
     matches = query.resolve(nil, 'second')
     expect(matches.objects).to eq([second])
   end
+
+  it 'handles plots and subplots' do
+    plot = Gamefic::Plot.new
+    plot.make Gamefic::Entity, name: 'entity 1'
+    subplot_klass = Class.new(Gamefic::Subplot) do
+      script do
+        plot.make Gamefic::Entity, name: 'entity 2'
+      end
+    end
+    player = plot.make_player_character
+    plot.introduce player
+    plot.branch subplot_klass, introduce: player
+    query = Gamefic::Query::External.new(plot)
+
+    context = query.context_from(player)
+    expect(context.length).to eq(3)
+
+    matches1 = query.resolve(nil, 'entity 1')
+    expect(matches1.objects).to be_one
+
+    matches2 = query.resolve(nil, 'entity 2')
+    expect(matches2.objects).to be_one
+  end
 end

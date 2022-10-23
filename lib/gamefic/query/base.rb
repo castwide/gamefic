@@ -1,7 +1,7 @@
 module Gamefic
   module Query
     class Base
-      NEST_REGEXP = / in | on | of | from | inside /
+      NEST_REGEXP = / in | on | of | from | inside | from inside /
 
       attr_reader :arguments
 
@@ -31,6 +31,9 @@ module Gamefic
       # Get a collection of objects that exist in the subject's context and
       # match the provided token. The result is provided as a Matches object.
       #
+      # @param subject [Entity]
+      # @param token [String]
+      # @param continued [Boolean]
       # @return [Gamefic::Query::Matches]
       def resolve(subject, token, continued: false)
         available = context_from(subject)
@@ -38,14 +41,13 @@ module Gamefic
         if continued
           return Matches.execute(available, token, continued: continued)
         elsif nested?(token)
-          drill = denest(available, token)
-          drill.keep_if{ |e| accept?(e) }
+          drill = denest(available, token).select { |e| accept?(e) }
           return Matches.new(drill, token, '') unless drill.length != 1
           return Matches.new([], '', token)
         end
-        result = available.select{ |e| e.specified?(token) }
-        result = available.select{ |e| e.specified?(token, fuzzy: true) } if result.empty?
-        result.keep_if{ |e| accept? e }
+        result = available.select { |e| e.specified?(token) }
+        result = available.select { |e| e.specified?(token, fuzzy: true) } if result.empty?
+        result.keep_if { |e| accept? e }
         Matches.new(result, (result.empty? ? '' : token), (result.empty? ? token : ''))
       end
 
@@ -82,6 +84,7 @@ module Gamefic
 
       # Determine whether the specified entity passes the query's arguments.
       #
+      # @param [Entity]
       # @return [Boolean]
       def accept?(entity)
         result = true
@@ -106,6 +109,7 @@ module Gamefic
       # recursively append its children.
       # The result will NOT include the original entity itself.
       #
+      # @param [Entity]
       # @return [Array<Object>]
       def subquery_accessible entity
         return [] if entity.nil?
