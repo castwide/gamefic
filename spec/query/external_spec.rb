@@ -25,4 +25,18 @@ describe Gamefic::Query::External do
     expect(matches.objects.length).to eq(1)
     expect(matches.objects[0]).to be(b2)
   end
+
+  it 'handles dynamic arrays' do
+    first = Gamefic::Entity.new(name: 'first')
+    second = Gamefic::Entity.new(name: 'second')
+    entities = [first]
+    query = Gamefic::Query::External.new(entities)
+
+    matches = query.resolve(nil, 'first')
+    expect(matches.objects).to eq([first])
+
+    entities.push second
+    matches = query.resolve(nil, 'second')
+    expect(matches.objects).to eq([second])
+  end
 end
