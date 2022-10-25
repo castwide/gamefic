@@ -102,6 +102,14 @@ module Gamefic
         playbook.validate &block
       end
 
+      def before_action &block
+        playbook.before_actions.push block
+      end
+
+      def after_action &block
+        playbook.after_actions.push block
+      end
+
       # Create an alternate Syntax for an Action.
       # The command and its translation can be parameterized.
       #

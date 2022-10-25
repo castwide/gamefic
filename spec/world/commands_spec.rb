@@ -90,4 +90,11 @@ describe Gamefic::World::Commands do
     action = object.respond(:command, thing)
     expect(action.queries.map(&:class)).to eq([Gamefic::Query::Tree])
   end
+
+  it 'creates an after action' do
+    object.after_action do |actor, verb, arguments|
+      actor.tell "Command executed: #{verb}"
+    end
+    expect(object.playbook.after_actions).to be_one
+  end
 end

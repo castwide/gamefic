@@ -11,7 +11,7 @@ describe Gamefic::World::Playbook do
     action = playbook.respond :increment do
       num += 1
     end
-    action.new(nil, nil).execute
+    action.new(Gamefic::Actor.new, nil).execute
     expect(num).to eq 1
   end
 

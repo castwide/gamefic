@@ -7,6 +7,8 @@ module Gamefic
     attr_reader :arguments
     alias parameters arguments
 
+    # @param actor [Gamefic::Actor]
+    # @param arguments [Array<Object>]
     def initialize actor, arguments
       @actor = actor
       @arguments = arguments
@@ -17,7 +19,16 @@ module Gamefic
     #
     def execute
       @executed = true
+
+      @actor.playbooks
+            .flat_map(&:before_actions)
+            .each { |block| block.call(@actor, verb, arguments) }
+
       self.class.executor.call(@actor, *arguments) unless self.class.executor.nil?
+
+      @actor.playbooks
+            .flat_map(&:after_actions)
+            .each { |block| block.call(@actor, verb, arguments) }
     end
 
     # True if the #execute method has been called for this action.

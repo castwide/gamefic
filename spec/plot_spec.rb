@@ -112,4 +112,22 @@ describe Gamefic::Plot do
     expect(player.messages).to include('cancelled')
     expect(player.messages).not_to include('executed')
   end
+
+  it 'executes after actions' do
+    plot = Gamefic::Plot.new
+    plot.respond :command, Gamefic::Query::Text.new do |actor, _text|
+      actor.tell 'during'
+    end
+    plot.after_action do |actor, verb, args|
+      if verb == :command
+        actor.tell "afterwards with args #{args}.join_and"
+      end
+    end
+    player = plot.make_player_character
+    plot.introduce player
+    player.perform 'command 1 2 3'
+    expect(player.messages).to include('during')
+    expect(player.messages).to include('afterwards')
+    expect(player.messages).to include('1 2 3')
+  end
 end
