@@ -1,5 +1,8 @@
 module Gamefic
   class Action
+    # @return [Gamefic::Actor]
+    attr_reader :actor
+
     # An array of objects on which the action will operate, e.g., an entity
     # that is a direct object of a command.
     #
@@ -18,17 +21,16 @@ module Gamefic
     # Perform the action.
     #
     def execute
+      @actor.playbooks
+            .flat_map(&:before_actions)
+            .each { |block| block.call(self) }
+
+      self.class.executor.call(@actor, *arguments) unless self.class.executor.nil?
       @executed = true
 
       @actor.playbooks
-            .flat_map(&:before_actions)
-            .each { |block| block.call(@actor, verb, arguments) }
-
-      self.class.executor.call(@actor, *arguments) unless self.class.executor.nil?
-
-      @actor.playbooks
             .flat_map(&:after_actions)
-            .each { |block| block.call(@actor, verb, arguments) }
+            .each { |block| block.call(self) }
     end
 
     # True if the #execute method has been called for this action.

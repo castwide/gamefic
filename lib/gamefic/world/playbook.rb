@@ -57,13 +57,6 @@ module Gamefic
         @validators.push block
       end
 
-      # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Symbol]
-      # @yieldparam [Array<Object>]
-      def after_action &block
-        @after_actions.push block
-      end
-
       # Get an Array of all Actions associated with the specified verb.
       #
       # @param verb [Symbol] The Symbol for the verb (e.g., :go or :look)
