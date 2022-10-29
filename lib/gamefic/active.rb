@@ -184,7 +184,6 @@ module Gamefic
       a = dispatchers.last.next
       return if a.nil?
       prepare_buffer quietly
-      actions.push a
       a.execute
       flush_buffer quietly
     end

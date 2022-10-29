@@ -12,25 +12,20 @@ module Gamefic
 
     # @param actor [Gamefic::Actor]
     # @param arguments [Array<Object>]
-    def initialize actor, arguments
+    def initialize actor, arguments, with_callbacks = false
       @actor = actor
       @arguments = arguments
       @executed = false
+      @with_callbacks = with_callbacks
     end
 
     # Perform the action.
     #
     def execute
-      @actor.playbooks
-            .flat_map(&:before_actions)
-            .each { |block| block.call(self) }
-
+      run_before_actions
       self.class.executor.call(@actor, *arguments) unless self.class.executor.nil?
       @executed = true
-
-      @actor.playbooks
-            .flat_map(&:after_actions)
-            .each { |block| block.call(self) }
+      run_after_actions
     end
 
     # True if the #execute method has been called for this action.
@@ -79,6 +74,22 @@ module Gamefic
         raise ArgumentError.new("Number of parameters is not compatible with proc arguments")
       end
       act
+    end
+
+    private
+
+    def run_before_actions
+      return unless @with_callbacks
+      @actor.playbooks
+            .flat_map(&:before_actions)
+            .each { |block| block.call(self) }
+    end
+
+    def run_after_actions
+      return unless @with_callbacks
+      @actor.playbooks
+            .flat_map(&:after_actions)
+            .each { |block| block.call(self) }
     end
 
     class << self
@@ -148,7 +159,7 @@ module Gamefic
       # @param action [Gamefic::Entity]
       # @param command [Command]
       # @return [self, nil]
-      def attempt actor, command
+      def attempt actor, command, with_callbacks = false
         return nil if command.verb != verb
         tokens = command.arguments
         result = []
@@ -166,7 +177,7 @@ module Gamefic
             result.push accepted.first
           end
         end
-        new(actor, result)
+        new(actor, result, with_callbacks)
       end
 
       protected

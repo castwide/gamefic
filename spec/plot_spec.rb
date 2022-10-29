@@ -118,9 +118,9 @@ describe Gamefic::Plot do
     plot.respond :command, Gamefic::Query::Text.new do |actor, _text|
       actor.tell 'during'
     end
-    plot.after_action do |actor, verb, args|
-      if verb == :command
-        actor.tell "afterwards with args #{args}.join_and"
+    plot.after_action do |action|
+      if action.verb == :command
+        action.actor.tell "afterwards with args #{action.arguments}.join_and"
       end
     end
     player = plot.make_player_character

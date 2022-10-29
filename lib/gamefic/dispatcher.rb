@@ -9,6 +9,7 @@ module Gamefic
       @actor = actor
       @commands = commands
       @actions = actions
+      @started = false
     end
 
     def merge dispatcher
@@ -21,8 +22,9 @@ module Gamefic
       while instance.nil? && !@actions.empty?
         action = actions.shift
         commands.each do |cmd|
-          instance = action.attempt(actor, cmd)
+          instance = action.attempt(actor, cmd, !@started)
           if instance
+            @started = true
             unless instance.meta?
               actor.playbooks.reverse.each do |playbook|
                 return nil unless validate_playbook(playbook, instance)
