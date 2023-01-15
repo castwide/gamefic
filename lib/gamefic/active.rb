@@ -13,15 +13,6 @@ module Gamefic
     # @return [Gamefic::Scene::Base]
     attr_reader :scene
 
-    # The most recently performed actions.
-    #
-    # The array gets reset every game turn by `Plot#ready`.
-    #
-    # @return [Array<Action>]
-    def actions
-      @actions ||= []
-    end
-
     # The scene class that will be cued for this entity on the next turn.
     # Usually set with the #prepare method.
     #
