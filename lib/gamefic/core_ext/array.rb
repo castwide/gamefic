@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Array
   # Get a subset of the array that matches the arguments.
   # If the argument is a Class or Module, the elements must be of the type.
@@ -12,7 +14,7 @@ class Array
   #
   # @return [Array]
   def that_are(*cls)
-    result = self.clone
+    result = clone
     cls.each do |c|
       _keep result, c, true
     end
@@ -24,7 +26,7 @@ class Array
   #
   # @return [Array]
   def that_are_not(*cls)
-    result = self.clone
+    result = clone
     cls.each do |c|
       _keep result, c, false
     end
@@ -34,7 +36,7 @@ class Array
   # Pop a random element from the array.
   #
   def pop_sample
-    delete_at(rand(self.length))
+    delete_at(rand(length))
   end
 
   # Get a string representation of the array that separates elements with
@@ -48,31 +50,32 @@ class Array
   # @param andSep [String] The separator for the last element
   # @param serial [Boolean] Use serial separators (e.g., serial commas)
   # @return [String]
-  def join_and(sep = ', ', andSep = ' and ', serial = true)
-    if self.length < 3
-      self.join(andSep)
+  def join_and(sep = ', ', and_sep = ' and ', serial = true)
+    if length < 3
+      join(and_sep)
     else
       start = self[0..-2]
-      start.join(sep) + "#{serial ? sep.strip : ''}#{andSep}#{self.last}"
+      start.join(sep) + "#{serial ? sep.strip : ''}#{andSep}#{last}"
     end
   end
 
   # @see Array#join_and
   #
   # @return [String]
-  def join_or(sep = ', ', orSep = ' or ', serial = true)
-    join_and(sep, orSep, serial)
+  def join_or(sep = ', ', or_sep = ' or ', serial = true)
+    join_and(sep, or_sep, serial)
   end
 
   private
 
   def _keep(arr, cls, bool)
-    if (cls.kind_of?(Class) or cls.kind_of?(Module))
+    case cls
+    when Class, Module
       arr.keep_if { |i| i.is_a?(cls) == bool }
-    elsif cls.kind_of?(Symbol)
+    when Symbol
       arr.keep_if { |i| i.send(cls) == bool }
     else
-      arr.keep_if {|i| (i == cls) == bool}
+      arr.keep_if { |i| (i == cls) == bool }
     end
   end
 end
