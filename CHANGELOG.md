@@ -1,4 +1,4 @@
-## 2.3.0
+## 2.3.0 - January 25, 2023
 - Remove unused Active#actions method
 - Add before_action and after_action hooks
 
