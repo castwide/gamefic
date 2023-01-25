@@ -95,15 +95,15 @@ describe Gamefic::Plot do
     expect(plot.players).to eq([player1, player2])
   end
 
-  it 'validates actions' do
+  it 'cancels actions in before_action hooks' do
     plot = Gamefic::Plot.new
     plot.respond :command do |actor|
       actor.tell 'executed'
     end
-    plot.validate do |actor, verb, _arguments|
-      if verb == :command
-        actor.tell 'cancelled'
-        false
+    plot.before_action do |action|
+      if action.verb == :command
+        action.actor.tell 'cancelled'
+        action.cancel
       end
     end
     player = plot.make_player_character

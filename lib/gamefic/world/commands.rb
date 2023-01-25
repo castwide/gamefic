@@ -95,17 +95,17 @@ module Gamefic
         playbook.meta command, *queries, &proc
       end
 
-      # Validate an order before a character can execute its command.
+      # Add a proc to be evaluated before a character executes an action.
       #
-      # @yieldparam [Gamefic::Director::Order]
-      def validate &block
-        playbook.validate &block
-      end
-
+      # @yieldparam [Gamefic::Action]
       def before_action &block
         playbook.before_actions.push block
       end
+      alias validate before_action
 
+      # Add a proc to be evaluated after a character executes an action.
+      #
+      # @yieldparam [Gamefic::Action]
       def after_action &block
         playbook.after_actions.push block
       end

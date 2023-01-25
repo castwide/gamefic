@@ -55,7 +55,7 @@ class Array
       join(and_sep)
     else
       start = self[0..-2]
-      start.join(sep) + "#{serial ? sep.strip : ''}#{andSep}#{last}"
+      start.join(sep) + "#{serial ? sep.strip : ''}#{and_sep}#{last}"
     end
   end
 

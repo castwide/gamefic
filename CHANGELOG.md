@@ -1,3 +1,7 @@
+## 2.3.0
+- Remove unused Active#actions method
+- Add before_action and after_action hooks
+
 ## 2.2.3 - July 9, 2022
 - Fix Ruby version incompatibilities
 - Fix private attr_accessor call

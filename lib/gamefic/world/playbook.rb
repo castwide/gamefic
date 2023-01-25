@@ -10,11 +10,6 @@ module Gamefic
       # @return [Array<Gamefic::Syntax>]
       attr_reader :syntaxes
 
-      # An array of defined validators.
-      #
-      # @return [Array<Proc>]
-      attr_reader :validators
-
       # An array of blocks to execute before actions.
       #
       # @return [Array<Proc>]
@@ -27,12 +22,12 @@ module Gamefic
 
       # @param commands [Hash]
       # @param syntaxes [Array<Syntax>, Set<Syntax>]
-      # @param validators [Array]
-      def initialize commands: {}, syntaxes: [], validators: [], before_actions: [], after_actions: []
+      # @param before_actions [Array]
+      # @param after_actions [Array]
+      def initialize commands: {}, syntaxes: [], before_actions: [], after_actions: []
         @commands = commands
         @syntax_set = syntaxes.to_set
         sort_syntaxes
-        @validators = validators
         @before_actions = before_actions
         @after_actions = after_actions
       end
@@ -51,10 +46,19 @@ module Gamefic
         @commands.keys
       end
 
-      # Add a block that determines whether an action can be executed.
+      # Add a proc to be evaluated before a character executes an action.
       #
-      def validate &block
-        @validators.push block
+      # @yieldparam [Gamefic::Action]
+      def before_action &block
+        @before_actions.push block
+      end
+      alias validate before_action
+
+      # Add a proc to be evaluated after a character executes an action.
+      #
+      # @yieldparam [Gamefic::Action]
+      def after_action &block
+        @after_actions.push block
       end
 
       # Get an Array of all Actions associated with the specified verb.

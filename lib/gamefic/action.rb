@@ -22,10 +22,19 @@ module Gamefic
     # Perform the action.
     #
     def execute
+      return if @cancelled
       run_before_actions
+      return if @cancelled
       self.class.executor.call(@actor, *arguments) unless self.class.executor.nil?
       @executed = true
       run_after_actions
+    end
+
+    # Cancel an action. This method can be called in a before_action hook to
+    # prevent subsequent hooks and the action itself from being executed.
+    #
+    def cancel
+      @cancelled = true
     end
 
     # True if the #execute method has been called for this action.
@@ -82,7 +91,10 @@ module Gamefic
       return unless @with_callbacks
       @actor.playbooks
             .flat_map(&:before_actions)
-            .each { |block| block.call(self) }
+            .each do |block|
+              block.call(self)
+              break if @cancelled
+            end
     end
 
     def run_after_actions

@@ -25,11 +25,6 @@ module Gamefic
           instance = action.attempt(actor, cmd, !@started)
           if instance
             @started = true
-            unless instance.meta?
-              actor.playbooks.reverse.each do |playbook|
-                return nil unless validate_playbook(playbook, instance)
-              end
-            end
             break
           end
         end
@@ -68,11 +63,5 @@ module Gamefic
 
     # @return [Array<Action>]
     attr_reader :actions
-
-    private
-
-    def validate_playbook playbook, action
-      playbook.validators.all? { |v| v.call(actor, action.verb, action.parameters) != false }
-    end
   end
 end
