@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # The action selector for character commands.
   #
@@ -12,11 +14,16 @@ module Gamefic
       @started = false
     end
 
+    # @param dispatcher [Dispatcher]
+    # @return [void]
     def merge dispatcher
       commands.concat dispatcher.commands
       actions.concat dispatcher.actions
     end
 
+    # Get the next executable action.
+    #
+    # @return [Action]
     def next
       instance = nil
       while instance.nil? && !@actions.empty?
