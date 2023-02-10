@@ -1,6 +1,9 @@
 module Gamefic
   module World
     module Scenes
+      include Commands
+      include Players
+
       # @return [Class<Gamefic::Scene::Activity>]
       def default_scene
         @default_scene ||= Scene::Activity
@@ -29,13 +32,12 @@ module Gamefic
       # This method is typically called by the Engine that manages game execution.
       #
       # @param [Gamefic::Actor]
+      # @return [void]
       def introduce(player)
         player.playbooks.push playbook unless player.playbooks.include?(playbook)
         player.cue default_scene
         players.push player
-        @introduction.call(player) unless @introduction.nil?
-        # @todo Find a better way to persist player characters
-        # Gamefic::Index.stick
+        @introduction&.call(player)
       end
 
       # Create a multiple-choice scene.
@@ -53,7 +55,7 @@ module Gamefic
       # @yieldparam [Gamefic::Scene::MultipleChoice]
       # @return [Class<Gamefic::Scene::MultipleChoice>]
       def multiple_choice *choices, &block
-        s = Scene::MultipleChoice.subclass do |actor, scene|
+        s = Scene::MultipleChoice.subclass do |_actor, scene|
           scene.options.concat choices
           scene.on_finish &block
         end
@@ -73,12 +75,12 @@ module Gamefic
       #     end
       #   end
       #
-      # @param prompt [String]
+      # @param prompt [String, nil]
       # @yieldparam [Gamefic::Actor]
       # @yieldparam [Gamefic::Scene::YesOrNo]
       # @return [Class<Gamefic::Scene::YesOrNo>]
       def yes_or_no prompt = nil, &block
-        s = Scene::YesOrNo.subclass do |actor, scene|
+        s = Scene::YesOrNo.subclass do |_actor, scene|
           scene.prompt = prompt
           scene.on_finish &block
         end
@@ -98,7 +100,7 @@ module Gamefic
       # @yieldparam [Gamefic::Scene::Base]
       # @return [Class<Gamefic::Scene::Base>]
       def question prompt = 'What is your answer?', &block
-        s = Scene::Base.subclass do |actor, scene|
+        s = Scene::Base.subclass do |_actor, scene|
           scene.prompt = prompt
           scene.on_finish &block
         end
@@ -116,13 +118,13 @@ module Gamefic
       #     actor.prepare default_scene
       #   end
       #
-      # @param prompt [String] The text to display when prompting the user to continue.
+      # @param prompt [String, nil] The text to display when prompting the user to continue
       # @yieldparam [Gamefic::Actor]
       # @return [Class<Gamefic::Scene::Pause>]
       def pause prompt = nil, &block
         s = Scene::Pause.subclass do |actor, scene|
           scene.prompt = prompt unless prompt.nil?
-          block.call(actor, scene) unless block.nil?
+          block&.call(actor, scene)
         end
         scene_classes.push s
         s
@@ -163,7 +165,7 @@ module Gamefic
       #     end
       #   end
       #
-      # @param cls [Class] The class of scene to be instantiated.
+      # @param cls [Class<Scene::Base>] The class of scene to be instantiated.
       # @yieldparam [Gamefic::Actor]
       # @return [Class<Gamefic::Scene::Base>]
       def custom cls = Scene::Base, &block
@@ -208,10 +210,10 @@ module Gamefic
       # @return [Class<Gamefic::Scene::MultipleScene>]
       def multiple_scene map = {}, &block
         s = Scene::MultipleScene.subclass do |actor, scene|
-          map.each_pair { |k, v|
+          map.each_pair do |k, v|
             scene.map k, v
-          }
-          block.call actor, scene unless block.nil?
+          end
+          block&.call actor, scene
         end
         scene_classes.push s
         s
