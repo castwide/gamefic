@@ -2,6 +2,7 @@
 - Fix arity of delegated methods in scripts
 - Action hooks accept verb filters
 - Opal exception for delegated methods
+- Support separation of kwargs in Ruby >= 2.7
 
 ## 2.3.0 - January 25, 2023
 - Remove unused Active#actions method
