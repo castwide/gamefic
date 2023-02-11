@@ -77,8 +77,14 @@ Gamefic::Scriptable.module_exec do
       theater ||= Object.new
       theater.instance_exec do
         define_singleton_method :method_missing do |symbol, *args, **splat, &block|
-          result = instance.public_send :public_send, symbol, *args, **splat, &block
-          result
+          meth = instance.public_method(symbol)
+          raise NoMethodError, "undefined method `#{symbol}`" unless meth
+          if meth.parameters.none? { |pair| [:keyreq, :key, :keyrest].include?(pair.first) }
+            adjusted = splat.empty? ? args : args + [splat]
+            instance.public_send :public_send, symbol, *adjusted, &block
+          else
+            instance.public_send :public_send, symbol, *args, **splat, &block
+          end
         end
       end
       theater.extend Gamefic::Serialize
