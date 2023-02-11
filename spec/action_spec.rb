@@ -86,4 +86,9 @@ describe Gamefic::Action do
     klass = Gamefic::Action.subclass(:command, Gamefic::Query::Text.new(/foo/)) {}
     expect(klass.attempt(nil, Gamefic::Command.new(nil, ['bar']))).to be_nil
   end
+
+  it 'supports nil verbs with arguments' do
+    klass = Gamefic::Action.subclass(nil, Gamefic::Query::Text.new(/foo/)) {}
+    expect(klass.attempt(nil, Gamefic::Command.new(nil, ['foo']))).to be
+  end
 end
