@@ -1,3 +1,8 @@
+## 2.4.0 - February 11, 2023
+- Fix arity of delegated methods in scripts
+- Action hooks accept verb filters
+- Opal exception for delegated methods
+
 ## 2.3.0 - January 25, 2023
 - Remove unused Active#actions method
 - Add before_action and after_action hooks
