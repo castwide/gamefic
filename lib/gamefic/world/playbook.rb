@@ -5,6 +5,8 @@ module Gamefic
     # A collection of rules for performing commands.
     #
     class Playbook
+      ActionHook = Struct.new(:verb, :block)
+
       # An array of available syntaxes.
       #
       # @return [Array<Gamefic::Syntax>]
@@ -47,18 +49,24 @@ module Gamefic
       end
 
       # Add a proc to be evaluated before a character executes an action.
+      # When a verb is specified, the proc will only be evaluated if the
+      # action's verb matches it.
       #
+      # @param verb [Symbol, nil]
       # @yieldparam [Gamefic::Action]
-      def before_action &block
-        @before_actions.push block
+      def before_action verb = nil, &block
+        @before_actions.push ActionHook.new(verb, block)
       end
       alias validate before_action
 
       # Add a proc to be evaluated after a character executes an action.
+      # When a verb is specified, the proc will only be evaluated if the
+      # action's verb matches it.
       #
+      # @param verb [Symbol, nil]
       # @yieldparam [Gamefic::Action]
-      def after_action &block
-        @after_actions.push block
+      def after_action verb = nil, &block
+        @after_actions.push ActionHook.new(verb, block)
       end
 
       # Get an Array of all Actions associated with the specified verb.

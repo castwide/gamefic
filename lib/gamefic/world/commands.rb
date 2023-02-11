@@ -93,23 +93,29 @@ module Gamefic
       # @param command [Symbol] An imperative verb for the command
       # @param queries [Array<Query::Base>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      def meta(command, *queries, &proc)
-        playbook.meta command, *queries, &proc
+      def meta(command, *queries, &block)
+        playbook.meta command, *queries, &block
       end
 
       # Add a proc to be evaluated before a character executes an action.
+      # When a verb is specified, the proc will only be evaluated if the
+      # action's verb matches it.
       #
+      # @param verb [Symbol, nil]
       # @yieldparam [Gamefic::Action]
-      def before_action &block
-        playbook.before_actions.push block
+      def before_action verb = nil, &block
+        playbook.before_action verb, &block
       end
       alias validate before_action
 
       # Add a proc to be evaluated after a character executes an action.
+      # When a verb is specified, the proc will only be evaluated if the
+      # action's verb matches it.
       #
+      # @param [Symbol, nil]
       # @yieldparam [Gamefic::Action]
-      def after_action &block
-        playbook.after_actions.push block
+      def after_action verb = nil, &block
+        playbook.after_action verb, &block
       end
 
       # Create an alternate Syntax for an Action.
@@ -166,7 +172,7 @@ module Gamefic
           elsif q.is_a?(Gamefic::Element) || (q.is_a?(Class) && q <= Gamefic::Element)
             get_default_query.new(q)
           else
-            raise ArgumentError.new("Invalid argument for response: #{q}")
+            raise ArgumentError, "Invalid argument for response: #{q.inspect}"
           end
         end
       end

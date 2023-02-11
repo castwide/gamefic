@@ -32,8 +32,11 @@ module Gamefic
 
     # Cancel an action. This method can be called in a before_action hook to
     # prevent subsequent hooks and the action itself from being executed.
+    # Cancelling an action in an after_action hook has no effect.
     #
     def cancel
+      # @todo Emit a warning for attempts to cancel an action after it's been
+      #   executed
       @cancelled = true
     end
 
@@ -42,6 +45,10 @@ module Gamefic
     # @return [Boolean]
     def executed?
       @executed
+    end
+
+    def cancelled?
+      !@executed && @cancelled
     end
 
     # The verb associated with this action.
@@ -91,8 +98,9 @@ module Gamefic
       return unless @with_callbacks
       @actor.playbooks
             .flat_map(&:before_actions)
-            .each do |block|
-              block.call(self)
+            .each do |hook|
+              next unless hook.verb.nil? || hook.verb == verb
+              hook.block.call(self)
               break if @cancelled
             end
     end
@@ -101,7 +109,10 @@ module Gamefic
       return unless @with_callbacks
       @actor.playbooks
             .flat_map(&:after_actions)
-            .each { |block| block.call(self) }
+            .each do |hook|
+              next unless hook.verb.nil? || hook.verb == verb
+              hook.block.call(self)
+            end
     end
 
     class << self

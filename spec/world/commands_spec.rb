@@ -92,8 +92,8 @@ describe Gamefic::World::Commands do
   end
 
   it 'creates an after action' do
-    object.after_action do |actor, verb, arguments|
-      actor.tell "Command executed: #{verb}"
+    object.after_action do |action|
+      action.actor.tell "Command executed: #{action.verb}"
     end
     expect(object.playbook.after_actions).to be_one
   end

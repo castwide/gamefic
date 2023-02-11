@@ -130,4 +130,25 @@ describe Gamefic::Plot do
     expect(player.messages).to include('afterwards')
     expect(player.messages).to include('1 2 3')
   end
+
+  it 'filters before and after actions by verb' do
+    plot = Gamefic::Plot.new
+    plot.respond :command do |actor|
+      actor.tell 'during'
+    end
+    plot.before_action(:command) { |action| action.actor.tell 'right_before' }
+    plot.after_action(:command) { |action| action.actor.tell 'right_after' }
+    plot.before_action(:do_not_run) { |action| action.actor.tell 'wrong_before' }
+    plot.after_action(:do_not_run) { |action| action.actor.tell 'wrong_after' }
+
+    player = plot.make_player_character
+    plot.introduce player
+    player.perform 'command'
+
+    expect(player.messages).to include('right_before')
+    expect(player.messages).to include('during')
+    expect(player.messages).to include('right_after')
+    expect(player.messages).not_to include('wrong_before')
+    expect(player.messages).not_to include('wrong_after')
+  end
 end
