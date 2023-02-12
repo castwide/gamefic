@@ -23,7 +23,7 @@ module Gamefic
 
     # Get the next executable action.
     #
-    # @return [Action]
+    # @return [Action, nil]
     def next
       instance = nil
       while instance.nil? && !@actions.empty?

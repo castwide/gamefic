@@ -163,7 +163,7 @@ module Gamefic
       # Get an array of actions, derived from the specified verb and params,
       # that the actor can potentially execute.
       #
-      # @return [Array<Gamefic::Action>]
+      # @return [Gamefic::Dispatcher]
       def dispatch_from_params actor, verb, params
         available = actions_for(verb)
         Dispatcher.new(actor, [Command.new(verb, params)], sort_and_reduce_actions(available))
@@ -181,6 +181,7 @@ module Gamefic
       def freeze
         @commands.freeze
         @syntaxes.freeze
+        self
       end
 
       private
