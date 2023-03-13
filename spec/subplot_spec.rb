@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Subplot do
   it "destroys its elements upon conclusion" do
     plot = Gamefic::Plot.new

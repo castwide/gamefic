@@ -47,20 +47,25 @@ module Gamefic
             STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
             STDERR.puts obj.inspect
           end
+          if index[idx].is_a?(Gamefic::Subplot)
+            index[idx].send(:theater).instance_variable_set(:@host, index[idx])
+            index[idx].send(:run_scripts)
+          end
           obj['ivars'].each_pair do |k, v|
-            next if k == '@subplots'
+            next if k == '@subplots' #|| k == '@children'
             uns = v.from_serial(index)
             next if uns == "#<UNKNOWN>"
-            index[idx].instance_variable_set(k, uns)
+            if index[idx].is_a?(Gamefic::Subplot)
+              next if index[idx].instance_variable_get(k)
+              index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
+            else
+              index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
+            end
           end
           if index[idx].is_a?(Gamefic::Subplot)
-            index[idx].extend Gamefic::Scriptable
-            index[idx].instance_variable_set(:@theater, nil)
-            index[idx].send(:run_scripts)
             index[idx].players.each do |pl|
               pl.playbooks.push index[idx].playbook unless pl.playbooks.include?(index[idx].playbook)
             end
-            index[idx].instance_variable_set(:@static, [index[idx]] + index[idx].scene_classes + index[idx].entities)
             plot.subplots.push index[idx]
           end
         end
