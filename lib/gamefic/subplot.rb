@@ -13,6 +13,8 @@ module Gamefic
     # @return [Gamefic::Plot]
     attr_reader :plot
 
+    exclude_from_serial [:@static]
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, nil]
     # @param next_cue [Class<Gamefic::Scene::Base>, nil]
