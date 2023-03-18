@@ -68,6 +68,8 @@ module Gamefic
           arguments.each { |a|
             if a.is_a?(Class)
               @precision += 100
+            elsif a.is_a?(Module)
+              @precision += 50
             elsif a.is_a?(Gamefic::Entity)
               @precision += 1000
             end
