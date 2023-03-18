@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description   = "An adventure game and interactive fiction framework"
   s.authors       = ["Fred Snyder"]
   s.email         = 'fsnyder@gamefic.com'
-  s.homepage      = 'http://gamefic.com'
+  s.homepage      = 'https://gamefic.com'
   s.license       = 'MIT'
 
   s.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
