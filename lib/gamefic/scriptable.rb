@@ -62,6 +62,22 @@ module Gamefic
       self.class.blocks.each { |blk| stage &blk }
     end
   end
+
+  class Theater
+    include Gamefic::Serialize
+  
+    def initialize instance
+      if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
+        define_singleton_method :method_missing do |symbol, *args, &block|
+          instance.public_send :public_send, symbol, *args, &block
+        end
+      else
+        define_singleton_method :method_missing do |symbol, *args, **splat, &block|
+          instance.public_send :public_send, symbol, *args, **splat, &block
+        end
+      end
+    end
+  end  
 end
 
 # @note #stage and #theater are implemented this way so the clean room object
@@ -72,23 +88,7 @@ Gamefic::Scriptable.module_exec do
   end
 
   define_method :theater do
-    @theater ||= begin
-      instance = self
-      theater ||= Object.new
-      theater.instance_exec do
-        if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
-          define_singleton_method :method_missing do |symbol, *args, &block|
-            instance.public_send :public_send, symbol, *args, &block
-          end
-        else
-          define_singleton_method :method_missing do |symbol, *args, **splat, &block|
-            instance.public_send :public_send, symbol, *args, **splat, &block
-          end
-        end
-      end
-      theater.extend Gamefic::Serialize
-      theater
-    end
+    @theater ||= Gamefic::Theater.new(self)
   end
   alias cleanroom theater
 end

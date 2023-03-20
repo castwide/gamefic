@@ -39,7 +39,11 @@ module Gamefic
           else
             klass = Gamefic::Serialize.string_to_constant(obj['class'])
           end
-          index.push klass.allocate
+          if klass == Theater
+            index.push klass.new(plot)
+          else
+            index.push klass.allocate
+          end
         end
 
         snapshot['index'].each_with_index do |obj, idx|
