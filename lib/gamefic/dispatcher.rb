@@ -6,47 +6,40 @@ module Gamefic
   class Dispatcher
     # @param actor [Actor]
     # @param commands [Array<Command>]
-    # @param actions [Array<Action>]
-    def initialize actor, commands = [], actions = []
+    # @param responses [Array<Response>]
+    def initialize actor, commands = [], responses = []
       @actor = actor
       @commands = commands
-      @actions = actions
+      @responses = responses
       @started = false
-    end
-
-    # @param dispatcher [Dispatcher]
-    # @return [void]
-    def merge dispatcher
-      commands.concat dispatcher.commands
-      actions.concat dispatcher.actions
     end
 
     # Get the next executable action.
     #
     # @return [Action, nil]
     def next
-      instance = nil
-      while instance.nil? && !@actions.empty?
-        action = actions.shift
+      until responses.empty?
+        response = responses.shift
         commands.each do |cmd|
-          instance = action.attempt(actor, cmd, !@started)
-          if instance
+          action = response.attempt(actor, cmd, !@started)
+          if action
             @started = true
-            break
+            return action
           end
         end
       end
-      instance
     end
 
     # @param actor [Active]
-    # @param command [String]
+    # @param input [String]
     # @return [Dispatcher]
-    def self.dispatch actor, command
-      group = actor.playbooks.reverse.map { |p| p.dispatch(actor, command) }
-      dispatcher = Dispatcher.new(actor)
-      group.each { |d| dispatcher.merge d }
-      dispatcher
+    def self.dispatch actor, input
+      commands = Syntax.tokenize(input, actor.playbooks.flat_map(&:syntaxes))
+      verbs = commands.map(&:verb) + [nil]
+      responses = actor.playbooks
+                       .flat_map { |pb| pb.responses_for(*verbs) }
+                       .reject(&:hidden?)
+      new(actor, commands, responses)
     end
 
     # @param actor [Active]
@@ -54,10 +47,10 @@ module Gamefic
     # @param params [Array<Object>]
     # @return [Dispatcher]
     def self.dispatch_from_params actor, verb, params
-      group = actor.playbooks.reverse.map { |p| p.dispatch_from_params(actor, verb, params) }
-      dispatcher = Dispatcher.new(actor)
-      group.each { |d| dispatcher.merge d }
-      dispatcher
+      command = Command.new(verb, params)
+      responses = actor.playbooks
+                       .flat_map { |pb| pb.responses_for(verb) }
+      new(actor, [command], responses)
     end
 
     protected
@@ -68,7 +61,7 @@ module Gamefic
     # @return [Array<Command>]
     attr_reader :commands
 
-    # @return [Array<Action>]
-    attr_reader :actions
+    # @return [Array<Response>]
+    attr_reader :responses
   end
 end

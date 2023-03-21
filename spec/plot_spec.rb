@@ -11,7 +11,7 @@ describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     plot.respond :mycommand do |actor|
     end
-    expect(plot.playbook.actions_for(:mycommand).length).to eq(1)
+    expect(plot.playbook.responses_for(:mycommand).length).to eq(1)
   end
 
   it "adds new actions to the list of command words" do

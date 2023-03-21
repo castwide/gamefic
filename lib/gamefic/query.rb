@@ -5,6 +5,7 @@ module Gamefic
     autoload :Descendants, 'gamefic/query/descendants'
     autoload :External, 'gamefic/query/external'
     autoload :Family, 'gamefic/query/family'
+    autoload :Function, 'gamefic/query/function'
     autoload :Tree, 'gamefic/query/tree'
     autoload :Itself, 'gamefic/query/itself'
     autoload :Matches, 'gamefic/query/matches'

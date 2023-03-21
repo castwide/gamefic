@@ -51,7 +51,7 @@ module Gamefic
     # execution.
     #
     def ready
-      playbook.freeze
+      # playbook.freeze
       call_ready
       call_player_ready
       subplots.each { |s| s.ready }

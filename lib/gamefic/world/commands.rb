@@ -54,7 +54,7 @@ module Gamefic
       #
       # @param verb [String, Symbol] The command's verb
       # @param tokens [Array<String>] The arguments passed to the action
-      # @return [Class] The resulting Action subclass
+      # @return [Response] The resulting response
       def parse verb, *tokens, &proc
         query = Query::External.new(entities)
         params = []
@@ -71,7 +71,7 @@ module Gamefic
       #
       # @param command [String] The command
       # @yieldparam [Gamefic::Actor]
-      # @return [Class] the resulting Action subclass
+      # @return [Response] the resulting response
       def override(command, &proc)
         cmd = Syntax.tokenize(command, playbook.syntaxes).first
         raise "Unable to tokenize command '#{command}'" if cmd.nil?

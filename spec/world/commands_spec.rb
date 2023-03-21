@@ -9,17 +9,17 @@ describe Gamefic::World::Commands do
     object.respond :command do |actor|
       puts 'command'
     end
-    expect(object.playbook.actions.length).to eq(1)
-    expect(object.playbook.actions.first.verb).to eq(:command)
+    expect(object.playbook.responses.length).to eq(1)
+    expect(object.playbook.responses.first.verb).to eq(:command)
   end
 
   it "creates a meta action" do
     object.meta :command do |actor|
       puts 'command'
     end
-    expect(object.playbook.actions.length).to eq(1)
-    expect(object.playbook.actions.first.verb).to eq(:command)
-    expect(object.playbook.actions.first).to be_meta
+    expect(object.playbook.responses.length).to eq(1)
+    expect(object.playbook.responses.first.verb).to eq(:command)
+    expect(object.playbook.responses.first).to be_meta
   end
 
   it 'parses an action' do
@@ -43,14 +43,13 @@ describe Gamefic::World::Commands do
     base = plot.respond :handle, Gamefic::Query::Family.new(Gamefic::Entity) do |actor, thing|
       actor.tell "Version 1"
     end
-    act1 = base.new(actor, [thing])
+    act1 = Gamefic::Action.new(actor, [thing], base)
     act1.execute
     expect(actor.messages).to include('Version 1')
     over = plot.override 'handle a thing' do |actor, thing|
       actor.tell "Version 2"
     end
-    expect(over.superclass).to be(Gamefic::Action)
-    act2 = over.new(actor, [thing])
+    act2 = Gamefic::Action.new(actor, [thing], over)
     act2.execute
     expect(actor.messages).to include('Version 2')
   end

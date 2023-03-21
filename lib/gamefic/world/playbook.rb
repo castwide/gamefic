@@ -1,231 +1,169 @@
-require 'set'
+# frozen_string_literal: true
 
 module Gamefic
   module World
-    # A collection of rules for performing commands.
+    # A container for the rules that compose and process actions. Playbooks
+    # consist of three types of components:
+    #   * Responses
+    #   * Syntaxes
+    #   * Before and After Hooks
     #
     class Playbook
-      ActionHook = Struct.new(:verb, :block)
-
-      # An array of available syntaxes.
+      # Add a response to the playbook.
       #
-      # @return [Array<Gamefic::Syntax>]
-      attr_reader :syntaxes
-
-      # An array of blocks to execute before actions.
-      #
-      # @return [Array<Proc>]
-      attr_reader :before_actions
-
-      # An array of blocks to execute after actions.
-      #
-      # @return [Array<Proc>]
-      attr_reader :after_actions
-
-      # @param commands [Hash]
-      # @param syntaxes [Array<Syntax>, Set<Syntax>]
-      # @param before_actions [Array]
-      # @param after_actions [Array]
-      def initialize commands: {}, syntaxes: [], before_actions: [], after_actions: []
-        @commands = commands
-        @syntax_set = syntaxes.to_set
-        sort_syntaxes
-        @before_actions = before_actions
-        @after_actions = after_actions
+      # @param verb [Symbol]
+      # @param queries [Array<Query::Base>]
+      # @param block [Proc]
+      # @return [Response]
+      def respond verb, *queries, &block
+        add_response Response.new(verb, *queries, &block)
       end
 
-      # An array of available actions.
+      # Add a meta response to the playbook.
       #
-      # @return [Array<Gamefic::Action>]
-      def actions
-        @commands.values.flatten
+      # @param verb [Symbol]
+      # @param queries [Array<Query::Base>]
+      # @param block [Proc]
+      # @return [Response]
+      def meta verb, *queries, &block
+        add_response Response.new(verb, *queries, meta: true, &block)
       end
 
-      # An array of recognized verbs.
+      # Add a syntax to the playbook.
+      #
+      # @param template [String]
+      # @param command [String]
+      # @return [Syntax]
+      def interpret template, command
+        add_syntax Syntax.new(template, command)
+      end
+
+      # Add a proc to be executed before an action. The block receives the
+      # the current action as an argument. Calling `cancel` on the action will
+      # stop execution of the action and any subsequent hooks.
+      #
+      # The optional `verb` argument prevents the block from running unless the
+      # action's verb matches it.
+      #
+      # @param verb [Symbol, nil]
+      # @param block [Proc]
+      # @yieldparam [Action]
+      # @return [Action::Hook]
+      def before_action verb = nil, &block
+        before_actions.push(Action::Hook.new(verb, block))
+                      .last
+      end
+
+      # Add a proc to be executed before an action. The block receives the
+      # the current action as an argument. Calling `cancel` on the action will
+      # stop execution of any subsequent hooks.
+      #
+      # The optional `verb` argument prevents the block from running unless the
+      # action's verb matches it.
+      #
+      # @param verb [Symbol, nil]
+      # @param block [Proc]
+      # @yieldparam [Action]
+      # @return [Action::Hook]
+      def after_action verb = nil, &block
+        after_actions.push(Action::Hook.new(verb, block))
+                    .last
+      end
+
+      # @return [Array<Response>]
+      def responses
+        verb_response_map.values.flatten
+      end
+
+      # @return [Array<Syntax>]
+      def syntaxes
+        synonym_syntax_map.values.flatten
+      end
+
+      # An array of all the verbs available in the playbook. This list only
+      # includes verbs that are explicitly defined in reponses. It excludes
+      # synonyms that might be defined in syntaxes (see #synonyms).
+      #
+      # @example
+      #   playbook.respond :verb { |_| nil }
+      #   playbook.interpret 'synonym', 'verb'
+      #   playbook.verbs #=> [:verb]
       #
       # @return [Array<Symbol>]
       def verbs
-        @commands.keys
+        verb_response_map.keys.compact.sort
       end
 
-      # Add a proc to be evaluated before a character executes an action.
-      # When a verb is specified, the proc will only be evaluated if the
-      # action's verb matches it.
+      # An array of all the verbs defined in responses and any synonyms defined
+      # in syntaxes.
       #
-      # @param verb [Symbol, nil]
-      # @yieldparam [Gamefic::Action]
-      def before_action verb = nil, &block
-        @before_actions.push ActionHook.new(verb, block)
-      end
-      alias validate before_action
-
-      # Add a proc to be evaluated after a character executes an action.
-      # When a verb is specified, the proc will only be evaluated if the
-      # action's verb matches it.
+      # @example
+      #   playbook.respond :verb { |_| nil }
+      #   playbook.interpret 'synonym', 'verb'
+      #   playbook.synonyms #=> [:synonym, :verb]
       #
-      # @param verb [Symbol, nil]
-      # @yieldparam [Gamefic::Action]
-      def after_action verb = nil, &block
-        @after_actions.push ActionHook.new(verb, block)
+      def synonyms
+        synonym_syntax_map.keys.compact.sort
       end
 
-      # Get an Array of all Actions associated with the specified verb.
-      #
-      # @param verb [Symbol] The Symbol for the verb (e.g., :go or :look)
-      # @return [Array<Class<Action>>] The verb's associated Actions
-      def actions_for verb
-        @commands[verb] || []
+      # @return [Array<Action::Hook>]
+      def before_actions
+        @before_actions ||= []
       end
 
-      # Create an Action that responds to a command.
-      # An Action uses the command argument to identify the imperative verb that
-      # triggers the action.
-      # It can also accept queries to tokenize the remainder of the input and
-      # filter for particular entities or properties.
-      # The block argument contains the code to be executed when the input
-      # matches all of the Action's criteria (i.e., verb and queries).
-      #
-      # @example A simple Action.
-      #   respond :salute do |actor|
-      #     actor.tell "Hello, sir!"
-      #   end
-      #   # The command "salute" will respond "Hello, sir!"
-      #
-      # @example An Action that accepts a Character
-      #   respond :salute, Use.visible(Character) do |actor, character|
-      #     actor.tell "#{The character} returns your salute."
-      #   end
-      #
-      # @param verb [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base>] Filters for the command's tokens
-      # @yieldparam [Gamefic::Actor]
-      # @return [Class<Gamefic::Action>]
-      def respond(verb, *queries, &proc)
-        act = Action.subclass verb, *queries, &proc
-        add_action act
-        act
+      # @return [Array<Action::Hook>]
+      def after_actions
+        @after_actions ||= []
       end
 
-      # Create a Meta Action that responds to a command.
-      # Meta Actions are very similar to standard Actions, except the Plot
-      # understands them to be commands that operate above and/or outside of the
-      # actual game world. Examples of Meta Actions are commands that report the
-      # player's current score, save and restore saved games, or list the game's
-      # credits.
-      #
-      # @example A simple Meta Action
-      #   meta :credits do |actor|
-      #     actor.tell "This game was written by John Smith."
-      #   end
-      #
-      # @param verb [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base>] Filters for the command's tokens
-      # @yieldparam [Gamefic::Actor]
-      # @return [Class<Gamefic::Action>]
-      def meta(verb, *queries, &proc)
-        act = Action.subclass verb, *queries, meta: true, &proc
-        add_action act
-        act
+      # @param verbs [Array<Symbol>]
+      # @return [Array<Response>]
+      def responses_for *verbs
+        verbs.flat_map { |verb| verb_response_map.fetch(verb, []) }
       end
 
-      # Create an alternate Syntax for an Action.
-      # The command and its translation can be parameterized.
-      #
-      # @example Create a synonym for the Inventory Action.
-      #   interpret "catalogue", "inventory"
-      #   # The command "catalogue" will be translated to "inventory"
-      #
-      # @example Create a parameterized synonym for the Look Action.
-      #   interpret "scrutinize :entity", "look :entity"
-      #   # The command "scrutinize chair" will be translated to "look chair"
-      #
-      # @param input [String] The format of the original command
-      # @param translation [String] The format of the translated command
-      # @return [Syntax] the Syntax object
-      def interpret(input, translation)
-        syn = Syntax.new(input, translation)
-        add_syntax syn
-        syn
-      end
-
-      # Get a Dispatcher to select actions that can potentially be executed
-      # from the specified command string.
-      #
-      # @param actor [Actor]
-      # @param text [String]
-      # @return [Dispatcher]
-      def dispatch(actor, text)
-        commands = Syntax.tokenize(text, actor.syntaxes)
-        actions = commands.flat_map { |cmd| actions_for(cmd.verb).reject(&:hidden?) }
-        Dispatcher.new(actor, commands, sort_and_reduce_actions(actions))
-      end
-
-      # Get an array of actions, derived from the specified verb and params,
-      # that the actor can potentially execute.
-      #
-      # @return [Gamefic::Dispatcher]
-      def dispatch_from_params actor, verb, params
-        available = actions_for(verb)
-        Dispatcher.new(actor, [Command.new(verb, params)], sort_and_reduce_actions(available))
-      end
-
-      # Duplicate the playbook.
-      # This method will duplicate the commands hash and the syntax array so
-      # the new playbook can be modified without affecting the original.
-      #
-      # @return [Playbook]
-      def dup
-        Playbook.new commands: @commands.dup, syntaxes: @syntaxes.dup
-      end
-
-      def freeze
-        @commands.freeze
-        @syntaxes.freeze
-        self
+      # @param words [Array<Symbol>]
+      # @return [Array<Syntax>]
+      def syntaxes_for *synonyms
+        synonyms.flat_map { |syn| synonym_syntax_map.fetch(syn, []) }
       end
 
       private
 
-      def add_action(action)
-        @commands[action.verb] ||= []
-        @commands[action.verb].push action
-        generate_default_syntax action
+      def verb_response_map
+        @verb_response_map ||= Hash.new { |hash, key| hash[key] = [] }
       end
 
-      def generate_default_syntax action
-        user_friendly = action.verb.to_s.gsub(/_/, ' ')
-        args = []
-        used_names = []
-        action.queries.each do |_c|
-          num = 1
-          new_name = ":var"
-          while used_names.include? new_name
-            num += 1
-            new_name = ":var#{num}"
-          end
-          used_names.push new_name
-          user_friendly += " #{new_name}"
-          args.push new_name
-        end
-        add_syntax Syntax.new(user_friendly.strip, "#{action.verb} #{args.join(' ')}") unless action.verb.to_s.start_with?('_')
+      def synonym_syntax_map
+        @synonym_syntax_map ||= Hash.new { |hash, key| hash[key] = [] }
+      end
+
+      def add_response response
+        verb_response_map[response.verb].unshift response
+        sort_responses verb_response_map[response.verb]
+        add_syntax response.syntax
+        response
       end
 
       def add_syntax syntax
-        raise "No actions exist for \"#{syntax.verb}\"" if @commands[syntax.verb].nil?
-        sort_syntaxes if @syntax_set.add?(syntax)
+        raise "No responses exist for \"#{syntax.verb}\"" unless verb_response_map.key?(syntax.verb)
+        return if synonym_syntax_map[syntax.synonym].include?(syntax)
+        synonym_syntax_map[syntax.synonym].unshift syntax
+        sort_syntaxes synonym_syntax_map[syntax.synonym]
+        syntax
       end
 
-      def sort_and_reduce_actions arr
-        arr.sort_by.with_index { |a, i| [a.rank, i] }.reverse.uniq
+      # @param responses [Array<Response>]
+      def sort_responses responses
+        responses.sort_by!.with_index { |a, i| [a.precision, -i] }.reverse!
       end
 
-      def sort_syntaxes
-        @syntaxes = @syntax_set.sort do |a, b|
-          if a.token_count == b.token_count
-            # For syntaxes of the same length, sort first word
+      def sort_syntaxes syntaxes
+        syntaxes.sort! do |a, b|
+          if a.word_count == b.word_count
             b.first_word <=> a.first_word
           else
-            b.token_count <=> a.token_count
+            b.word_count <=> a.word_count
           end
         end
       end

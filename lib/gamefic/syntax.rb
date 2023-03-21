@@ -1,17 +1,59 @@
 module Gamefic
+  # Syntaxes provide rules for matching input patterns to existing responses.
+  # Common uses are to provide synonyms for response verbs and allow for
+  # variations in sentence structure.
+  #
+  # The template and command patterns use words beginning with a colon (e.g.,
+  # `:thing`) to identify phrases that should be tokenized into arguments.
+  #
+  # @example All of these syntaxes will translate input into a command of the
+  #   form "look thing container"
+  #
+  #     Syntax.new('examine :thing in :container', 'look :thing :container')
+  #     Syntax.new('look at :thing inside :container', 'look :thing :container')
+  #     Syntax.new('search :container for :thing', 'look :thing :container')
+  #
   class Syntax
-    attr_reader :token_count, :first_word, :verb, :template, :command
+    # The pattern that matching input is expected to follow.
+    #
+    # @return [String]
+    attr_reader :template
+
+    # The pattern that will be used to tokenize the input into a command.
+    #
+    # @return [String]
+    attr_reader :command
+
+    # A symbol for the first word in the template. Used by playbooks to
+    # classify groups of related syntaxes.
+    #
+    # @example
+    #   syntax = Syntax.new('examine :thing', 'look :thing')
+    #   syntax.synonym #=> :examine
+    #
+    # @return [Symbol]
+    attr_reader :synonym
+
+    # The response verb to which the command will be translated.
+    #
+    # @return [Symbol]
+    attr_reader :verb
+
+    # The number of words in the template. Playbooks use word counts to sort
+    # syntaxes in descending order of precision.
+    #
+    # @return [Integer]
+    attr_reader :word_count
 
     def initialize template, command
       words = template.split_words
-      @token_count = words.length
+      @word_count = words.length
       command_words = command.split_words
       @verb = nil
       if words[0][0] == ':'
-        @token_count -= 1
-        @first_word = ''
+        @word_count -= 1
       else
-        @first_word = words[0].to_s
+        @synonym = words[0].to_sym
         @verb = command_words[0].to_sym
       end
       @command = command_words.join(' ')
@@ -50,7 +92,7 @@ module Gamefic
     # Convert a String into a Command.
     #
     # @param text [String]
-    # @return [Gamefic::Command]
+    # @return [Command, nil]
     def tokenize text
       m = text.match(@regexp)
       return nil if m.nil?
@@ -74,7 +116,7 @@ module Gamefic
     # @param text [String]
     # @return [Boolean]
     def accept? text
-      !text.match(@regexp).nil?
+      !!text.match(@regexp)
     end
 
     # Get a signature that identifies the form of the Syntax.
@@ -97,24 +139,18 @@ module Gamefic
       signature.hash
     end
 
-    # Tokenize an Array of Commands from the specified text. The resulting
-    # array is in descending order of specificity, i.e., most to least matched
+    # Tokenize an array of commands from the specified text. The resulting
+    # array is in descending order of precision, i.e., most to least matched
     # tokens.
     #
     # @param text [String] The text to tokenize.
-    # @param syntaxes [Array<Gamefic::Syntax>] The Syntaxes to use.
-    # @return [Array<Gamefic::Command>] The tokenized commands.
+    # @param syntaxes [Array<Syntax>] The syntaxes to use.
+    # @return [Array<Command>] The tokenized commands.
     def self.tokenize text, syntaxes
       syntaxes
         .map { |syn| syn.tokenize(text) }
-        .reject(&:nil?)
-        .sort do |a, b|
-          if a.arguments.length == b.arguments.length
-            b.verb.to_s <=> a.verb.to_s
-          else
-            b.arguments.length <=> a.arguments.length
-          end
-        end
+        .compact
+        .sort { |a, b| b.arguments.length <=> a.arguments.length }
     end
   end
 end

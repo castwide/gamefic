@@ -9,15 +9,15 @@ describe Gamefic::World::Playbook do
 
   it "creates an action" do
     playbook.respond :command do; end
-    expect(playbook.actions.length).to eq(1)
-    expect(playbook.actions.first.verb).to eq(:command)
+    expect(playbook.responses.length).to eq(1)
+    expect(playbook.responses.first.verb).to eq(:command)
   end
 
   it "creates a meta action" do
     playbook.meta :command do; end
-    expect(playbook.actions.length).to eq(1)
-    expect(playbook.actions.first.verb).to eq(:command)
-    expect(playbook.actions.first).to be_meta
+    expect(playbook.responses.length).to eq(1)
+    expect(playbook.responses.first.verb).to eq(:command)
+    expect(playbook.responses.first).to be_meta
   end
 
   it "tracks verbs" do
@@ -25,12 +25,13 @@ describe Gamefic::World::Playbook do
     expect(playbook.verbs).to eq([:command])
   end
 
-  it "dispatches commands" do
-    action = playbook.respond(:command) do; end
-    dispatcher = playbook.dispatch(actor, 'command')
-    result = dispatcher.next
-    expect(result).to be_a(action)
-  end
+  # @todo Candidate for deprecation
+  # it "dispatches commands" do
+  #   action = playbook.respond(:command) do; end
+  #   dispatcher = playbook.dispatch(actor, 'command')
+  #   result = dispatcher.next
+  #   expect(result).to be_a(action)
+  # end
 
   it "marks actions as meta" do
     action = playbook.meta :verb
@@ -39,10 +40,10 @@ describe Gamefic::World::Playbook do
 
   it "returns an executable action" do
     num = 0
-    action = playbook.respond :increment do
+    response = playbook.respond :increment do
       num += 1
     end
-    action.new(Gamefic::Actor.new, nil).execute
+    Gamefic::Action.new(Gamefic::Actor.new, [], response).execute
     expect(num).to eq 1
   end
 
@@ -50,7 +51,7 @@ describe Gamefic::World::Playbook do
     playbook.respond :verb do
     end
     expect(playbook.verbs.length).to eq 1
-    expect(playbook.actions_for(:verb).length).to eq 1
+    expect(playbook.responses_for(:verb).length).to eq 1
   end
 
   it "freezes commands and syntaxes" do
@@ -124,6 +125,7 @@ describe Gamefic::World::Playbook do
   it "dispatches the most recently declared action first" do
     num = 0
     playbook.respond :command do
+      puts 'WHY ME?????'
       num = 1
     end
     playbook.respond :command do
@@ -142,7 +144,7 @@ describe Gamefic::World::Playbook do
   it "returns all actions independently of verbs" do
     playbook.respond :action1 do;end
     playbook.respond :action2 do;end
-    expect(playbook.actions.length).to eq(2)
+    expect(playbook.responses.length).to eq(2)
   end
 
   it 'skips duplicate syntaxes' do
@@ -153,5 +155,90 @@ describe Gamefic::World::Playbook do
     playbook.interpret 'make :x from :y', 'make :x :y'
     # The above syntaxes are equivalent, so the second is ignored
     expect(playbook.syntaxes.length).to eq(2)
+  end
+
+  describe '#respond' do
+    it 'adds a response' do
+      response = playbook.respond(:verb) { |actor| actor }
+      expect(response).to be_a(Gamefic::Response)
+      expect(playbook.responses).to eq([response])
+    end
+
+    it 'adds a default syntax' do
+      playbook.respond(:verb) { |actor| actor }
+      expect(playbook.syntaxes).to be_one
+      expect(playbook.syntaxes.first.verb).to be(:verb)
+    end
+
+    it 'sorts by precision' do
+      high = playbook.respond(:verb, Gamefic::Query::Family.new(Gamefic::Active)) { |*args| nil }
+      low = playbook.respond(:verb, Gamefic::Query::Text.new) { |*args| nil }
+      responses = playbook.responses_for(:verb)
+      expect(responses).to eq([high, low])
+    end
+  end
+
+  describe '#interpret' do
+    it 'adds a syntax' do
+      playbook.respond(:look) { |_| nil }
+      syntax = playbook.interpret('examine :thing', 'look :thing')
+      expect(syntax).to be_a(Gamefic::Syntax)
+      expect(playbook.syntaxes_for(:examine)).to eq([syntax])
+    end
+
+    it 'sorts by token count' do
+      playbook.respond(:look) { |_| nil }
+      high = playbook.interpret('examine :thing inside :container', 'look :thing :container')
+      low = playbook.interpret('examine :thing', 'look :thing')
+      expect(playbook.syntaxes_for(:examine)).to eq([high, low])
+    end
+  end
+
+  describe '#responses_for' do
+    it 'returns responses for matching verbs' do
+      match = playbook.respond(:verb) { |actor| actor }
+      playbook.respond(:other) { |actor| actor }
+      matches = playbook.responses_for(:verb)
+      expect(matches).to eq([match])
+    end
+
+    it 'returns responses for multiple verbs' do
+      match1 = playbook.respond(:verb) { |actor| actor }
+      match2 = playbook.respond(:other) { |actor| actor }
+      matches = playbook.responses_for(:verb, :other)
+      expect(matches).to eq([match1, match2])
+    end
+  end
+
+  describe '#syntaxes_for' do
+    it 'returns syntaxes for matching synonyms' do
+      playbook.respond(:look) { |_| nil }
+      match = playbook.interpret('examine :thing', 'look :thing')
+      matches = playbook.syntaxes_for(:examine)
+      expect(matches).to eq([match])
+    end
+
+    it 'returns responses for multiple synonyms' do
+      match1 = playbook.respond(:verb) { |actor| actor }
+      match2 = playbook.respond(:other) { |actor| actor }
+      matches = playbook.responses_for(:verb, :other)
+      expect(matches).to eq([match1, match2])
+    end
+  end
+
+  describe '#verbs' do
+    it 'returns verbs without synonyms' do
+      playbook.respond(:verb) { |_| nil }
+      playbook.interpret 'synonym', 'verb'
+      expect(playbook.verbs).to eq([:verb])
+    end
+  end
+
+  describe '#synonyms' do
+    it 'returns verbs and synonyms' do
+      playbook.respond(:verb) { |_| nil }
+      playbook.interpret 'synonym', 'verb'
+      expect(playbook.synonyms).to eq([:synonym, :verb])
+    end
   end
 end
