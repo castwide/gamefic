@@ -46,11 +46,15 @@ end
 class Object
   class << self
     def exclude_from_serial ary
-      @excluded_from_serial = ary
+      @excluded_from_serial = excluded_from_serial + ary
     end
 
     def excluded_from_serial
-      @excluded_from_serial ||= []
+      @excluded_from_serial ||= if self.superclass.respond_to?(:excluded_from_serial)
+        self.superclass.excluded_from_serial
+      else
+        []
+      end
     end
   end
 
@@ -112,6 +116,7 @@ class Object
     result = {}
     instance_variables.each do |k|
       next if self.class.excluded_from_serial.include?(k)
+
       val = instance_variable_get(k)
       if index.include?(val)
         result[k.to_s] = {
