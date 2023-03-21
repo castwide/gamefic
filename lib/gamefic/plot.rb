@@ -16,8 +16,6 @@ module Gamefic
     # @return [Hash]
     attr_reader :metadata
 
-    attr_reader :static
-
     include World
     include Scriptable
     # @!parse extend Scriptable::ClassMethods
@@ -25,13 +23,14 @@ module Gamefic
     include Host
     include Serialize
 
-    exclude_from_serial [:@static]
-
     # @param metadata [Hash]
     def initialize metadata: {}
       @metadata = metadata
       run_scripts
-      @static = [self] + scene_classes + entities
+      static = [self] + scene_classes + entities
+      define_singleton_method :static do
+        static
+      end
     end
 
     def plot

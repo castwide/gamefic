@@ -11,3 +11,6 @@ Style/StringLiterals:
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
+
+Style/MethodDefParentheses:
+  Enabled: false

@@ -26,9 +26,9 @@ module Gamefic
       @more = more
       configure **more
       run_scripts
-      playbook.freeze
+      # playbook.freeze
       self.introduce introduce unless introduce.nil?
-      @static = [self] + scene_classes + entities
+      # @static = [self] + scene_classes + entities
     end
 
     def static
