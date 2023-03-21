@@ -37,7 +37,7 @@ module Gamefic
       return if cancelled?
 
       logger.debug "Executing response at #{response.block.source_location.join(':')}"
-      response.block[actor, arguments]
+      response.block[actor, *arguments]
       @executed = true
       run_after_actions
     end
