@@ -36,7 +36,7 @@ module Gamefic
       define_singleton_method :static do
         static
       end
-      playbook.deep_freeze
+      # playbook.deep_freeze
     end
 
     def players
