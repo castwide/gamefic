@@ -95,35 +95,25 @@ module Gamefic
     # @example Send a command as a string
     #   character.perform "take the key"
     #
-    # @param command [String, Symbol]
-    # @return [Gamefic::Action]
-    def perform(*command)
-      if command.length > 1
-        STDERR.puts "[WARN] #{caller[0]}: Passing a verb and arguments to #perform is deprecated. Use #execute instead."
-        execute command.first, *command[1..-1]
-      else
-        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
-        proceed
-        dispatchers.pop
-      end
+    # @param command [String]
+    # @return [void]
+    def perform(command)
+      dispatchers.push Dispatcher.dispatch(self, command)
+      proceed
+      dispatchers.pop
     end
 
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to the user.
     #
-    # @param command [String, Symbol]
+    # @param command [String]
     # @return [String] The output that resulted from performing the command.
-    def quietly(*command)
-      if command.length > 1
-        STDERR.puts "#{caller[0]}: Passing a verb and arguments to #quietly is deprecated. Use #execute instead"
-        execute command.first, *command[1..-1], quietly: true
-      else
-        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
-        result = proceed quietly: true
-        dispatchers.pop
-        result
-      end
+    def quietly(command)
+      dispatchers.push Dispatcher.dispatch(self, command)
+      result = proceed quietly: true
+      dispatchers.pop
+      result
     end
 
     # Perform an action.
