@@ -54,11 +54,33 @@ describe Gamefic::World::Playbook do
     expect(playbook.responses_for(:verb).length).to eq 1
   end
 
-  it "freezes commands and syntaxes" do
-    playbook.deep_freeze
+  it "freezes responses" do
+    playbook.freeze
     expect {
       playbook.respond :verb do
       end
+    }.to raise_error(FrozenError)
+  end
+
+  it "freezes syntaxes" do
+    playbook.respond(:look) { |_| nil }
+    playbook.freeze
+    expect {
+      playbook.interpret 'examine', 'look'
+    }.to raise_error(FrozenError)
+  end
+
+  it 'freezes before actions' do
+    playbook.freeze
+    expect {
+      playbook.before_action { |_| nil }
+    }.to raise_error(FrozenError)
+  end
+
+  it 'freezes after actions' do
+    playbook.freeze
+    expect {
+      playbook.after_action { |_| nil }
     }.to raise_error(FrozenError)
   end
 
