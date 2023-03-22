@@ -22,6 +22,14 @@ module Gamefic
         @synonym_syntax_map = Hash.new { |hash, key| hash[key] = [] }
       end
 
+      def freeze
+        super
+        @before_actions.freeze
+        @after_actions.freeze
+        @verb_response_map.freeze
+        @synonym_syntax_map.freeze
+      end
+
       # Add a response to the playbook.
       #
       # @param verb [Symbol]
