@@ -13,7 +13,10 @@ module Gamefic
     # @return [Gamefic::Plot]
     attr_reader :plot
 
-    exclude_from_serial [:@static]
+    # @return [Hash]
+    attr_reader :more
+
+    exclude_from_serial [:@plot]
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, nil]
@@ -23,17 +26,21 @@ module Gamefic
       @plot = plot
       @next_cue = next_cue
       @concluded = false
-      @more = more
+      @more = more.freeze
       configure **more
       run_scripts
       # playbook.freeze
       self.introduce introduce unless introduce.nil?
       # @static = [self] + scene_classes + entities
+      static = [self] + scene_classes + entities
+      define_singleton_method :static do
+        static
+      end
     end
 
-    def static
-      plot.static
-    end
+    # def static
+    #   plot.static
+    # end
 
     def players
       @players ||= []

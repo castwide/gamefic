@@ -42,7 +42,8 @@ describe Gamefic::Plot::Snapshot do
     plot = Gamefic::Plot.new
     plot.branch Gamefic::Subplot
     snapshot = plot.save
-    expect(snapshot['index'][0]['ivars']['@subplots'].length).to eq(1)
+    expect(snapshot['configs']).to be_one
+    expect(snapshot['subplots']).to be_one
   end
 
   it "restores subplots" do

@@ -15,10 +15,19 @@ module Gamefic
       #
       # @return [Hash]
       def save
-        {
+        indexed = index(plot)
+        result = {
           'program' => {}, # @todo Metadata for version control, etc.
-          'index' => index.map { |obj| serialize_indexed(obj) }
+          'plot' => indexed.map { |obj| serialize_indexed(obj, indexed) },
+          'configs' => plot.subplots.map do |subplot|
+            serialize_indexed(subplot.more, indexed)
+          end,
+          'subplots' => plot.subplots.map do |subplot|
+            indexed = index(subplot)
+            indexed.map { |obj| serialize_indexed(obj, indexed) }
+          end
         }
+        result
       end
 
       # Restore a snapshot.
@@ -30,8 +39,84 @@ module Gamefic
         plot.subplots.each(&:conclude)
         plot.subplots.clear
 
+        index = hydrate(plot, snapshot['plot'])
+        rebuild index, snapshot['plot']
+
+        restore_subplots index, snapshot['configs'], snapshot['subplots']
+      end
+
+      private
+
+      def restore_subplots top_index, configs, serials
+        mores = configs.map { |cfg| cfg.from_serial(top_index) }
+
+        serials.each_with_index do |serial, idx|
+          klass = Gamefic::Serialize.string_to_constant(serial.first['class'])
+          subplot = klass.new(plot, **mores[idx])
+          index = hydrate(subplot, serial)
+          rebuild index, serial
+          plot.subplots.push subplot
+          subplot.players.replace(subplot.players
+                                         .map do |fake|
+                                           plot.players.find { |real| real.inspect == fake.inspect }
+                                         end
+                                         .compact)
+          subplot.players.each do |pl|
+            pl.playbooks.push subplot.playbook unless pl.playbooks.include?(subplot.playbook)
+          end
+        end
+      end
+
+      def index plot
+        full_index = Set.new
+        populate_full_index_from(plot, full_index)
+        Set.new(plot.static + plot.players).merge(full_index).to_a
+      end
+
+      # @param object [Object]
+      # @param full_index [Set]
+      def populate_full_index_from(object, full_index)
+        return if full_index.include?(object)
+        if object.is_a?(Array) || object.is_a?(Set)
+          object.each { |ele| populate_full_index_from(ele, full_index) }
+        elsif object.is_a?(Hash)
+          object.each_pair do |k, v|
+            populate_full_index_from(k, full_index)
+            populate_full_index_from(v, full_index)
+          end
+        else
+          if object.is_a?(Gamefic::Serialize)
+            full_index.add object unless object.is_a?(Module) && object.name
+            object.instance_variables.each do |v|
+              next if object.class.excluded_from_serial.include?(v)
+              populate_full_index_from(object.instance_variable_get(v), full_index)
+            end
+          else
+            object.instance_variables.each do |v|
+              populate_full_index_from(object.instance_variable_get(v), full_index)
+            end
+          end
+        end
+      end
+
+      def serialize_indexed object, indexed
+        if object.is_a?(Gamefic::Serialize)
+          # Serialized objects in the index should be a full serialization.
+          # Serialize#to_serial rturns a reference to the indexed object.
+          {
+            'class' => object.class.to_s,
+            'ivars' => object.serialize_instance_variables(indexed)
+          }
+        else
+          object.to_serial(indexed)
+        end
+      end
+
+      # @param plot [Plot, Subplot]
+      # @return [Array]
+      def hydrate plot, serial
         index = plot.static + plot.players
-        snapshot['index'].each_with_index do |obj, idx|
+        serial.each_with_index do |obj, idx|
           next if index[idx]
           elematch = obj['class'].match(/^#<ELE_([\d]+)>$/)
           if elematch
@@ -39,89 +124,26 @@ module Gamefic
           else
             klass = Gamefic::Serialize.string_to_constant(obj['class'])
           end
-          if klass == Theater || klass <= Gamefic::Subplot
+          if klass == Theater
             index.push klass.new(plot)
           else
             index.push klass.allocate
           end
         end
+        index
+      end
 
-        snapshot['index'].each_with_index do |obj, idx|
+      def rebuild index, serial
+        serial.each_with_index do |obj, idx|
           if index[idx].class.to_s != obj['class']
             STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
             STDERR.puts obj.inspect
           end
-          if index[idx].is_a?(Gamefic::Subplot)
-            index[idx].send(:theater).instance_variable_set(:@host, index[idx])
-            index[idx].send(:run_scripts)
-          end
           obj['ivars'].each_pair do |k, v|
-            next if k == '@subplots' #|| k == '@children'
             uns = v.from_serial(index)
             next if uns == "#<UNKNOWN>"
-            if index[idx].is_a?(Gamefic::Subplot)
-              next if index[idx].instance_variable_get(k)
-              index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
-            else
-              index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
-            end
+            index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
           end
-          if index[idx].is_a?(Gamefic::Subplot)
-            index[idx].players.each do |pl|
-              pl.playbooks.push index[idx].playbook unless pl.playbooks.include?(index[idx].playbook)
-            end
-            plot.subplots.push index[idx]
-          end
-        end
-      end
-
-      private
-
-      def index
-        @index ||= begin
-          populate_full_index_from(plot)
-          Set.new(plot.static + plot.players).merge(full_index).to_a
-        end
-      end
-
-      def full_index
-        @full_index ||= Set.new
-      end
-
-      def populate_full_index_from(object)
-        return if full_index.include?(object)
-        if object.is_a?(Array) || object.is_a?(Set)
-          object.each { |ele| populate_full_index_from(ele) }
-        elsif object.is_a?(Hash)
-          object.each_pair do |k, v|
-            populate_full_index_from(k)
-            populate_full_index_from(v)
-          end
-        else
-          if object.is_a?(Gamefic::Serialize)
-            full_index.add object unless object.is_a?(Module) && object.name
-            object.instance_variables.each do |v|
-              next if object.class.excluded_from_serial.include?(v)
-              populate_full_index_from(object.instance_variable_get(v))
-            end
-          else
-            object.instance_variables.each do |v|
-              populate_full_index_from(object.instance_variable_get(v))
-            end
-          end
-        end
-      end
-
-      def serialize_indexed object
-        if object.is_a?(Gamefic::Serialize)
-          # Serialized objects in the index should be a full serialization.
-          # Serialize#to_serial rturns a reference to the indexed object.
-          {
-            'class' => object.class.to_s,
-            'ivars' => object.serialize_instance_variables(index)
-          }
-        else
-          object.to_serial(index)
         end
       end
     end
