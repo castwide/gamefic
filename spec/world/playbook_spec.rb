@@ -55,11 +55,11 @@ describe Gamefic::World::Playbook do
   end
 
   it "freezes commands and syntaxes" do
-    playbook.freeze
+    playbook.deep_freeze
     expect {
       playbook.respond :verb do
       end
-    }.to raise_error(RuntimeError)
+    }.to raise_error(FrozenError)
   end
 
   it "requires a syntax's translation to exist'" do

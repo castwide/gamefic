@@ -9,6 +9,19 @@ module Gamefic
     #   * Before and After Hooks
     #
     class Playbook
+      # @return [Array<Action::Hook>]
+      attr_reader :before_actions
+
+      # @return [Array<Action::Hook>]
+      attr_reader :after_actions
+
+      def initialize
+        @before_actions = []
+        @after_actions = []
+        @verb_response_map = Hash.new { |hash, key| hash[key] = [] }
+        @synonym_syntax_map = Hash.new { |hash, key| hash[key] = [] }
+      end
+
       # Add a response to the playbook.
       #
       # @param verb [Symbol]
@@ -106,16 +119,6 @@ module Gamefic
         synonym_syntax_map.keys.compact.sort
       end
 
-      # @return [Array<Action::Hook>]
-      def before_actions
-        @before_actions ||= []
-      end
-
-      # @return [Array<Action::Hook>]
-      def after_actions
-        @after_actions ||= []
-      end
-
       # @param verbs [Array<Symbol>]
       # @return [Array<Response>]
       def responses_for *verbs
@@ -130,13 +133,9 @@ module Gamefic
 
       private
 
-      def verb_response_map
-        @verb_response_map ||= Hash.new { |hash, key| hash[key] = [] }
-      end
+      attr_reader :synonym_syntax_map
 
-      def synonym_syntax_map
-        @synonym_syntax_map ||= Hash.new { |hash, key| hash[key] = [] }
-      end
+      attr_reader :verb_response_map
 
       def add_response response
         verb_response_map[response.verb].unshift response
