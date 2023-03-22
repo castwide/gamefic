@@ -25,14 +25,6 @@ describe Gamefic::World::Playbook do
     expect(playbook.verbs).to eq([:command])
   end
 
-  # @todo Candidate for deprecation
-  # it "dispatches commands" do
-  #   action = playbook.respond(:command) do; end
-  #   dispatcher = playbook.dispatch(actor, 'command')
-  #   result = dispatcher.next
-  #   expect(result).to be_a(action)
-  # end
-
   it "marks actions as meta" do
     action = playbook.meta :verb
     expect(action.meta?).to be true
