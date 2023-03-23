@@ -34,13 +34,6 @@ module Gamefic
       self
     end
 
-    # Get an Array of the Plot's current Syntaxes.
-    #
-    # @return [Array<Syntax>]
-    def syntaxes
-      playbook.syntaxes
-    end
-
     # Prepare the Plot for the next turn of gameplay.
     # This method is typically called by the Engine that manages game
     # execution.
