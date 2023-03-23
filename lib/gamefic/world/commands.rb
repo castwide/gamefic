@@ -38,7 +38,6 @@ module Gamefic
       def respond(command, *queries, &proc)
         playbook.respond(command, *map_response_args(queries), &proc)
       end
-      alias action respond
 
       # Parse a verb and a list of arguments into an action.
       # This method serves as a shortcut to creating an action with one or more
@@ -142,13 +141,6 @@ module Gamefic
       # @return [Array<String>]
       def verbs
         playbook.verbs.map(&:to_s).reject { |v| v.start_with?('_') }
-      end
-
-      # Get an Array of all Actions defined in the Plot.
-      #
-      # @return [Array<Action>]
-      def actions
-        playbook.actions
       end
 
       def get_default_query
