@@ -44,9 +44,6 @@ describe 'Subplot snapshot' do
       plot.ready
       expect(plot.subplots_featuring(actor)).to be_one
       subplot = plot.subplots.first
-      # @todo These are different instances because the subplot got rebuilt
-      # next_cue = subplot.instance_variable_get(:@next_cue)
-      # expect(next_cue).to be(next_scene)
     end
 
     it 'restores stage variables in subplots' do
