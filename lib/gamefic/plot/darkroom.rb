@@ -1,8 +1,12 @@
+require 'json'
+
 module Gamefic
   # Create and restore plot snapshots.
   #
   class Plot
     class Darkroom
+      include Logging
+
       # @return [Plot]
       attr_reader :plot
 
@@ -17,7 +21,7 @@ module Gamefic
       def save
         indexed = index(plot)
         result = {
-          'program' => {}, # @todo Metadata for version control, etc.
+          'program' => plot.metadata,
           'plot' => indexed.map { |obj| serialize_indexed(obj, indexed) },
           'configs' => plot.subplots.map do |subplot|
             serialize_indexed(subplot.more, indexed)
@@ -34,7 +38,7 @@ module Gamefic
       #
       # @param snapshot [Hash]
       def restore snapshot
-        # @todo Use `program` for verification
+        raise LoadError, "Unable to verify snapshot" unless snapshot['program'].to_json == plot.metadata.to_json
 
         plot.subplots.each(&:conclude)
         plot.subplots.clear
@@ -137,8 +141,7 @@ module Gamefic
       def rebuild index, serial
         serial.each_with_index do |obj, idx|
           if index[idx].class.to_s != obj['class']
-            STDERR.puts "MISMATCH: #{index[idx].class} is not #{obj['class']}"
-            STDERR.puts obj.inspect
+            logger.warn "Mismatch: #{obj['class']} in snapshot expected to be #{index[idx].class}"
           end
           obj['ivars'].each_pair do |k, v|
             uns = v.from_serial(index)
