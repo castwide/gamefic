@@ -12,13 +12,12 @@ module Gamefic
         @playbook ||= Gamefic::World::Playbook.new
       end
 
-      # Create an Action that responds to a command.
-      # An Action uses the command argument to identify the imperative verb that
-      # triggers the action.
-      # It can also accept queries to tokenize the remainder of the input and
-      # filter for particular entities or properties.
-      # The block argument contains the code to be executed when the input
-      # matches all of the Action's criteria (i.e., verb and queries).
+      # Create a response to a command.
+      # A Response uses the `verb` argument to identify the imperative verb
+      # that triggers the action. It can also accept queries to tokenize the
+      # remainder of the input and filter for particular entities or
+      # properties. The `block`` argument is the proc to execute when the input
+      # matches all of the Response's criteria (i.e., verb and queries).
       #
       # @example A simple Action.
       #   respond :salute do |actor|
@@ -31,12 +30,12 @@ module Gamefic
       #     actor.tell "#{The character} returns your salute."
       #   end
       #
-      # @param command [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base>] Filters for the command's tokens
+      # @param verb [Symbol] An imperative verb for the command
+      # @param queries [Array<Query::Base, Entity>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      # @return [Class] The resulting Action subclass
-      def respond(command, *queries, &proc)
-        playbook.respond(command, *map_response_args(queries), &proc)
+      # @return [Response]
+      def respond(verb, *queries, &proc)
+        playbook.respond(verb, *map_response_args(queries), &proc)
       end
 
       # Parse a verb and a list of arguments into an action.
@@ -66,7 +65,19 @@ module Gamefic
         respond(verb.to_sym, *params, &proc)
       end
 
-      # Tokenize and parse a command to create a new Action subclass.
+      # Tokenize and parse a command to create a new response.
+      #
+      # @example Override the look response for a specific entity
+      #   respond :look, Gamefic::Entity do |action, thing|
+      #     actor.tell thing.description
+      #   end
+      #
+      #   make Gamefic::Entity, name: 'a special thing'
+      #
+      #   override 'look special thing' do |actor, thing|
+      #     actor.tell 'This thing is special!'
+      #     actor.proceed
+      #   end
       #
       # @param command [String] The command
       # @yieldparam [Gamefic::Actor]
@@ -77,23 +88,23 @@ module Gamefic
         parse cmd.verb, *cmd.arguments, &proc
       end
 
-      # Create a Meta Action that responds to a command.
-      # Meta Actions are very similar to standard Actions, except the Plot
-      # understands them to be commands that operate above and/or outside of the
-      # actual game world. Examples of Meta Actions are commands that report the
-      # player's current score, save and restore saved games, or list the game's
-      # credits.
+      # Create a meta rsponse for a command.
+      # Meta responses are very similar to standard responses, except they're
+      # flagged as meta (`Response#meta?`) to indicate that they provide a
+      # feature that is not considered an in-game action, such as displaying
+      # help documentation or a scoreboard.
       #
       # @example A simple Meta Action
       #   meta :credits do |actor|
       #     actor.tell "This game was written by John Smith."
       #   end
       #
-      # @param command [Symbol] An imperative verb for the command
+      # @param verb [Symbol] An imperative verb for the command
       # @param queries [Array<Query::Base>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      def meta(command, *queries, &block)
-        playbook.meta command, *queries, &block
+      # @return [Response]
+      def meta(verb, *queries, &block)
+        playbook.meta verb, *queries, &block
       end
 
       # Add a proc to be evaluated before a character executes an action.
@@ -102,6 +113,7 @@ module Gamefic
       #
       # @param verb [Symbol, nil]
       # @yieldparam [Gamefic::Action]
+      # @return [Action::Hook]
       def before_action verb = nil, &block
         playbook.before_action verb, &block
       end
@@ -113,18 +125,19 @@ module Gamefic
       #
       # @param [Symbol, nil]
       # @yieldparam [Gamefic::Action]
+      # @return [Action::Hook]
       def after_action verb = nil, &block
         playbook.after_action verb, &block
       end
 
-      # Create an alternate Syntax for an Action.
+      # Create an alternate Syntax for a response.
       # The command and its translation can be parameterized.
       #
-      # @example Create a synonym for the Inventory Action.
+      # @example Create a synonym for an `inventory` response.
       #   interpret "catalogue", "inventory"
       #   # The command "catalogue" will be translated to "inventory"
       #
-      # @example Create a parameterized synonym for the Look Action.
+      # @example Create a parameterized synonym for a `look` response.
       #   interpret "scrutinize :entity", "look :entity"
       #   # The command "scrutinize chair" will be translated to "look chair"
       #
@@ -143,10 +156,12 @@ module Gamefic
         playbook.verbs.map(&:to_s).reject { |v| v.start_with?('_') }
       end
 
+      # @return [Class<Gamefic::Query::Base>]
       def get_default_query
         @default_query_class ||= Gamefic::Query::Family
       end
 
+      # @return [Class<Gamefic::Query::Base>]
       def set_default_query cls
         @default_query_class = cls
       end
