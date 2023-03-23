@@ -35,4 +35,26 @@ describe Gamefic::Serialize do
     obj2 = ser.from_serial(@index)
     expect(obj2).to eq("#<UNKNOWN>")
   end
+
+  it 'indexes serialized classes' do
+    klass = Class.new { include Gamefic::Serialize }
+    index = [klass]
+    object = klass.new
+    expect(object.serialized_class(index)).to eq('#<ELE_0>')
+  end
+
+  it 'names unserialized classes' do
+    klass = Class.new { include Gamefic::Serialize }
+    index = [Hash]
+    object = klass.new
+    expect(object.serialized_class(index)).to eq(klass.to_s)
+  end
+
+  it 'serializes classes from indexes' do
+    klass = Class.new { include Gamefic::Serialize }
+    index = [klass]
+    object = klass.new
+    serial = object.to_serial(index)
+    expect(serial['class']).to eq('#<ELE_0>')
+  end
 end
