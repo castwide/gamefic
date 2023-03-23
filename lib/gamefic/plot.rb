@@ -23,8 +23,6 @@ module Gamefic
     include Host
     include Serialize
 
-    exclude_from_serial [:@subplots]
-
     # @param metadata [Hash]
     def initialize metadata: {}
       @metadata = metadata

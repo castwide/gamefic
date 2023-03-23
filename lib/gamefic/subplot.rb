@@ -16,8 +16,6 @@ module Gamefic
     # @return [Hash]
     attr_reader :more
 
-    exclude_from_serial [:@plot]
-
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, nil]
     # @param next_cue [Class<Gamefic::Scene::Base>, nil]

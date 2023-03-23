@@ -44,25 +44,10 @@ module Gamefic
 end
 
 class Object
-  class << self
-    def exclude_from_serial ary
-      @excluded_from_serial = excluded_from_serial + ary
-    end
-
-    def excluded_from_serial
-      @excluded_from_serial ||= if self.superclass.respond_to?(:excluded_from_serial)
-        self.superclass.excluded_from_serial
-      else
-        []
-      end
-    end
-  end
-
   def to_serial(_index)
     return self if [true, false, nil].include?(self)
-    # @todo This warning is a little too spammy. Set up a logger so it can be
-    # limited to an info or debug level.
-    # STDERR.puts "Unable to convert #{self} to element"
+
+    Gamefic.logger.warn "Unable to serialize #{self}"
     "#<UNKNOWN>"
   end
 
@@ -115,7 +100,7 @@ class Object
   def serialize_instance_variables(index)
     result = {}
     instance_variables.each do |k|
-      next if self.class.excluded_from_serial.include?(k)
+      next if Gamefic::Serialize.exclude?(self, k)
 
       val = instance_variable_get(k)
       if index.include?(val)

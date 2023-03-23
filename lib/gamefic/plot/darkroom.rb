@@ -88,7 +88,8 @@ module Gamefic
           if object.is_a?(Gamefic::Serialize)
             full_index.add object unless object.is_a?(Module) && object.name
             object.instance_variables.each do |v|
-              next if object.class.excluded_from_serial.include?(v)
+              next if Serialize.exclude?(object, v)
+
               populate_full_index_from(object.instance_variable_get(v), full_index)
             end
           else
