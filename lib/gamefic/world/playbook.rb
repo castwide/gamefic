@@ -168,7 +168,7 @@ module Gamefic
       def sort_syntaxes syntaxes
         syntaxes.sort! do |a, b|
           if a.word_count == b.word_count
-            b.first_word <=> a.first_word
+            b.synonym <=> a.synonym
           else
             b.word_count <=> a.word_count
           end

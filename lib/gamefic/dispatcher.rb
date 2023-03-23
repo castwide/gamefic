@@ -35,7 +35,7 @@ module Gamefic
     # @return [Dispatcher]
     def self.dispatch actor, input
       commands = Syntax.tokenize(input, actor.playbooks.flat_map(&:syntaxes))
-      verbs = commands.map(&:verb) + [nil]
+      verbs = commands.map(&:verb)
       responses = actor.playbooks
                        .flat_map { |pb| pb.responses_for(*verbs) }
                        .reject(&:hidden?)

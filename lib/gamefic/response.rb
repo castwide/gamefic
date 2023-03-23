@@ -90,7 +90,7 @@ module Gamefic
         user_friendly += " #{new_name}"
         args.push new_name
       end
-      Syntax.new(user_friendly.strip, "#{verb} #{args.join(' ')}")
+      Syntax.new(user_friendly.strip, "#{verb} #{args.join(' ')}".strip)
     end
 
     def calculate_precision
