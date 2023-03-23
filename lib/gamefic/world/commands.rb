@@ -161,6 +161,7 @@ module Gamefic
         @default_query_class ||= Gamefic::Query::Family
       end
 
+      # @param cls [Class<Gamefic::Query::Base>]
       # @return [Class<Gamefic::Query::Base>]
       def set_default_query cls
         @default_query_class = cls
