@@ -1,4 +1,4 @@
-require 'gamefic/query'
+# frozen_string_literal: true
 
 module Gamefic
   # A plot controls the game narrative and manages the world model.
@@ -27,10 +27,7 @@ module Gamefic
     def initialize metadata: {}
       @metadata = metadata
       run_scripts
-      static = [self] + scene_classes + entities
-      define_singleton_method :static do
-        static
-      end
+      define_static
     end
 
     def plot

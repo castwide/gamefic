@@ -7,7 +7,7 @@ module Gamefic
   class Subplot
     include World
     include Scriptable
-    include Gamefic::Serialize
+    include Serialize
     # @!parse extend Scriptable::ClassMethods
 
     # @return [Gamefic::Plot]
@@ -25,16 +25,10 @@ module Gamefic
       @next_cue = next_cue
       @concluded = false
       @more = more.freeze
-      configure **more
+      configure(**more)
       run_scripts
-      # playbook.freeze
       self.introduce introduce unless introduce.nil?
-      # @static = [self] + scene_classes + entities
-      static = [self] + scene_classes + entities
-      define_singleton_method :static do
-        static
-      end
-      # playbook.deep_freeze
+      define_static
     end
 
     def players
@@ -66,7 +60,7 @@ module Gamefic
     def exeunt player
       player_conclude_procs.each { |block| block.call player }
       player.playbooks.delete playbook
-      player.cue (@next_cue || default_scene)
+      player.cue(@next_cue || default_scene)
       players.delete player
     end
 
@@ -91,6 +85,7 @@ module Gamefic
       #   introducing players in a later turn.
       conclude if players.empty?
       return if concluded?
+
       playbook.freeze
       call_ready
       call_player_ready
@@ -104,7 +99,6 @@ module Gamefic
     # Subclasses can override this method to handle additional configuration
     # options.
     #
-    def configure **more
-    end
+    def configure **more; end
   end
 end

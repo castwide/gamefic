@@ -5,12 +5,12 @@ module Gamefic
     def self.exclusions
       @exclusions ||= {
         classes: {
-          Scene::Base => [:@start_block, :@finish_block]
+          Scene::Base => %i[@start_block @finish_block]
         },
         objects: {
-          Active => [:@playbooks],
-          Plot => [:@subplots, :@playbook, :@introduction],
-          Subplot => [:@plot, :@playbook, :@introduction]  
+          Active => %i[@playbooks],
+          Plot => %i[@subplots @playbook @introduction],
+          Subplot => %i[@plot @playbook @introduction]
         }
       }
     end
