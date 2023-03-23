@@ -18,11 +18,8 @@ module Gamefic
     # True if the object should not serialize the instance variable.
     #
     def self.exclude?(object, ivar)
-      if object.is_a?(Class)
-        exclusions[:classes].any? { |k, v| object <= k && v.include?(ivar) }
-      else
-        exclusions[:objects].any? { |k, v| object.is_a?(k) && v.include?(ivar) }
-      end
+      klass = object.is_a?(Class) ? object : object.class
+      EXCLUSIONS.any? { |k, v| klass <= k && v.include?(ivar) }
     end
   end
 end
