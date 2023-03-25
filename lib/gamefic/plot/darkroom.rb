@@ -23,9 +23,7 @@ module Gamefic
         result = {
           'program' => plot.metadata,
           'plot' => indexed.map { |obj| serialize_indexed(obj, indexed) },
-          'configs' => plot.subplots.map do |subplot|
-            serialize_indexed(subplot.more, indexed)
-          end,
+          'configs' => plot.subplots.map { |subplot| serialize_indexed(subplot.more.merge({ next_cue: subplot.next_cue }), indexed) },
           'subplots' => plot.subplots.map do |subplot|
             indexed = index(subplot)
             indexed.map { |obj| serialize_indexed(obj, indexed) }
@@ -43,8 +41,12 @@ module Gamefic
         plot.subplots.each(&:conclude)
         plot.subplots.clear
 
+        plot.entities.each { |ent| ent.parent = nil }
+
         index = hydrate(plot, snapshot['plot'])
         rebuild index, snapshot['plot']
+
+        # reparent_entities plot
 
         restore_subplots index, snapshot['configs'], snapshot['subplots']
       end
@@ -57,17 +59,28 @@ module Gamefic
         serials.each_with_index do |serial, idx|
           klass = Gamefic::Serialize.string_to_constant(serial.first['class'])
           subplot = klass.new(plot, **mores[idx])
+          subplot.entities.each { |ent| ent.parent = nil }
           index = hydrate(subplot, serial)
           rebuild index, serial
+          # next if subplot.concluded?
           plot.subplots.push subplot
+          fakes = subplot.players.clone
           subplot.players.replace(subplot.players
                                          .map do |fake|
-                                           plot.players.find { |real| real.inspect == fake.inspect }
+                                          found = plot.players.find { |real| real.inspect == fake.inspect }
+                                          raise LoadError, "Could not restore player" unless found
+                                          found
                                          end
                                          .compact)
+          subplot.entities.each do |ent|
+            idx = fakes.index(ent.parent)
+            ent.parent = subplot.players[idx] if idx
+          end
           subplot.players.each do |pl|
             pl.playbooks.push subplot.playbook unless pl.playbooks.include?(subplot.playbook)
           end
+
+          # reparent_entities subplot
         end
       end
 
@@ -146,9 +159,39 @@ module Gamefic
           obj['ivars'].each_pair do |k, v|
             uns = v.from_serial(index)
             next if uns == "#<UNKNOWN>"
-            index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
+            ext = index[idx].instance_variable_get(k)
+            if ext.is_a?(Gamefic::Serialize)
+              if ext.class != uns.class
+                logger.warn "Mismatch in #{index[idx].class} #{k}: found #{ext.class}, expected #{uns.class}"
+                setter = "#{k.to_s[1..-1]}="
+                if index[idx].respond_to?(setter)
+                  index[idx].send(setter, uns)
+                else
+                  index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
+                end
+              else
+                uns.instance_variables.each do |iv|
+                  ext.instance_variable_set iv, uns.instance_variable_get(iv)
+                end
+              end
+            else
+              setter = "#{k.to_s[1..-1]}="
+              if index[idx].respond_to?(setter)
+                index[idx].send(setter, uns)
+              else
+                index[idx].instance_variable_set(k, uns) #unless index[idx].is_a?(Gamefic::Subplot)
+              end
+            end
           end
         end
+      end
+
+      def reparent_entities plot
+        # plot.entities.each do |ent|
+        #   cur = ent.parent
+        #   ent.parent = nil
+        #   ent.parent = cur
+        # end
       end
     end
   end
