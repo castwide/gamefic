@@ -100,5 +100,9 @@ module Gamefic
     # options.
     #
     def configure **more; end
+
+    def inspect
+      "#<#{self.class}>"
+    end
   end
 end

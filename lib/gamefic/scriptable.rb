@@ -77,6 +77,10 @@ module Gamefic
         end
       end
     end
+
+    def inspect
+      "#<#{self.class}>"
+    end
   end  
 end
 

@@ -92,6 +92,10 @@ module Gamefic
         entity.tell message
       }
     end
+
+    def inspect
+      "#<#{self.class}>"
+    end
   end
 end
 
