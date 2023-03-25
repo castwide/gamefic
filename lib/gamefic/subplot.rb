@@ -16,6 +16,8 @@ module Gamefic
     # @return [Hash]
     attr_reader :more
 
+    attr_reader :next_cue
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, nil]
     # @param next_cue [Class<Gamefic::Scene::Base>, nil]
