@@ -70,7 +70,7 @@ module Gamefic
               @precision += 100
             elsif a.is_a?(Module)
               @precision += 50
-            elsif a.is_a?(Gamefic::Entity)
+            elsif a.is_a?(Gamefic::Entity) || a.is_a?(Proc)
               @precision += 1000
             end
           }
@@ -97,6 +97,8 @@ module Gamefic
             !entity.to_s.match(a).nil?
           elsif a.is_a?(Module) || a.is_a?(Class)
             entity.is_a?(a)
+          elsif a.is_a?(Proc)
+            (entity == a.call)
           else
             (entity == a)
           end
