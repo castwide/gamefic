@@ -28,6 +28,7 @@ module Gamefic
           end
         end
       end
+      nil # Without this, return value in Opal is undefined
     end
 
     # @param actor [Active]

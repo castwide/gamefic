@@ -36,7 +36,7 @@ module Gamefic
       run_before_actions
       return if cancelled?
 
-      logger.debug "Executing response at #{response.block.source_location.join(':')}"
+      log_executing 'response', response.block.source_location
       response.block[actor, *arguments]
       @executed = true
       run_after_actions
@@ -92,10 +92,14 @@ module Gamefic
       hooks.each do |hook|
         next unless hook.verb.nil? || hook.verb == verb
 
-        logger.debug "Executing hook at #{hook.block.source_location.join(':')}"
+        log_executing 'hook', hook.block.source_location
         hook.block[self]
         break if cancelled?
       end
+    end
+
+    def log_executing type, location
+      logger.debug "Executing #{type} at #{location&.join(':') || '(undefined)'}"
     end
   end
 end
