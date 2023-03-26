@@ -9,7 +9,7 @@ module Gamefic
         },
         objects: {
           Active => %i[@playbooks],
-          Plot => %i[@subplots @playbook @introduction @players],
+          Plot => %i[@subplots @playbook @introduction],
           Subplot => %i[@plot @playbook @introduction],
           Entity => %i[@children],
           World::Callbacks => %i[

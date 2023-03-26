@@ -30,6 +30,7 @@ module Gamefic
       configure(**more)
       run_scripts
       self.introduce introduce unless introduce.nil?
+      theater
       define_static
     end
 

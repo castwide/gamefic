@@ -27,6 +27,7 @@ module Gamefic
     def initialize metadata: {}
       @metadata = metadata
       run_scripts
+      theater
       define_static
     end
 

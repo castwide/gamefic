@@ -43,7 +43,6 @@ describe 'Subplot snapshot' do
       plot.restore snapshot
       plot.ready
       expect(plot.subplots_featuring(actor)).to be_one
-      subplot = plot.subplots.first
     end
 
     it 'restores stage variables in subplots' do
@@ -68,8 +67,11 @@ describe 'Subplot snapshot' do
 
     it 'restores actions associated with instance variables' do
       Gamefic.script do
+        respond :look, Gamefic::Query::Text.new do |actor, _|
+          actor.tell "Fuck."
+        end
+
         introduction do |actor|
-          actor.parent = @room
           branch TestSubplot, introduce: actor, next_cue: default_scene
         end
       end
@@ -77,10 +79,17 @@ describe 'Subplot snapshot' do
       actor = plot.get_player_character
       plot.introduce actor
       plot.ready
+      expect(actor.parent).to be(plot.subplots.first.stage { @room })
       snapshot = plot.save
+      plot = Gamefic::Plot.new
+      actor = plot.get_player_character
+      plot.introduce actor
+      plot.ready
       plot.restore snapshot
-      t1 = plot.subplots.first.entities.find { |t| t.name == 'right thing' }
-      t1.parent = actor.parent
+      expect(actor.parent).to be(plot.subplots.first.stage { @room })
+      expect(plot.subplots.first.stage { @thing.parent }).to be(plot.subplots.first.stage { @room })
+      # t1 = plot.subplots.first.entities.find { |t| t.name == 'right thing' }
+      # t1.parent = actor.parent
       actor.perform 'look thing'
       expect(actor.messages).to include('right thing')
     end
