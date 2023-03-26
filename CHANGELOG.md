@@ -1,3 +1,12 @@
+## 3.0.0
+- Instantiate subplots from snapshots
+- Split Action into Response and Action
+- Logging
+- Remove deprecated Active#perform behavior
+- Snapshots use single static index
+- Hydration improvements
+- Snapshot metadata validation
+
 ## 2.4.0 - February 11, 2023
 - Fix arity of delegated methods in scripts
 - Action hooks accept verb filters
