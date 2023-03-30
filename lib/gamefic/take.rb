@@ -13,16 +13,16 @@ module Gamefic
     end
 
     def start
-      @type.start actor
+      @type.start @actor
       return if @type.cancelled?
-      @scene.start_block&.call(actor, @type.props)
+      @scene.start_block&.call(@actor, @type.props)
     end
 
     def finish
       return if @type.cancelled?
-      @type.finish actor
+      @type.finish @actor
       return if @type.cancelled?
-      @scene.finish_block&.call(actor, @type.props)
+      @scene.finish_block&.call(@actor, @type.props)
     end
   end
 end

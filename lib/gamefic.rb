@@ -21,6 +21,7 @@ require "gamefic/command"
 require "gamefic/dispatcher"
 require 'gamefic/world'
 require 'gamefic/scriptable'
+require 'gamefic/take'
 require 'gamefic/plot'
 require 'gamefic/subplot'
 require 'gamefic/serialize/exclusions'
