@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scene
+  class Scene
     module Type
       class MultipleChoice < Base
-        PROPS = Scene::Props::MultipleChoice
+        use_prop_class Scene::Props::MultipleChoice
       end
     end
   end

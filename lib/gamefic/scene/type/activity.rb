@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scene
+  class Scene
     module Type
       class Activity
         def finish actor
           super
-          actor.perform props.input&.strip
+          actor.perform props.input
         end
       end
     end

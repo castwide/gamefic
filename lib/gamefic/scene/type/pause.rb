@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scene
+  class Scene
     module Type
       class Pause < Base
         def start _actor

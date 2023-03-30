@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scene
+  class Scene
     module Props
       class MultipleChoice < Base
         # The zero-based index of the selected option.

@@ -2,12 +2,17 @@ module Gamefic
   module World
     class Scenebook
       def initialize
-        block :activity, Ac
+        block :activity, Scene::Activity
       end
 
-      def block name, scene_type = Scene::Type::Base, &block
+      # @param name [Symbol]
+      # @param type [Class<SceneType::Base>]
+      # @param on_start [Proc, nil]
+      # @param on_finish [Proc, nil]
+      # @param block [Proc]
+      def block name, scene_type = Scene::Type::Base, on_start: nil, on_finish: nil, &block
         raise ArgumentError, "A scene named `#{name}` is already blocked" if scene_map.key?(name)
-        scene_map[name] = scene_class.new(name, scene_type, &block)
+        scene_map[name] = Scene.new(name, type: scene_type, on_start: on_start, on_finish: on_finish, &block)
       end
 
       # @todo Should this raise an error?

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scene
+  class Scene
     module Props
       class Base
         attr_accessor :prompt
