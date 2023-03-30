@@ -4,6 +4,12 @@ module Gamefic
       include Commands
       include Players
 
+      def scenebook
+        @scenebook ||= Scenebook.new
+      end
+
+      # @todo This is getting a MASSIVE refactor. Think about it.
+
       # @return [Class<Gamefic::Scene::Activity>]
       def default_scene
         @default_scene ||= Scene::Activity
