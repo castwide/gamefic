@@ -25,7 +25,7 @@ module Gamefic
     # @param on_start [Proc, nil]
     # @param on_finish [Proc, nil]
     # @param block [Proc]
-    def initialize name, type: SceneType::Base, on_start: nil, on_finish: nil, &block
+    def initialize name, type: Scene::Type::Base, on_start: nil, on_finish: nil, &block
       @name = name
       @type = type
       @start_block = on_start

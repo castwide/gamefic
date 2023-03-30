@@ -3,6 +3,7 @@ module Gamefic
   #
   module World
     autoload :Playbook,  'gamefic/world/playbook'
+    autoload :Scenebook,  'gamefic/world/scenebook'
     autoload :Entities,  'gamefic/world/entities'
     autoload :Commands,  'gamefic/world/commands'
     autoload :Callbacks, 'gamefic/world/callbacks'
