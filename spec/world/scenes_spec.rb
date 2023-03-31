@@ -69,7 +69,7 @@ describe Gamefic::World::Scenes do
   end
 
   it 'creates a Pause scene' do
-    scene = object.pause :denouement, :default_conclusion do |scene|
+    scene = object.pause :denouement, next_cue: :default_conclusion do |scene|
       scene.on_start do |actor|
         actor.tell "You're in the denouement."
       end

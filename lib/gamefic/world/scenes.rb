@@ -114,25 +114,23 @@ module Gamefic
       # the user (e.g., pressing Enter) to continue.
       #
       # @example
-      #   @scene = pause 'Continue' do |actor|
+      #   @scene = pause :pause_scene do |actor|
       #     actor.tell "After you continue, you will be prompted for a command."
-      #     actor.prepare default_scene
       #   end
       #
+      # @param name [Symbol]
       # @param prompt [String, nil] The text to display when prompting the user to continue
       # @param next_cue [Scene, Symbol]
-      # @yieldparam [Scene]
+      # @yieldparam [Actor]
       # @return [Scene]
-      def pause name, prompt = nil, next_cue = nil, &block
+      def pause name, prompt: 'Press enter to continue...', next_cue: nil, &block
         block name,
               rig: Gamefic::Scene::Rig::Pause,
-              on_start: proc { |_actor, props|
-                props.prompt = prompt
-              },
-              on_finish: proc { |actor, _props|
+              on_start: proc { |actor, props|
+                props.prompt = prompt if prompt
                 actor.cue(next_cue || :default_scene)
-              },
-              &block
+                block.call(actor)
+              }
       end
 
       # Create a conclusion.
@@ -143,6 +141,10 @@ module Gamefic
       #   conclusion :ending do |scene|
       #     scene.on_start do |actor, _props|
       #       actor.tell 'GAME OVER'
+      #       actor.tell 'Press Enter to exit the game.'
+      #     end
+      #     scene.on_finish do |_actor, _props|
+      #       exit
       #     end
       #   end
       #
