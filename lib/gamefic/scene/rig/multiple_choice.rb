@@ -18,6 +18,8 @@ module Gamefic
           cancel && return unless props.index
         end
 
+        private
+
         def index_by_number
           return props.input.to_i if props.input.match(/^\d+$/) && props.options[props.input.to_i]
 
