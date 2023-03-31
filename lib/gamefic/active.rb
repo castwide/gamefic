@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'set'
+require 'gamefic/active/cue'
 
 module Gamefic
   class NotConclusionError < RuntimeError; end
@@ -12,16 +13,12 @@ module Gamefic
   module Active
     include Logging
 
-    # The scene in which the entity is currently participating.
-    #
-    # @return [Gamefic::Scene]
-    attr_reader :scene
+    # @return [Active::Cue]
+    attr_reader :next_cue
 
-    # @return [Symbol]
-    attr_reader :next_scene_name
-
-    # @return [Hash]
-    attr_reader :next_scene_data
+    # The take of the current scene, or nil if there is no active scene
+    # @return [Take, nil]
+    attr_reader :take
 
     # The prompt for the previous scene.
     #
@@ -171,29 +168,42 @@ module Gamefic
     # @param quietly [Boolean] If true, return the action's output instead of appending it to #messages
     # @return [String, nil]
     def proceed quietly: false
-      a = dispatchers&.last.next
-      return if a.nil?
-
+      a = dispatchers&.last&.next
       prepare_buffer quietly
-      a.execute
+      a&.execute
       flush_buffer quietly
     end
 
     # Cue a scene to start in the next turn.
     #
     # @param scene [Scene, Symbol]
-    # @param data [Hash] Extra data to pass to the scene's props.
-    # @return [Symbol]
-    def cue scene, **data
-      logger.warn "Overwriting existing cue `#{@next_scene_name}` with `#{scene.to_sym}`" if @next_scene_name
+    # @param context [Hash] Extra data to pass to the scene's props.
+    # @return [Cue]
+    def cue scene, **context
+      found = select_scene(scene)
+      raise ArgumentError, "Invalid scene `#{scene}`" unless found
 
-      @next_scene_name = select_scene(scene)
-      raise ArgumentError, "Invalid scene `#{scene}`" unless @next_scene_name
+      return @next_cue if @next_cue&.scene == found && @next_cue&.context == context
 
-      @next_scene_data = data
-      @next_scene_name
+      logger.warn "Overwriting existing cue `#{@next_cue.name}` with `#{scene.to_sym}`" if @next_cue
+
+      @next_cue = Cue.new(found, **context)
     end
     alias prepare cue
+
+    # Delete the next cue.
+    #
+    # @return [nil]
+    def uncue
+      @next_cue = nil
+    end
+
+    def select_cue *scenes
+      found = scenes.find { |scn| select_scene(scn) }
+      raise ArgumentError, "No valid scenes found in #{scenes}" unless found
+
+      cue found
+    end
 
     # Cue a conclusion. This method works like #cue, except it will raise a
     # NotConclusionError if the scene is not a Scene::Conclusion.
@@ -285,21 +295,21 @@ module Gamefic
     end
 
     # @param scene [Scene, Symbol]
-    # @return [Symbol]
+    # @return [Scene]
     def select_scene scene
       scene.is_a?(Scene) ? select_scene_by_instance(scene) : select_scene_by_name(scene)
     end
 
     def select_scene_by_instance scene
       scenebooks.reverse.each do |sb|
-        return scene.name if sb.scenes.include?(sb)
+        return scene if sb.scenes.include?(scene)
       end
       nil
     end
 
     def select_scene_by_name name
       scenebooks.reverse.each do |sb|
-        return name if sb.scene?(name)
+        return sb[name] if sb.scene?(name)
       end
       nil
     end

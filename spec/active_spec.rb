@@ -48,4 +48,18 @@ describe Gamefic::Active do
     expect(object.messages).not_to include('hidden')
     expect(object.messages).to include('visible')
   end
+
+  it 'cues a scene by name' do
+    scenebook = Gamefic::World::Scenebook.new
+    scene = scenebook.block(:dummy)
+    object.scenebooks.push scenebook
+    expect { object.cue :dummy }.not_to raise_error
+  end
+
+  it 'cues a scene by instance' do
+    scenebook = Gamefic::World::Scenebook.new
+    scene = scenebook.block(:dummy)
+    object.scenebooks.push scenebook
+    expect { object.cue scene }.not_to raise_error
+  end
 end
