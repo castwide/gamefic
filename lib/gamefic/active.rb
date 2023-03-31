@@ -10,18 +10,18 @@ module Gamefic
   # subclass that includes this module.
   #
   module Active
+    include Logging
+
     # The scene in which the entity is currently participating.
     #
-    # @return [Gamefic::Scene::Base]
+    # @return [Gamefic::Scene]
     attr_reader :scene
 
-    # The scene class that will be cued for this entity on the next turn.
-    # Usually set with the #prepare method.
-    #
-    # @return [Class<Gamefic::Scene::Base>]
-    attr_reader :next_scene
+    # @return [Symbol]
+    attr_reader :next_scene_name
 
-    attr_reader :next_options
+    # @return [Hash]
+    attr_reader :next_scene_data
 
     # The prompt for the previous scene.
     #
@@ -47,11 +47,7 @@ module Gamefic
       @scenebooks ||= []
     end
 
-    def syntaxes
-      playbooks.flat_map(&:syntaxes)
-    end
-
-    # An array of actions waiting to be performed.
+    # An array of commands waiting to be executed.
     #
     # @return [Array<String>]
     def queue
@@ -60,11 +56,16 @@ module Gamefic
 
     # A hash of values representing the state of a performing entity.
     #
+    # @todo Does this really need to be here? It might make more sense
+    #   to move it out to the scene or something.
+    #
     # @return [Hash{Symbol => Object}]
     def state
       @state ||= {}
     end
 
+    # @todo Same applies here as state. Maybe stop doing this and handle
+    #   it in the scene.
     def output
       @output ||= {}
     end
@@ -178,49 +179,21 @@ module Gamefic
       flush_buffer quietly
     end
 
-    # Immediately start a new scene for the character.
-    # Use #prepare if you want to declare a scene to be started at the
-    # beginning of the next turn.
+    # Cue a scene to start in the next turn.
     #
-    # @param new_scene [Class<Scene::Base>]
-    # @param data [Hash] Additional scene data
-    # def cue new_scene, **data
-    #   @next_scene = nil
-    #   if new_scene.nil?
-    #     @scene = nil
-    #   else
-    #     @scene = new_scene.new(self, **data)
-    #     @scene.start
-    #   end
-    # end
-
     # @param scene [Scene, Symbol]
+    # @param data [Hash] Extra data to pass to the scene's props.
     # @return [Symbol]
-    def cue scene
-      @next_scene = select_scene(scene)
-      raise ArgumentError, "Invalid scene `#{scene}`" unless @next_scene
+    def cue scene, **data
+      logger.warn "Overwriting existing cue `#{@next_scene_name}` with `#{scene.to_sym}`" if @next_scene_name
 
-      @next_scene
-    end
+      @next_scene_name = select_scene(scene)
+      raise ArgumentError, "Invalid scene `#{scene}`" unless @next_scene_name
 
-    # Prepare a scene to be started for this character at the beginning of the
-    # next turn. As opposed to #cue, a prepared scene will not start until the
-    # current scene finishes.
-    #
-    # @param new_scene [Class<Scene::Base>]
-    # @oaram data [Hash] Additional scene data
-    def prepare new_scene, **data
-      @next_scene = new_scene
-      @next_options = data
+      @next_scene_data = data
+      @next_scene_name
     end
-
-    # Return true if the character is expected to be in the specified scene on
-    # the next turn.
-    #
-    # @return [Boolean]
-    def will_cue? scene
-      (@scene.class == scene and @next_scene.nil?) || @next_scene == scene
-    end
+    alias prepare cue
 
     # Cue a conclusion. This method works like #cue, except it will raise a
     # NotConclusionError if the scene is not a Scene::Conclusion.
@@ -228,7 +201,8 @@ module Gamefic
     # @param new_scene [Class<Scene::Base>]
     # @oaram data [Hash] Additional scene data
     def conclude new_scene, **data
-      raise NotConclusionError unless new_scene <= Scene::Conclusion
+      raise NotConclusionError unless new_scene.rig <= Scene::Conclusion
+
       cue new_scene, **data
     end
 
