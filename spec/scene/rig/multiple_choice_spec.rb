@@ -1,11 +1,11 @@
-describe Gamefic::Scene::Type::MultipleChoice do
+describe Gamefic::Scene::Rig::MultipleChoice do
   it 'initializes MultipleChoice props' do
-    type = Gamefic::Scene::Type::MultipleChoice.new
+    type = Gamefic::Scene::Rig::MultipleChoice.new
     expect(type.props).to be_a(Gamefic::Scene::Props::MultipleChoice)
   end
 
   it 'sets props on valid input' do
-    type = Gamefic::Scene::Type::MultipleChoice.new
+    type = Gamefic::Scene::Rig::MultipleChoice.new
     type.props.options.concat ['one', 'two', 'three']
     actor = Gamefic::Actor.new
     actor.queue.push 'one'
@@ -19,7 +19,7 @@ describe Gamefic::Scene::Type::MultipleChoice do
   end
 
   it 'cancels on invalid input' do
-    type = Gamefic::Scene::Type::MultipleChoice.new
+    type = Gamefic::Scene::Rig::MultipleChoice.new
     type.props.options.concat ['one', 'two', 'three']
     actor = Gamefic::Actor.new
     actor.queue.push 'four'

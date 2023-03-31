@@ -9,20 +9,23 @@ module Gamefic
     def initialize actor, scene
       @actor = actor
       @scene = scene
-      @type = scene.type.new
+      @rig = scene.rig.new
     end
 
     def start
-      @type.start @actor
-      return if @type.cancelled?
-      @scene.start_block&.call(@actor, @type.props)
+      @rig.start @actor
+      return if @rig.cancelled?
+
+      @scene.start_block&.call(@actor, @rig.props)
     end
 
     def finish
-      return if @type.cancelled?
-      @type.finish @actor
-      return if @type.cancelled?
-      @scene.finish_block&.call(@actor, @type.props)
+      return if @rig.cancelled?
+
+      @rig.finish @actor
+      return if @rig.cancelled?
+
+      @scene.finish_block&.call(@actor, @rig.props)
     end
   end
 end

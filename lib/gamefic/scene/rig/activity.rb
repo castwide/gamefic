@@ -2,7 +2,7 @@
 
 module Gamefic
   class Scene
-    module Type
+    module Rig
       class Activity < Base
         def finish actor
           super

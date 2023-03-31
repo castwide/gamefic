@@ -1,6 +1,6 @@
-describe Gamefic::Scene::Type::Activity do
+describe Gamefic::Scene::Rig::Activity do
   it 'performs a command' do
-    type = Gamefic::Scene::Type::Activity.new
+    type = Gamefic::Scene::Rig::Activity.new
     actor = Gamefic::Actor.new
     playbook = Gamefic::World::Playbook.new
     playbook.respond(:command) { |actor| actor[:executed] = true }

@@ -1,16 +1,16 @@
-describe Gamefic::Scene::Type::YesOrNo do
+describe Gamefic::Scene::Rig::YesOrNo do
   it 'initializes YesOrNo props' do
-    type = Gamefic::Scene::Type::YesOrNo.new
+    type = Gamefic::Scene::Rig::YesOrNo.new
     expect(type.props).to be_a(Gamefic::Scene::Props::YesOrNo)
   end
 
   it 'freezes options' do
-    type = Gamefic::Scene::Type::YesOrNo.new
+    type = Gamefic::Scene::Rig::YesOrNo.new
     expect { type.props.options.concat ['maybe'] }.to raise_error(FrozenError)
   end
 
   it 'flags yes?' do
-    type = Gamefic::Scene::Type::YesOrNo.new
+    type = Gamefic::Scene::Rig::YesOrNo.new
     actor = Gamefic::Actor.new
     actor.queue.push 'yes'
     type.finish actor
@@ -24,7 +24,7 @@ describe Gamefic::Scene::Type::YesOrNo do
   end
 
   it 'flags no?' do
-    type = Gamefic::Scene::Type::YesOrNo.new
+    type = Gamefic::Scene::Rig::YesOrNo.new
     actor = Gamefic::Actor.new
     actor.queue.push 'no'
     type.finish actor
@@ -38,7 +38,7 @@ describe Gamefic::Scene::Type::YesOrNo do
   end
 
   it 'cancels on invalid input' do
-    type = Gamefic::Scene::Type::YesOrNo.new
+    type = Gamefic::Scene::Rig::YesOrNo.new
     actor = Gamefic::Actor.new
     actor.queue.push 'maybe'
     type.finish actor

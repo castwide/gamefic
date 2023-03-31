@@ -2,7 +2,7 @@
 
 module Gamefic
   class Scene
-    module Type
+    module Rig
       class Base
         def props
           @props ||= prop_class.new

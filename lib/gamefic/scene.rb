@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'gamefic/scene/props'
-require 'gamefic/scene/type'
+require 'gamefic/scene/rig'
 
 module Gamefic
   # A Scene provides blocks to be executed at the start and finish of a turn.
@@ -11,8 +11,8 @@ module Gamefic
     # @return [Symbol]
     attr_reader :name
 
-    # @return [Class<SceneType::Base>]
-    attr_reader :type
+    # @return [Class<Scene::Rig::Base>]
+    attr_reader :rig
 
     # @return [Proc]
     attr_reader :start_block
@@ -21,17 +21,22 @@ module Gamefic
     attr_reader :finish_block
 
     # @param name [Symbol]
-    # @param type [Class<SceneType::Base>]
+    # @param rig [Class<Scene::Rig::Base>]
+    # @param type [String, nil]
     # @param on_start [Proc, nil]
     # @param on_finish [Proc, nil]
-    # @param block [Proc]
-    def initialize name, type: Scene::Type::Base, on_start: nil, on_finish: nil, &block
+    # @yieldparam [self]
+    def initialize name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil
       @name = name
+      @rig = rig
       @type = type
       @start_block = on_start
       @finish_block = on_finish
-      # @todo Is yield or yield_self valid here?
-      block&.call(self)
+      yield(self) if block_given?
+    end
+
+    def type
+      @type ||= rig.to_s.split('::').last
     end
 
     # @yieldparam [Actor]

@@ -6,13 +6,14 @@ module Gamefic
       # @raise [NameError] if a scene with the given name already exists
       #
       # @param name [Symbol]
-      # @param type [Class<SceneType::Base>]
+      # @param rig [Class<Scene::Rig::Base>]
+      # @param type [String, nil]
       # @param on_start [Proc, nil]
       # @param on_finish [Proc, nil]
       # @param block [Proc]
       # @return [Scene]
-      def block name, scene_type = Scene::Type::Base, on_start: nil, on_finish: nil, &block
-        add Scene.new(name, type: scene_type, on_start: on_start, on_finish: on_finish, &block)
+      def block name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil, &block
+        add Scene.new(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
       end
 
       # Add a scene to the scenebook.
@@ -27,11 +28,25 @@ module Gamefic
         scene_map[scene.name] = scene
       end
 
-      # @todo Should this raise an error?
       # @param name [Symbol]
       # @return [Scene]
       def [](name)
         scene_map[name]
+      end
+
+      # @param name [Symbol]
+      def scene?(name)
+        scene_map.key?(name)
+      end
+
+      # @return [Array<Symbol>]
+      def names
+        scene_map.names
+      end
+
+      # @return [Array<Scene>]
+      def scenes
+        scene_map.values
       end
 
       def freeze

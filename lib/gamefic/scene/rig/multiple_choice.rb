@@ -2,7 +2,7 @@
 
 module Gamefic
   class Scene
-    module Type
+    module Rig
       class MultipleChoice < Base
         use_prop_class Scene::Props::MultipleChoice
 
