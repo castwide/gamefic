@@ -6,8 +6,12 @@ module Gamefic
       # A rig provides a framework for processing scenes and handling input.
       #
       class Base
+        def initialize **context
+          @context = context
+        end
+
         def props
-          @props ||= prop_class.new
+          @props ||= prop_class.new(**@context)
         end
 
         def cancelled?
@@ -20,7 +24,10 @@ module Gamefic
 
         # @param actor [Gamefic::Active]
         # @return [void]
-        def start actor; end
+        def start actor
+          props.output[:messages].append actor.messages
+          # @todo Flush here?
+        end
 
         # @param actor [Gamefic::Active]
         # @return [void]

@@ -6,10 +6,11 @@ module Gamefic
   class Take
     # @param actor [Gamefic::Active]
     # @param scene [Gamefic::Scene]
-    def initialize actor, scene
+    # @param context [Hash]
+    def initialize actor, scene, **context
       @actor = actor
       @scene = scene
-      @rig = scene.rig.new
+      @rig = scene.rig.new(**context)
     end
 
     def start
