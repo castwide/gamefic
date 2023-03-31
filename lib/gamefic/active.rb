@@ -40,6 +40,13 @@ module Gamefic
       @playbooks ||= []
     end
 
+    # The scenebooks that will be used to participate in scenes.
+    #
+    # @return [Array<Gamefic::World::Scenebook>]
+    def scenebooks
+      @scenebooks ||= []
+    end
+
     def syntaxes
       playbooks.flat_map(&:syntaxes)
     end
@@ -177,14 +184,23 @@ module Gamefic
     #
     # @param new_scene [Class<Scene::Base>]
     # @param data [Hash] Additional scene data
-    def cue new_scene, **data
-      @next_scene = nil
-      if new_scene.nil?
-        @scene = nil
-      else
-        @scene = new_scene.new(self, **data)
-        @scene.start
-      end
+    # def cue new_scene, **data
+    #   @next_scene = nil
+    #   if new_scene.nil?
+    #     @scene = nil
+    #   else
+    #     @scene = new_scene.new(self, **data)
+    #     @scene.start
+    #   end
+    # end
+
+    # @param scene [Scene, Symbol]
+    # @return [Symbol]
+    def cue scene
+      @next_scene = select_scene(scene)
+      raise ArgumentError, "Invalid scene `#{scene}`" unless @next_scene
+
+      @next_scene
     end
 
     # Prepare a scene to be started for this character at the beginning of the
@@ -292,6 +308,26 @@ module Gamefic
 
     def dispatchers
       @dispatchers ||= []
+    end
+
+    # @param scene [Scene, Symbol]
+    # @return [Symbol]
+    def select_scene scene
+      scene.is_a?(Scene) ? select_scene_by_instance(scene) : select_scene_by_name(scene)
+    end
+
+    def select_scene_by_instance scene
+      scenebooks.reverse.each do |sb|
+        return scene.name if sb.scenes.include?(sb)
+      end
+      nil
+    end
+
+    def select_scene_by_name name
+      scenebooks.reverse.each do |sb|
+        return name if sb.scene?(name)
+      end
+      nil
     end
   end
 end

@@ -10,14 +10,21 @@ module Gamefic
 
       # @todo This is getting a MASSIVE refactor. Think about it.
 
-      # @return [Class<Gamefic::Scene::Activity>]
+      # Block a new scene.
+      #
+      def block name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil, **rig_opts, &block
+        scenebook.block(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, **rig_opts, &block)
+      end
+      alias custom block
+
+      # @return [Scene]
       def default_scene
-        @default_scene ||= Scene::Activity
+        scenebook[:default_scene] || block(:default_scene, rig: Scene::Rig::Activity)
       end
 
-      # @return [Class<Gamefic::Scene::Conclusion>]
+      # @return [Scene]
       def default_conclusion
-        @default_conclusion ||= Scene::Conclusion
+        scenebook[:default_conclusion] || block(:default_conclusion, rig: Scene::Rig::Conclusion)
       end
 
       # Add a block to be executed when a player is added to the game.
@@ -30,8 +37,9 @@ module Gamefic
       #   end
       #
       # @yieldparam [Gamefic::Actor]
+      # @return [Scene]
       def introduction(&proc)
-        @introduction = proc
+        block(:introduction, on_start: proc, on_finish: ->(actor) { actor.cue default_scene })
       end
 
       # Introduce a player to the game.
@@ -41,32 +49,38 @@ module Gamefic
       # @return [void]
       def introduce(player)
         player.playbooks.push playbook unless player.playbooks.include?(playbook)
-        player.cue default_scene
+        player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
         players.push player
-        @introduction&.call(player)
+        player.cue :introduction
       end
 
       # Create a multiple-choice scene.
       # The user will be required to make a valid choice to continue.
       #
       # @example
-      #   @scene = multiple_choice 'Go to work', 'Go to school' do |actor, scene|
-      #     # Assuming user selected the first choice:
-      #     scene.selection #=> 'Go to work'
-      #     scene.index     #=> 0
-      #     scene.number    #=> 1
+      #   multiple_choice :go_somewhere, ['Go to work', 'Go to school'] do |scene|
+      #     scene.on_finish do |actor, props|
+      #       # Assuming the user selected the first choice:
+      #       props.selection # => 'Go to work'
+      #       props.index     # => 0
+      #       props.number    # => 1
+      #     end
       #   end
       #
-      # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Gamefic::Scene::MultipleChoice]
-      # @return [Class<Gamefic::Scene::MultipleChoice>]
-      def multiple_choice *choices, &block
-        s = Scene::MultipleChoice.subclass do |_actor, scene|
-          scene.options.concat choices
-          scene.on_finish &block
-        end
-        scene_classes.push s
-        s
+      # @param name [Symbol]
+      # @param choices [Array<String>]
+      # @param prompt [String, nil]
+      # @param block [Proc]
+      # @yieldparam [Scene]
+      # @return [Scene]
+      def multiple_choice name, choices = [], prompt = 'What is your choice?', &block
+        block name,
+              rig: Gamefic::Scene::Rig::MultipleChoice,
+              on_start: proc { |_actor, props|
+                props.prompt = prompt
+                props.options.concat choices
+              },
+              &block
       end
 
       # Create a yes-or-no scene.
@@ -81,37 +95,18 @@ module Gamefic
       #     end
       #   end
       #
+      # @param name [Symbol]
       # @param prompt [String, nil]
-      # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Gamefic::Scene::YesOrNo]
-      # @return [Class<Gamefic::Scene::YesOrNo>]
-      def yes_or_no prompt = nil, &block
-        s = Scene::YesOrNo.subclass do |_actor, scene|
-          scene.prompt = prompt
-          scene.on_finish &block
-        end
-        scene_classes.push s
-        s
-      end
-
-      # Create a scene with custom processing on user input.
-      #
-      # @example Echo the user's response
-      #   @scene = question 'What do you say?' do |actor, scene|
-      #     actor.tell "You said #{scene.input}"
-      #   end
-      #
-      # @param prompt [String]
-      # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Gamefic::Scene::Base]
-      # @return [Class<Gamefic::Scene::Base>]
-      def question prompt = 'What is your answer?', &block
-        s = Scene::Base.subclass do |_actor, scene|
-          scene.prompt = prompt
-          scene.on_finish &block
-        end
-        scene_classes.push s
-        s
+      # @yieldparam [Scene]
+      # @return [Scene]
+      def yes_or_no name, prompt = 'Answer:', &block
+        block name,
+              rig: Gamefic::Scene::Rig::YesOrNo,
+              on_start: proc { |_actor, props|
+                props.prompt = prompt
+                props.options.concat choices
+              },
+              &block
       end
 
       # Create a scene that pauses the game.
@@ -125,15 +120,19 @@ module Gamefic
       #   end
       #
       # @param prompt [String, nil] The text to display when prompting the user to continue
-      # @yieldparam [Gamefic::Actor]
-      # @return [Class<Gamefic::Scene::Pause>]
-      def pause prompt = nil, &block
-        s = Scene::Pause.subclass do |actor, scene|
-          scene.prompt = prompt unless prompt.nil?
-          block&.call(actor, scene)
-        end
-        scene_classes.push s
-        s
+      # @param next_cue [Scene, Symbol]
+      # @yieldparam [Scene]
+      # @return [Scene]
+      def pause name, prompt = nil, next_cue = nil, &block
+        block name,
+              rig: Gamefic::Scene::Rig::Pause,
+              on_start: proc { |_actor, props|
+                props.prompt = prompt
+              },
+              on_finish: proc { |actor, _props|
+                actor.cue(next_cue || :default_scene)
+              },
+              &block
       end
 
       # Create a conclusion.
@@ -141,93 +140,19 @@ module Gamefic
       # scene is complete.
       #
       # @example
-      #   @scene = conclusion do |actor|
-      #     actor.tell 'Game over'
-      #   end
-      #
-      # @yieldparam [Gamefic::Actor]
-      # @return [Class<Gamefic::Scene::Conclusion>]
-      def conclusion &block
-        s = Scene::Conclusion.subclass &block
-        scene_classes.push s
-        s
-      end
-
-      # Create a custom scene.
-      #
-      # Custom scenes should always specify the next scene to be cued or
-      # prepared. If not, the scene will get repeated on the next turn.
-      #
-      # This method creates a Scene::Base by default. You can customize other
-      # scene types by specifying the class to create.
-      #
-      # @example Ask the user for a name
-      #   @scene = custom do |actor, scene|
-      #     scene.prompt = "What's your name?"
-      #     scene.on_finish do
-      #       actor.name = scene.input
-      #       actor.tell "Hello, #{actor.name}!"
-      #       actor.cue default_scene
+      #   conclusion :ending do |scene|
+      #     scene.on_start do |actor, _props|
+      #       actor.tell 'GAME OVER'
       #     end
       #   end
       #
-      # @param cls [Class<Scene::Base>] The class of scene to be instantiated.
-      # @yieldparam [Gamefic::Actor]
-      # @return [Class<Gamefic::Scene::Base>]
-      def custom cls = Scene::Base, &block
-        s = cls.subclass &block
-        scene_classes.push s
-        s
-      end
-
-      # Choose a new scene based on a list of options.
-      # This is a specialized type of multiple-choice scene that determines
-      # which scene to cue based on a Hash of choices and scene keys.
-      #
-      # @example Select a scene
-      #   scene_one = pause do |actor|
-      #     actor.tell "You went to scene one"
-      #   end
-      #
-      #   scene_two = pause do |actor|
-      #     actor.tell "You went to scene two"
-      #   end
-      #
-      #   select_one_or_two = multiple_scene "One" => scene_one, "Two" => scene_two
-      #
-      #   introduction do |actor|
-      #     actor.cue select_one_or_two # The actor will be prompted to select "one" or "two" and get sent to the corresponding scene
-      #   end
-      #
-      # @example Customize options
-      #   scene_one = pause # do...
-      #   scene_two = pause # do...
-      #
-      #   # Some event in the game sets actor[:can_go_to_scene_two] to true
-      #
-      #   select_one_or_two = multiple_scene do |actor, scene|
-      #     scene.map "Go to scene one", scene_one
-      #     scene.map "Go to scene two", scene_two if actor[:can_go_to_scene_two]
-      #   end
-      #
-      # @param map [Hash] A Hash of options and associated scenes.
-      # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Gamefic::Scene::MultipleScene]
-      # @return [Class<Gamefic::Scene::MultipleScene>]
-      def multiple_scene map = {}, &block
-        s = Scene::MultipleScene.subclass do |actor, scene|
-          map.each_pair do |k, v|
-            scene.map k, v
-          end
-          block&.call actor, scene
-        end
-        scene_classes.push s
-        s
-      end
-
-      # @return [Array<Class<Gamefic::Scene::Base>>]
-      def scene_classes
-        @scene_classes ||= []
+      # @param name [Symbol]
+      # @yieldparam [Scene]
+      # @return [Scene]
+      def conclusion name, &block
+        block name,
+              rig: Gamefic::Scene::Rig::Conclusion,
+              &block
       end
     end
   end

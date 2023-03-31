@@ -3,6 +3,8 @@
 module Gamefic
   class Scene
     module Rig
+      # A rig provides a framework for processing scenes and handling input.
+      #
       class Base
         def props
           @props ||= prop_class.new

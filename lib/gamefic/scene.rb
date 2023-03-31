@@ -14,11 +14,20 @@ module Gamefic
     # @return [Class<Scene::Rig::Base>]
     attr_reader :rig
 
-    # @return [Proc]
-    attr_reader :start_block
+    # @return [Array<Proc>]
+    def start_blocks
+      @start_blocks ||= []
+    end
 
-    # @return [Proc]
-    attr_reader :finish_block
+    # @return [Array<Proc>]
+    def start_blocks
+      @start_blocks ||= []
+    end
+
+    # @return [Array<Proc>]
+    def finish_blocks
+      @start_blocks ||= []
+    end
 
     # @param name [Symbol]
     # @param rig [Class<Scene::Rig::Base>]
@@ -30,8 +39,8 @@ module Gamefic
       @name = name
       @rig = rig
       @type = type
-      @start_block = on_start
-      @finish_block = on_finish
+      start_blocks.push on_start if on_start
+      finish_blocks.push on_finish if on_finish
       yield(self) if block_given?
     end
 
@@ -49,6 +58,10 @@ module Gamefic
     # @yieldparam [SceneProps::Base]
     def on_finish &block
       @finish_block = block
+    end
+
+    def to_sym
+      name
     end
   end
 end

@@ -3,6 +3,7 @@ module Gamefic
     module Players
       include Gamefic::World::Entities
       include Gamefic::World::Commands
+      include Logging
 
       # An array of entities that are currently connected to users.
       #
@@ -12,16 +13,15 @@ module Gamefic
       end
 
       def player_class cls = nil
-        STDERR.puts "Modifying player_class this way is deprecated. Use set_player_class instead" unless cls.nil?
+        logger.warn "Modifying player_class this way is deprecated. Use set_player_class instead" unless cls.nil?
         @player_class = cls unless cls.nil?
         @player_class ||= Gamefic::Actor
       end
 
       # @param cls [Class]
       def set_player_class cls
-        unless cls < Gamefic::Active && cls <= Gamefic::Entity
-          raise ArgumentError, "Player class must be an active entity"
-        end
+        raise ArgumentError, "Player class must be an active entity" unless cls < Gamefic::Active && cls <= Gamefic::Entity
+
         @player_class = cls
       end
 
