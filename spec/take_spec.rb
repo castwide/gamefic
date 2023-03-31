@@ -22,4 +22,17 @@ describe Gamefic::Take do
     take.finish
     expect(actor[:scene_finished]).to be(true)
   end
+
+  it 'performs actions in Activity scene types' do
+    actor = Gamefic::Actor.new
+    playbook = Gamefic::World::Playbook.new
+    playbook.respond(:command) { |actor| actor[:executed] = true }
+    actor.playbooks.push playbook
+    scene = Gamefic::Scene.new(:activity, type: Gamefic::Scene::Type::Activity)
+    take = Gamefic::Take.new(actor, scene)
+    take.start
+    actor.queue.push 'command'
+    take.finish
+    expect(actor[:executed]).to be(true)
+  end
 end

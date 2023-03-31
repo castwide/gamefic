@@ -6,14 +6,10 @@ module Gamefic
       class Base
         attr_accessor :prompt
 
-        attr_reader :input
+        attr_accessor :input
 
         def initialize prompt = '>'
           @prompt = prompt
-        end
-
-        def update input:
-          @input = input
         end
       end
     end

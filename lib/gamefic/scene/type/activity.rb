@@ -3,7 +3,7 @@
 module Gamefic
   class Scene
     module Type
-      class Activity
+      class Activity < Base
         def finish actor
           super
           actor.perform props.input

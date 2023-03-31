@@ -1,7 +1,7 @@
 module Gamefic
   class Scene
     module Type
-      class YesOrNo < Base
+      class YesOrNo < MultipleChoice
         use_prop_class Props::YesOrNo
       end
     end

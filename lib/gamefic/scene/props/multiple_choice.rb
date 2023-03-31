@@ -7,23 +7,33 @@ module Gamefic
         # The zero-based index of the selected option.
         #
         # @return [Integer]
-        attr_reader :index
+        attr_accessor :index
 
         # The one-based index of the selected option.
         #
         # @return [Integer]
-        attr_reader :number
+        attr_accessor :number
 
         # The full text of the selected option.
         #
         # @return [String]
-        attr_reader :selection
+        attr_accessor :selection
+
+        # A message to send the player for an invalid choice. A formatting
+        # token named %<input>s can be used to inject the user input.
+        #
+        # @return [String]
+        attr_writer :invalid_message
 
         # The array of available options.
         #
         # @return [Array<String>]
         def options
           @options ||= []
+        end
+
+        def invalid_message
+          @invalid_message ||= '"%<input>s" is not a valid choice.'
         end
       end
     end
