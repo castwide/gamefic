@@ -16,7 +16,7 @@ module Gamefic
     def initialize actor, scene, **context
       @actor = actor
       @scene = scene
-      @rig = scene.rig.new(**context)
+      @rig = scene.rig.new(scene, **context)
     end
 
     def start

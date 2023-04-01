@@ -1,48 +1,45 @@
 describe Gamefic::Scene::Rig::YesOrNo do
+  let(:yes_or_no) { Gamefic::Scene::Rig::YesOrNo.new(nil) }
+
   it 'initializes YesOrNo props' do
-    type = Gamefic::Scene::Rig::YesOrNo.new
-    expect(type.props).to be_a(Gamefic::Scene::Props::YesOrNo)
+    expect(yes_or_no.props).to be_a(Gamefic::Scene::Props::YesOrNo)
   end
 
   it 'freezes options' do
-    type = Gamefic::Scene::Rig::YesOrNo.new
-    expect { type.props.options.concat ['maybe'] }.to raise_error(FrozenError)
+    expect { yes_or_no.props.options.concat ['maybe'] }.to raise_error(FrozenError)
   end
 
   it 'flags yes?' do
-    type = Gamefic::Scene::Rig::YesOrNo.new
     actor = Gamefic::Actor.new
     actor.queue.push 'yes'
-    type.finish actor
+    yes_or_no.finish actor
     expect(actor.queue).to be_empty
-    expect(type).not_to be_cancelled
-    expect(type.props.input).to eq('yes')
-    expect(type.props.selection).to eq('Yes')
-    expect(type.props.index).to eq(0)
-    expect(type.props.number).to eq(1)
-    expect(type.props).to be_yes
+    expect(yes_or_no).not_to be_cancelled
+    expect(yes_or_no.props.input).to eq('yes')
+    expect(yes_or_no.props.selection).to eq('Yes')
+    expect(yes_or_no.props.index).to eq(0)
+    expect(yes_or_no.props.number).to eq(1)
+    expect(yes_or_no.props).to be_yes
   end
 
   it 'flags no?' do
-    type = Gamefic::Scene::Rig::YesOrNo.new
     actor = Gamefic::Actor.new
     actor.queue.push 'no'
-    type.finish actor
+    yes_or_no.finish actor
     expect(actor.queue).to be_empty
-    expect(type).not_to be_cancelled
-    expect(type.props.input).to eq('no')
-    expect(type.props.selection).to eq('No')
-    expect(type.props.index).to eq(1)
-    expect(type.props.number).to eq(2)
-    expect(type.props).to be_no
+    expect(yes_or_no).not_to be_cancelled
+    expect(yes_or_no.props.input).to eq('no')
+    expect(yes_or_no.props.selection).to eq('No')
+    expect(yes_or_no.props.index).to eq(1)
+    expect(yes_or_no.props.number).to eq(2)
+    expect(yes_or_no.props).to be_no
   end
 
   it 'cancels on invalid input' do
-    type = Gamefic::Scene::Rig::YesOrNo.new
     actor = Gamefic::Actor.new
     actor.queue.push 'maybe'
-    type.finish actor
+    yes_or_no.finish actor
     expect(actor.queue).to be_empty
-    expect(type).to be_cancelled
+    expect(yes_or_no).to be_cancelled
   end
 end

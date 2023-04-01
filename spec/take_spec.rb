@@ -47,4 +47,12 @@ describe Gamefic::Take do
     take.start
     expect(actor.messages).to include('You got extra data from context')
   end
+
+  it 'adds scene data to output' do
+    scene = Gamefic::Scene.new(:scene)
+    actor = Gamefic::Actor.new
+    take = Gamefic::Take.new(actor, scene)
+    expect(take.output[:scene][:name]).to eq(scene.name)
+    expect(take.output[:scene][:type]).to eq(scene.type)
+  end
 end

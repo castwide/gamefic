@@ -6,12 +6,15 @@ module Gamefic
       # A rig provides a framework for processing scenes and handling input.
       #
       class Base
-        def initialize **context
+        # @param scene [Scene, nil]
+        # @param context [Hash]
+        def initialize scene, **context
+          @scene = scene
           @context = context
         end
 
         def props
-          @props ||= prop_class.new(**@context)
+          @props ||= prop_class.new(@scene, **@context)
         end
 
         def cancelled?

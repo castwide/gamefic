@@ -10,17 +10,11 @@ module Gamefic
 
         attr_reader :context
 
-        def initialize scene: nil, **context
+        # @param scene [Scene, nil]
+        # @param context [Hash]
+        def initialize scene, **context
           @scene = scene
           @context = context
-        end
-
-        def [](key)
-          context[key]
-        end
-
-        def []=(key, value)
-          context[key] = value
         end
 
         def prompt
@@ -29,8 +23,10 @@ module Gamefic
 
         def output
           @output ||= {
-            scene_name: @scene&.name,
-            scene_type: @scene&.type,
+            scene: {
+              name: @scene&.name,
+              type: @scene&.type
+            },
             messages: ''
           }
         end
