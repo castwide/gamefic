@@ -51,7 +51,7 @@ module Gamefic
     end
 
     def playbook
-      @playbook ||= Gamefic::Plot::Playbook.new
+      @playbook ||= Gamefic::Playbook.new
     end
 
     def cast cls, args = {}, &block

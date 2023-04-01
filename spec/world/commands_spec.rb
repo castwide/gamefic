@@ -23,30 +23,27 @@ describe Gamefic::World::Commands do
   end
 
   it 'parses an action' do
-    plot = Gamefic::Plot.new
-    plot.make Gamefic::Entity, name: 'a thing'
-    action = plot.parse(:touch, 'thing')
+    object.make Gamefic::Entity, name: 'a thing'
+    action = object.parse(:touch, 'thing')
     expect(action.verb).to eq(:touch)
   end
 
   it 'raises errors on parses with bad tokens' do
-    plot = Gamefic::Plot.new
     expect {
-      plot.parse(:touch, 'a nonexistent thing')
+      object.parse(:touch, 'a nonexistent thing')
     }.to raise_error(ArgumentError)
   end
 
   it 'overrides commands' do
-    plot = Gamefic::Plot.new
     actor = Gamefic::Actor.new
-    thing = plot.make Gamefic::Entity, name: 'a thing'
-    base = plot.respond :handle, Gamefic::Query::Family.new(Gamefic::Entity) do |actor, thing|
+    thing = object.make Gamefic::Entity, name: 'a thing'
+    base = object.respond :handle, Gamefic::Query::Family.new(Gamefic::Entity) do |actor, _thing|
       actor.tell "Version 1"
     end
     act1 = Gamefic::Action.new(actor, [thing], base)
     act1.execute
     expect(actor.messages).to include('Version 1')
-    over = plot.override 'handle a thing' do |actor, thing|
+    over = object.override 'handle a thing' do |actor, _thing|
       actor.tell "Version 2"
     end
     act2 = Gamefic::Action.new(actor, [thing], over)
@@ -55,30 +52,26 @@ describe Gamefic::World::Commands do
   end
 
   it 'maps entity arguments to default queries' do
-    plot = Gamefic::Plot.new
-    entity = plot.make Gamefic::Entity, name: 'an entity'
-    action = plot.respond(:handle, entity) { |actor, entity| }
+    entity = object.make Gamefic::Entity, name: 'an entity'
+    action = object.respond(:handle, entity) { |_actor, _entity| }
     expect(action.queries.length).to eq(1)
-    expect(action.queries.first).to be_a(plot.get_default_query)
+    expect(action.queries.first).to be_a(object.get_default_query)
   end
 
   it 'maps regular expressions to text queries' do
-    plot = Gamefic::Plot.new
-    action = plot.respond(:handle, /text/) { |actor, text| }
+    action = object.respond(:handle, /text/) { |actor, text| }
     expect(action.queries.length).to eq(1)
     expect(action.queries.first).to be_a(Gamefic::Query::Text)
   end
 
   it 'raises ArgumentError for invalid parameters' do
-    plot = Gamefic::Plot.new
     expect {
-      plot.respond(:handle, Object.new)
+      object.respond(:handle, Object.new)
     }.to raise_error(ArgumentError)
   end
 
   it 'maps entity classes to default queries' do
-    plot = Gamefic::Plot.new
-    action = plot.respond(:handle, Gamefic::Entity) { |actor, entity| }
+    action = object.respond(:handle, Gamefic::Entity) { |actor, entity| }
     expect(action.queries.first.arguments.first).to be(Gamefic::Entity)
   end
 
