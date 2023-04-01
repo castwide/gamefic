@@ -16,10 +16,6 @@ module Gamefic
     # @return [Active::Cue]
     attr_reader :next_cue
 
-    # The take of the current scene, or nil if there is no active scene
-    # @return [Take, nil]
-    attr_reader :take
-
     # The prompt for the previous scene.
     #
     # @return [String]
