@@ -1,5 +1,5 @@
-describe Gamefic::World::Playbook do
-  let(:playbook) { Gamefic::World::Playbook.new }
+describe Gamefic::Playbook do
+  let(:playbook) { Gamefic::Playbook.new }
 
   let(:actor) do
     Gamefic::Actor.new do |actor|

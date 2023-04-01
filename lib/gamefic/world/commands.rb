@@ -5,11 +5,11 @@ require 'gamefic/action'
 module Gamefic
   module World
     module Commands
-      include Gamefic::World::Entities
+      include Entities
 
       # @return [Gamefic::World::Playbook]
       def playbook
-        @playbook ||= Gamefic::World::Playbook.new
+        @playbook ||= Playbook.new
       end
 
       # Create a response to a command.

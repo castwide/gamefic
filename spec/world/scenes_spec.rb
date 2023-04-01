@@ -2,7 +2,7 @@ describe Gamefic::World::Scenes do
   let(:object) { Object.new.tap { |obj| obj.extend Gamefic::World::Scenes } }
 
   it 'has a scenebook' do
-    expect(object.scenebook).to be_a(Gamefic::World::Scenebook)
+    expect(object.scenebook).to be_a(Gamefic::Scenebook)
   end
 
   it 'blocks a scene' do

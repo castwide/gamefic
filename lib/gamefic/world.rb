@@ -2,8 +2,6 @@ module Gamefic
   # A collection of classes and modules related to generating a world model.
   #
   module World
-    autoload :Playbook,  'gamefic/world/playbook'
-    autoload :Scenebook,  'gamefic/world/scenebook'
     autoload :Entities,  'gamefic/world/entities'
     autoload :Commands,  'gamefic/world/commands'
     autoload :Scenes,    'gamefic/world/scenes'

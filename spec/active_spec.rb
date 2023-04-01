@@ -2,7 +2,7 @@ describe Gamefic::Active do
   let(:object) { Gamefic::Entity.new.tap { |obj| obj.extend Gamefic::Active } }
 
   it 'performs a command' do
-    playbook = Gamefic::World::Playbook.new
+    playbook = Gamefic::Playbook.new
     playbook.respond(:command) { |actor| actor[:executed] = true }
     object.playbooks.push playbook
     object.perform 'command'
@@ -20,7 +20,7 @@ describe Gamefic::Active do
   end
 
   it 'performs actions quietly' do
-    playbook = Gamefic::World::Playbook.new
+    playbook = Gamefic::Playbook.new
     playbook.respond(:command) { |actor| actor.tell 'Keep this quiet' }
     object.playbooks.push playbook
     buffer = object.quietly 'command'
@@ -35,7 +35,7 @@ describe Gamefic::Active do
   end
 
   it 'proceeds quietly' do
-    playbook = Gamefic::World::Playbook.new
+    playbook = Gamefic::Playbook.new
     playbook.respond :command do |actor|
       actor.tell "hidden"
     end
@@ -50,14 +50,14 @@ describe Gamefic::Active do
   end
 
   it 'cues a scene by name' do
-    scenebook = Gamefic::World::Scenebook.new
+    scenebook = Gamefic::Scenebook.new
     scene = scenebook.block(:dummy)
     object.scenebooks.push scenebook
     expect { object.cue :dummy }.not_to raise_error
   end
 
   it 'cues a scene by instance' do
-    scenebook = Gamefic::World::Scenebook.new
+    scenebook = Gamefic::Scenebook.new
     scene = scenebook.block(:dummy)
     object.scenebooks.push scenebook
     expect { object.cue scene }.not_to raise_error

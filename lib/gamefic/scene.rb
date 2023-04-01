@@ -46,13 +46,13 @@ module Gamefic
     # @yieldparam [Actor]
     # @yieldparam [SceneProps::Base]
     def on_start &block
-      @start_block = block
+      start_blocks.push block
     end
 
     # @yieldparam [Actor]
     # @yieldparam [SceneProps::Base]
     def on_finish &block
-      @finish_block = block
+      finish_blocks.push block
     end
 
     def to_sym

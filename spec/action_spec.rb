@@ -28,7 +28,7 @@ describe Gamefic::Action do
   end
 
   it 'runs before_action hooks' do
-    playbook = Gamefic::World::Playbook.new
+    playbook = Gamefic::Playbook.new
     executed = false
     playbook.before_action { |_action| executed = true }
     actor.playbooks.push playbook
@@ -39,7 +39,7 @@ describe Gamefic::Action do
   end
 
   it 'runs after_action hooks' do
-    playbook = Gamefic::World::Playbook.new
+    playbook = Gamefic::Playbook.new
     executed = false
     playbook.after_action { |_action| executed = true }
     actor.playbooks.push playbook

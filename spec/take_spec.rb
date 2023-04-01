@@ -25,7 +25,7 @@ describe Gamefic::Take do
 
   it 'performs actions in Activity scene types' do
     actor = Gamefic::Actor.new
-    playbook = Gamefic::World::Playbook.new
+    playbook = Gamefic::Playbook.new
     playbook.respond(:command) { |actor| actor[:executed] = true }
     actor.playbooks.push playbook
     scene = Gamefic::Scene.new(:activity, rig: Gamefic::Scene::Rig::Activity)
