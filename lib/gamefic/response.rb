@@ -50,22 +50,29 @@ module Gamefic
     # @return [Action, nil]
     def attempt actor, command, with_hooks = false
       return nil if command.verb != verb
+
       tokens = command.arguments
       result = []
       matches = Gamefic::Query::Matches.new([], '', '')
       queries.each_with_index do |p, i|
-        return nil if tokens[i].nil? && matches.remaining == ''
-        matches = p.resolve(actor, "#{matches.remaining} #{tokens[i]}".strip, continued: (i < queries.length - 1))
-        return nil if matches.objects.empty?
+        txt = "#{matches.remaining} #{tokens[i]}".strip
+        return nil if txt.empty?
+
+        matches = p.resolve(actor, txt, continued: (i < queries.length - 1))
+        return nil if matches.objects.empty? || matches.matching.empty?
+
         accepted = matches.objects.select { |o| p.accept?(o) }
         return nil if accepted.empty?
+
         if p.ambiguous?
           result.push accepted
         else
           return nil if accepted.length != 1
+
           result.push accepted.first
         end
       end
+
       Action.new(actor, result, self, with_hooks)
     end
 
