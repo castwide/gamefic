@@ -24,10 +24,7 @@ module Gamefic
 
         # @param actor [Gamefic::Active]
         # @return [void]
-        def start actor
-          props.output[:messages] += actor.messages
-          # @todo Flush here?
-        end
+        def start actor; end
 
         # @param actor [Gamefic::Active]
         # @return [void]

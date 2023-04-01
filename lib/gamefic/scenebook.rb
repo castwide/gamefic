@@ -10,6 +10,8 @@ module Gamefic
 
     attr_reader :player_conclude_blocks
 
+    attr_reader :player_output_blocks
+
     def initialize
       @scene_map = {}
       @ready_blocks = []
@@ -17,6 +19,7 @@ module Gamefic
       @update_blocks = []
       @player_update_blocks = []
       @player_conclude_blocks = []
+      @player_output_blocks = []
     end
 
     # Block a scene in the scenebook.
@@ -95,6 +98,13 @@ module Gamefic
     # @return [Proc]
     def on_player_conclude &block
       player_conclude_blocks.push block
+    end
+
+    # @yieldparam [Actor]
+    # @yieldparam [Hash]
+    # @return [Proc]
+    def on_player_output &block
+      player_output_blocks.push block
     end
 
     private

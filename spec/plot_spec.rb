@@ -66,7 +66,7 @@ describe Gamefic::Plot do
   it 'starts the introduction on ready' do
     Gamefic.script do
       introduction do |actor|
-        actor.tell 'Hello, world!'
+        actor[:introduced] = true
       end
     end
     plot = Gamefic::Plot.new
@@ -74,7 +74,7 @@ describe Gamefic::Plot do
     plot.introduce player
     plot.ready
     expect(plot.takes.first.scene).to be(plot.scenebook[:introduction])
-    expect(player.messages).to include('Hello, world!')
+    expect(player[:introduced]).to be(true)
   end
 
   it 'cues the default scene without an introduction' do

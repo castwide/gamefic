@@ -47,18 +47,6 @@ module Gamefic
       @queue ||= []
     end
 
-    # A hash of values representing the state of a performing entity.
-    #
-    # @todo Does this really need to be here? It might make more sense
-    #   to move it out to the scene or something.
-    #
-    # @return [Hash{Symbol => Object}]
-    def state
-      @state ||= {}
-    end
-
-    # @todo Same applies here as state. Maybe stop doing this and handle
-    #   it in the scene.
     def output
       @output ||= {}
     end

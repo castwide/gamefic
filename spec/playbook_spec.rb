@@ -139,7 +139,6 @@ describe Gamefic::Playbook do
   it "dispatches the most recently declared action first" do
     num = 0
     playbook.respond :command do
-      puts 'WHY ME?????'
       num = 1
     end
     playbook.respond :command do

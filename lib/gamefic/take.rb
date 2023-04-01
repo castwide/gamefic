@@ -35,6 +35,10 @@ module Gamefic
       @scene.finish_blocks.each { |blk| blk&.call(@actor, @rig.props) }
     end
 
+    def output
+      @rig.props.output
+    end
+
     def cancelled?
       @rig.cancelled?
     end

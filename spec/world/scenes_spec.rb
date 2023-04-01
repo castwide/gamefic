@@ -87,4 +87,25 @@ describe Gamefic::World::Scenes do
     expect(scene.rig).to be(Gamefic::Scene::Rig::Conclusion)
     expect(object.scenebook[:ending]).to be(scene)
   end
+
+  it 'renders messages in output' do
+    object.pause :pause do |actor|
+      actor.tell 'Pause scene'
+    end
+    actor = Gamefic::Actor.new
+    object.introduce actor
+    actor.cue :pause
+    object.ready
+    expect(actor.output[:messages]).to include('Pause scene')
+  end
+
+  it 'renders player output from callbacks' do
+    object.on_player_output do |_actor, output|
+      output[:extra] = 'data from callback'
+    end
+    actor = Gamefic::Actor.new
+    object.introduce actor
+    object.ready
+    expect(actor.output[:extra]).to eq('data from callback')
+  end
 end

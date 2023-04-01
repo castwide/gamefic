@@ -219,13 +219,16 @@ module Gamefic
         scenebook.on_player_conclude &block
       end
 
+      # @yieldparam [Actor]
+      # @yieldparam [Hash]
+      # @return [Block]
+      def on_player_output &block
+        scenebook.on_player_output &block
+      end
+
       def ready
         prepare_takes
         start_takes
-        scenebook.ready_blocks.each(&:call)
-        players.each do |plyr|
-          scenebook.player_ready_blocks.each { |blk| blk.call plyr }
-        end
       end
 
       def update
@@ -247,14 +250,25 @@ module Gamefic
       end
 
       def start_takes
-        takes.each(&:start)
+        takes.each do |take|
+          scenebook.ready_blocks.each(&:call)
+          take.start
+          scenebook.player_ready_blocks.each { |blk| blk.call take.actor }
+
+          # @todo This is the dirty version of adding messages to output
+          take.output[:messages] += take.actor.messages
+          take.actor.flush
+
+          scenebook.player_output_blocks.each { |blk| blk.call take.actor, take.output }
+          take.actor.output.replace take.output
+        end
       end
 
       def finish_takes
         takes.each do |take|
           take.finish
           next if take.cancelled? || take.scene.type != 'Conclusion'
-  
+
           exeunt take.actor
         end
         takes.clear

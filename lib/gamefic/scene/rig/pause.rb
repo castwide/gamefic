@@ -5,6 +5,7 @@ module Gamefic
     module Rig
       class Pause < Base
         def start _actor
+          super
           props.prompt = 'Press enter to continue...'
         end
       end
