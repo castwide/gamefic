@@ -46,7 +46,8 @@ module Gamefic
       call_ready
       call_player_ready
       subplots.each(&:ready)
-      takes.each(&:start)
+      prepare_takes
+      start_takes
     end
 
     # Update the Plot's current turn of gameplay.
@@ -54,23 +55,9 @@ module Gamefic
     # execution.
     #
     def update
-      takes.each do |take|
-        take.finish
-        next if take.cancelled? || take.scene.type != 'Conclusion'
-
-        exeunt take.actor
-      end
-      takes.clear
+      finish_takes
       subplots.delete_if(&:concluded?)
       subplots.each(&:update)
-    end
-
-    # @param actor [Actor]
-    def exeunt actor
-      scenebook.player_conclude_blocks.each { |blk| blk.call actor }
-      actor.scenebooks.delete scenebook
-      actor.playbooks.delete playbook
-      players.delete actor
     end
 
     def concluded?

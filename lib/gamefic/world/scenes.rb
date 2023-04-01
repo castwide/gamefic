@@ -4,6 +4,11 @@ module Gamefic
       include Commands
       include Players
 
+      # @return [Array<Take>]
+      def takes
+        @takes ||= []
+      end
+
       def scenebook
         @scenebook ||= Scenebook.new
       end
@@ -176,6 +181,30 @@ module Gamefic
       # @return [Block]
       def on_player_conclude &block
         scenebook.on_player_conclude &block
+      end
+
+      private
+
+      def prepare_takes
+        takes.replace(players.map do |pl|
+          take = Take.new(pl, pl.next_cue.scene, **pl.next_cue.context)
+          pl.uncue
+          take
+        end)
+      end
+
+      def start_takes
+        takes.each(&:start)
+      end
+
+      def finish_takes
+        takes.each do |take|
+          take.finish
+          next if take.cancelled? || take.scene.type != 'Conclusion'
+  
+          exeunt take.actor
+        end
+        takes.clear
       end
     end
   end

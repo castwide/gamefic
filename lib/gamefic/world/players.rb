@@ -32,6 +32,15 @@ module Gamefic
         cast player_class, name: 'yourself', synonyms: 'self myself you me', proper_named: true
       end
       alias get_player_character make_player_character
+
+      # @param actor [Actor]
+      # @return [Actor]
+      def exeunt actor
+        scenebook.player_conclude_blocks.each { |blk| blk.call actor }
+        actor.scenebooks.delete scenebook
+        actor.playbooks.delete playbook
+        players.delete actor
+      end
     end
   end
 end
