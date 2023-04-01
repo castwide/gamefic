@@ -58,7 +58,7 @@ module Gamefic
     end
 
     def concluded?
-      players.empty? && introduced?
+      introduced? && (players.empty? || players.all?(&:concluded?))
     end
 
     def inspect

@@ -16,7 +16,7 @@ module Gamefic
     # The cue that will be used to create a scene at the beginning of the next
     # turn.
     #
-    # @return [Active::Cue]
+    # @return [Active::Cue, nil]
     attr_reader :next_cue
 
     # The prompt for the previous scene.
@@ -182,23 +182,36 @@ module Gamefic
     end
     alias prepare cue
 
-    # Reset the current cue. If another cue isn't specified after uncue, the
-    # plot will cue its default scene.
+    # Start a take from the next cue. Start the default cue if a next one has
+    # not been selected.
     #
-    # @return [void]
-    def uncue
+    # @note A nil default is permitted for testing purposes, but in practice,
+    #   it will raise an exception when next_cue is undefined.
+    #
+    # @raise [ArgumentError] if the actor fails to start a scene.
+    #
+    # @param default [Scene, Symbol, nil]
+    # @return [Take]
+    def start_cue default
+      unless next_cue
+        logger.debug "Using default scene for actor without cue"
+        cue default
+      end
+      take = Take.new(self, next_cue.scene, **next_cue.context)
       @last_cue = @next_cue
       @next_cue = nil
+      take
     end
 
-    # Restart the scene using the most recent cue.
+    # Restart the scene from the most recent cue.
     #
+    # @return [Cue, nil]
     def recue
       if @last_cue
         cue @last_cue.scene, **@last_cue.context
       else
         logger.warn "No scene to recue"
-        uncue
+        @next_cue = nil
       end
     end
 
@@ -232,6 +245,13 @@ module Gamefic
       raise NotConclusionError unless next_cue.scene.rig <= Scene::Rig::Conclusion
 
       next_cue
+    end
+
+    # An actor is considered concluded when their most recent cue is a
+    # Conclusion scene.
+    #
+    def concluded?
+      @last_cue&.scene&.rig&.<=(Scene::Rig::Conclusion)
     end
 
     def accessible?

@@ -98,7 +98,8 @@ module Gamefic
       end
 
       # Create a multiple-choice scene.
-      # The user will be required to make a valid choice to continue.
+      # The user will be required to make a choice to continue. The scene
+      # will restart if the user input is not a valid choice.
       #
       # @example
       #   multiple_choice :go_somewhere, ['Go to work', 'Go to school'] do |scene|
@@ -127,7 +128,8 @@ module Gamefic
       end
 
       # Create a yes-or-no scene.
-      # The user will be required to answer Yes or No to continue.
+      # The user will be required to answer Yes or No to continue. The scene
+      # will restart if the user input is not a valid choice.
       #
       # @example
       #   @scene = yes_or_no 'What is your answer?' do |actor, scene|
@@ -217,10 +219,8 @@ module Gamefic
       #
       # @example Tell the player how many turns they've played.
       #   on_player_ready do |player|
-      #     player[:turns] ||= 0
-      #     if player[:turns] > 0
-      #       player.tell "Turn #{player[:turns]}"
-      #     end
+      #     player[:turns] ||= 1
+      #     player.tell "Turn #{player[:turns]}"
       #     player[:turns] += 1
       #   end
       #
@@ -273,13 +273,7 @@ module Gamefic
 
       def prepare_takes
         takes.replace(players.map do |pl|
-          unless pl.next_cue
-            logger.warn "Using default scene for actor without cue"
-            pl.cue default_scene
-          end
-          take = Take.new(pl, pl.next_cue.scene, **pl.next_cue.context)
-          pl.uncue
-          take
+          pl.start_cue default_scene
         end)
       end
 

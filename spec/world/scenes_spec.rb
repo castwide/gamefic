@@ -43,9 +43,10 @@ describe Gamefic::World::Scenes do
     end
     actor = Gamefic::Actor.new
     object.introduce actor
-    expect(actor.next_cue.name).to be(:introduction)
     expect(actor.playbooks).to include(object.playbook)
     expect(actor.scenebooks).to include(object.scenebook)
+    take = actor.start_cue nil
+    expect(take.scene.name).to be(:introduction)
   end
 
   it 'creates a MultipleChoice scene' do

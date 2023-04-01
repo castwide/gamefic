@@ -62,4 +62,17 @@ describe Gamefic::Active do
     object.scenebooks.push scenebook
     expect { object.cue scene }.not_to raise_error
   end
+
+  it 'starts unconcluded' do
+    expect(object).not_to be_concluded
+  end
+
+  it 'concludes with a Conclusion scene' do
+    scenebook = Gamefic::Scenebook.new
+    scenebook.block(:ending, rig: Gamefic::Scene::Rig::Conclusion)
+    object.scenebooks.push scenebook
+    object.cue :ending
+    object.start_cue nil
+    expect(object).to be_concluded
+  end
 end

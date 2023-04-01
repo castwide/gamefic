@@ -60,7 +60,8 @@ describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.make_player_character
     plot.introduce player
-    expect(player.next_cue.name).to be(:introduction)
+    take = player.start_cue nil
+    expect(take.scene.name).to be(:introduction)
   end
 
   it 'starts the introduction on ready' do
