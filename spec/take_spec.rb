@@ -57,4 +57,16 @@ describe Gamefic::Take do
     # expect(take.output[:scene][:type]).to eq(scene.type)
     expect(take.output[:scene]).to eq(scene.type)
   end
+
+  it 'adds options from MultipleChoice rigs' do
+    scene = Gamefic::Scene.new(:multi, rig: Gamefic::Scene::Rig::MultipleChoice) do |scene|
+      scene.on_start do |actor, props|
+        props.options.concat ['one', 'two']
+      end
+    end
+    actor = Gamefic::Actor.new
+    take = Gamefic::Take.new(actor, scene)
+    take.start
+    expect(take.output[:options]).to eq(['one', 'two'])
+  end
 end

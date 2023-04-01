@@ -24,6 +24,7 @@ module Gamefic
       return if @rig.cancelled?
 
       @scene.start_blocks.each { |blk| blk&.call(@actor, @rig.props) }
+      @rig.ready
     end
 
     def finish

@@ -6,6 +6,10 @@ module Gamefic
       class MultipleChoice < Base
         use_prop_class Scene::Props::MultipleChoice
 
+        def ready
+          props.output[:options] = props.options
+        end
+
         def finish actor
           super
           props.index = index_by_number || index_by_text
