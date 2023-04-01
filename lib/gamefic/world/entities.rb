@@ -1,6 +1,8 @@
 module Gamefic
   module World
     module Entities
+      include Books
+
       # Make a new Entity with the provided properties.
       #
       # @example Create an Entity

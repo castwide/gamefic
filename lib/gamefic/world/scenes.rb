@@ -1,6 +1,7 @@
 module Gamefic
   module World
     module Scenes
+      include Books
       include Commands
       include Players
 
@@ -8,12 +9,6 @@ module Gamefic
       def takes
         @takes ||= []
       end
-
-      def scenebook
-        @scenebook ||= Scenebook.new
-      end
-
-      # @todo This is getting a MASSIVE refactor. Think about it.
 
       # Block a new scene.
       #

@@ -50,10 +50,6 @@ module Gamefic
       plot.default_conclusion
     end
 
-    def playbook
-      @playbook ||= Gamefic::Playbook.new
-    end
-
     def cast cls, args = {}, &block
       ent = super
       ent.playbooks.push plot.playbook unless ent.playbooks.include?(plot.playbook)

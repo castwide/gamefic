@@ -1,16 +1,9 @@
 module Gamefic
   module World
     module Players
-      include Gamefic::World::Entities
-      include Gamefic::World::Commands
+      include Entities
+      include Commands
       include Logging
-
-      # An array of entities that are currently connected to users.
-      #
-      # @return [Array<Gamefic::Actor>]
-      def players
-        @players ||= []
-      end
 
       def player_class cls = nil
         logger.warn "Modifying player_class this way is deprecated. Use set_player_class instead" unless cls.nil?

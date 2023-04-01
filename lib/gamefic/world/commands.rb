@@ -5,12 +5,8 @@ require 'gamefic/action'
 module Gamefic
   module World
     module Commands
+      include Books
       include Entities
-
-      # @return [Gamefic::World::Playbook]
-      def playbook
-        @playbook ||= Playbook.new
-      end
 
       # Create a response to a command.
       # A Response uses the `verb` argument to identify the imperative verb
