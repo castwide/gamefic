@@ -229,14 +229,15 @@ module Gamefic
       def ready
         prepare_takes
         start_takes
+        scenebook.ready_blocks.each(&:call)
       end
 
       def update
         finish_takes
-        scenebook.update_blocks.each(&:call)
         players.each do |plyr|
           scenebook.player_update_blocks.each { |blk| blk.call plyr }
         end
+        scenebook.update_blocks.each(&:call)
       end
 
       private
@@ -251,16 +252,9 @@ module Gamefic
 
       def start_takes
         takes.each do |take|
-          scenebook.ready_blocks.each(&:call)
+          scenebook.run_player_ready_blocks take.actor
           take.start
-          scenebook.player_ready_blocks.each { |blk| blk.call take.actor }
-
-          # @todo This is the dirty version of adding messages to output
-          take.output[:messages] += take.actor.messages
-          take.actor.flush
-
-          scenebook.player_output_blocks.each { |blk| blk.call take.actor, take.output }
-          take.actor.output.replace take.output
+          scenebook.run_player_output_blocks take.actor, take.output
         end
       end
 

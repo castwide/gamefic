@@ -35,4 +35,16 @@ describe Gamefic::Take do
     take.finish
     expect(actor[:executed]).to be(true)
   end
+
+  it 'adds context to props' do
+    scene = Gamefic::Scene.new(:scene) do |scn|
+      scn.on_start do |actor, props|
+        actor.tell "You got extra #{props.context[:extra]}"
+      end
+    end
+    actor = Gamefic::Actor.new
+    take = Gamefic::Take.new(actor, scene, extra: 'data from context')
+    take.start
+    expect(actor.messages).to include('You got extra data from context')
+  end
 end

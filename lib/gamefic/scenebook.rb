@@ -1,15 +1,23 @@
+# frozen_string_literal: true
+
 module Gamefic
   class Scenebook
+    # @return [Array<Proc>]
     attr_reader :ready_blocks
 
+    # @return [Array<Proc>]
     attr_reader :player_ready_blocks
 
+    # @return [Array<Proc>]
     attr_reader :update_blocks
 
+    # @return [Array<Proc>]
     attr_reader :player_update_blocks
 
+    # @return [Array<Proc>]
     attr_reader :player_conclude_blocks
 
+    # @return [Array<Proc>]
     attr_reader :player_output_blocks
 
     def initialize
@@ -20,6 +28,8 @@ module Gamefic
       @player_update_blocks = []
       @player_conclude_blocks = []
       @player_output_blocks = []
+
+      add_default_blocks
     end
 
     # Block a scene in the scenebook.
@@ -107,8 +117,24 @@ module Gamefic
       player_output_blocks.push block
     end
 
+    def run_player_ready_blocks player
+      player_ready_blocks.each { |blk| blk.call player }
+    end
+
+    def run_player_output_blocks player, output
+      player_output_blocks.each { |blk| blk.call player, output }
+      player.output.replace output
+    end
+
     private
 
     attr_reader :scene_map
+
+    def add_default_blocks
+      on_player_output do |player, output|
+        output[:messages] += player.messages
+        player.flush
+      end
+    end
   end
 end
