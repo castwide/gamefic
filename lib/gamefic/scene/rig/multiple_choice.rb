@@ -14,8 +14,9 @@ module Gamefic
             props.selection = props.options[props.index]
           else
             actor.tell format(props.invalid_message, input: props.input)
+            actor.recue
+            cancel
           end
-          cancel && return unless props.index
         end
 
         private

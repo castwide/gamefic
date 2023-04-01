@@ -177,7 +177,17 @@ module Gamefic
     #
     # @return [nil]
     def uncue
+      @last_cue = @next_cue
       @next_cue = nil
+    end
+
+    def recue
+      if @last_cue
+        cue @last_cue.scene, **@last_cue.context
+      else
+        logger.warn "No scene to recue"
+        uncue
+      end
     end
 
     # Select the first valid scene from a list.
@@ -302,7 +312,7 @@ module Gamefic
 
     def select_scene_by_instance scene
       scenebooks.reverse.each do |sb|
-        return scene if sb.scenes.include?(scene)
+        return scene if sb.scenes.include?(scene) #|| sb.anonymous.include?(scene)
       end
       nil
     end
