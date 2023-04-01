@@ -43,7 +43,7 @@ module Gamefic
     # execution.
     #
     def ready
-      # subplots.each(&:ready)
+      subplots.each(&:ready)
       super
     end
 
@@ -52,7 +52,8 @@ module Gamefic
     # execution.
     #
     def update
-      # subplots.each(&:update)
+      subplots.each(&:update)
+      subplots.delete_if(&:concluded?)
       super
     end
 

@@ -234,7 +234,6 @@ module Gamefic
       end
 
       def update
-        subplots.delete_if(&:concluded?)
         finish_takes
         scenebook.update_blocks.each(&:call)
         players.each do |plyr|

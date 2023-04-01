@@ -60,13 +60,6 @@ module Gamefic
       ent
     end
 
-    def exeunt player
-      player_conclude_procs.each { |block| block.call player }
-      player.playbooks.delete playbook
-      player.cue(@next_cue || default_scene)
-      players.delete player
-    end
-
     def conclude
       @concluded = true
       # Players needed to exit first in case any player_conclude procs need to
@@ -80,23 +73,6 @@ module Gamefic
 
     def concluded?
       @concluded
-    end
-
-    def ready
-      # @todo We might not want to conclude subplots without players. There
-      #   might be cases where a subplot gets created with the intention of
-      #   introducing players in a later turn.
-      conclude if players.empty?
-      return if concluded?
-
-      playbook.freeze
-      call_ready
-      call_player_ready
-    end
-
-    def update
-      call_player_update
-      call_update
     end
 
     # Subclasses can override this method to handle additional configuration
