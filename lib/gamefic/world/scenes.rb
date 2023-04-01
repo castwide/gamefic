@@ -24,7 +24,13 @@ module Gamefic
 
       # @return [Scene]
       def default_conclusion
-        scenebook[:default_conclusion] || block(:default_conclusion, rig: Scene::Rig::Conclusion)
+        scenebook[:default_conclusion] ||
+          block(:default_conclusion,
+                rig: Scene::Rig::Conclusion,
+                on_start: proc { |actor, _props|
+                  # @todo Temp solution to stop plots
+                  actor.queue.push ''
+                })
       end
 
       # Add a block to be executed when a player is added to the game.
@@ -38,18 +44,14 @@ module Gamefic
       #
       # @param pause [Boolean] Pause before the first action if true
       # @yieldparam [Gamefic::Actor]
+      # @yieldparam [Scene::Props::Base]
       # @return [Scene]
-      def introduction(pause: false, &start)
+      def introduction(rig: Gamefic::Scene::Rig::Activity, &start)
         block :introduction,
-              rig: Gamefic::Scene::Rig::Pause,
+              rig: rig,
               on_start: proc { |actor, props|
-                unless pause
-                  props.prompt = ''
-                  actor.queue.push '' # Force the introduction to finish
-                end
-                start&.call(actor)
-              },
-              on_finish: ->(actor, _) { actor.cue default_scene unless actor.next_cue }
+                start&.call(actor, props)
+              }
       end
 
       # Introduce a player to the game.
@@ -119,7 +121,6 @@ module Gamefic
               rig: Gamefic::Scene::Rig::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
-                props.options.concat choices
               },
               &block
       end
@@ -166,10 +167,14 @@ module Gamefic
       # @param name [Symbol]
       # @yieldparam [Scene]
       # @return [Scene]
-      def conclusion name, &block
+      def conclusion name, &start
         block name,
               rig: Gamefic::Scene::Rig::Conclusion,
-              &block
+              on_start: proc { |actor, props|
+                # @todo Temp solution to stop plots
+                actor.queue.push ''
+                start&.call(actor, props)
+              }
       end
 
       # Add a block to be executed on preparation of every turn.
@@ -244,6 +249,10 @@ module Gamefic
 
       def prepare_takes
         takes.replace(players.map do |pl|
+          unless pl.next_cue
+            logger.warn "Using default scene for actor without cue"
+            pl.cue default_scene
+          end
           take = Take.new(pl, pl.next_cue.scene, **pl.next_cue.context)
           pl.uncue
           take

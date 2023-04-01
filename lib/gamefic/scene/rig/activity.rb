@@ -7,7 +7,6 @@ module Gamefic
         def finish actor
           super
           actor.perform props.input
-          props.output[:messages] = actor.messages
         end
       end
     end

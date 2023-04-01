@@ -94,8 +94,9 @@ module Gamefic
     # @param text [String]
     # @return [Command, nil]
     def tokenize text
-      m = text.match(@regexp)
+      m = text&.match(@regexp)
       return nil if m.nil?
+
       arguments = []
       b = @verb.nil? ? 0 : 1
       xverb = @verb

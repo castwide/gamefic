@@ -23,10 +23,11 @@ module Gamefic
 
         def output
           @output ||= {
-            scene: {
-              name: @scene&.name,
-              type: @scene&.type
-            },
+            # scene: {
+            #   name: @scene&.name,
+            #   type: @scene&.type
+            # },
+            scene: @scene&.type,
             messages: ''
           }
         end
