@@ -177,10 +177,69 @@ module Gamefic
               &block
       end
 
+      # Add a block to be executed on preparation of every turn.
+      #
+      # @example Increment a turn counter
+      #   turn = 0
+      #   on_ready do
+      #     turn += 1
+      #   end
+      #
+      def on_ready &block
+        scenebook.on_ready &block
+      end
+
+      # Add a block to be executed for each player at the beginning of a turn.
+      #
+      # @example Tell the player how many turns they've played.
+      #   on_player_ready do |player|
+      #     player[:turns] ||= 0
+      #     if player[:turns] > 0
+      #       player.tell "Turn #{player[:turns]}"
+      #     end
+      #     player[:turns] += 1
+      #   end
+      #
+      # @yieldparam [Gamefic::Actor]
+      def on_player_ready &block
+        scenebook.on_player_ready &block
+      end
+
+      # Add a block to be executed after the Plot is finished updating a turn.
+      #
+      def on_update &block
+        scenebook.on_update &block
+      end
+
+      # Add a block to be executed for each player at the end of a turn.
+      #
+      # @yieldparam [Gamefic::Actor]
+      def on_player_update &block
+        scenebook.on_player_update &block
+      end
+
       # @yieldparam [Actor]
       # @return [Block]
       def on_player_conclude &block
         scenebook.on_player_conclude &block
+      end
+
+      def ready
+        prepare_takes
+        start_takes
+        scenebook.ready_blocks.each(&:call)
+        players.each do |plyr|
+          scenebook.player_ready_blocks.each { |blk| blk.call plyr }
+        end
+      end
+
+      def update
+        subplots.delete_if(&:concluded?)
+        finish_takes
+        scenebook.update_blocks.each(&:call)
+        players.each do |plyr|
+          scenebook.player_update_blocks.each { |blk| blk.call plyr }
+        end
       end
 
       private

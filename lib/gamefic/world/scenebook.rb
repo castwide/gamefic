@@ -1,10 +1,22 @@
 module Gamefic
   module World
     class Scenebook
+      attr_reader :ready_blocks
+
+      attr_reader :player_ready_blocks
+
+      attr_reader :update_blocks
+
+      attr_reader :player_update_blocks
+
       attr_reader :player_conclude_blocks
 
       def initialize
         @scene_map = {}
+        @ready_blocks = []
+        @player_ready_blocks = []
+        @update_blocks = []
+        @player_update_blocks = []
         @player_conclude_blocks = []
       end
 
@@ -59,6 +71,25 @@ module Gamefic
       def freeze
         super
         instance_variables.each { |k| instance_variable_get(k).freeze }
+      end
+
+      # @return [Proc]
+      def on_ready &block
+        ready_blocks.push block
+      end
+
+      # @yieldparam [Actor]
+      # @return [Proc]
+      def on_player_ready &block
+        player_ready_blocks.push block
+      end
+
+      def on_update &block
+        update_blocks.push block
+      end
+
+      def on_player_update &block
+        player_update_blocks.push block
       end
 
       # @yieldparam [Actor]

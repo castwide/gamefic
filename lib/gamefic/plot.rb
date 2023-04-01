@@ -43,11 +43,8 @@ module Gamefic
     # execution.
     #
     def ready
-      call_ready
-      call_player_ready
-      subplots.each(&:ready)
-      prepare_takes
-      start_takes
+      # subplots.each(&:ready)
+      super
     end
 
     # Update the Plot's current turn of gameplay.
@@ -55,23 +52,12 @@ module Gamefic
     # execution.
     #
     def update
-      finish_takes
-      subplots.delete_if(&:concluded?)
-      subplots.each(&:update)
+      # subplots.each(&:update)
+      super
     end
 
     def concluded?
       players.empty? && introduced?
-    end
-
-    # Send a message to a group of entities.
-    #
-    # @param entities [Array<Entity>]
-    # @param message [String]
-    def tell entities, message
-      entities.each { |entity|
-        entity.tell message
-      }
     end
 
     def inspect
