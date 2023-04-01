@@ -133,6 +133,7 @@ module Gamefic
     def add_default_blocks
       on_player_output do |player, output|
         output[:messages] += player.messages
+        output[:queue] = player.queue
         player.flush
       end
     end
