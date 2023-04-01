@@ -58,10 +58,15 @@ module Gamefic
       # @param [Gamefic::Actor]
       # @return [void]
       def introduce(player)
+        @introduced = true
         player.playbooks.push playbook unless player.playbooks.include?(playbook)
         player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
         players.push player
         player.select_cue :introduction, default_scene
+      end
+
+      def introduced?
+        @introduced ||= false
       end
 
       # Create a multiple-choice scene.
@@ -165,6 +170,12 @@ module Gamefic
         block name,
               rig: Gamefic::Scene::Rig::Conclusion,
               &block
+      end
+
+      # @yieldparam [Actor]
+      # @return [Block]
+      def on_player_conclude &block
+        scenebook.on_player_conclude &block
       end
     end
   end

@@ -115,14 +115,31 @@ describe Gamefic::Plot do
     expect(plot.subplots).to be_empty
   end
 
-  # it 'concludes on conclusions' do
-  #   plot = Gamefic::Plot.new
-  #   player = plot.make_player_character
-  #   plot.introduce player
-  #   plot.ready
-  #   player.cue plot.default_conclusion
-  #   expect(player).to be_concluding
-  # end
+  it 'runs on_player_conclude procs' do
+    Gamefic.script do
+      on_player_conclude do |player|
+        player[:concluded] = true
+      end
+    end
+    plot = Gamefic::Plot.new
+    player = plot.make_player_character
+    plot.introduce player
+    player.cue plot.default_conclusion
+    plot.ready
+    plot.update
+    expect(player[:concluded]).to be(true)
+  end
+
+  it 'concludes on conclusions' do
+    plot = Gamefic::Plot.new
+    player = plot.make_player_character
+    plot.introduce player
+    plot.ready
+    player.cue plot.default_conclusion
+    plot.ready
+    plot.update
+    expect(plot).to be_concluded
+  end
 
   # it "removes destroyed dynamic entities" do
   #   plot = Gamefic::Plot.new

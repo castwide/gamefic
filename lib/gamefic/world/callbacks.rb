@@ -56,17 +56,6 @@ module Gamefic
         player_update_procs.push block
       end
 
-      # Add a block to be executed at the conclusion of the plot.
-      #
-      # @yieldparam [Gamefic::Actor]
-      def on_player_conclude &block
-        player_conclude_procs.push block
-      end
-
-      def player_conclude_procs
-        @player_conclude_procs ||= []
-      end
-
       def ready_procs
         @ready_procs ||= []
       end

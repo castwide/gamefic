@@ -1,6 +1,13 @@
 module Gamefic
   module World
     class Scenebook
+      attr_reader :player_conclude_blocks
+
+      def initialize
+        @scene_map = {}
+        @player_conclude_blocks = []
+      end
+
       # Block a scene in the scenebook.
       #
       # @raise [NameError] if a scene with the given name already exists
@@ -51,14 +58,18 @@ module Gamefic
 
       def freeze
         super
-        @scene_map.freeze
+        instance_variables.each { |k| instance_variable_get(k).freeze }
+      end
+
+      # @yieldparam [Actor]
+      # @return [Proc]
+      def on_player_conclude &block
+        player_conclude_blocks.push block
       end
 
       private
 
-      def scene_map
-        @scene_map ||= {}
-      end
+      attr_reader :scene_map
     end
   end
 end
