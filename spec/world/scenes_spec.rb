@@ -43,7 +43,7 @@ describe Gamefic::World::Scenes do
     end
     actor = Gamefic::Actor.new
     object.introduce actor
-    expect(actor.next_scene_name).to be(:introduction)
+    expect(actor.next_cue.name).to be(:introduction)
     expect(actor.playbooks).to include(object.playbook)
     expect(actor.scenebooks).to include(object.scenebook)
   end

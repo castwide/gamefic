@@ -36,10 +36,20 @@ module Gamefic
       #     actor.tell "Welcome to the game!"
       #   end
       #
+      # @param pause [Boolean] Pause before the first action if true
       # @yieldparam [Gamefic::Actor]
       # @return [Scene]
-      def introduction(&proc)
-        block(:introduction, on_start: proc, on_finish: ->(actor) { actor.cue default_scene })
+      def introduction(pause: false, &start)
+        block :introduction,
+              rig: Gamefic::Scene::Rig::Pause,
+              on_start: proc { |actor, props|
+                unless pause
+                  props.prompt = ''
+                  actor.queue.push '' # Force the introduction to finish
+                end
+                start&.call(actor)
+              },
+              on_finish: ->(actor, _) { actor.cue default_scene unless actor.next_cue }
       end
 
       # Introduce a player to the game.
@@ -51,7 +61,7 @@ module Gamefic
         player.playbooks.push playbook unless player.playbooks.include?(playbook)
         player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
         players.push player
-        player.cue :introduction
+        player.select_cue :introduction, default_scene
       end
 
       # Create a multiple-choice scene.
