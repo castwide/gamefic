@@ -13,6 +13,9 @@ module Gamefic
   module Active
     include Logging
 
+    # The cue that will be used to create a scene at the beginning of the next
+    # turn.
+    #
     # @return [Active::Cue]
     attr_reader :next_cue
 
@@ -26,14 +29,16 @@ module Gamefic
     # @return [String]
     attr_accessor :last_input
 
-    # The playbooks that will be used to perform commands.
+    # The playbooks that will be used to perform commands. Every plot and
+    # subplot has its own playbook.
     #
     # @return [Array<Gamefic::World::Playbook>]
     def playbooks
       @playbooks ||= []
     end
 
-    # The scenebooks that will be used to participate in scenes.
+    # The scenebooks that will be used to participate in scenes. Every plot and
+    # subplot has its own scenebook.
     #
     # @return [Array<Gamefic::World::Scenebook>]
     def scenebooks
@@ -47,6 +52,10 @@ module Gamefic
       @queue ||= []
     end
 
+    # A hash of data that will be sent to the user. The output is typically
+    # sent after a scene has started and before the user is prompted for input.
+    #
+    # @return [Hash]
     def output
       @output ||= {}
     end
@@ -64,7 +73,7 @@ module Gamefic
       end
     end
 
-    # Send a message to the Character as raw text.
+    # Send a message to the entity as raw text.
     # Unlike #tell, this method will not wrap the message in HTML paragraphs.
     #
     # @param message [String]
@@ -78,7 +87,7 @@ module Gamefic
 
     # Perform a command.
     #
-    # The command's action will be executed immediately regardless of the
+    # The command's action will be executed immediately, regardless of the
     # entity's state.
     #
     # @example Send a command as a string
@@ -173,14 +182,17 @@ module Gamefic
     end
     alias prepare cue
 
-    # Delete the next cue.
+    # Reset the current cue. If another cue isn't specified after uncue, the
+    # plot will cue its default scene.
     #
-    # @return [nil]
+    # @return [void]
     def uncue
       @last_cue = @next_cue
       @next_cue = nil
     end
 
+    # Restart the scene using the most recent cue.
+    #
     def recue
       if @last_cue
         cue @last_cue.scene, **@last_cue.context
@@ -300,16 +312,19 @@ module Gamefic
       @buffer = ''
     end
 
+    # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
     end
 
     # @param scene [Scene, Symbol]
-    # @return [Scene]
+    # @return [Scene, nil]
     def select_scene scene
       scene.is_a?(Scene) ? select_scene_by_instance(scene) : select_scene_by_name(scene)
     end
 
+    # @param scene [Scene]
+    # @return [Scene, nil]
     def select_scene_by_instance scene
       scenebooks.reverse.each do |sb|
         return scene if sb.scenes.include?(scene) #|| sb.anonymous.include?(scene)
@@ -317,6 +332,8 @@ module Gamefic
       nil
     end
 
+    # @param scene [Symbol]
+    # @return [Scene, nil]
     def select_scene_by_name name
       scenebooks.reverse.each do |sb|
         return sb[name] if sb.scene?(name)

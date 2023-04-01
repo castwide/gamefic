@@ -83,6 +83,7 @@ module Gamefic
     def freeze
       super
       instance_variables.each { |k| instance_variable_get(k).freeze }
+      self
     end
 
     # @return [Proc]

@@ -113,17 +113,17 @@ module Gamefic
       # @param name [Symbol]
       # @param choices [Array<String>]
       # @param prompt [String, nil]
-      # @param block [Proc]
+      # @param proc [Proc]
       # @yieldparam [Scene]
       # @return [Scene]
-      def multiple_choice name, choices = [], prompt = 'What is your choice?', &block
+      def multiple_choice name, choices = [], prompt = 'What is your choice?', &proc
         block name,
               rig: Gamefic::Scene::Rig::MultipleChoice,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
                 props.options.concat choices
               },
-              &block
+              &proc
       end
 
       # Create a yes-or-no scene.
@@ -142,13 +142,13 @@ module Gamefic
       # @param prompt [String, nil]
       # @yieldparam [Scene]
       # @return [Scene]
-      def yes_or_no name, prompt = 'Answer:', &block
+      def yes_or_no name, prompt = 'Answer:', &proc
         block name,
               rig: Gamefic::Scene::Rig::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
               },
-              &block
+              &proc
       end
 
       # Create a scene that pauses the game.
@@ -162,16 +162,16 @@ module Gamefic
       #
       # @param name [Symbol]
       # @param prompt [String, nil] The text to display when prompting the user to continue
-      # @param next_cue [Scene, Symbol]
+      # @param next_cue [Scene, Symbol, nil]
       # @yieldparam [Actor]
       # @return [Scene]
-      def pause name, prompt: 'Press enter to continue...', next_cue: nil, &block
+      def pause name, prompt: 'Press enter to continue...', next_cue: nil, &start
         block name,
               rig: Gamefic::Scene::Rig::Pause,
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
                 actor.cue(next_cue || :default_scene)
-                block.call(actor)
+                start.call(actor)
               }
       end
 
@@ -243,14 +243,14 @@ module Gamefic
       end
 
       # @yieldparam [Actor]
-      # @return [Block]
+      # @return [Proc]
       def on_player_conclude &block
         scenebook.on_player_conclude &block
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
-      # @return [Block]
+      # @return [Proc]
       def on_player_output &block
         scenebook.on_player_output &block
       end

@@ -27,6 +27,7 @@ module Gamefic
       @after_actions.freeze
       @verb_response_map.freeze
       @synonym_syntax_map.freeze
+      self
     end
 
     # Add a response to the playbook.
@@ -151,6 +152,8 @@ module Gamefic
       response
     end
 
+    # @param syntax [Syntax]
+    # @return [Syntax]
     def add_syntax syntax
       raise "No responses exist for \"#{syntax.verb}\"" unless verb_response_map.key?(syntax.verb)
       return if synonym_syntax_map[syntax.synonym].include?(syntax)
