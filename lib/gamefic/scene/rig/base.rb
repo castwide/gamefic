@@ -32,7 +32,7 @@ module Gamefic
         # @param actor [Gamefic::Active]
         # @return [void]
         def finish actor
-          props.input = actor.queue.shift
+          props.input = actor.queue.shift&.strip
         end
 
         # @return [Class<Scene::Props::Base>]
