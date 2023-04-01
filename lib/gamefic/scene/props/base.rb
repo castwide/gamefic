@@ -28,7 +28,8 @@ module Gamefic
             #   type: @scene&.type
             # },
             scene: @scene&.type,
-            messages: ''
+            messages: '',
+            prompt: prompt
           }
         end
       end
