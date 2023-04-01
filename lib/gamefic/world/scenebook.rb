@@ -51,7 +51,7 @@ module Gamefic
 
       def freeze
         super
-        # @todo Freeze appropriately
+        @scene_map.freeze
       end
 
       private
