@@ -172,18 +172,16 @@ module Gamefic
 
     # Cue a scene to start in the next turn.
     #
+    # @raise [ArgumentError] if the scene is not valid
+    #
     # @param scene [Scene, Symbol]
-    # @param context [Hash] Extra data to pass to the scene's props.
+    # @param context [Hash] Extra data to pass to the scene's props
     # @return [Cue]
     def cue scene, **context
       found = select_scene(scene)
       raise ArgumentError, "Invalid scene `#{scene}`" unless found
 
-      return @next_cue if @next_cue&.scene == found && @next_cue&.context == context
-
-      logger.warn "Overwriting existing cue `#{@next_cue.name}` with `#{scene.to_sym}`" if @next_cue
-
-      @next_cue = Cue.new(found, **context)
+      cue_confirmed found, **context
     end
     alias prepare cue
 
@@ -194,29 +192,36 @@ module Gamefic
       @next_cue = nil
     end
 
+    # Select the first valid scene from a list.
+    #
+    # @raise [ArgumentError] if none of the scenes are valid
+    #
+    # @param scenes [Array<Scene, Symbol>]
+    # @return [Cue]
     def select_cue *scenes
-      found = scenes.find { |scn| select_scene(scn) }
+      found = scenes.each do |scn|
+        cur = select_scene(scn)
+        break cur if cur
+      end
+
       raise ArgumentError, "No valid scenes found in #{scenes}" unless found
 
-      cue found
+      cue_confirmed found
     end
 
-    # Cue a conclusion. This method works like #cue, except it will raise a
-    # NotConclusionError if the scene is not a Scene::Conclusion.
+    # Cue a conclusion. This method works like #cue, except it will raise an
+    # error if the scene is not a Conclusion.
     #
-    # @param new_scene [Class<Scene::Base>]
-    # @oaram data [Hash] Additional scene data
-    def conclude new_scene, **data
-      raise NotConclusionError unless new_scene.rig <= Scene::Conclusion
-
-      cue new_scene, **data
-    end
-
-    # True if the character is in a conclusion.
+    # @raise [ArgumentError] if the requested scene is not valid
+    # @raise [NotConclusionError] if the scene is not a Conclusion
     #
-    # @return [Boolean]
-    def concluded?
-      !scene.nil? && scene.kind_of?(Scene::Conclusion)
+    # @param new_scene [Scene, Symbol]
+    # @oaram context [Hash] Additional scene data
+    def conclude new_scene, **context
+      cue new_scene, **context
+      raise NotConclusionError unless next_cue.scene.rig <= Scene::Rig::Conclusion
+
+      next_cue
     end
 
     def accessible?
@@ -243,6 +248,17 @@ module Gamefic
     end
 
     private
+
+    # @param scene [Scene]
+    # @param context [Hash]
+    # @return [Cue]
+    def cue_confirmed scene, **context
+      return @next_cue if @next_cue&.scene == scene && @next_cue&.context == context
+
+      logger.warn "Overwriting existing cue `#{@next_cue.name}` with `#{scene.to_sym}`" if @next_cue
+
+      @next_cue = Cue.new(scene, **context)
+    end
 
     def prepare_buffer quietly
       if quietly

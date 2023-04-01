@@ -20,13 +20,8 @@ module Gamefic
     end
 
     # @return [Array<Proc>]
-    def start_blocks
-      @start_blocks ||= []
-    end
-
-    # @return [Array<Proc>]
     def finish_blocks
-      @start_blocks ||= []
+      @finish_blocks ||= []
     end
 
     # @param name [Symbol]

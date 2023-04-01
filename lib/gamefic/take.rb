@@ -4,8 +4,14 @@ module Gamefic
   # The combination of an actor and a scene to be performed in a plot
   #
   class Take
-    # @param actor [Gamefic::Active]
-    # @param scene [Gamefic::Scene]
+    # @return [Active]
+    attr_reader :actor
+
+    # @return [Scene]
+    attr_reader :scene
+
+    # @param actor [Active]
+    # @param scene [Scene]
     # @param context [Hash]
     def initialize actor, scene, **context
       @actor = actor
@@ -17,7 +23,7 @@ module Gamefic
       @rig.start @actor
       return if @rig.cancelled?
 
-      @scene.start_block&.call(@actor, @rig.props)
+      @scene.start_blocks.each { |blk| blk&.call(@actor, @rig.props) }
     end
 
     def finish
@@ -26,7 +32,7 @@ module Gamefic
       @rig.finish @actor
       return if @rig.cancelled?
 
-      @scene.finish_block&.call(@actor, @rig.props)
+      @scene.finish_blocks.each { |blk| blk&.call(@actor, @rig.props) }
     end
   end
 end

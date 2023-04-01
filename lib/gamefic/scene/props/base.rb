@@ -29,8 +29,8 @@ module Gamefic
 
         def output
           @output ||= {
-            scene_name: scene&.name,
-            scene_type: scene&.type,
+            scene_name: @scene&.name,
+            scene_type: @scene&.type,
             messages: ''
           }
         end

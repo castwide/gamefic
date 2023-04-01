@@ -27,7 +27,7 @@ module Gamefic
     # as a frozen array.
     #
     def define_static
-      static = ([self] + scene_classes + entities).freeze
+      static = ([self] + entities).freeze
       define_singleton_method :static do
         static
       end

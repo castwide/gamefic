@@ -1,6 +1,13 @@
 module Gamefic
   module World
     module Callbacks
+      include Logging
+
+      # @return [Array<Take>]
+      def takes
+        @takes ||= []
+      end
+
       # Add a block to be executed on preparation of every turn.
       #
       # @example Increment a turn counter
@@ -113,11 +120,9 @@ module Gamefic
       #
       def call_player_ready
         players.each { |player|
-          unless player.next_scene.nil? || !player.scene.finished?
-            player.cue player.next_scene, **player.next_options
-          end
-          player.cue default_scene if player.scene.nil?
           player_ready_procs.each { |block| block.call player }
+          takes.push Take.new(player, player.next_cue.scene, **player.next_cue.context)
+          player.uncue
         }
       end
 
