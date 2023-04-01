@@ -28,8 +28,6 @@ module Gamefic
           block(:default_conclusion,
                 rig: Scene::Rig::Conclusion,
                 on_start: proc { |actor, _props|
-                  # @todo Temp solution to stop plots
-                  actor.queue.push ''
                 })
       end
 
@@ -171,8 +169,6 @@ module Gamefic
         block name,
               rig: Gamefic::Scene::Rig::Conclusion,
               on_start: proc { |actor, props|
-                # @todo Temp solution to stop plots
-                actor.queue.push ''
                 start&.call(actor, props)
               }
       end
@@ -232,9 +228,9 @@ module Gamefic
       end
 
       def ready
+        scenebook.ready_blocks.each(&:call)
         prepare_takes
         start_takes
-        scenebook.ready_blocks.each(&:call)
       end
 
       def update
