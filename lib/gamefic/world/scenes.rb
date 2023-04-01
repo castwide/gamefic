@@ -12,6 +12,34 @@ module Gamefic
 
       # Block a new scene.
       #
+      # @example Prompt the player for a name
+      #   block :ask_for_name do
+      #     # The scene's start occurs before the user gets prompted for input
+      #     scene.on_start do |actor, props|
+      #       props.prompt = 'What's your name?'
+      #     end
+      #
+      #     # The scene's finish is where you can process the input
+      #     scene.on_finish do |actor, props|
+      #       if props.input.empty?
+      #         # You can use recue to start the scene again
+      #         actor.recue
+      #       else
+      #         actor.tell "Hello, #{props.input}!"
+      #       end
+      #     end
+      #   end
+      #
+      # @raise [NameError] if a scene with the given name already exists
+      #
+      # @param name [Symbol, nil]
+      # @param rig [Class<Scene::Rig::Base>]
+      # @param type [String, nil]
+      # @param on_start [Proc, nil]
+      # @param on_finish [Proc, nil]
+      # @param block [Proc]
+      # @yieldparam [Scene]
+      # @return [Scene]
       def block name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil, **rig_opts, &block
         scenebook.block(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, **rig_opts, &block)
       end

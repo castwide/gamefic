@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'gamefic/subplot'
 
 module Gamefic
-  # Methods for hosting and managing subplots.
-  #
   class Plot
+    # Methods for hosting and managing subplots.
+    #
     module Host
       # Get an array of all the current subplots.
       #
