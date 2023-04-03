@@ -36,7 +36,7 @@ describe Gamefic::Node do
     x.extend Gamefic::Node
     expect {
       x.parent = x
-    }.to raise_error CircularNodeReferenceError
+    }.to raise_error Gamefic::CircularNodeReferenceError
   end
   it "does not permit circular references" do
     x = Object.new
@@ -53,6 +53,6 @@ describe Gamefic::Node do
       x.parent = y
       y.parent = z
       z.parent = x
-    }.to raise_error CircularNodeReferenceError
+    }.to raise_error Gamefic::CircularNodeReferenceError
   end
 end
