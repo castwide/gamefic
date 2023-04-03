@@ -3,7 +3,7 @@
 module Gamefic
   # Exception raised when setting a node's parent would cause
   # a circular reference, e.g., A -> A or A -> B -> A
-  class CircularNodeReferenceError < RuntimeError; end
+  class NodeError < RuntimeError; end
 
   module Node
     # An array of the object's children.
@@ -36,16 +36,18 @@ module Gamefic
     #
     def parent=(node)
       return if node == @parent 
-      if node == self
-        raise CircularNodeReferenceError.new("Node cannot be its own parent")
-      end
+
+      raise NodeError, 'Parent must be a Node' unless node.is_a?(Node) || node.nil?
+
+      raise NodeError, "Node cannot be its own parent" if node == self
+
       # Do not permit circular references
-      if node != nil and node.parent == self
+      if node&.parent == self
         node.parent = nil
       end
-      if node != nil and flatten.include?(node)
-        raise CircularNodeReferenceError.new("Node cannot be a child of a descendant")
-      end
+
+      raise NodeError, 'Node cannot be a child of a descendant' if flatten.include?(node)
+
       if @parent != node
         if @parent != nil
           @parent.send(:rem_child, self)
