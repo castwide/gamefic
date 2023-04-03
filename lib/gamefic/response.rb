@@ -8,19 +8,19 @@ module Gamefic
     # @return [Symbol]
     attr_reader :verb
 
-    # @return [Array<Query::Base>]
-    attr_reader :queries
+    # @return [Array<Query::Definition>]
+    attr_reader :querydefs
 
     # @return [Proc]
     attr_reader :block
 
     # @param verb [Symbol]
-    # @param queries [Array<Query::Base>]
+    # @param querydefs [Array<Query::Definition>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, *queries, meta: false, &block
+    def initialize verb, *querydefs, meta: false, &block
       @verb = verb
-      @queries = queries
+      @querydefs = querydefs
       @meta = meta
       @block = block
     end
@@ -53,25 +53,21 @@ module Gamefic
 
       tokens = command.arguments
       result = []
-      matches = Gamefic::Query::Matches.new([], '', '')
-      queries.each_with_index do |p, i|
-        txt = "#{matches.remaining} #{tokens[i]}".strip
+      remainder = ''
+
+      querydefs.each_with_index do |qd, i|
+        txt = "#{remainder} #{tokens[i]}".strip
         return nil if txt.empty?
 
-        matches = p.resolve(actor, txt, continued: (i < queries.length - 1))
-        return nil if matches.objects.empty? || matches.matching.empty?
+        response = qd.query(actor, txt)
+        return nil if response.match.nil?
 
-        accepted = matches.objects.select { |o| p.accept?(o) }
-        return nil if accepted.empty?
+        result.push response.match
 
-        if p.ambiguous?
-          result.push accepted
-        else
-          return nil if accepted.length != 1
-
-          result.push accepted.first
-        end
+        remainder = response.remainder
       end
+
+      return nil unless remainder.empty?
 
       Action.new(actor, result, self, with_hooks)
     end
@@ -86,7 +82,7 @@ module Gamefic
       user_friendly = verb.to_s.gsub(/_/, ' ')
       args = []
       used_names = []
-      queries.each do |_c|
+      querydefs.each do |_c|
         num = 1
         new_name = ":var"
         while used_names.include? new_name
@@ -102,7 +98,7 @@ module Gamefic
 
     def calculate_precision
       total = 0
-      queries.each { |q| total += q.precision }
+      querydefs.each { |q| total += q.precision }
       total -= 1000 if verb.nil?
       total
     end

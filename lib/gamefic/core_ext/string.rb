@@ -1,6 +1,4 @@
 class String
-  include Gamefic::Keywords
-
   # Capitalize the first letter without changing the rest of the string.
   # (String#capitalize makes the rest of the string lower-case.)
   #
@@ -14,6 +12,6 @@ class String
   #
   # @return [Array]
   def split_words
-    self.gsub(/[\s]+/, ' ').strip.split
+    self.gsub(/[\s-]+/, ' ').strip.split
   end
 end

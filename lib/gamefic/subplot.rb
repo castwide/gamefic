@@ -5,10 +5,7 @@ module Gamefic
   # started and concluded at any time during the parent plot's execution.
   #
   class Subplot
-    include World
-    include Scriptable
-    include Serialize
-    # @!parse extend Scriptable::ClassMethods
+    include Scripting
 
     # @return [Gamefic::Plot]
     attr_reader :plot
@@ -20,7 +17,7 @@ module Gamefic
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, nil]
-    # @param next_cue [Class<Gamefic::Scene::Base>, nil]
+    # @param next_cue [Class<Gamefic::Base>, nil]
     # @param more [Hash]
     def initialize plot, introduce: nil, next_cue: nil, **more
       @plot = plot

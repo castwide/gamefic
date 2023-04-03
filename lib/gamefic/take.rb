@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # The combination of an actor and a scene to be performed in a plot
+  # The combination of an actor and a scene to be performed in a plot turn.
   #
   class Take
     # @return [Active]

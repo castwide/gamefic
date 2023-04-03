@@ -1,74 +1,180 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # A plot controls the game narrative and manages the world model.
-  # Authors typically build plots through scripts that are executed in a
-  # special container called a stage. All of the elements that compose the
-  # narrative (characters, locations, scenes, etc.) reside in the stage's
-  # scope. Game engines use the plot to receive game data and process user
-  # input.
-  #
   class Plot
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
 
+    include Scripting
+
     # @return [Hash]
     attr_reader :metadata
 
-    include World
-    include Scriptable
-    # @!parse extend Scriptable::ClassMethods
-    include Snapshot
-    include Host
-    include Serialize
+    class << self
+      def blocks
+        @blocks ||= []
+      end
 
-    # @param metadata [Hash]
-    def initialize metadata: {}
-      @metadata = metadata
+      def script &block
+        blocks.push block
+      end
+    end
+
+    def initialize
+      @entities = [].freeze
+      @players = [].freeze
+      @playbook = Playbook.new
+      @scenebook = Scenebook.new
       run_scripts
-      theater
-      define_static
       default_scene && default_conclusion # Make sure they exist
       playbook.freeze
       scenebook.freeze
+      @initialized = true
     end
 
-    def plot
-      self
+    def initialized?
+      !!@initialized
     end
 
-    # Prepare the Plot for the next turn of gameplay.
-    # This method is typically called by the engine that manages game
-    # execution.
+    # Introduce a player to the game.
+    # This method is typically called by the Engine that manages game execution.
     #
-    def ready
-      subplots.each(&:ready)
-      super
+    # @param [Gamefic::Actor]
+    # @return [void]
+    def introduce(player)
+      @introduced = true
+      player.playbooks.push playbook unless player.playbooks.include?(playbook)
+      player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
+      players_safe_push player
+      player.select_cue :introduction, default_scene
     end
 
-    # Update the Plot's current turn of gameplay.
-    # This method is typically called by the engine that manages game
-    # execution.
+    # True if at least one player has been introduced.
     #
-    def update
-      subplots.each(&:update)
-      subplots.delete_if(&:concluded?)
-      super
+    def introduced?
+      @introduced ||= false
     end
 
+    # True if all players have reached conclusions.
     def concluded?
       introduced? && (players.empty? || players.all?(&:concluded?))
     end
 
-    def inspect
-      "#<#{self.class}>"
+    def takes
+      @takes ||= []
+    end
+
+    def ready
+      scenebook.ready_blocks.each(&:call)
+      prepare_takes
+      start_takes
+    end
+
+    def update
+      finish_takes
+      players.each do |plyr|
+        scenebook.player_update_blocks.each { |blk| blk.call plyr }
+      end
+      scenebook.update_blocks.each(&:call)
+    end
+
+    # @param plot [Plot]
+    # @param block [Proc]
+    def stage &block
+      # Scripts can share some information like instance variables before the
+      # plot gets instantiated, but running plots should not.
+      if initialized?
+        @stage = nil
+        Theater.new(self).instance_eval &block
+      else
+        @stage ||= Theater.new(self)
+        @stage.tap { |stg| stg.instance_eval(&block) }
+      end
+    end
+
+    # Make a character that a player will control on introduction.
+    #
+    # @return [Gamefic::Actor]
+    def make_player_character
+      # @todo Should we even bother with player_class? This could stand to be
+      #   more robust, but the adjustable player class seems like a step too
+      #   far.
+      cast Gamefic::Actor, name: 'yourself', synonyms: 'self myself you me', proper_named: true
+    end
+
+    # Cast an active entity.
+    # This method is similar to make, but it also provides the plot's
+    # playbook and scenebook to the entity so it can perform actions and
+    # participate in scenes. The entity should be an instance of
+    # Gamefic::Actor or include the Gamefic::Active module.
+    #
+    # @return [Gamefic::Actor, Gamefic::Active]
+    def cast cls, **args
+      ent = make cls, **args
+      ent.playbooks.push playbook
+      ent.scenebooks.push scenebook
+      ent
+    end
+
+    # @param actor [Actor]
+    # @return [Actor]
+    def exeunt actor
+      scenebook.player_conclude_blocks.each { |blk| blk.call actor }
+      actor.scenebooks.delete scenebook
+      actor.playbooks.delete playbook
+      players_safe_delete actor
+    end
+
+    private
+
+    def run_scripts
+      self.class.blocks.each { |blk| stage &blk }
+    end
+
+    def prepare_takes
+      takes.replace(players.map do |pl|
+        pl.start_cue default_scene
+      end)
+    end
+
+    def start_takes
+      takes.each do |take|
+        scenebook.run_player_ready_blocks take.actor
+        take.start
+        scenebook.run_player_output_blocks take.actor, take.output
+      end
+    end
+
+    def finish_takes
+      takes.each do |take|
+        take.finish
+        next if take.cancelled? || take.scene.type != 'Conclusion'
+
+        exeunt take.actor
+      end
+      takes.clear
+    end
+
+    def entities_safe_push entity
+      @entities = @entities.dup.push(entity).freeze
+    end
+
+    def players_safe_push player
+      @players = @players.dup.push(player).freeze
+    end
+
+    def entities_safe_delete entity
+      @entities = (@entities.dup - [entity]).freeze
+    end
+
+    def players_safe_delete player
+      @players = (@players.dup - [player]).freeze
     end
   end
 end
 
 module Gamefic
-  # @yieldself [Gamefic::Plot]
   def self.script &block
     Gamefic::Plot.script &block
   end

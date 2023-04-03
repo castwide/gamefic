@@ -1,8 +1,8 @@
-describe Gamefic::Scene::Rig::Base do
-  let(:base) { Gamefic::Scene::Rig::Base.new(nil) }
+describe Gamefic::Rig::Default do
+  let(:base) { Gamefic::Rig::Default.new(nil) }
 
   it 'initializes Base props' do
-    expect(base.props).to be_a(Gamefic::Scene::Props::Base)
+    expect(base.props).to be_a(Gamefic::Props::Default)
   end
 
   it 'reads from the actor queue' do

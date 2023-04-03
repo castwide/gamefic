@@ -1,8 +1,8 @@
-describe Gamefic::Scene::Rig::YesOrNo do
-  let(:yes_or_no) { Gamefic::Scene::Rig::YesOrNo.new(nil) }
+describe Gamefic::Rig::YesOrNo do
+  let(:yes_or_no) { Gamefic::Rig::YesOrNo.new(nil) }
 
   it 'initializes YesOrNo props' do
-    expect(yes_or_no.props).to be_a(Gamefic::Scene::Props::YesOrNo)
+    expect(yes_or_no.props).to be_a(Gamefic::Props::YesOrNo)
   end
 
   it 'freezes options' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'gamefic/scene/props'
-require 'gamefic/scene/rig'
+require 'gamefic/props'
+require 'gamefic/rig'
 
 module Gamefic
   # A Scene provides blocks to be executed at the start and finish of a turn.
@@ -11,7 +11,7 @@ module Gamefic
     # @return [Symbol]
     attr_reader :name
 
-    # @return [Class<Scene::Rig::Base>]
+    # @return [Class<Rig::Default>]
     attr_reader :rig
 
     # @return [Array<Proc>]
@@ -25,12 +25,12 @@ module Gamefic
     end
 
     # @param name [Symbol]
-    # @param rig [Class<Scene::Rig::Base>]
+    # @param rig [Class<Rig::Default>]
     # @param type [String, nil]
     # @param on_start [Proc, nil]
     # @param on_finish [Proc, nil]
     # @yieldparam [self]
-    def initialize name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil
+    def initialize name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil
       @name = name
       @rig = rig
       @type = type
@@ -44,13 +44,13 @@ module Gamefic
     end
 
     # @yieldparam [Actor]
-    # @yieldparam [SceneProps::Base]
+    # @yieldparam [SceneProps::Default]
     def on_start &block
       start_blocks.push block
     end
 
     # @yieldparam [Actor]
-    # @yieldparam [SceneProps::Base]
+    # @yieldparam [SceneProps::Default]
     def on_finish &block
       finish_blocks.push block
     end

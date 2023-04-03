@@ -1,4 +1,5 @@
 module Gamefic
+  # @todo This needs refactoring
   module Messaging
     # Send a message to the entity.
     # This method will automatically wrap the message in HTML paragraphs.

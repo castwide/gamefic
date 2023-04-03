@@ -69,7 +69,7 @@ describe Gamefic::Active do
 
   it 'concludes with a Conclusion scene' do
     scenebook = Gamefic::Scenebook.new
-    scenebook.block(:ending, rig: Gamefic::Scene::Rig::Conclusion)
+    scenebook.block(:ending, rig: Gamefic::Rig::Conclusion)
     object.scenebooks.push scenebook
     object.cue :ending
     object.start_cue nil

@@ -2,18 +2,16 @@ module Gamefic
   # Add a variety of text properties for naming, describing, and referencing
   # objects.
   module Describable
-    include Keywords
-
-    # Get the name of the object.
-    # The name is usually presented without articles (e.g., "object" instead
-    # of "an object" or "the object" unless the article is part of a proper
+    # The object's name.
+    # Names are usually presented without articles (e.g., "object" instead
+    # of "an object" or "the object") unless the article is part of a proper
     # name (e.g., "The Ohio State University").
     #
     # @return [String]
     attr_reader :name
 
-    # Alternate words that can be used to describe the object. Synonyms are
-    # used in conjunction with the object's name when generating keywords.
+    # Alternate words that can reference the object. Synonyms are used in
+    # conjunction with the object's name when scanning tokens.
     #
     # @return [String]
     attr_reader :synonyms
@@ -21,60 +19,41 @@ module Gamefic
     # The object's indefinite article (usually "a" or "an").
     #
     # @return [String]
-    attr_reader :indefinite_article
+    attr_accessor :indefinite_article
 
     # The object's definite article (usually "the").
     #
     # @return [String]
-    attr_reader :definite_article
+    attr_writer :definite_article
 
-    # Get a set of keywords associated with the object.
-    # Keywords are typically the words in the object's name plus its synonyms.
-    #
-    # @return [Array<String>]
-    def keywords
-      @keywords ||= "#{definite_article} #{indefinite_article} #{name} #{synonyms}".downcase.split(Keywords::SPLIT_REGEXP).uniq
+    def split_words
+      # @todo Should articles be here?
+      "#{definite_article} #{indefinite_article} #{name} #{synonyms}".split_words
     end
 
-    # Get the name of the object with an indefinite article.
+    # The name of the object with an indefinite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
     #
     # @return [String]
     def indefinitely
-      ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name.to_s
+      ((proper_named? || indefinite_article == '') ? '' : "#{indefinite_article} ") + name.to_s
     end
 
-    # Get the name of the object with a definite article.
+    # The name of the object with a definite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
     #
     # @return [String]
     def definitely
-      ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name.to_s
+      ((proper_named? || definite_article == '') ? '' : "#{definite_article} ") + name.to_s
     end
 
-    # Get the definite article for this object (usually "the").
+    # Tefinite article for this object (usually "the").
     #
     # @return [String]
     def definite_article
       @definite_article || "the"
-    end
-
-    # Set the definite article.
-    #
-    # @param [String] article
-    def definite_article= article
-      @keywords = nil
-      @definite_article = article
-    end
-
-    # Set the indefinite article.
-    #
-    # @param [String] article
-    def indefinite_article= article
-      @keywords = nil
-      @indefinite_article = article
     end
 
     # Is the object proper-named?
@@ -106,7 +85,6 @@ module Gamefic
     #
     # @param value [String]
     def name=(value)
-      @keywords = nil
       words = value.split_words
       if ['a','an'].include?(words[0].downcase)
         @indefinite_article = words[0].downcase
@@ -157,7 +135,6 @@ module Gamefic
     end
 
     def synonyms= text
-      @keywords = nil
       @synonyms = text
     end
 

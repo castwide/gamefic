@@ -37,13 +37,13 @@ module Gamefic
     # @raise [NameError] if a scene with the given name already exists
     #
     # @param name [Symbol]
-    # @param rig [Class<Scene::Rig::Base>]
+    # @param rig [Class<Rig::Default>]
     # @param type [String, nil]
     # @param on_start [Proc, nil]
     # @param on_finish [Proc, nil]
     # @param block [Proc]
     # @return [Scene]
-    def block name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil, &block
+    def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
       add Scene.new(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
     end
 
@@ -54,7 +54,7 @@ module Gamefic
     # @param [Scene]
     # @return [Scene]
     def add scene
-      raise NameError, "A scene named `#{name}` already exists" if scene_map.key?(scene.name)
+      raise NameError, "A scene named `#{scene.name}` already exists" if scene_map.key?(scene.name)
 
       scene_map[scene.name] = scene
     end

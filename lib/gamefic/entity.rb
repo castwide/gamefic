@@ -1,24 +1,27 @@
-require "gamefic/node"
-require "gamefic/describable"
-require 'gamefic/messaging'
+# frozen_string_literal: true
 
 module Gamefic
-  # A physical object that can exist in a plot. Most objects with which
-  # players interact are entities. Player characters themselves typically
-  # derive from entities, e.g., the Gamefic::Actor class.
-  #
-  class Entity < Element
+  class Entity
+    include Describable
     include Node
     include Messaging
 
-    # Set the Entity's parent.
-    #
-    # @param node [Gamefic::Entity, nil] The new parent.
-    def parent=(node)
-      if node && node.is_a?(Entity) == false
-        raise ArgumentError, "Entity's parent must be an Entity"
+    # @return [Symbol]
+    attr_reader :eid
+
+    def initialize **args
+      klass = self.class
+      defaults = {}
+      while klass <= Entity
+        defaults = klass.default_attributes.merge(defaults)
+        klass = klass.superclass
       end
-      super
+      defaults.merge(args).each_pair do |k, v|
+        next if k.to_sym == :eid
+        public_send "#{k}=", v
+      end
+
+      @eid = args[:eid]&.to_sym
     end
 
     # A freeform property dictionary.
@@ -31,20 +34,32 @@ module Gamefic
       @session ||= {}
     end
 
-    # Get a custom property.
-    #
     # @param key [Symbol] The property's name
     # @return The value of the property
     def [](key)
       session[key]
     end
 
-    # Set a custom property.
-    #
     # @param key [Symbol] The property's name
     # @param value The value to set
     def []=(key, value)
       session[key] = value
+    end
+
+    class << self
+      # Set or update the default values for new instances.
+      #
+      # @param attrs [Hash] The attributes to be merged into the defaults.
+      def set_default attrs = {}
+        default_attributes.merge! attrs
+      end
+
+      # A hash of default values for attributes when creating an instance.
+      #
+      # @return [Hash]
+      def default_attributes
+        @default_attributes ||= {}
+      end
     end
   end
 end

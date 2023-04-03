@@ -1,15 +1,7 @@
 module Gamefic
-  module World
+  module Scripting
     module Scenes
-      include Books
-      include Commands
-      include Players
-
-      # @return [Array<Take>]
-      def takes
-        @takes ||= []
-      end
-
+      attr_reader :scenebook
       # Block a new scene.
       #
       # @example Prompt the player for a name
@@ -33,28 +25,27 @@ module Gamefic
       # @raise [NameError] if a scene with the given name already exists
       #
       # @param name [Symbol, nil]
-      # @param rig [Class<Scene::Rig::Base>]
+      # @param rig [Class<Rig::Default>]
       # @param type [String, nil]
       # @param on_start [Proc, nil]
       # @param on_finish [Proc, nil]
       # @param block [Proc]
       # @yieldparam [Scene]
       # @return [Scene]
-      def block name, rig: Scene::Rig::Base, type: nil, on_start: nil, on_finish: nil, **rig_opts, &block
-        scenebook.block(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, **rig_opts, &block)
+      def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
+        scenebook.block(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
       end
-      alias custom block
 
       # @return [Scene]
       def default_scene
-        scenebook[:default_scene] || block(:default_scene, rig: Scene::Rig::Activity)
+        scenebook[:default_scene] || block(:default_scene, rig: Rig::Activity)
       end
 
       # @return [Scene]
       def default_conclusion
         scenebook[:default_conclusion] ||
           block(:default_conclusion,
-                rig: Scene::Rig::Conclusion,
+                rig: Rig::Conclusion,
                 on_start: proc { |actor, _props|
                 })
       end
@@ -70,7 +61,7 @@ module Gamefic
       #
       # @param pause [Boolean] Pause before the first action if true
       # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Scene::Props::Base]
+      # @yieldparam [Props::Default]
       # @return [Scene]
       def introduction(rig: Gamefic::Rig::Activity, &start)
         block :introduction,
@@ -78,23 +69,6 @@ module Gamefic
               on_start: proc { |actor, props|
                 start&.call(actor, props)
               }
-      end
-
-      # Introduce a player to the game.
-      # This method is typically called by the Engine that manages game execution.
-      #
-      # @param [Gamefic::Actor]
-      # @return [void]
-      def introduce(player)
-        @introduced = true
-        player.playbooks.push playbook unless player.playbooks.include?(playbook)
-        player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
-        players.push player
-        player.select_cue :introduction, default_scene
-      end
-
-      def introduced?
-        @introduced ||= false
       end
 
       # Create a multiple-choice scene.
@@ -253,46 +227,6 @@ module Gamefic
       # @return [Proc]
       def on_player_output &block
         scenebook.on_player_output &block
-      end
-
-      def ready
-        scenebook.ready_blocks.each(&:call)
-        prepare_takes
-        start_takes
-      end
-
-      def update
-        finish_takes
-        players.each do |plyr|
-          scenebook.player_update_blocks.each { |blk| blk.call plyr }
-        end
-        scenebook.update_blocks.each(&:call)
-      end
-
-      private
-
-      def prepare_takes
-        takes.replace(players.map do |pl|
-          pl.start_cue default_scene
-        end)
-      end
-
-      def start_takes
-        takes.each do |take|
-          scenebook.run_player_ready_blocks take.actor
-          take.start
-          scenebook.run_player_output_blocks take.actor, take.output
-        end
-      end
-
-      def finish_takes
-        takes.each do |take|
-          take.finish
-          next if take.cancelled? || take.scene.type != 'Conclusion'
-
-          exeunt take.actor
-        end
-        takes.clear
       end
     end
   end

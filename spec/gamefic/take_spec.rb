@@ -28,7 +28,7 @@ describe Gamefic::Take do
     playbook = Gamefic::Playbook.new
     playbook.respond(:command) { |actor| actor[:executed] = true }
     actor.playbooks.push playbook
-    scene = Gamefic::Scene.new(:activity, rig: Gamefic::Scene::Rig::Activity)
+    scene = Gamefic::Scene.new(:activity, rig: Gamefic::Rig::Activity)
     take = Gamefic::Take.new(actor, scene)
     take.start
     actor.queue.push 'command'
@@ -59,7 +59,7 @@ describe Gamefic::Take do
   end
 
   it 'adds options from MultipleChoice rigs' do
-    scene = Gamefic::Scene.new(:multi, rig: Gamefic::Scene::Rig::MultipleChoice) do |scene|
+    scene = Gamefic::Scene.new(:multi, rig: Gamefic::Rig::MultipleChoice) do |scene|
       scene.on_start do |actor, props|
         props.options.concat ['one', 'two']
       end

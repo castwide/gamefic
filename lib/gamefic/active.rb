@@ -242,7 +242,7 @@ module Gamefic
     # @oaram context [Hash] Additional scene data
     def conclude new_scene, **context
       cue new_scene, **context
-      raise NotConclusionError unless next_cue.scene.rig <= Scene::Rig::Conclusion
+      raise NotConclusionError unless next_cue.scene.rig <= Rig::Conclusion
 
       next_cue
     end
@@ -251,7 +251,7 @@ module Gamefic
     # Conclusion scene.
     #
     def concluded?
-      @last_cue&.scene&.rig&.<=(Scene::Rig::Conclusion)
+      @last_cue&.scene&.rig&.<=(Rig::Conclusion)
     end
 
     def accessible?
@@ -265,7 +265,7 @@ module Gamefic
     # Track the entity's performance of a scene.
     #
     def entered scene
-      klass = (scene.is_a?(Gamefic::Scene::Base) ? scene.class : scene)
+      klass = (scene.is_a?(Gamefic::Base) ? scene.class : scene)
       entered_scenes.add klass
     end
 
@@ -273,7 +273,7 @@ module Gamefic
     #
     # @return [Boolean]
     def entered? scene
-      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
+      klass = (scene.is_a?(Gamefic::Base) ? scene.class : scene)
       entered_scenes.include?(klass)
     end
 
@@ -306,7 +306,7 @@ module Gamefic
       end
     end
 
-    # @return [Set<Gamefic::Scene::Base>]
+    # @return [Set<Gamefic::Base>]
     def entered_scenes
       @entered_scenes ||= Set.new
     end

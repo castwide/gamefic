@@ -1,8 +1,8 @@
-describe Gamefic::Scene::Rig::MultipleChoice do
-  let(:multiple_choice) { Gamefic::Scene::Rig::MultipleChoice.new(nil) }
+describe Gamefic::Rig::MultipleChoice do
+  let(:multiple_choice) { Gamefic::Rig::MultipleChoice.new(nil) }
 
   it 'initializes MultipleChoice props' do
-    expect(multiple_choice.props).to be_a(Gamefic::Scene::Props::MultipleChoice)
+    expect(multiple_choice.props).to be_a(Gamefic::Props::MultipleChoice)
   end
 
   it 'sets props on valid input' do

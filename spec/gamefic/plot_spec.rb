@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Gamefic::Plot do
+RSpec.describe Gamefic::Plot do
   after :each do
     Gamefic::Plot.blocks.clear
   end
@@ -11,7 +11,6 @@ describe Gamefic::Plot do
     end
     plot = Gamefic::Plot.new
     expect(plot.entities.length).to eq(1)
-    expect(plot.static.length).to eq(2)
   end
 
   it 'creates responses from scripts' do
@@ -186,7 +185,7 @@ describe Gamefic::Plot do
 
   it 'runs on_player_update blocks' do
     Gamefic.script do
-      on_player_ready do |player|
+      on_player_update do |player|
         player[:ran_on_player_update] = true
       end
     end

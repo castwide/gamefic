@@ -1,8 +1,10 @@
-# Exception raised when setting a node's parent would cause
-# a circular reference, e.g., A -> A or A -> B -> A
-class CircularNodeReferenceError < RuntimeError; end
+# frozen_string_literal: true
 
 module Gamefic
+  # Exception raised when setting a node's parent would cause
+  # a circular reference, e.g., A -> A or A -> B -> A
+  class CircularNodeReferenceError < RuntimeError; end
+
   module Node
     # An array of the object's children.
     #
