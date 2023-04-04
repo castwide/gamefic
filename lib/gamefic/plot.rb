@@ -31,7 +31,6 @@ module Gamefic
     end
 
     def ready
-      puts 'Running Plot#ready'
       subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
       super

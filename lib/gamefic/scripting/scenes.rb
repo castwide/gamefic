@@ -186,7 +186,6 @@ module Gamefic
       #   end
       #
       def on_ready &block
-        puts "Running for a #{self.class}"
         scenebook.on_ready &block
       end
 
