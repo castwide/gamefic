@@ -7,20 +7,11 @@ module Gamefic
     autoload :Host, 'gamefic/plot/host'
 
     include Direction
+    extend Scripting::ClassMethods
     include Host
 
     # @return [Hash]
     attr_reader :metadata
-
-    class << self
-      def blocks
-        @blocks ||= []
-      end
-
-      def script &block
-        blocks.push block
-      end
-    end
 
     def initialize
       start_production
@@ -96,24 +87,15 @@ module Gamefic
       ent
     end
 
-    # @param actor [Actor]
-    # @return [Actor]
-    def exeunt actor
-      scenebook.player_conclude_blocks.each { |blk| blk.call actor }
-      actor.scenebooks.delete scenebook
-      actor.playbooks.delete playbook
-      players_safe_delete actor
+    # Start a new subplot based on the provided class.
+    #
+    # @param subplot_class [Class<Gamefic::Subplot>] The class of the subplot to be created (Subplot by default)
+    # @return [Gamefic::Subplot]
+    def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, **more
+      subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, **more)
+      subplots.push subplot
+      subplot
     end
-
-      # Start a new subplot based on the provided class.
-      #
-      # @param subplot_class [Class<Gamefic::Subplot>] The class of the subplot to be created (Subplot by default)
-      # @return [Gamefic::Subplot]
-      def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, **more
-        subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, **more)
-        subplots.push subplot
-        subplot
-      end
 
     private
 

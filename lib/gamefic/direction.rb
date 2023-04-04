@@ -32,6 +32,15 @@ module Gamefic
       !!@initialized
     end
 
+    # @param actor [Actor]
+    # @return [Actor]
+    def exeunt actor
+      scenebook.player_conclude_blocks.each { |blk| blk.call actor }
+      actor.scenebooks.delete scenebook
+      actor.playbooks.delete playbook
+      players_safe_delete actor
+    end
+
     private
 
     def entities_safe_push entity
