@@ -61,6 +61,10 @@ module Gamefic
       subplots.push subplot
       subplot
     end
+
+    def inspect
+      "#<#{self.class}>"
+    end
   end
 end
 
