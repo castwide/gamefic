@@ -1,11 +1,15 @@
 module Gamefic
   module Query
     class Scoped < Base
+      # A Scoped query uses a Scope to select entities to filter in the query
+      # based on their relationship to the entity performing the query. For
+      # example, Scope::Children would filter from an array of the entity's
+      # child entities and the children's accessible descendants.
+      #
+      # @return [Class<Gamefic::Scope::Base>]
       attr_reader :scope
 
       # @param scope [Class<Gamefic::Scope::Base>]
-      # @param args [Array<Object>]
-      # @param ambiguous [Boolean]
       def initialize scope, *arguments, ambiguous: false, eid: nil
         super(*arguments, ambiguous: ambiguous, eid: eid)
         @scope = scope
@@ -14,8 +18,8 @@ module Gamefic
       # @return [Result]
       def query(subject, token)
         available = @scope.matches(subject)
-                         .that_are(*@arguments)
-        available.select! { |e| e.id == @eid } if @eid
+                          .that_are(*@arguments)
+        available.select! { |e| e.eid == @eid } if @eid
 
         scan = Scanner.scan(available, token)
 
