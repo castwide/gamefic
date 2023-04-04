@@ -26,9 +26,8 @@ module Gamefic
     # @return [String]
     attr_writer :definite_article
 
-    def split_words
-      # @todo Should articles be here?
-      "#{definite_article} #{indefinite_article} #{name} #{synonyms}".split_words
+    def keywords
+      "#{name} #{synonyms}".keywords
     end
 
     # The name of the object with an indefinite article.
@@ -85,7 +84,7 @@ module Gamefic
     #
     # @param value [String]
     def name=(value)
-      words = value.split_words
+      words = value.split
       if ['a','an'].include?(words[0].downcase)
         @indefinite_article = words[0].downcase
         @definite_article = 'the'

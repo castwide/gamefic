@@ -11,7 +11,7 @@ class String
   # Get an array of words split by any whitespace.
   #
   # @return [Array]
-  def split_words
-    self.gsub(/[\s-]+/, ' ').strip.split
+  def keywords
+    self.gsub(/[\s-]+/, ' ').strip.downcase.split.that_are_not('a', 'an', 'the')
   end
 end
