@@ -4,7 +4,7 @@ module Gamefic
     class Base
       def initialize *args, ambiguous: false, eid: nil
         @args = args
-        @ambiguous = false
+        @ambiguous = ambiguous
         @eid = eid
       end
 
