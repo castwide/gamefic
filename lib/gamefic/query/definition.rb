@@ -14,7 +14,7 @@ module Gamefic
         end
       end
 
-      # @param query [Class] Gemeral, Relative, or Textual
+      # @param query [Class<Gamefic::Query::Abstract>] Gemeral, Relative, or Textual
       # @param args [Array<Object>]
       def initialize query, *args, ambiguous: false, **opts
         @query = query
@@ -34,7 +34,7 @@ module Gamefic
       end
 
       def precision
-        1000 # @todo Finish this
+        @query.precision
       end
 
       def ambiguous?

@@ -12,6 +12,10 @@ module Gamefic
       def self.relative?
         false
       end
+
+      def self.precision
+        0
+      end
     end
   end
 end
