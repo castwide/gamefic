@@ -1,7 +1,10 @@
 module Gamefic
   module Scripting
     module Scenes
-      attr_reader :scenebook
+      def scenebook
+        @scenebook ||= Scenebook.new
+      end
+
       # Block a new scene.
       #
       # @example Prompt the player for a name

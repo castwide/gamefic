@@ -21,8 +21,6 @@ module Gamefic
     end
 
     def start_production
-      @playbook = Playbook.new
-      @scenebook = Scenebook.new
       run_scripts
       default_scene && default_conclusion # Make sure they exist
       playbook.freeze

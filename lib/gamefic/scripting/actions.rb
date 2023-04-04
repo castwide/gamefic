@@ -3,7 +3,9 @@
 module Gamefic
   module Scripting
     module Actions
-      attr_reader :playbook
+      def playbook
+        @playbook ||= Playbook.new
+      end
 
       # Create a response to a command.
       # A Response uses the `verb` argument to identify the imperative verb
@@ -28,7 +30,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
       def respond(verb, *queries, &proc)
-        playbook.respond(verb, *queries, &proc)
+        playbook.respond(verb, *map_response_args(queries), &proc)
       end
 
       # Create a meta rsponse for a command.
@@ -47,7 +49,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
       def meta(verb, *queries, &block)
-        playbook.meta verb, *queries, &block
+        playbook.meta verb, *map_response_args(queries), &block
       end
 
       # Add a proc to be evaluated before a character executes an action.
@@ -151,16 +153,18 @@ module Gamefic
 
       private
 
-      def args_to_queries args
+      def map_response_args args
         args.map do |arg|
-          if arg.is_a?(Gamefic::Query::Abstract)
-            arg
-          elsif arg.is_a?(Class) || arg.is_a?(Module) || arg.is_a?(Symbol)
+          if arg.is_a?(Class) || arg.is_a?(Module) || (arg.is_a?(Symbol) && arg.to_s.end_with?('?'))
             available(arg)
           elsif arg.is_a?(String) || arg.is_a?(Regexp)
             plaintext(arg)
+          elsif arg.is_a?(Gamefic::Entity)
+            raise ArgumentError, "Entities passed to response queries must have a static EID" unless arg.eid
+
+            arg.eid
           else
-            raise ArgumentError, "Invalid query argument #{arg}"
+            arg
           end
         end
       end

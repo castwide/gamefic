@@ -2,8 +2,14 @@ module Gamefic
   module Query
     # @abstract
     class Base
-      def initialize *args, ambiguous: false, eid: nil
-        @args = args
+      attr_reader :arguments
+
+      attr_reader :ambiguous
+
+      attr_reader :eid
+
+      def initialize *arguments, ambiguous: false, eid: nil
+        @arguments = arguments
         @ambiguous = ambiguous
         @eid = eid
       end
@@ -25,7 +31,7 @@ module Gamefic
 
       def calculate_precision
         prec = 0
-        @args.each do |arg|
+        @arguments.each do |arg|
           if arg.is_a?(Class)
             prec += 500
           elsif arg.is_a?(Module) || arg.is_a?(Symbol)
@@ -50,7 +56,7 @@ module Gamefic
       end
 
       def process_args(_subject)
-        @args.map do |arg|
+        @arguments.map do |arg|
           case arg
           when Proc
             arg.call
