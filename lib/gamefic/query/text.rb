@@ -1,8 +1,6 @@
 module Gamefic
   module Query
     class Text
-      include Abstract
-
       def initialize arg = nil
         @arg = arg
       end
@@ -15,16 +13,22 @@ module Gamefic
         end
       end
 
+      def precision
+        0
+      end
+
       private
 
       def match? token
+        return true if @arg.nil?
+
         case @arg
         when String
           token == @arg
         when Regexp
           token =~ @arg
         else
-          true
+          raise ArgumentError, 'Invalid text query argument'
         end
       end
     end

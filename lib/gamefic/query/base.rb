@@ -1,24 +1,14 @@
 module Gamefic
   module Query
-    class Entities < Base
-
-      # @param query [Class<Gamefic::Query::Abstract>] Gemeral or Relative
-      # @param args [Array<Object>]
-      def initialize query, *args, ambiguous: false, **opts
-        @query = query
+    # @abstract
+    class Base
+      def initialize *args
         @args = args
-        @ambiguous = ambiguous
-        @opts = opts
       end
 
       # @return [Result]
       def query(subject, token)
-        available = @query.match(subject, *process_args(subject), **@opts)
-        scan = Scanner.scan(available, token)
-
-        return ambiguous_result(scan) if ambiguous?
-
-        unambiguous_result(scan)
+        raise 'Not implemented'
       end
 
       def precision
@@ -32,9 +22,18 @@ module Gamefic
       private
 
       def calculate_precision
-        result = @query.precision
-        result -= 1000 if ambiguous?
-        result
+        prec = 0
+        @args.each do |arg|
+          if arg.is_a?(Class)
+            prec += 500
+          elsif arg.is_a?(Module) || arg.is_a?(Symbol)
+            prec += 100
+          end
+        end
+        # @todo Fix the query architecture
+        prec += 1000 if @eid
+        prec -= 1000 if @ambiguous
+        prec
       end
 
       def ambiguous_result scan

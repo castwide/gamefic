@@ -99,7 +99,7 @@ module Gamefic
 
     def calculate_precision
       total = 0
-      querydefs.each { |q| total += q.precision }
+      queries.each { |q| total += q.precision }
       total -= 1000 if verb.nil?
       total
     end

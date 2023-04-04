@@ -95,7 +95,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def anywhere *args, eid: nil
-        Query::Entities.new Context::General, -> { entities }, *args, eid: eid
+        Query::General.new -> { entities }, *args, eid: eid
       end
 
       # Define a query that searches an actor's accessible entities.
