@@ -46,9 +46,9 @@ module Gamefic
     attr_reader :word_count
 
     def initialize template, command
-      words = template.split_words
+      words = template.keywords
       @word_count = words.length
-      command_words = command.split_words
+      command_words = command.keywords
       @verb = nil
       if words[0][0] == ':'
         @word_count -= 1
@@ -100,7 +100,7 @@ module Gamefic
       arguments = []
       b = @verb.nil? ? 0 : 1
       xverb = @verb
-      @replace.to_s.split_words[b..-1].each { |r|
+      @replace.to_s.keywords[b..-1].each { |r|
         if r.match(/^\{\$[0-9]+\}$/)
           arguments.push m[r[2..-2].to_i]
         elsif arguments.empty? && xverb.nil?

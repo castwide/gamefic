@@ -26,7 +26,9 @@ module Gamefic
       @before_actions.freeze
       @after_actions.freeze
       @verb_response_map.freeze
+      @verb_response_map.values.map(&:freeze)
       @synonym_syntax_map.freeze
+      @synonym_syntax_map.values.map(&:freeze)
       self
     end
 

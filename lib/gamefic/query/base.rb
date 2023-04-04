@@ -1,24 +1,38 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Query
-    # @abstract
+    # A base class for entity-based queries that can be applied to responses.
+    # Each query represents an attempt to match an argument in a command to a
+    # game entity.
+    #
     class Base
+      # @return [Array<Object>]
       attr_reader :arguments
 
+      # @return [Boolean]
       attr_reader :ambiguous
 
+      # @return [Symbol, nil]
       attr_reader :eid
 
+      # @param arguments [Array<Object>]
+      # @param ambiguous [Boolean]
+      # @param eid [Symbol, nil]
       def initialize *arguments, ambiguous: false, eid: nil
         @arguments = arguments
         @ambiguous = ambiguous
         @eid = eid
       end
 
+      # @param subject [Gamefic::Entity]
+      # @param token [String]
       # @return [Result]
       def query(subject, token)
         raise 'Not implemented'
       end
 
+      # @return [Integer]
       def precision
         @precision ||= calculate_precision
       end
@@ -30,17 +44,30 @@ module Gamefic
       private
 
       def calculate_precision
-        prec = 0
-        @arguments.each do |arg|
-          if arg.is_a?(Class)
-            prec += 500
-          elsif arg.is_a?(Module) || arg.is_a?(Symbol)
-            prec += 100
+        @arguments.sum(base_precision) do |arg|
+          case arg
+          when Class
+            depth_of_class(arg) * 100
+          when Module
+            100
+          else
+            1
           end
         end
-        prec += 1000 if @eid
-        prec -= 1000 if @ambiguous
-        prec
+      end
+
+      def base_precision
+        (@eid ? 1000 : 0) + (@ambiguous ? -1000 : 0)
+      end
+
+      def depth_of_class(arg)
+        result = 1
+        cursor = arg.superclass
+        until cursor.nil?
+          result += 1
+          cursor = cursor.superclass
+        end
+        result
       end
 
       def ambiguous_result scan
@@ -53,17 +80,6 @@ module Gamefic
         return Result.new(nil, scan.token) unless scan.matched.one?
 
         Result.new(scan.matched.first, scan.remainder)
-      end
-
-      def process_args(_subject)
-        @arguments.map do |arg|
-          case arg
-          when Proc
-            arg.call
-          else
-            arg
-          end
-        end
       end
     end
   end

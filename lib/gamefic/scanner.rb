@@ -9,15 +9,15 @@ module Gamefic
     # text that remains unmatched.
     #
     class Result
-      # The scanned token
-      #
-      # @return [String]
-      attr_reader :token
-
       # The scanned objects
       #
       # @return [Array<Object>]
       attr_reader :scanned
+
+      # The scanned token
+      #
+      # @return [String]
+      attr_reader :token
 
       # The matched objects
       #
@@ -37,19 +37,17 @@ module Gamefic
       end
     end
 
-    # Scan objects against a token. Objects must respond to #split_words with
-    # an array of strings. (Gamefic adds a #split_words method to String.)
+    # Scan entities against a token.
     #
-    # @param objects [Array<#split_words>]
+    # @param objects [Array<Gamefic::Entity>]
     # @param token [String]
-    # @param continued [Boolean]
-    # @return [Matches]
-    def self.scan objects, token, continued: false
-      words = token.split_words
+    # @return [Result]
+    def self.scan objects, token
+      words = token.keywords
       available = objects.clone
       filtered = []
       if nested?(token)
-        drill = denest(objects, token)
+        denest(objects, token)
       else
         words.each_with_index do |word, idx|
           tested = select_strict(available, word)
@@ -67,17 +65,17 @@ module Gamefic
       private
 
       def select_strict available, word
-        available.select { |o| o.split_words.include?(word) }
+        available.select { |o| o.keywords.include?(word) }
       end
 
       def select_fuzzy available, word
-        available.select { |o| o.split_words.any? { |w| w.start_with?(word) } }
+        available.select { |o| o.keywords.any? { |w| w.start_with?(word) } }
       end
 
       def nested?(token)
         token.match(NEST_REGEXP)
       end
-  
+
       def denest(objects, token)
         parts = token.split(NEST_REGEXP)
         current = parts.pop

@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Query
     class General < Base
+      # @param entities [Array, Proc]
       def initialize entities, *arguments, ambiguous: false, eid: nil
         super(*arguments, ambiguous: ambiguous, eid: eid)
         @entities = entities

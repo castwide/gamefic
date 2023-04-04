@@ -8,8 +8,8 @@ describe String do
   end
 
   it "splits words on any whitespace" do
-    expect("one two".split_words).to eq(["one", "two"])
-    expect(" one  two   ".split_words).to eq(["one", "two"])
-    expect("one, two\nthree".split_words).to eq(["one,", "two", "three"])
+    expect("one two".keywords).to eq(["one", "two"])
+    expect(" one  two   ".keywords).to eq(["one", "two"])
+    expect("one, two\nthree".keywords).to eq(["one,", "two", "three"])
   end
 end

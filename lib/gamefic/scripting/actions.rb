@@ -21,12 +21,12 @@ module Gamefic
       #   # The command "salute" will respond "Hello, sir!"
       #
       # @example An Action that accepts a Character
-      #   respond :salute, Use.visible(Character) do |actor, character|
+      #   respond :salute, available(Character) do |actor, character|
       #     actor.tell "#{The character} returns your salute."
       #   end
       #
       # @param verb [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base, Entity>] Filters for the command's tokens
+      # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
       def respond(verb, *queries, &proc)
@@ -45,7 +45,7 @@ module Gamefic
       #   end
       #
       # @param verb [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base>] Filters for the command's tokens
+      # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
       def meta(verb, *queries, &block)
@@ -95,7 +95,7 @@ module Gamefic
       # Define a query that searches the entire plot's entities.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] to find a specific EID
+      # @param eid [Symbol] Find a specific entity by its EID
       def anywhere *args, eid: nil, ambiguous: false
         Query::General.new -> { entities }, *args, eid: eid, ambiguous: ambiguous
       end
@@ -103,7 +103,7 @@ module Gamefic
       # Define a query that searches an actor's accessible entities.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] to find a specific EID
+      # @param eid [Symbol] Find a specific entity by its EID
       def available *args, eid: nil, ambiguous: false
         Query::Scoped.new Scope::Family, *args, eid: eid, ambiguous: ambiguous
       end
@@ -112,7 +112,7 @@ module Gamefic
       # Define a query that checks an actor's parent.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] to find a specific EID
+      # @param eid [Symbol] Find a specific entity by its EID
       def parent *args, eid: nil, ambiguous: false
         Query::Scoped.new Scope::Parent, *args, eid: eid, ambiguous: ambiguous
       end
@@ -120,7 +120,7 @@ module Gamefic
       # Define a query that searches an actor's children.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] to find a specific EID
+      # @param eid [Symbol] Find a specific entity by its EID
       def children *args, eid: nil, ambiguous: false
         Query::Scoped.new Scope::Children, *args, eid: eid, ambiguous: ambiguous
       end
@@ -128,7 +128,7 @@ module Gamefic
       # Define a query that searches an actor's siblings.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] to find a specific EID
+      # @param eid [Symbol] Find a specific entity by its EID
       def siblings *args, eid: nil, ambiguous: false
         Query::Scoped.new Scope::Siblings, *args, eid: eid, ambiguous: ambiguous
       end
@@ -136,7 +136,7 @@ module Gamefic
       # Define a query that searches the actor itself.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] to find a specific EID
+      # @param eid [Symbol] Find a specific entity by its EID
       def myself *args, eid: nil, ambiguous: false
         Query::Scoped.new Scope::Myself, *args, eid: eid, ambiguous: ambiguous
       end
@@ -146,7 +146,7 @@ module Gamefic
       # any text it finds in the command. A successful query returns the
       # corresponding text instead of an entity.
       #
-      # @param arg [String, RegExp] The string or regular expression to match
+      # @param arg [String, Regrxp] The string or regular expression to match
       def plaintext arg = nil
         Query::Text.new arg
       end
@@ -155,14 +155,13 @@ module Gamefic
 
       def map_response_args args
         args.map do |arg|
-          if arg.is_a?(Class) || arg.is_a?(Module) || (arg.is_a?(Symbol) && arg.to_s.end_with?('?'))
-            available(arg)
-          elsif arg.is_a?(String) || arg.is_a?(Regexp)
-            plaintext(arg)
-          elsif arg.is_a?(Gamefic::Entity)
-            raise ArgumentError, "Entities passed to response queries must have a static EID" unless arg.eid
+          raise "Pass `eid:` to queries instead of entities" if arg.is_a?(Gamefic::Entity)
 
-            arg.eid
+          case arg
+          when Class, Module, Symbol
+            available(arg)
+          when String, Regexp
+            plaintext(arg)
           else
             arg
           end

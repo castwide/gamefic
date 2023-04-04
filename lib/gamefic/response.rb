@@ -9,19 +9,18 @@ module Gamefic
     attr_reader :verb
 
     # @return [Array<Query::Base>]
-    attr_reader :querydefs
-    alias queries querydefs
+    attr_reader :queries
 
     # @return [Proc]
     attr_reader :block
 
     # @param verb [Symbol]
-    # @param querydefs [Array<Query::Base>]
+    # @param queryies [Array<Query::Base>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, *querydefs, meta: false, &block
+    def initialize verb, *queries, meta: false, &block
       @verb = verb
-      @querydefs = querydefs
+      @queries = queries
       @meta = meta
       @block = block
     end
@@ -52,12 +51,15 @@ module Gamefic
     def attempt actor, command, with_hooks = false
       return nil if command.verb != verb
 
-      tokens = command.arguments
+      tokens = command.arguments.clone
       result = []
       remainder = ''
 
-      querydefs.each_with_index do |qd, i|
-        txt = "#{remainder} #{tokens[i]}".strip
+      queries.each do |qd|
+        token = tokens.shift
+        return nil if tokens.nil?
+
+        txt = "#{remainder} #{token}".strip
         return nil if txt.empty?
 
         response = qd.query(actor, txt)
@@ -68,7 +70,7 @@ module Gamefic
         remainder = response.remainder
       end
 
-      return nil unless remainder.empty?
+      return nil unless tokens.empty? && remainder.empty?
 
       Action.new(actor, result, self, with_hooks)
     end
@@ -83,7 +85,7 @@ module Gamefic
       user_friendly = verb.to_s.gsub(/_/, ' ')
       args = []
       used_names = []
-      querydefs.each do |_c|
+      queries.each do |_c|
         num = 1
         new_name = ":var"
         while used_names.include? new_name

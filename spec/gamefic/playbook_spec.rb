@@ -62,6 +62,20 @@ describe Gamefic::Playbook do
     }.to raise_error(FrozenError)
   end
 
+  it 'freezes existing {verb: response} maps' do
+    playbook.respond(:look) { |_| 0 }
+    playbook.freeze
+    expect { playbook.respond(:look) { |_| 1 } }.to raise_error(FrozenError)
+  end
+
+  it 'freezes existing {synonym: syntax} maps' do
+    playbook.respond(:verb1) { |_| 0 }
+    playbook.respond(:verb2) { |_| 0 }
+    playbook.interpret 'synonym', 'verb1'
+    playbook.freeze
+    expect { playbook.interpret 'synonym', 'verb2' }.to raise_error(FrozenError)
+  end
+
   it 'freezes before actions' do
     playbook.freeze
     expect {

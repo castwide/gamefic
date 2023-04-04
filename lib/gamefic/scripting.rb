@@ -19,7 +19,6 @@ module Gamefic
     include Entities
     include Logging
 
-    # @param plot [Plot]
     # @param block [Proc]
     def stage &block
       theater = Theater.new(self)

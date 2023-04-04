@@ -1,8 +1,11 @@
 module Gamefic
   module Query
     class Text
-      def initialize arg = nil
-        @arg = arg
+      # A special query that handles text instead of entities.
+      #
+      # @param argument [String, Regexp, nil]
+      def initialize argument = nil
+        @argument = argument
       end
 
       def query _subject, token
@@ -20,13 +23,13 @@ module Gamefic
       private
 
       def match? token
-        return true if @arg.nil?
+        return true if @argument.nil?
 
-        case @arg
+        case @argument
         when String
-          token == @arg
+          token == @argument
         when Regexp
-          token =~ @arg
+          token =~ @argument
         else
           raise ArgumentError, 'Invalid text query argument'
         end

@@ -94,5 +94,12 @@ RSpec.describe Gamefic::Response do
       expect(action).to be_a(Gamefic::Action)
       expect(action.arguments).to eq([[thing1, thing2]])
     end
+
+    it 'rejects commands with extra arguments' do
+      response = Gamefic::Response.new(:verb) { |actor| actor }
+      actor = Gamefic::Actor.new
+      command = Gamefic::Command.new(:verb, ['argument'])
+      expect(response.attempt(actor, command)).to be_nil
+    end
   end
 end
