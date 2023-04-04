@@ -2,8 +2,10 @@ module Gamefic
   module Query
     # @abstract
     class Base
-      def initialize *args
+      def initialize *args, ambiguous: false, eid: nil
         @args = args
+        @ambiguous = false
+        @eid = eid
       end
 
       # @return [Result]
@@ -30,7 +32,6 @@ module Gamefic
             prec += 100
           end
         end
-        # @todo Fix the query architecture
         prec += 1000 if @eid
         prec -= 1000 if @ambiguous
         prec

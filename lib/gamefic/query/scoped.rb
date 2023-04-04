@@ -5,10 +5,8 @@ module Gamefic
       # @param args [Array<Object>]
       # @param ambiguous [Boolean]
       def initialize scope, *args, ambiguous: false, eid: nil
-        super(*args)
+        super(*args, ambiguous: ambiguous, eid: eid)
         @scope = scope
-        @ambiguous = ambiguous
-        @eid = eid
       end
 
       # @return [Result]

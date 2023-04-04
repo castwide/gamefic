@@ -2,10 +2,8 @@ module Gamefic
   module Query
     class General < Base
       def initialize entities, *args, ambiguous: false, eid: nil
-        super(*args)
+        super(*args, ambiguous: ambiguous, eid: eid)
         @entities = entities
-        @ambiguous = false
-        @eid = eid
       end
 
       def query subject, token
