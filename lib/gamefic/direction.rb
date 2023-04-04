@@ -29,11 +29,6 @@ module Gamefic
       default_scene && default_conclusion # Make sure they exist
       playbook.freeze
       scenebook.freeze
-      @initialized = true
-    end
-
-    def initialized?
-      !!@initialized
     end
 
     # @param actor [Actor]

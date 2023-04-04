@@ -17,22 +17,16 @@ module Gamefic
     include Actions
     include Scenes
     include Entities
+    include Logging
 
     # @param plot [Plot]
     # @param block [Proc]
     def stage &block
-      # Scripts can share some information like instance variables before the
-      # plot gets instantiated, but running plots should not.
-      if initialized?
-        @stage = nil
-        Theater.new(self).instance_eval &block
-      else
-        @stage ||= Theater.new(self)
-        @stage.tap { |stg| stg.instance_eval(&block) }
-      end
+      theater = Theater.new(self)
+      result = theater.instance_eval &block
+      logger.warn "Instance variables are not recommended in Gamefic scripts" unless theater.instance_variables.empty?
+      result
     end
-
-    private
 
     def run_scripts
       self.class.blocks.each { |blk| stage &blk }
