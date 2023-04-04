@@ -2,9 +2,14 @@ module Gamefic
   module Scope
     class Family < Base
       def matches
-        (context.parent&.children || [])
-          .concat(subquery_accessible(context, true))
-          .that_are_not(context)
+        result = []
+        result.concat subquery_accessible(context.parent)
+        result.delete context
+        context.children.each { |c|
+          result.push c
+          result.concat subquery_accessible(c)
+        }
+        result
       end
 
       private
@@ -13,11 +18,11 @@ module Gamefic
       #
       # @param [Entity]
       # @return [Array<Entity>]
-      def subquery_accessible entity, force = false
+      def subquery_accessible entity
         return [] if entity.nil?
 
         result = []
-        if force || entity.accessible?
+        if entity.accessible?
           entity.children.each do |c|
             result.push c
             result.concat subquery_accessible(c)

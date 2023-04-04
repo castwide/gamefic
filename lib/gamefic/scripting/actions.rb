@@ -95,7 +95,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def anywhere *args, eid: nil, ambiguous: false
-        Query::General.new -> { entities }, *args, eid: eid
+        Query::General.new -> { entities }, *args, eid: eid, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's accessible entities.
@@ -103,7 +103,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def available *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Family, *args, eid: eid
+        Query::Scoped.new Scope::Family, *args, eid: eid, ambiguous: ambiguous
       end
       alias family available
 
@@ -112,7 +112,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def parent *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Parent, *args, eid: eid
+        Query::Scoped.new Scope::Parent, *args, eid: eid, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's children.
@@ -120,7 +120,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def children *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Children, *args, eid: eid
+        Query::Scoped.new Scope::Children, *args, eid: eid, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's siblings.
@@ -128,7 +128,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def siblings *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Siblings, *args, eid: eid
+        Query::Scoped.new Scope::Siblings, *args, eid: eid, ambiguous: ambiguous
       end
 
       # Define a query that searches the actor itself.
@@ -136,7 +136,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def myself *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Myself, *args, eid: eid
+        Query::Scoped.new Scope::Myself, *args, eid: eid, ambiguous: ambiguous
       end
 
       # Define a query that performs a plaintext search. It can take a String
