@@ -1,6 +1,8 @@
 module Gamefic
   module Context
-    class Relative < Abstract
+    class Relative
+      extend ClassMethods
+
       # @param context [Gamefic::Entity]
       # @param scope [Class<Scope::Base>]
       # @param args [Array<Filter>]

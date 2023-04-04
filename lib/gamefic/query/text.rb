@@ -1,6 +1,6 @@
 module Gamefic
   module Query
-    class Text < Base
+    class Text
       include Abstract
 
       def initialize arg = nil

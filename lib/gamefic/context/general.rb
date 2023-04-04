@@ -1,6 +1,8 @@
 module Gamefic
   module Context
-    class General < Abstract
+    class General
+      extend ClassMethods
+
       def initialize subject, entities, *args, eid: nil
         @subject = subject
         @entities = entities
