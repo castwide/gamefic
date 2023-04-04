@@ -20,6 +20,10 @@ module Gamefic
         filtered.select { |e| e.id == @eid }
         # @todo Handle the text now
       end
+
+      def self.precision
+        1000
+      end
     end
   end
 end

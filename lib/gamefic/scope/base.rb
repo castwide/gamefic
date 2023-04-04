@@ -17,6 +17,10 @@ module Gamefic
       def self.matches context
         new(context).matches
       end
+
+      def self.precision
+        0
+      end
     end
   end
 end
