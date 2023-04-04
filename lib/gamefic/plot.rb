@@ -9,6 +9,7 @@ module Gamefic
     include Direction
     extend Scripting::ClassMethods
     include Host
+    include Snapshot
 
     # @return [Hash]
     attr_reader :metadata

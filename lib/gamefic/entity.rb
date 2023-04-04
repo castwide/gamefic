@@ -48,6 +48,21 @@ module Gamefic
       session[key] = value
     end
 
+    UNMARSHALED_VARIABLES = [:@next_cue, :@last_cue, :@playbooks, :@scenebooks, :@entered_scenes]
+
+    def marshal_dump
+      instance_variables.reject{|m| UNMARSHALED_VARIABLES.include? m}.inject({}) do |vars, attr|
+        vars[attr] = instance_variable_get(attr)
+        vars
+      end
+    end
+
+    def marshal_load(vars)
+      vars.each do |attr, value|
+        instance_variable_set(attr, value) unless UNMARSHALED_VARIABLES.include?(attr)
+      end
+    end
+
     class << self
       # Set or update the default values for new instances.
       #
