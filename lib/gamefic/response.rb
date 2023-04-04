@@ -10,6 +10,7 @@ module Gamefic
 
     # @return [Array<Query::Base>]
     attr_reader :querydefs
+    alias queries querydefs
 
     # @return [Proc]
     attr_reader :block

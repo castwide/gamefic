@@ -3,7 +3,7 @@ module Gamefic
     class Relative
       extend ClassMethods
 
-      # @param context [Gamefic::Entity]
+      # @param context [Gamefic::Context]
       # @param scope [Class<Scope::Base>]
       # @param args [Array<Filter>]
       # @param eid [Symbol, nil]

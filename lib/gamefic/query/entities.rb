@@ -3,7 +3,7 @@ module Gamefic
     class Entities
       include Abstract
 
-      # @param query [Class<Gamefic::Query::Abstract>] Gemeral, Relative, or Textual
+      # @param query [Class<Gamefic::Query::Abstract>] Gemeral or Relative
       # @param args [Array<Object>]
       def initialize query, *args, ambiguous: false, **opts
         @query = query

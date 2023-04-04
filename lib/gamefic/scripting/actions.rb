@@ -95,7 +95,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def anywhere *args, eid: nil
-        Query::Entities.new Query::General, -> { entities }, *args, eid: eid
+        Query::Entities.new Context::General, -> { entities }, *args, eid: eid
       end
 
       # Define a query that searches an actor's accessible entities.
@@ -103,7 +103,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def available *args, eid: nil
-        Query::Entities.new Query::Relative, Scope::Family, *args, eid: eid
+        Query::Entities.new Context::Relative, Scope::Family, *args, eid: eid
       end
       alias family available
 
@@ -112,7 +112,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def parent *args, eid: nil
-        Query::Entities.new Query::Relative, Scope::Parent, *args, eid: eid
+        Query::Entities.new Context::Relative, Scope::Parent, *args, eid: eid
       end
 
       # Define a query that searches an actor's children.
@@ -120,7 +120,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def children *args, eid: nil
-        Query::Entities.new Query::Relative, Scope::Children, *args, eid: eid
+        Query::Entities.new Context::Relative, Scope::Children, *args, eid: eid
       end
 
       # Define a query that searches an actor's siblings.
@@ -128,7 +128,15 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @param eid [Symbol] to find a specific EID
       def siblings *args, eid: nil
-        Query::Entities.new Query::Relative, Scope::Siblings, *args, eid: eid
+        Query::Entities.new Context::Relative, Scope::Siblings, *args, eid: eid
+      end
+
+      # Define a query that searches the actor itself.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @param eid [Symbol] to find a specific EID
+      def myself *args, eid: nil
+        Query::Entities.new Context::Relative, Scope::Myself, *args, eid: eid
       end
 
       # Define a query that performs a plaintext search. It can take a String
@@ -139,6 +147,22 @@ module Gamefic
       # @param arg [String, RegExp] The string or regular expression to match
       def plaintext arg = nil
         Query::Text.new arg
+      end
+
+      private
+
+      def args_to_queries args
+        args.map do |arg|
+          if arg.is_a?(Gamefic::Query::Abstract)
+            arg
+          elsif arg.is_a?(Class) || arg.is_a?(Module) || arg.is_a?(Symbol)
+            available(arg)
+          elsif arg.is_a?(String) || arg.is_a?(Regexp)
+            plaintext(arg)
+          else
+            raise ArgumentError, "Invalid query argument #{arg}"
+          end
+        end
       end
     end
   end
