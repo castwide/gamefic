@@ -21,8 +21,6 @@ module Gamefic
     end
 
     def start_production
-      @entities = [].freeze
-      @players = [].freeze
       @playbook = Playbook.new
       @scenebook = Scenebook.new
       run_scripts
@@ -92,22 +90,6 @@ module Gamefic
         exeunt take.actor
       end
       takes.clear
-    end
-
-    def entities_safe_push entity
-      @entities = @entities.dup.push(entity).freeze
-    end
-
-    def players_safe_push player
-      @players = @players.dup.push(player).freeze
-    end
-
-    def entities_safe_delete entity
-      @entities = (@entities.dup - [entity]).freeze
-    end
-
-    def players_safe_delete player
-      @players = (@players.dup - [player]).freeze
     end
   end
 end
