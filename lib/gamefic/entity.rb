@@ -22,6 +22,8 @@ module Gamefic
       end
 
       @eid = args[:eid]&.to_sym
+
+      yield(self) if block_given?
     end
 
     # A freeform property dictionary.
