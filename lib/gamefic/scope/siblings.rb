@@ -2,7 +2,7 @@ module Gamefic
   module Scope
     class Siblings < Base
       def matches
-        context.parent.children - [c]
+        context.parent.children - [context]
       end
 
       private

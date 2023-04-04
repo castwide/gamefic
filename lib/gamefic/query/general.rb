@@ -7,7 +7,8 @@ module Gamefic
       end
 
       def query subject, token
-        filtered = @entities.that_are(*@args)
+        base = @entities&.call || @entities
+        filtered = base.that_are(*@args)
 
         filtered.select! { |e| e.eid == @eid } if @eid
 
