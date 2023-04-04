@@ -14,16 +14,6 @@ module Gamefic
         @subplots ||= []
       end
 
-      # Start a new subplot based on the provided class.
-      #
-      # @param subplot_class [Class<Gamefic::Subplot>] The class of the subplot to be created (Subplot by default)
-      # @return [Gamefic::Subplot]
-      def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, **more
-        subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, **more)
-        subplots.push subplot
-        subplot
-      end
-
       # Get the player's current subplots.
       #
       # @return [Array<Subplot>]

@@ -5,7 +5,8 @@ module Gamefic
   # started and concluded at any time during the parent plot's execution.
   #
   class Subplot
-    include Scripting
+    include Direction
+    extend Scripting::ClassMethods
 
     # @return [Gamefic::Plot]
     attr_reader :plot
@@ -20,15 +21,18 @@ module Gamefic
     # @param next_cue [Class<Gamefic::Base>, nil]
     # @param more [Hash]
     def initialize plot, introduce: nil, next_cue: nil, **more
+      # @plot = plot
+      # @next_cue = next_cue
+      # @concluded = false
+      # @more = more.freeze
+      # configure(**more)
+      # run_scripts
+      # self.introduce introduce unless introduce.nil?
+      # theater
+      # define_static
       @plot = plot
-      @next_cue = next_cue
-      @concluded = false
-      @more = more.freeze
-      configure(**more)
-      run_scripts
-      self.introduce introduce unless introduce.nil?
-      theater
-      define_static
+      start_production
+      self.introduce introduce if introduce
     end
 
     def players

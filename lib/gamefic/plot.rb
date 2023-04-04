@@ -4,9 +4,10 @@ module Gamefic
   class Plot
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
-    autoload :Host,      'gamefic/plot/host'
+    autoload :Host, 'gamefic/plot/host'
 
-    include Scripting
+    include Direction
+    include Host
 
     # @return [Hash]
     attr_reader :metadata
@@ -22,32 +23,9 @@ module Gamefic
     end
 
     def initialize
-      @entities = [].freeze
-      @players = [].freeze
-      @playbook = Playbook.new
-      @scenebook = Scenebook.new
-      run_scripts
-      default_scene && default_conclusion # Make sure they exist
-      playbook.freeze
-      scenebook.freeze
-      @initialized = true
-    end
-
-    def initialized?
-      !!@initialized
-    end
-
-    # Introduce a player to the game.
-    # This method is typically called by the Engine that manages game execution.
-    #
-    # @param [Gamefic::Actor]
-    # @return [void]
-    def introduce(player)
-      @introduced = true
-      player.playbooks.push playbook unless player.playbooks.include?(playbook)
-      player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
-      players_safe_push player
-      player.select_cue :introduction, default_scene
+      start_production
+      # run_scripts
+      # default_scene && default_conclusion # Make sure they exist
     end
 
     # True if at least one player has been introduced.
@@ -66,6 +44,7 @@ module Gamefic
     end
 
     def ready
+      subplots.delete_if(&:concluded?)
       scenebook.ready_blocks.each(&:call)
       prepare_takes
       start_takes
@@ -126,11 +105,17 @@ module Gamefic
       players_safe_delete actor
     end
 
-    private
+      # Start a new subplot based on the provided class.
+      #
+      # @param subplot_class [Class<Gamefic::Subplot>] The class of the subplot to be created (Subplot by default)
+      # @return [Gamefic::Subplot]
+      def branch subplot_class = Gamefic::Subplot, introduce: nil, next_cue: nil, **more
+        subplot = subplot_class.new(self, introduce: introduce, next_cue: next_cue, **more)
+        subplots.push subplot
+        subplot
+      end
 
-    def run_scripts
-      self.class.blocks.each { |blk| stage &blk }
-    end
+    private
 
     def prepare_takes
       takes.replace(players.map do |pl|
@@ -154,22 +139,6 @@ module Gamefic
         exeunt take.actor
       end
       takes.clear
-    end
-
-    def entities_safe_push entity
-      @entities = @entities.dup.push(entity).freeze
-    end
-
-    def players_safe_push player
-      @players = @players.dup.push(player).freeze
-    end
-
-    def entities_safe_delete entity
-      @entities = (@entities.dup - [entity]).freeze
-    end
-
-    def players_safe_delete player
-      @players = (@players.dup - [player]).freeze
     end
   end
 end
