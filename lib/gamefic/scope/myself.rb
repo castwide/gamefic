@@ -1,8 +1,8 @@
 module Gamefic
   module Scope
-    class Parent < Base
+    class Myself < Base
       def matches
-        [context.parent].compact
+        [context]
       end
     end
   end
