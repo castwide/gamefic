@@ -2,7 +2,7 @@ require 'gamefic/plot'
 
 module Gamefic
   # Subplots are disposable plots that run inside a parent plot. They can be
-  # started and concluded at any time during the parent plot's execution.
+  # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot
     include Direction
@@ -51,21 +51,16 @@ module Gamefic
       plot.default_conclusion
     end
 
-    def cast cls, args = {}, &block
-      ent = super
-      ent.playbooks.push plot.playbook unless ent.playbooks.include?(plot.playbook)
-      ent
-    end
+    # def cast cls, args = {}, &block
+    #   ent = super
+    #   ent.playbooks.push plot.playbook unless ent.playbooks.include?(plot.playbook)
+    #   ent
+    # end
 
     def conclude
       @concluded = true
-      # Players needed to exit first in case any player_conclude procs need to
-      # interact with the subplot's entities.
       players.each { |p| exeunt p }
-      # @todo I'm not sure why rejecting nils is necessary here. It's only an
-      #   issue in Opal.
-      entities.reject(&:nil?).each { |e| destroy e }
-      # plot.static.remove(scene_classes + entities)
+      entities.each { |e| entities_safe_delete e }
     end
 
     def concluded?

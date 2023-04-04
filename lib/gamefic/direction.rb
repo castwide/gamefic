@@ -4,6 +4,10 @@ module Gamefic
     include Scripting
     extend Scripting::ClassMethods
 
+    def takes
+      @takes ||= []
+    end
+
     # Introduce a player to the story.
     #
     # @param [Gamefic::Actor]
@@ -41,7 +45,59 @@ module Gamefic
       players_safe_delete actor
     end
 
+    def ready
+      scenebook.ready_blocks.each(&:call)
+      prepare_takes
+      start_takes
+    end
+
+    def update
+      finish_takes
+      players.each do |plyr|
+        scenebook.player_update_blocks.each { |blk| blk.call plyr }
+      end
+      scenebook.update_blocks.each(&:call)
+    end
+
+    # Cast an active entity.
+    # This method is similar to make, but it also provides the plot's
+    # playbook and scenebook to the entity so it can perform actions and
+    # participate in scenes. The entity should be an instance of
+    # Gamefic::Actor or include the Gamefic::Active module.
+    #
+    # @return [Gamefic::Actor, Gamefic::Active]
+    def cast cls, **args
+      ent = make cls, **args
+      ent.playbooks.push playbook
+      ent.scenebooks.push scenebook
+      ent
+    end
+
     private
+
+    def prepare_takes
+      takes.replace(players.map do |pl|
+        pl.start_cue default_scene
+      end)
+    end
+
+    def start_takes
+      takes.each do |take|
+        scenebook.run_player_ready_blocks take.actor
+        take.start
+        scenebook.run_player_output_blocks take.actor, take.output
+      end
+    end
+
+    def finish_takes
+      takes.each do |take|
+        take.finish
+        next if take.cancelled? || take.scene.type != 'Conclusion'
+
+        exeunt take.actor
+      end
+      takes.clear
+    end
 
     def entities_safe_push entity
       @entities = @entities.dup.push(entity).freeze

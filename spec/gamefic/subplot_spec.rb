@@ -10,18 +10,19 @@ describe Gamefic::Subplot do
     expect(subplot.entities.include? entity).to be(false)
   end
 
-  it "adds its host's playbook to casted characters" do
-    plot = Gamefic::Plot.new
-    subplot = Gamefic::Subplot.new(plot)
-    actor = subplot.cast Gamefic::Actor
-    expect(actor.playbooks).to include(plot.playbook)
-  end
+  # @todo This might not be necessary, but if we do it, the player's playbook
+  #   should be a Set.
+  # it "adds its host's playbook to casted characters" do
+  #   plot = Gamefic::Plot.new
+  #   subplot = Gamefic::Subplot.new(plot)
+  #   actor = subplot.cast Gamefic::Actor
+  #   expect(actor.playbooks).to include(plot.playbook)
+  # end
 
   it "adds its playbook to casted characters" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
     actor = subplot.cast Gamefic::Actor
-    expect(actor.playbooks.length).to eq(2)
     expect(actor.playbooks).to include(subplot.playbook)
   end
 
@@ -55,17 +56,10 @@ describe Gamefic::Subplot do
   end
 
   it 'proceeds in tandem with plots' do
-    plot = Gamefic::Plot.new
-    subplot = Gamefic::Subplot.new(plot)
-    # @todo Subplot#plot should probably be responsible for this.
-    plot.subplots.push subplot
-    # @todo The subplot needs at least one player to avoid being concluded.
-    #   See Subplot#ready
-    actor = plot.cast Gamefic::Actor
-    subplot.introduce actor
     readied = false
     updated = false
-    subplot.stage do
+    klass = Class.new(Gamefic::Subplot)
+    klass.script do
       on_ready do
         readied = true
       end
@@ -73,6 +67,14 @@ describe Gamefic::Subplot do
         updated = true
       end
     end
+    plot = Gamefic::Plot.new
+    subplot = klass.new(plot)
+    # @todo Subplot#plot should probably be responsible for this.
+    plot.subplots.push subplot
+    # @todo The subplot needs at least one player to avoid being concluded.
+    #   See Subplot#ready
+    # actor = plot.cast Gamefic::Actor
+    # subplot.introduce actor
     plot.ready
     expect(readied).to be(true)
     plot.update

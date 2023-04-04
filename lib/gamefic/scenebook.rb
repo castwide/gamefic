@@ -88,6 +88,7 @@ module Gamefic
 
     # @return [Proc]
     def on_ready &block
+      puts "My parent is a #{self.class}"
       ready_blocks.push block
     end
 
