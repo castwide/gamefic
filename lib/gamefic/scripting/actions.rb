@@ -90,25 +90,55 @@ module Gamefic
         playbook.interpret command, translation
       end
 
+      # Define a query that searches the entire plot's entities.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @param eid [Symbol] to find a specific EID
       def anywhere *args, eid: nil
-        Query::Definition.new Query::General, -> { entities }, *args, eid: eid
+        Query::Entities.new Query::General, -> { entities }, *args, eid: eid
       end
 
+      # Define a query that searches an actor's accessible entities.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @param eid [Symbol] to find a specific EID
       def available *args, eid: nil
-        Query::Definition.new Query::Relative, Scope::Family, *args, eid: eid
+        Query::Entities.new Query::Relative, Scope::Family, *args, eid: eid
       end
       alias family available
 
+      # Define a query that checks an actor's parent.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @param eid [Symbol] to find a specific EID
       def parent *args, eid: nil
-        Query::Definition.new Query::Relative, Scope::Parent, *args, eid: eid
+        Query::Entities.new Query::Relative, Scope::Parent, *args, eid: eid
       end
 
+      # Define a query that searches an actor's children.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @param eid [Symbol] to find a specific EID
       def children *args, eid: nil
-        Query::Definition.new Query::Relative, Scope::Children, *args, eid: eid
+        Query::Entities.new Query::Relative, Scope::Children, *args, eid: eid
       end
 
+      # Define a query that searches an actor's siblings.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @param eid [Symbol] to find a specific EID
       def siblings *args, eid: nil
-        Query::Definition.new Query::Relative, Scope::Siblings, *args, eid: eid
+        Query::Entities.new Query::Relative, Scope::Siblings, *args, eid: eid
+      end
+
+      # Define a query that performs a plaintext search. It can take a String
+      # or a RegExp as an argument. If no argument is provided, it will match
+      # any text it finds in the command. A successful query returns the
+      # corresponding text instead of an entity.
+      #
+      # @param arg [String, RegExp] The string or regular expression to match
+      def plaintext arg = nil
+        Query::Text.new arg
       end
     end
   end

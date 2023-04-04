@@ -8,14 +8,14 @@ module Gamefic
     # @return [Symbol]
     attr_reader :verb
 
-    # @return [Array<Query::Definition>]
+    # @return [Array<Query::Base>]
     attr_reader :querydefs
 
     # @return [Proc]
     attr_reader :block
 
     # @param verb [Symbol]
-    # @param querydefs [Array<Query::Definition>]
+    # @param querydefs [Array<Query::Base>]
     # @param meta [Boolean]
     # @param block [Proc]
     def initialize verb, *querydefs, meta: false, &block

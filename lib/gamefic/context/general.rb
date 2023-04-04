@@ -1,5 +1,5 @@
 module Gamefic
-  module Query
+  module Context
     class General < Abstract
       def initialize subject, entities, *args, eid: nil
         @subject = subject

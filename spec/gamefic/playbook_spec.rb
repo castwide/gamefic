@@ -144,7 +144,7 @@ describe Gamefic::Playbook do
     playbook.respond :command do
       num = 2
     end
-    playbook.respond :dummy, Gamefic::Query::Definition.new(Gamefic::Query::Textual) do
+    playbook.respond :dummy, Gamefic::Query::Text.new do
       # noop
     end
     playbook.respond :command do
@@ -161,7 +161,7 @@ describe Gamefic::Playbook do
   end
 
   it 'skips duplicate syntaxes' do
-    playbook.respond(:make, Gamefic::Query::Definition.new(Gamefic::Scope::Family)) { |_, _, _| }
+    playbook.respond(:make, Gamefic::Query::Entities.new(Gamefic::Scope::Family)) { |_, _, _| }
     # Making the action creates a default syntax `make :var1 :var2`
     expect(playbook.syntaxes.length).to eq(1)
     playbook.interpret 'make :a from :b', 'make :a :b'
@@ -184,8 +184,8 @@ describe Gamefic::Playbook do
     end
 
     it 'sorts by precision' do
-      high = playbook.respond(:verb, Gamefic::Query::Definition.new(Gamefic::Query::Relative, Gamefic::Scope::Family, Gamefic::Active)) { |*args| nil }
-      low = playbook.respond(:verb, Gamefic::Query::Definition.new(Gamefic::Query::Textual)) { |*args| nil }
+      high = playbook.respond(:verb, Gamefic::Query::Entities.new(Gamefic::Context::Relative, Gamefic::Scope::Family, Gamefic::Active)) { |*args| nil }
+      low = playbook.respond(:verb, Gamefic::Query::Text.new) { |*args| nil }
       responses = playbook.responses_for(:verb)
       expect(responses).to eq([high, low])
     end

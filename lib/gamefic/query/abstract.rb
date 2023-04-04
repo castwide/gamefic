@@ -1,19 +1,11 @@
 module Gamefic
   module Query
-    class Abstract
-      def matches
-        []
+    # @abstract
+    module Abstract
+      def query subject, token
       end
 
-      def self.match *args, **opts
-        new(*args, **opts).matches
-      end
-
-      def self.relative?
-        false
-      end
-
-      def self.precision
+      def precision
         0
       end
     end

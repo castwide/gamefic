@@ -1,5 +1,5 @@
 module Gamefic
-  module Query
+  module Context
     class Relative < Abstract
       # @param context [Gamefic::Entity]
       # @param scope [Class<Scope::Base>]

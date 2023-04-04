@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 require 'gamefic/query/abstract'
-require 'gamefic/query/definition'
-require 'gamefic/query/general'
-require 'gamefic/query/relative'
-require 'gamefic/query/textual'
+require 'gamefic/query/entities'
+require 'gamefic/query/text'
+require 'gamefic/query/result'

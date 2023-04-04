@@ -1,18 +1,9 @@
 module Gamefic
   module Query
-    class Definition
+    class Entities
+      include Abstract
+
       NEST_REGEXP = / in | on | of | from | inside | from inside /.freeze
-
-      class Result
-        attr_reader :match
-
-        attr_reader :remainder
-
-        def initialize match, remainder
-          @match = match
-          @remainder = remainder
-        end
-      end
 
       # @param query [Class<Gamefic::Query::Abstract>] Gemeral, Relative, or Textual
       # @param args [Array<Object>]
@@ -34,7 +25,7 @@ module Gamefic
       end
 
       def precision
-        @query.precision
+        @precision ||= calculate_precision
       end
 
       def ambiguous?
@@ -42,6 +33,12 @@ module Gamefic
       end
 
       private
+
+      def calculate_precision
+        result = @query.precision
+        result -= 1000 if ambiguous?
+        result
+      end
 
       def ambiguous_result scan
         return Result.new(nil, scan.token) if scan.matched.empty?
