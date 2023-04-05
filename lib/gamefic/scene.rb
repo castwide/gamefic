@@ -8,9 +8,6 @@ module Gamefic
   # Plots execute Scenes by creating Takes.
   #
   class Scene
-    # @return [Symbol]
-    attr_reader :name
-
     # @return [Class<Rig::Default>]
     attr_reader :rig
 
