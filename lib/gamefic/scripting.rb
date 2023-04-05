@@ -21,10 +21,8 @@ module Gamefic
 
     # @param block [Proc]
     def stage &block
-      theater = Theater.new(self)
-      result = theater.instance_eval &block
-      logger.warn "Instance variables are not recommended in Gamefic scripts" unless theater.instance_variables.empty?
-      result
+      @theater ||= Theater.new(self)
+      @theater.instance_eval &block
     end
 
     def run_scripts
