@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scripting
+  module Scriptable
+    # Scriptable methods related to creating actions.
+    #
     module Actions
-      def playbook
-        @playbook ||= Playbook.new
-      end
-
       # Create a response to a command.
       # A Response uses the `verb` argument to identify the imperative verb
       # that triggers the action. It can also accept queries to tokenize the
@@ -28,14 +26,14 @@ module Gamefic
       # @param verb [Symbol] An imperative verb for the command
       # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      # @return [Response]
+      # @return [Symbol]
       def respond(verb, *queries, &proc)
         response = Response.allocate
         setup.actions.prepare do
           response.send :initialize, verb, *map_response_args(queries), &proc
           playbook.respond_with response
         end
-        response
+        verb
       end
 
       # Create a meta rsponse for a command.
@@ -52,14 +50,13 @@ module Gamefic
       # @param verb [Symbol] An imperative verb for the command
       # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      # @return [Response]
-      def meta(verb, *queries, &block)
-        response = Response.allocate
+      # @return [Symbol]
+      def meta(verb, *queries, &proc)
         setup.actions.prepare do
-          response.send :initialize, verb, *map_response_args(queries), meta: true, &proc
+          response = Response.new(:initialize, verb, *map_response_args(queries), meta: true, &proc)
           playbook.respond_with response
         end
-        response
+        verb
       end
 
       # Add a proc to be evaluated before a character executes an action.
@@ -106,59 +103,6 @@ module Gamefic
         setup.actions.prepare do
           playbook.interpret command, translation
         end
-      end
-
-      # Define a query that searches the entire plot's entities.
-      #
-      # @param args [Array<Object>] Query arguments
-      def anywhere *args, ambiguous: false
-        Query::General.new -> { entities }, *args, ambiguous: ambiguous
-      end
-
-      # Define a query that searches an actor's accessible entities.
-      #
-      # @param args [Array<Object>] Query arguments
-      def available *args, ambiguous: false
-        Query::Scoped.new Scope::Family, *args, ambiguous: ambiguous
-      end
-      alias family available
-
-      # Define a query that checks an actor's parent.
-      #
-      # @param args [Array<Object>] Query arguments
-      def parent *args, ambiguous: false
-        Query::Scoped.new Scope::Parent, *args, ambiguous: ambiguous
-      end
-
-      # Define a query that searches an actor's children.
-      #
-      # @param args [Array<Object>] Query arguments
-      def children *args, ambiguous: false
-        Query::Scoped.new Scope::Children, *args, ambiguous: ambiguous
-      end
-
-      # Define a query that searches an actor's siblings.
-      #
-      # @param args [Array<Object>] Query arguments
-      def siblings *args, ambiguous: false
-        Query::Scoped.new Scope::Siblings, *args, ambiguous: ambiguous
-      end
-
-      # Define a query that searches the actor itself.
-      #
-      # @param args [Array<Object>] Query arguments
-      def myself *args, ambiguous: false
-        Query::Scoped.new Scope::Myself, *args, ambiguous: ambiguous
-      end
-
-      # Define a query that performs a plaintext search. It can take a String
-      # or a RegExp as an argument. If no argument is provided, it will match
-      # any text it finds in the command. A successful query returns the
-      # corresponding text instead of an entity.
-      #
-      # @param arg [String, Regrxp] The string or regular expression to match
-      def plaintext arg = nil
-        Query::Text.new arg
       end
 
       private

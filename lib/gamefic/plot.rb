@@ -6,8 +6,17 @@ module Gamefic
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
 
-    include Direction
-    extend Scripting::ClassMethods
+    class << self
+      def blocks
+        @blocks ||= []
+      end
+
+      def script &block
+        blocks.push block
+      end
+    end
+
+    include Scriptable
     include Host
     include Snapshot
 
@@ -15,9 +24,65 @@ module Gamefic
     attr_reader :metadata
 
     def initialize
-      start_production
-      # run_scripts
-      # default_scene && default_conclusion # Make sure they exist
+      run_scripts
+      setup.entities.hydrate
+      setup.scenes.hydrate
+      setup.actions.hydrate
+      default_scene && default_conclusion # Make sure they exist
+      playbook.freeze
+      scenebook.freeze
+    end
+
+    # @param block [Proc]
+    def stage &block
+      @theater ||= Theater.new(self)
+      @theater.instance_eval &block
+    end
+
+    def run_scripts
+      self.class.blocks.each { |blk| stage &blk }
+    end
+
+    def playbook
+      @playbook ||= Playbook.new
+    end
+
+    def scenebook
+      @scenebook ||= Scenebook.new
+    end
+
+    def setup
+      @setup ||= Setup.new
+    end
+
+    def takes
+      @takes ||= []
+    end
+
+    # Introduce a player to the story.
+    #
+    # @param [Gamefic::Actor]
+    # @return [void]
+    def introduce(player)
+      @introduced = true
+      player.playbooks.push playbook unless player.playbooks.include?(playbook)
+      player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
+      players_safe_push player
+      player.cue @introduction || default_scene
+    end
+
+    # Cast an active entity.
+    # This method is similar to make, but it also provides the plot's
+    # playbook and scenebook to the entity so it can perform actions and
+    # participate in scenes. The entity should be an instance of
+    # Gamefic::Actor or include the Gamefic::Active module.
+    #
+    # @return [Gamefic::Actor, Gamefic::Active]
+    def cast cls, **args
+      ent = make cls, **args
+      ent.playbooks.push playbook
+      ent.scenebooks.push scenebook
+      ent
     end
 
     # True if at least one player has been introduced.
@@ -34,12 +99,42 @@ module Gamefic
     def ready
       subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
-      super
+      scenebook.ready_blocks.each(&:call)
+      prepare_takes
+      start_takes
     end
 
     def update
       subplots.each(&:update)
-      super
+      finish_takes
+      players.each do |plyr|
+        scenebook.player_update_blocks.each { |blk| blk.call plyr }
+      end
+      scenebook.update_blocks.each(&:call)
+    end
+
+    def prepare_takes
+      takes.replace(players.map do |pl|
+        pl.start_cue default_scene
+      end)
+    end
+
+    def start_takes
+      takes.each do |take|
+        scenebook.run_player_ready_blocks take.actor
+        take.start
+        scenebook.run_player_output_blocks take.actor, take.output
+      end
+    end
+
+    def finish_takes
+      takes.each do |take|
+        take.finish
+        next if take.cancelled? || take.scene.type != 'Conclusion'
+
+        exeunt take.actor
+      end
+      takes.clear
     end
 
     # Make a character that a player will control on introduction.
@@ -50,6 +145,15 @@ module Gamefic
       #   more robust, but the adjustable player class seems like a step too
       #   far.
       cast Gamefic::Actor, name: 'yourself', synonyms: 'self myself you me', proper_named: true
+    end
+
+    # @param actor [Actor]
+    # @return [Actor]
+    def exeunt actor
+      scenebook.player_conclude_blocks.each { |blk| blk.call actor }
+      actor.scenebooks.delete scenebook
+      actor.playbooks.delete playbook
+      players_safe_delete actor
     end
 
     # Start a new subplot based on the provided class.

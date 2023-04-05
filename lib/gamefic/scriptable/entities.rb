@@ -1,5 +1,13 @@
+# frozen_string_literal: true
+
 module Gamefic
-  module Scripting
+  module Scriptable
+    # Scriptable methods related to creating entities.
+    #
+    # @note The public versions of entities and players arrays are frozen.
+    #   Authors need access to them but shouldn't modify them directly.
+    #   Instead, they should create new entities with the #make method.
+    #
     module Entities
       # @return [Array<Gamefic::Entity>]
       def entities
@@ -20,9 +28,9 @@ module Gamefic
       # @return [Gamefic::Entity]
       def make klass, **opts
         entity = klass.allocate
+        entities_safe_push entity
         setup.entities.prepare do
           entity.send :initialize, **opts
-          entities_safe_push entity
           entity
         end
         entity
@@ -48,11 +56,6 @@ module Gamefic
       def players_safe_delete player
         return unless @players
         @players = (@players.dup - [player]).freeze
-      end
-
-      # @todo Find a good place for this or whatever
-      def casting
-        @casting ||= Casting.new
       end
     end
   end

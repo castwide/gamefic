@@ -1,21 +1,20 @@
+# frozen_string_literal: true
+
 module Gamefic
   class Theater
-    def initialize plot
+    # A cleanroom container for running plot scripts and maintaining related
+    # objects. Theaters give authors a place where they can maintain their own
+    # variables and other resources without polluting the plot's namespace.
+    #
+    # @param director [Director] The object that will accept delegated messages
+    def initialize director
       if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
         define_singleton_method :method_missing do |symbol, *args, &block|
-          if Scripting.public_instance_methods.include?(symbol)
-            plot.public_send symbol, *args, &block
-          else
-            super symbol, *args, &block
-          end
+          director.send symbol, *args, &block
         end
       else
         define_singleton_method :method_missing do |symbol, *args, **splat, &block|
-          if Scripting.public_instance_methods.include?(symbol)
-            plot.public_send symbol, *args, **splat, &block
-          else
-            super symbol, *args, **splat, &block
-          end
+          director.send symbol, *args, **splat, &block
         end
       end
     end

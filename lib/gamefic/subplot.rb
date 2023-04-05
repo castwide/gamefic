@@ -5,9 +5,6 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot
-    include Direction
-    extend Scripting::ClassMethods
-
     # @return [Gamefic::Plot]
     attr_reader :plot
 

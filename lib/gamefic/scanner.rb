@@ -43,10 +43,17 @@ module Gamefic
     # @param token [String]
     # @return [Result]
     def self.scan objects, token
+      # @note Theoretically, scanned objects only have to implement two
+      #   methods:
+      #     *  #keywords => [Array<String>]
+      #     *  #children => [Array<#keywords, #children>]
+      #   The #children method is optional, but if it's implemented, each
+      #   element of the #children array should also implement #children.
+
       words = token.keywords
       available = objects.clone
       filtered = []
-      if nested?(token)
+      if nested?(token) && objects.all?(&:children)
         denest(objects, token)
       else
         words.each_with_index do |word, idx|

@@ -1,10 +1,10 @@
-module Gamefic
-  module Scripting
-    module Scenes
-      def scenebook
-        @scenebook ||= Scenebook.new
-      end
+# frozen_string_literal: true
 
+module Gamefic
+  module Scriptable
+    # Scriptable methods related to creating scenes.
+    #
+    module Scenes
       # Block a new scene.
       #
       # @example Prompt the player for a name
