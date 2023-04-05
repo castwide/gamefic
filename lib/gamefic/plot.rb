@@ -1,20 +1,10 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class Plot
+  class Plot < Assembly
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
-
-    class << self
-      def blocks
-        @blocks ||= []
-      end
-
-      def script &block
-        blocks.push block
-      end
-    end
 
     include Scriptable
     include Host
@@ -22,38 +12,6 @@ module Gamefic
 
     # @return [Hash]
     attr_reader :metadata
-
-    def initialize
-      run_scripts
-      setup.entities.hydrate
-      setup.scenes.hydrate
-      setup.actions.hydrate
-      default_scene && default_conclusion # Make sure they exist
-      playbook.freeze
-      scenebook.freeze
-    end
-
-    # @param block [Proc]
-    def stage &block
-      @theater ||= Theater.new(self)
-      @theater.instance_eval &block
-    end
-
-    def run_scripts
-      self.class.blocks.each { |blk| stage &blk }
-    end
-
-    def playbook
-      @playbook ||= Playbook.new
-    end
-
-    def scenebook
-      @scenebook ||= Scenebook.new
-    end
-
-    def setup
-      @setup ||= Setup.new
-    end
 
     def takes
       @takes ||= []

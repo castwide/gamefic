@@ -4,7 +4,7 @@ module Gamefic
   # Subplots are disposable plots that run inside a parent plot. They can be
   # started and concluded at any time during the parent plot's runtime.
   #
-  class Subplot
+  class Subplot < Assembly
     # @return [Gamefic::Plot]
     attr_reader :plot
 
@@ -28,8 +28,19 @@ module Gamefic
       # theater
       # define_static
       @plot = plot
-      start_production
+      run_scripts
+      setup.entities.hydrate
+      setup.scenes.hydrate
+      setup.actions.hydrate
+      default_scene && default_conclusion # Make sure they exist
+      playbook.freeze
+      scenebook.freeze
       self.introduce introduce if introduce
+    end
+
+    def run_scripts
+      Gamefic.logger.warn "SHARE ME WITH PLOTS"
+      self.class.blocks.each { |blk| stage &blk }
     end
 
     def players
