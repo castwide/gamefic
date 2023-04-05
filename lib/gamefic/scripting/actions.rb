@@ -29,10 +29,6 @@ module Gamefic
       # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
-      # def respond(verb, *queries, &proc)
-      #   playbook.respond(verb, *map_response_args(queries), &proc)
-      # end
-
       def respond(verb, *queries, &proc)
         response = Response.allocate
         setup.actions.prepare do
