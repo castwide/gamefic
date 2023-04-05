@@ -13,10 +13,6 @@ module Gamefic
         @scene = scene
         @context = context
       end
-
-      def name
-        scene.name
-      end
     end
   end
 end
