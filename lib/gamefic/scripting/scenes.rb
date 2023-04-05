@@ -68,10 +68,10 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Scene]
       def introduction(rig: Gamefic::Rig::Activity, &start)
-        block rig: rig,
-              on_start: proc { |actor, props|
-                start&.call(actor, props)
-              }
+        @introduction = block rig: rig,
+                              on_start: proc { |actor, props|
+                                          start&.call(actor, props)
+                                        }
       end
 
       # Create a multiple-choice scene.

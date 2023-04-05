@@ -216,30 +216,13 @@ module Gamefic
       end
     end
 
-    # Select the first valid scene from a list.
-    #
-    # @raise [ArgumentError] if none of the scenes are valid
-    #
-    # @param scenes [Array<Scene, Symbol>]
-    # @return [Cue]
-    def select_cue *scenes
-      found = scenes.each do |scn|
-        cur = select_scene(scn)
-        break cur if cur
-      end
-
-      raise ArgumentError, "No valid scenes found in #{scenes}" unless found
-
-      cue_confirmed found
-    end
-
     # Cue a conclusion. This method works like #cue, except it will raise an
     # error if the scene is not a Conclusion.
     #
     # @raise [ArgumentError] if the requested scene is not valid
     # @raise [NotConclusionError] if the scene is not a Conclusion
     #
-    # @param new_scene [Scene, Symbol]
+    # @param new_scene [Scene]
     # @oaram context [Hash] Additional scene data
     def conclude new_scene, **context
       cue new_scene, **context
@@ -331,24 +314,6 @@ module Gamefic
     # @return [Scene, nil]
     def select_scene scene
       scene.is_a?(Scene) ? select_scene_by_instance(scene) : select_scene_by_name(scene)
-    end
-
-    # @param scene [Scene]
-    # @return [Scene, nil]
-    def select_scene_by_instance scene
-      scenebooks.reverse.each do |sb|
-        return scene if sb.scenes.include?(scene) #|| sb.anonymous.include?(scene)
-      end
-      nil
-    end
-
-    # @param scene [Symbol]
-    # @return [Scene, nil]
-    def select_scene_by_name name
-      scenebooks.reverse.each do |sb|
-        return sb[name] if sb.scene?(name)
-      end
-      nil
     end
   end
 end

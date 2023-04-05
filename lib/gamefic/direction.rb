@@ -17,7 +17,7 @@ module Gamefic
       player.playbooks.push playbook unless player.playbooks.include?(playbook)
       player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
       players_safe_push player
-      player.select_cue :introduction, default_scene
+      player.cue @introduction || default_scene
     end
 
     def start_production
