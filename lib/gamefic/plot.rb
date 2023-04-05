@@ -20,6 +20,10 @@ module Gamefic
       # default_scene && default_conclusion # Make sure they exist
     end
 
+    def setup
+      @setup ||= Setup.new
+    end
+
     # True if at least one player has been introduced.
     #
     def introduced?

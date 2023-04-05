@@ -29,8 +29,17 @@ module Gamefic
       # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
+      # def respond(verb, *queries, &proc)
+      #   playbook.respond(verb, *map_response_args(queries), &proc)
+      # end
+
       def respond(verb, *queries, &proc)
-        playbook.respond(verb, *map_response_args(queries), &proc)
+        response = Response.allocate
+        setup.actions.prepare do
+          response.send :initialize, verb, *map_response_args(queries), &proc
+          playbook.respond_with response
+        end
+        response
       end
 
       # Create a meta rsponse for a command.
@@ -49,7 +58,12 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Response]
       def meta(verb, *queries, &block)
-        playbook.meta verb, *map_response_args(queries), &block
+        response = Response.allocate
+        setup.actions.prepare do
+          response.send :initialize, verb, *map_response_args(queries), meta: true, &proc
+          playbook.respond_with response
+        end
+        response
       end
 
       # Add a proc to be evaluated before a character executes an action.
@@ -60,7 +74,9 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action verb = nil, &block
-        playbook.before_action verb, &block
+        setup.actions.prepare do
+          playbook.before_action verb, &block
+        end
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -71,7 +87,9 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action verb = nil, &block
-        playbook.after_action verb, &block
+        setup.actions.prepare do
+          playbook.after_action verb, &block
+        end
       end
 
       # Create an alternate Syntax for a response.
@@ -89,56 +107,52 @@ module Gamefic
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
       def interpret command, translation
-        playbook.interpret command, translation
+        setup.actions.prepare do
+          playbook.interpret command, translation
+        end
       end
 
       # Define a query that searches the entire plot's entities.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] Find a specific entity by its EID
-      def anywhere *args, eid: nil, ambiguous: false
-        Query::General.new -> { entities }, *args, eid: eid, ambiguous: ambiguous
+      def anywhere *args, ambiguous: false
+        Query::General.new -> { entities }, *args, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's accessible entities.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] Find a specific entity by its EID
-      def available *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Family, *args, eid: eid, ambiguous: ambiguous
+      def available *args, ambiguous: false
+        Query::Scoped.new Scope::Family, *args, ambiguous: ambiguous
       end
       alias family available
 
       # Define a query that checks an actor's parent.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] Find a specific entity by its EID
-      def parent *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Parent, *args, eid: eid, ambiguous: ambiguous
+      def parent *args, ambiguous: false
+        Query::Scoped.new Scope::Parent, *args, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's children.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] Find a specific entity by its EID
-      def children *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Children, *args, eid: eid, ambiguous: ambiguous
+      def children *args, ambiguous: false
+        Query::Scoped.new Scope::Children, *args, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's siblings.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] Find a specific entity by its EID
-      def siblings *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Siblings, *args, eid: eid, ambiguous: ambiguous
+      def siblings *args, ambiguous: false
+        Query::Scoped.new Scope::Siblings, *args, ambiguous: ambiguous
       end
 
       # Define a query that searches the actor itself.
       #
       # @param args [Array<Object>] Query arguments
-      # @param eid [Symbol] Find a specific entity by its EID
-      def myself *args, eid: nil, ambiguous: false
-        Query::Scoped.new Scope::Myself, *args, eid: eid, ambiguous: ambiguous
+      def myself *args, ambiguous: false
+        Query::Scoped.new Scope::Myself, *args, ambiguous: ambiguous
       end
 
       # Define a query that performs a plaintext search. It can take a String
@@ -155,10 +169,8 @@ module Gamefic
 
       def map_response_args args
         args.map do |arg|
-          raise "Pass `eid:` to queries instead of entities" if arg.is_a?(Gamefic::Entity)
-
           case arg
-          when Class, Module, Symbol
+          when Gamefic::Entity, Class, Module, Symbol
             available(arg)
           when String, Regexp
             plaintext(arg)

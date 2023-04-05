@@ -6,9 +6,6 @@ module Gamefic
     include Node
     include Messaging
 
-    # @return [Symbol]
-    attr_reader :eid
-
     def initialize **args
       klass = self.class
       defaults = {}
@@ -17,11 +14,8 @@ module Gamefic
         klass = klass.superclass
       end
       defaults.merge(args).each_pair do |k, v|
-        next if k.to_sym == :eid
         public_send "#{k}=", v
       end
-
-      @eid = args[:eid]&.to_sym
 
       yield(self) if block_given?
     end

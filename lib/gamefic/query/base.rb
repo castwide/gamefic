@@ -13,16 +13,11 @@ module Gamefic
       # @return [Boolean]
       attr_reader :ambiguous
 
-      # @return [Symbol, nil]
-      attr_reader :eid
-
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
-      # @param eid [Symbol, nil]
-      def initialize *arguments, ambiguous: false, eid: nil
+      def initialize *arguments, ambiguous: false
         @arguments = arguments
         @ambiguous = ambiguous
-        @eid = eid
       end
 
       # @param subject [Gamefic::Entity]
@@ -44,30 +39,16 @@ module Gamefic
       private
 
       def calculate_precision
-        @arguments.sum(base_precision) do |arg|
+        @arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
-          when Class
-            depth_of_class(arg) * 100
-          when Module
+          when Gamefic::Entity
+            1000
+          when Class, Module
             100
           else
             1
           end
         end
-      end
-
-      def base_precision
-        (@eid ? 1000 : 0) + (@ambiguous ? -1000 : 0)
-      end
-
-      def depth_of_class(arg)
-        result = 1
-        cursor = arg.superclass
-        until cursor.nil?
-          result += 1
-          cursor = cursor.superclass
-        end
-        result
       end
 
       def ambiguous_result scan

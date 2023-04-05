@@ -32,6 +32,22 @@ module Gamefic
       self
     end
 
+    def respond_with response
+      add_response response
+    end
+
+    def interpret_with syntax
+      add_syntax syntax
+    end
+
+    def before_action hook
+      before_actions.push hook
+    end
+
+    def after_action hook
+      after_actions hook
+    end
+
     # Add a response to the playbook.
     #
     # @param verb [Symbol]

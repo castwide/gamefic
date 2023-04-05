@@ -18,28 +18,14 @@ module Gamefic
       # @param [Class<Gamefic::Entity>]
       # @param args [Hash]
       # @return [Gamefic::Entity]
-      def make klass, **args
-        entity = klass.new(**args)
-
-        if entity.eid && entities.any? { |e| e.eid == entity.eid }
-          raise ArgumentError, "Error creating entity: EID '#{entity.eid}' already exists"
+      def make klass, **opts
+        entity = klass.allocate
+        setup.entities.prepare do
+          entity.send :initialize, **opts
+          entities_safe_push entity
+          entity
         end
-
-        entities_safe_push entity
         entity
-      end
-
-      # Get an entity by its EID.
-      #
-      # @raise [NameError] if the EID does not exist
-      #
-      # @param key [Symbol] An entity ID
-      # @return [Gamefic::Entity] The corresponding entity
-      def eid key
-        found = entities.find { |e| e.eid == key }
-        raise NameError, "EID `#{key}` not found" unless found
-
-        found
       end
 
       private
@@ -62,6 +48,11 @@ module Gamefic
       def players_safe_delete player
         return unless @players
         @players = (@players.dup - [player]).freeze
+      end
+
+      # @todo Find a good place for this or whatever
+      def casting
+        @casting ||= Casting.new
       end
     end
   end

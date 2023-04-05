@@ -26,11 +26,6 @@ describe Gamefic::Query::Base do
     expect(base.precision).to eq(2)
   end
 
-  it 'calculates precision with specific entities' do
-    base = Gamefic::Query::Base.new(eid: :name)
-    expect(base.precision).to eq(1000)
-  end
-
   it 'calculates ambiguous precision' do
     base = Gamefic::Query::Base.new(ambiguous: true)
     expect(base.precision).to eq(-1000)

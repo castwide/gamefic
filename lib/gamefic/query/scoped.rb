@@ -10,8 +10,8 @@ module Gamefic
       attr_reader :scope
 
       # @param scope [Class<Gamefic::Scope::Base>]
-      def initialize scope, *arguments, ambiguous: false, eid: nil
-        super(*arguments, ambiguous: ambiguous, eid: eid)
+      def initialize scope, *arguments, ambiguous: false
+        super(*arguments, ambiguous: ambiguous)
         @scope = scope
       end
 
@@ -19,8 +19,6 @@ module Gamefic
       def query(subject, token)
         available = @scope.matches(subject)
                           .that_are(*@arguments)
-        available.select! { |e| e.eid == @eid } if @eid
-
         scan = Scanner.scan(available, token)
 
         return ambiguous_result(scan) if ambiguous?

@@ -22,6 +22,9 @@ module Gamefic
 
     def start_production
       run_scripts
+      setup.entities.hydrate
+      setup.scenes.hydrate
+      setup.actions.hydrate
       default_scene && default_conclusion # Make sure they exist
       playbook.freeze
       scenebook.freeze
