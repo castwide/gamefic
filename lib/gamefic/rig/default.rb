@@ -3,14 +3,8 @@
 module Gamefic
   module Rig
     # A Rig provides a framework for processing scenes, including handling
-    # input and output.
-    #
-    # Gamefic provides a few different types of rigs to facilitate a variety
-    # of scene types, such as Activity (text-based commands), MultipleChoice
-    # (requiring the user to select from a list of options), and Pause. The
-    # easiest way to author custom scenes is to block them using a predefined
-    # rig and adding functionality through callbacks. Gamefic::World::Scenes
-    # provides some helper methods for defining scenes from Plot scripts.
+    # input and output. The Default does not provide any functionality on its
+    # own, but can be subclassed or extended through callbacks.
     #
     class Default
       # @param scene [Scene, nil]
