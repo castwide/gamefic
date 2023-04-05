@@ -3,7 +3,7 @@ describe Gamefic::Rig::Activity do
     type = Gamefic::Rig::Activity.new(nil)
     actor = Gamefic::Actor.new
     playbook = Gamefic::Playbook.new
-    playbook.respond(:command) { |actor| actor[:executed] = true }
+    playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
     actor.playbooks.push playbook
     actor.queue.push 'command'
     type.finish(actor)

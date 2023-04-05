@@ -8,7 +8,7 @@ describe Gamefic::Query::Base do
 
   it 'calculates precision with classes' do
     base = Gamefic::Query::Base.new(Gamefic::Entity)
-    expect(base.precision).to eq(300)
+    expect(base.precision).to eq(100)
   end
 
   it 'calculates precision with modules' do

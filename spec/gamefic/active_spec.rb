@@ -3,7 +3,7 @@ describe Gamefic::Active do
 
   it 'performs a command' do
     playbook = Gamefic::Playbook.new
-    playbook.respond(:command) { |actor| actor[:executed] = true }
+    playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
     object.playbooks.push playbook
     object.perform 'command'
     expect(object[:executed]).to be(true)
@@ -21,7 +21,7 @@ describe Gamefic::Active do
 
   it 'performs actions quietly' do
     playbook = Gamefic::Playbook.new
-    playbook.respond(:command) { |actor| actor.tell 'Keep this quiet' }
+    playbook.respond_with Gamefic::Response.new(:command) { |actor| actor.tell 'Keep this quiet' }
     object.playbooks.push playbook
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')
@@ -36,13 +36,13 @@ describe Gamefic::Active do
 
   it 'proceeds quietly' do
     playbook = Gamefic::Playbook.new
-    playbook.respond :command do |actor|
+    playbook.respond_with(Gamefic::Response.new(:command) do |actor|
       actor.tell "hidden"
-    end
-    playbook.respond :command do |actor|
+    end)
+    playbook.respond_with(Gamefic::Response.new(:command) do |actor|
       actor.proceed quietly: true
       actor.tell "visible"
-    end
+    end)
     object.playbooks.push playbook
     object.execute :command
     expect(object.messages).not_to include('hidden')

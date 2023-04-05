@@ -5,7 +5,7 @@ module Gamefic
   # consist of three types of components:
   #   * Responses
   #   * Syntaxes
-  #   * Before and After Hooks
+  #   * Action Hooks (before and after)
   #
   class Playbook
     # @return [Array<Action::Hook>]
