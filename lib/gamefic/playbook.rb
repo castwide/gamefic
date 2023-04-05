@@ -40,73 +40,12 @@ module Gamefic
       add_syntax syntax
     end
 
-    def before_action hook
-      before_actions.push hook
+    def before_action verb = nil, &hook
+      before_actions.push Action::Hook.new(verb, hook)
     end
 
-    def after_action hook
-      after_actions hook
-    end
-
-    # Add a response to the playbook.
-    #
-    # @param verb [Symbol]
-    # @param queries [Array<Query::Base>]
-    # @param block [Proc]
-    # @return [Response]
-    def respond verb, *queries, &block
-      add_response Response.new(verb, *queries, &block)
-    end
-
-    # Add a meta response to the playbook.
-    #
-    # @param verb [Symbol]
-    # @param queries [Array<Query::Base>]
-    # @param block [Proc]
-    # @return [Response]
-    def meta verb, *queries, &block
-      add_response Response.new(verb, *queries, meta: true, &block)
-    end
-
-    # Add a syntax to the playbook.
-    #
-    # @param template [String]
-    # @param command [String]
-    # @return [Syntax]
-    def interpret template, command
-      add_syntax Syntax.new(template, command)
-    end
-
-    # Add a proc to be executed before an action. The block receives the
-    # the current action as an argument. Calling `cancel` on the action will
-    # stop execution of the action and any subsequent hooks.
-    #
-    # The optional `verb` argument prevents the block from running unless the
-    # action's verb matches it.
-    #
-    # @param verb [Symbol, nil]
-    # @param block [Proc]
-    # @yieldparam [Action]
-    # @return [Action::Hook]
-    def before_action verb = nil, &block
-      before_actions.push(Action::Hook.new(verb, block))
-                    .last
-    end
-
-    # Add a proc to be executed before an action. The block receives the
-    # the current action as an argument. Calling `cancel` on the action will
-    # stop execution of any subsequent hooks.
-    #
-    # The optional `verb` argument prevents the block from running unless the
-    # action's verb matches it.
-    #
-    # @param verb [Symbol, nil]
-    # @param block [Proc]
-    # @yieldparam [Action]
-    # @return [Action::Hook]
-    def after_action verb = nil, &block
-      after_actions.push(Action::Hook.new(verb, block))
-                  .last
+    def after_action verb = nil, &hook
+      after_actions.push Action::Hook.new(verb, hook)
     end
 
     # @return [Array<Response>]
@@ -145,12 +84,16 @@ module Gamefic
       synonym_syntax_map.keys.compact.sort
     end
 
+    # Get an array of all the responses that match a list of verbs.
+    #
     # @param verbs [Array<Symbol>]
     # @return [Array<Response>]
     def responses_for *verbs
       verbs.flat_map { |verb| verb_response_map.fetch(verb, []) }
     end
 
+    # Get an array of all the syntaxes that match a lit of verbs.
+    #
     # @param words [Array<Symbol>]
     # @return [Array<Syntax>]
     def syntaxes_for *synonyms
@@ -159,8 +102,10 @@ module Gamefic
 
     private
 
+    # @return [Hash]
     attr_reader :synonym_syntax_map
 
+    # @return [Hash]
     attr_reader :verb_response_map
 
     def add_response response
@@ -174,7 +119,9 @@ module Gamefic
     # @return [Syntax]
     def add_syntax syntax
       raise "No responses exist for \"#{syntax.verb}\"" unless verb_response_map.key?(syntax.verb)
+
       return if synonym_syntax_map[syntax.synonym].include?(syntax)
+
       synonym_syntax_map[syntax.synonym].unshift syntax
       sort_syntaxes synonym_syntax_map[syntax.synonym]
       syntax
