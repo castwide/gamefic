@@ -4,7 +4,7 @@ module Gamefic
   class Plot
     autoload :Snapshot,  'gamefic/plot/snapshot'
     autoload :Darkroom,  'gamefic/plot/darkroom'
-    autoload :Host, 'gamefic/plot/host'
+    autoload :Host,      'gamefic/plot/host'
 
     include Direction
     extend Scripting::ClassMethods
@@ -18,10 +18,6 @@ module Gamefic
       start_production
       # run_scripts
       # default_scene && default_conclusion # Make sure they exist
-    end
-
-    def setup
-      @setup ||= Setup.new
     end
 
     # True if at least one player has been introduced.

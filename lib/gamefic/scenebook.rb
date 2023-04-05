@@ -32,21 +32,6 @@ module Gamefic
       add_default_blocks
     end
 
-    # Block a scene in the scenebook.
-    #
-    # @raise [NameError] if a scene with the given name already exists
-    #
-    # @param name [Symbol]
-    # @param rig [Class<Rig::Default>]
-    # @param type [String, nil]
-    # @param on_start [Proc, nil]
-    # @param on_finish [Proc, nil]
-    # @param block [Proc]
-    # @return [Scene]
-    def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-      add Scene.new(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
-    end
-
     # Add a scene to the scenebook.
     #
     # @raise [NameError] if a scene with the given name already exists

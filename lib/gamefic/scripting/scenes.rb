@@ -36,7 +36,12 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Scene]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        scenebook.block(name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
+        scene = Scene.allocate
+        setup.scenes.prepare do
+          scene.send :initialize, name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
+          scenebook.add scene
+        end
+        scene
       end
 
       # @return [Scene]

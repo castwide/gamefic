@@ -19,6 +19,10 @@ module Gamefic
     include Entities
     include Logging
 
+    def setup
+      @setup ||= Setup.new
+    end
+
     # @param block [Proc]
     def stage &block
       @theater ||= Theater.new(self)
