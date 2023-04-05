@@ -1,7 +1,7 @@
 describe Gamefic::Take do
   it 'runs start blocks' do
     actor = Gamefic::Actor.new
-    scene = Gamefic::Scene.new(:scene) do |scene|
+    scene = Gamefic::Scene.new do |scene|
       scene.on_start do |actor, _props|
         actor[:scene_started] = true
       end
@@ -13,7 +13,7 @@ describe Gamefic::Take do
 
   it 'runs finish blocks' do
     actor = Gamefic::Actor.new
-    scene = Gamefic::Scene.new(:scene) do |scene|
+    scene = Gamefic::Scene.new do |scene|
       scene.on_finish do |actor, _props|
         actor[:scene_finished] = true
       end
@@ -28,7 +28,7 @@ describe Gamefic::Take do
     playbook = Gamefic::Playbook.new
     playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
     actor.playbooks.push playbook
-    scene = Gamefic::Scene.new(:activity, rig: Gamefic::Rig::Activity)
+    scene = Gamefic::Scene.new(rig: Gamefic::Rig::Activity)
     take = Gamefic::Take.new(actor, scene)
     take.start
     actor.queue.push 'command'
@@ -37,7 +37,7 @@ describe Gamefic::Take do
   end
 
   it 'adds context to props' do
-    scene = Gamefic::Scene.new(:scene) do |scn|
+    scene = Gamefic::Scene.new do |scn|
       scn.on_start do |actor, props|
         actor.tell "You got extra #{props.context[:extra]}"
       end
@@ -49,7 +49,7 @@ describe Gamefic::Take do
   end
 
   it 'adds scene data to output' do
-    scene = Gamefic::Scene.new(:scene)
+    scene = Gamefic::Scene.new
     actor = Gamefic::Actor.new
     take = Gamefic::Take.new(actor, scene)
     # @todo Upcoming change to game state protocol
@@ -59,7 +59,7 @@ describe Gamefic::Take do
   end
 
   it 'adds options from MultipleChoice rigs' do
-    scene = Gamefic::Scene.new(:multi, rig: Gamefic::Rig::MultipleChoice) do |scene|
+    scene = Gamefic::Scene.new(rig: Gamefic::Rig::MultipleChoice) do |scene|
       scene.on_start do |actor, props|
         props.options.concat ['one', 'two']
       end

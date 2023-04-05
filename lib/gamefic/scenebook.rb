@@ -2,6 +2,9 @@
 
 module Gamefic
   class Scenebook
+    # @return [Array<Scene>]
+    attr_reader :scenes
+
     # @return [Array<Proc>]
     attr_reader :ready_blocks
 
@@ -21,7 +24,7 @@ module Gamefic
     attr_reader :player_output_blocks
 
     def initialize
-      @scene_map = {}
+      @scenes = []
       @ready_blocks = []
       @player_ready_blocks = []
       @update_blocks = []
@@ -34,35 +37,9 @@ module Gamefic
 
     # Add a scene to the scenebook.
     #
-    # @raise [NameError] if a scene with the given name already exists
-    #
     # @param [Scene]
-    # @return [Scene]
     def add scene
-      raise NameError, "A scene named `#{scene.name}` already exists" if scene_map.key?(scene.name)
-
-      scene_map[scene.name] = scene
-    end
-
-    # @param name [Symbol]
-    # @return [Scene]
-    def [](name)
-      scene_map[name]
-    end
-
-    # @param name [Symbol]
-    def scene?(name)
-      scene_map.key?(name)
-    end
-
-    # @return [Array<Symbol>]
-    def names
-      scene_map.names
-    end
-
-    # @return [Array<Scene>]
-    def scenes
-      scene_map.values
+      @scenes.push scene
     end
 
     def freeze
@@ -113,8 +90,6 @@ module Gamefic
     end
 
     private
-
-    attr_reader :scene_map
 
     def add_default_blocks
       on_player_output do |player, output|

@@ -171,14 +171,15 @@ module Gamefic
     #
     # @raise [ArgumentError] if the scene is not valid
     #
-    # @param scene [Scene, Symbol]
+    # @param scene [Scene]
     # @param context [Hash] Extra data to pass to the scene's props
     # @return [Cue]
     def cue scene, **context
-      found = select_scene(scene)
-      raise ArgumentError, "Invalid scene `#{scene}`" unless found
+      return @next_cue if @next_cue&.scene == scene && @next_cue&.context == context
 
-      cue_confirmed found, **context
+      logger.warn "Overwriting existing cue `#{@next_cue.name}` with `#{scene.to_sym}`" if @next_cue
+
+      @next_cue = Cue.new(scene, **context)
     end
     alias prepare cue
 
@@ -278,17 +279,6 @@ module Gamefic
     end
 
     private
-
-    # @param scene [Scene]
-    # @param context [Hash]
-    # @return [Cue]
-    def cue_confirmed scene, **context
-      return @next_cue if @next_cue&.scene == scene && @next_cue&.context == context
-
-      logger.warn "Overwriting existing cue `#{@next_cue.name}` with `#{scene.to_sym}`" if @next_cue
-
-      @next_cue = Cue.new(scene, **context)
-    end
 
     def prepare_buffer quietly
       if quietly

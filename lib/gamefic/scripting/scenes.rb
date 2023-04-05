@@ -8,7 +8,7 @@ module Gamefic
       # Block a new scene.
       #
       # @example Prompt the player for a name
-      #   block :ask_for_name do
+      #   @ask_for_name = block do |scene|
       #     # The scene's start occurs before the user gets prompted for input
       #     scene.on_start do |actor, props|
       #       props.prompt = 'What's your name?'
@@ -25,9 +25,6 @@ module Gamefic
       #     end
       #   end
       #
-      # @raise [NameError] if a scene with the given name already exists
-      #
-      # @param name [Symbol, nil]
       # @param rig [Class<Rig::Default>]
       # @param type [String, nil]
       # @param on_start [Proc, nil]
@@ -35,10 +32,10 @@ module Gamefic
       # @param block [Proc]
       # @yieldparam [Scene]
       # @return [Scene]
-      def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
+      def block rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
         scene = Scene.allocate
         setup.scenes.prepare do
-          scene.send :initialize, name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
+          scene.send :initialize, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
           scenebook.add scene
         end
         scene
@@ -46,16 +43,15 @@ module Gamefic
 
       # @return [Scene]
       def default_scene
-        scenebook[:default_scene] || block(:default_scene, rig: Rig::Activity)
+        @default_scene ||= block(rig: Rig::Activity)
       end
 
       # @return [Scene]
       def default_conclusion
-        scenebook[:default_conclusion] ||
-          block(:default_conclusion,
-                rig: Rig::Conclusion,
+        @default_conclusion ||=
+          block(rig: Rig::Conclusion,
                 on_start: proc { |actor, _props|
-                })
+                          })
       end
 
       # Add a block to be executed when a player is added to the game.
@@ -72,8 +68,7 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Scene]
       def introduction(rig: Gamefic::Rig::Activity, &start)
-        block :introduction,
-              rig: rig,
+        block rig: rig,
               on_start: proc { |actor, props|
                 start&.call(actor, props)
               }
@@ -93,15 +88,13 @@ module Gamefic
       #     end
       #   end
       #
-      # @param name [Symbol]
       # @param choices [Array<String>]
       # @param prompt [String, nil]
       # @param proc [Proc]
       # @yieldparam [Scene]
       # @return [Scene]
-      def multiple_choice name, choices = [], prompt = 'What is your choice?', &proc
-        block name,
-              rig: Gamefic::Rig::MultipleChoice,
+      def multiple_choice choices = [], prompt = 'What is your choice?', &proc
+        block rig: Gamefic::Rig::MultipleChoice,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
                 props.options.concat choices
@@ -122,13 +115,11 @@ module Gamefic
       #     end
       #   end
       #
-      # @param name [Symbol]
       # @param prompt [String, nil]
       # @yieldparam [Scene]
       # @return [Scene]
-      def yes_or_no name, prompt = 'Answer:', &proc
-        block name,
-              rig: Gamefic::Rig::YesOrNo,
+      def yes_or_no prompt = 'Answer:', &proc
+        block rig: Gamefic::Rig::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
               },
@@ -140,18 +131,16 @@ module Gamefic
       # the user (e.g., pressing Enter) to continue.
       #
       # @example
-      #   @scene = pause :pause_scene do |actor|
+      #   @scene = pause do |actor|
       #     actor.tell "After you continue, you will be prompted for a command."
       #   end
       #
-      # @param name [Symbol]
       # @param prompt [String, nil] The text to display when prompting the user to continue
       # @param next_cue [Scene, Symbol, nil]
       # @yieldparam [Actor]
       # @return [Scene]
-      def pause name, prompt: 'Press enter to continue...', next_cue: nil, &start
-        block name,
-              rig: Gamefic::Rig::Pause,
+      def pause prompt: 'Press enter to continue...', next_cue: nil, &start
+        block rig: Gamefic::Rig::Pause,
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
                 actor.cue(next_cue || :default_scene)
@@ -164,22 +153,14 @@ module Gamefic
       # scene is complete.
       #
       # @example
-      #   conclusion :ending do |scene|
-      #     scene.on_start do |actor, _props|
-      #       actor.tell 'GAME OVER'
-      #       actor.tell 'Press Enter to exit the game.'
-      #     end
-      #     scene.on_finish do |_actor, _props|
-      #       exit
-      #     end
+      #   @ending = conclusion do |actor|
+      #     actor.tell 'GAME OVER'
       #   end
       #
-      # @param name [Symbol]
       # @yieldparam [Scene]
       # @return [Scene]
-      def conclusion name, &start
-        block name,
-              rig: Gamefic::Rig::Conclusion,
+      def conclusion &start
+        block rig: Gamefic::Rig::Conclusion,
               on_start: proc { |actor, props|
                 start&.call(actor, props)
               }
@@ -194,7 +175,7 @@ module Gamefic
       #   end
       #
       def on_ready &block
-        scenebook.on_ready &block
+        scenebook.on_ready(&block)
       end
 
       # Add a block to be executed for each player at the beginning of a turn.
@@ -208,33 +189,33 @@ module Gamefic
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
-        scenebook.on_player_ready &block
+        scenebook.on_player_ready(&block)
       end
 
       # Add a block to be executed after the Plot is finished updating a turn.
       #
       def on_update &block
-        scenebook.on_update &block
+        scenebook.on_update(&block)
       end
 
       # Add a block to be executed for each player at the end of a turn.
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
-        scenebook.on_player_update &block
+        scenebook.on_player_update(&block)
       end
 
       # @yieldparam [Actor]
       # @return [Proc]
       def on_player_conclude &block
-        scenebook.on_player_conclude &block
+        scenebook.on_player_conclude(&block)
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
       # @return [Proc]
       def on_player_output &block
-        scenebook.on_player_output &block
+        scenebook.on_player_output(&block)
       end
     end
   end

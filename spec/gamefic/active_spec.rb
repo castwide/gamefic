@@ -49,16 +49,9 @@ describe Gamefic::Active do
     expect(object.messages).to include('visible')
   end
 
-  it 'cues a scene by name' do
+  it 'cues a scene' do
     scenebook = Gamefic::Scenebook.new
-    scene = scenebook.block(:dummy)
-    object.scenebooks.push scenebook
-    expect { object.cue :dummy }.not_to raise_error
-  end
-
-  it 'cues a scene by instance' do
-    scenebook = Gamefic::Scenebook.new
-    scene = scenebook.block(:dummy)
+    scene = Gamefic::Scene.new
     object.scenebooks.push scenebook
     expect { object.cue scene }.not_to raise_error
   end
@@ -68,10 +61,8 @@ describe Gamefic::Active do
   end
 
   it 'concludes with a Conclusion scene' do
-    scenebook = Gamefic::Scenebook.new
-    scenebook.block(:ending, rig: Gamefic::Rig::Conclusion)
-    object.scenebooks.push scenebook
-    object.cue :ending
+    ending = Gamefic::Scene.new(rig: Gamefic::Rig::Conclusion)
+    object.cue ending
     object.start_cue nil
     expect(object).to be_concluded
   end
