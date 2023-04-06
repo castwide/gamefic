@@ -206,6 +206,7 @@ module Gamefic
       logger.warn "Found #{available.count} scenes named `#{next_cue.scene}`" if available.length > 1
 
       take = Take.new(self, available.last, **next_cue.context)
+      @concluding = take.conclusion?
       @last_cue = @next_cue
       @next_cue = nil
       take
@@ -238,11 +239,11 @@ module Gamefic
       next_cue
     end
 
-    # An actor is considered concluded when their most recent cue is a
-    # Conclusion scene.
+    # An actor is considered to be concluding when their most recent take
+    # is a conclusion.
     #
-    def concluded?
-      @last_cue&.scene&.rig&.<=(Rig::Conclusion)
+    def concluding?
+      @concluding
     end
 
     def accessible?

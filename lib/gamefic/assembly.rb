@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Gamefic
   # A base class for managing the resources that compose plots and subplots.
   #
@@ -25,12 +27,29 @@ module Gamefic
       setup.entities.hydrate
       setup.scenes.hydrate
       setup.actions.hydrate
+      scenebook.add Scene.new(intro_name, rig: Gamefic::Rig::Activity) unless scenebook.scene?(intro_name)
     end
 
     # @param block [Proc]
     def stage &block
       @theater ||= Theater.new(self)
       @theater.instance_eval &block
+    end
+
+    # Introduce a player to the story.
+    #
+    # @param [Gamefic::Actor]
+    # @return [void]
+    def introduce(player)
+      @introduced = true
+      player.playbooks.push playbook unless player.playbooks.include?(playbook)
+      player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
+      players_safe_push player
+      player.cue intro_name
+    end
+
+    def intro_name
+      @intro_name ||= SecureRandom.uuid.to_sym
     end
 
     private

@@ -43,5 +43,9 @@ module Gamefic
     def cancelled?
       @rig.cancelled?
     end
+
+    def conclusion?
+      @rig.is_a?(Rig::Conclusion)
+    end
   end
 end

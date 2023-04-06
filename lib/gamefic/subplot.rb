@@ -25,12 +25,7 @@ module Gamefic
       @plot = plot
       @next_cue = next_cue
       super()
-      self.introduce [introduce].flatten if introduce
-    end
-
-    def run_scripts
-      Gamefic.logger.warn "SHARE ME WITH PLOTS"
-      self.class.blocks.each { |blk| stage &blk }
+      [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
     def players

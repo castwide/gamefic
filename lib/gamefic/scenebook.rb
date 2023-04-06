@@ -107,6 +107,10 @@ module Gamefic
       player.output.replace output
     end
 
+    def run_player_conclude_blocks player
+      player_conclude_blocks.each { |blk| blk.call player }
+    end
+
     private
 
     def add_default_blocks

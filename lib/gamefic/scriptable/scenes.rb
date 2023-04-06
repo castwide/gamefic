@@ -70,7 +70,7 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Symbol]
       def introduction(rig: Gamefic::Rig::Activity, &start)
-        block :introduction,
+        block intro_name,
               rig: rig,
               on_start: proc { |actor, props|
                 start&.call(actor, props)

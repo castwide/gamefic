@@ -21,22 +21,6 @@ module Gamefic
       scenebook.freeze
     end
 
-    def takes
-      @takes ||= []
-    end
-
-    # Introduce a player to the story.
-    #
-    # @param [Gamefic::Actor]
-    # @return [void]
-    def introduce(player)
-      @introduced = true
-      player.playbooks.push playbook unless player.playbooks.include?(playbook)
-      player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
-      players_safe_push player
-      player.cue :introduction
-    end
-
     # Cast an active entity.
     # This method is similar to make, but it also provides the plot's
     # playbook and scenebook to the entity so it can perform actions and
@@ -51,18 +35,8 @@ module Gamefic
       ent
     end
 
-    # True if at least one player has been introduced.
-    #
-    def introduced?
-      @introduced ||= false
-    end
-
-    # True if all players have reached conclusions.
-    def concluded?
-      introduced? && (players.empty? || players.all?(&:concluded?))
-    end
-
     def ready
+      @started = true
       subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
       scenebook.ready_blocks.each(&:call)
@@ -77,30 +51,6 @@ module Gamefic
         scenebook.player_update_blocks.each { |blk| blk.call plyr }
       end
       scenebook.update_blocks.each(&:call)
-    end
-
-    def prepare_takes
-      takes.replace(players.map do |pl|
-        pl.start_cue
-      end)
-    end
-
-    def start_takes
-      takes.each do |take|
-        scenebook.run_player_ready_blocks take.actor
-        take.start
-        scenebook.run_player_output_blocks take.actor, take.output
-      end
-    end
-
-    def finish_takes
-      takes.each do |take|
-        take.finish
-        next if take.cancelled? || take.scene.type != 'Conclusion'
-
-        exeunt take.actor
-      end
-      takes.clear
     end
 
     # Make a character that a player will control on introduction.
@@ -138,8 +88,37 @@ module Gamefic
 
     private
 
+    # @return [Array<Take>]
+    def takes
+      @takes ||= []
+    end
+
+    def prepare_takes
+      takes.replace(players.map do |pl|
+        pl.start_cue
+      end)
+    end
+
+    def start_takes
+      takes.each do |take|
+        scenebook.run_player_ready_blocks take.actor
+        take.start
+        scenebook.run_player_output_blocks take.actor, take.output
+        scenebook.run_player_conclude_blocks take.actor if take.conclusion?
+      end
+    end
+
+    def finish_takes
+      takes.each do |take|
+        take.finish
+        next if take.cancelled? || take.scene.type != 'Conclusion'
+
+        exeunt take.actor
+      end
+      takes.clear
+    end
+
     def block_default_scenes
-      block :introduction, rig: Gamefic::Rig::Activity unless scenebook.scene?(:introduction)
       block :default_scene, rig: Gamefic::Rig::Activity unless scenebook.scene?(:default_scene)
       block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenebook.scene?(:default_conclusion)
     end

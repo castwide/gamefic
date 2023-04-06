@@ -112,17 +112,6 @@ RSpec.describe Gamefic::Plot do
     expect(player[:concluded]).to be(true)
   end
 
-  it 'concludes on conclusions' do
-    plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
-    plot.ready
-    player.cue :default_conclusion
-    plot.ready
-    plot.update
-    expect(plot).to be_concluded
-  end
-
   it 'runs on_ready blocks' do
     ran_on_ready = false
     Gamefic.script do
