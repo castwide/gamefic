@@ -24,7 +24,7 @@ module Gamefic
     attr_reader :player_output_blocks
 
     def initialize
-      @scenes = []
+      @scene_map = {}
       @ready_blocks = []
       @player_ready_blocks = []
       @update_blocks = []
@@ -39,7 +39,18 @@ module Gamefic
     #
     # @param [Scene]
     def add scene
-      @scenes.push scene
+      raise ArgumentError, "A scene named `#{scene.name} already exists" if @scene_map.key?(scene.name)
+
+      @scene_map[scene.name] = scene
+    end
+
+    def scene? name
+      @scene_map.key? name
+    end
+
+    # @return [Scene, nil]
+    def [](name)
+      @scene_map[name]
     end
 
     def freeze

@@ -8,7 +8,7 @@ module Gamefic
       # Block a new scene.
       #
       # @example Prompt the player for a name
-      #   @ask_for_name = block do |scene|
+      #   block :ask_for_name do |scene|
       #     # The scene's start occurs before the user gets prompted for input
       #     scene.on_start do |actor, props|
       #       props.prompt = 'What's your name?'
@@ -25,53 +25,56 @@ module Gamefic
       #     end
       #   end
       #
+      # @param name [Symbol]
       # @param rig [Class<Rig::Default>]
       # @param type [String, nil]
       # @param on_start [Proc, nil]
       # @param on_finish [Proc, nil]
       # @param block [Proc]
       # @yieldparam [Scene]
-      # @return [Scene]
-      def block rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        scene = Scene.allocate
+      # @return [Symbol]
+      def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
         setup.scenes.prepare do
-          scene.send :initialize, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
+          scene = Scene.new name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
           scenebook.add scene
         end
-        scene
+        name
       end
 
       # @return [Scene]
-      def default_scene
-        @default_scene ||= block(rig: Rig::Activity)
-      end
+      # def default_scene
+      #   @default_scene ||= block(rig: Rig::Activity)
+      # end
 
       # @return [Scene]
-      def default_conclusion
-        @default_conclusion ||=
-          block(rig: Rig::Conclusion,
-                on_start: proc { |actor, _props|
-                          })
-      end
+      # def default_conclusion
+      #   @default_conclusion ||=
+      #     block(:default_conclusion,
+      #           rig: Rig::Conclusion,
+      #           on_start: proc { |actor, _props|
+      #                     })
+      # end
 
       # Add a block to be executed when a player is added to the game.
-      # Each Plot can only have one introduction. Subsequent calls will
-      # overwrite the existing one.
+      # Each Plot should only have one introduction.
       #
       # @example Welcome the player to the game
       #   introduction do |actor|
       #     actor.tell "Welcome to the game!"
       #   end
       #
+      # @raise [ArgumentError] if an introduction already exists
+      #
       # @param pause [Boolean] Pause before the first action if true
       # @yieldparam [Gamefic::Actor]
       # @yieldparam [Props::Default]
-      # @return [Scene]
+      # @return [Symbol]
       def introduction(rig: Gamefic::Rig::Activity, &start)
-        @introduction = block rig: rig,
-                              on_start: proc { |actor, props|
-                                          start&.call(actor, props)
-                                        }
+        block :introduction,
+              rig: rig,
+              on_start: proc { |actor, props|
+                start&.call(actor, props)
+              }
       end
 
       # Create a multiple-choice scene.
@@ -88,13 +91,15 @@ module Gamefic
       #     end
       #   end
       #
+      # @param name [Symbol]
       # @param choices [Array<String>]
       # @param prompt [String, nil]
       # @param proc [Proc]
       # @yieldparam [Scene]
-      # @return [Scene]
+      # @return [Symbol]
       def multiple_choice choices = [], prompt = 'What is your choice?', &proc
-        block rig: Gamefic::Rig::MultipleChoice,
+        block name,
+              rig: Gamefic::Rig::MultipleChoice,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
                 props.options.concat choices
@@ -107,7 +112,7 @@ module Gamefic
       # will restart if the user input is not a valid choice.
       #
       # @example
-      #   @scene = yes_or_no 'What is your answer?' do |actor, scene|
+      #   yes_or_no :answer_scene, 'What is your answer?' do |actor, scene|
       #     if scene.yes?
       #       actor.tell "You said yes."
       #     else
@@ -115,11 +120,13 @@ module Gamefic
       #     end
       #   end
       #
+      # @param name [Symbol]
       # @param prompt [String, nil]
       # @yieldparam [Scene]
-      # @return [Scene]
-      def yes_or_no prompt = 'Answer:', &proc
-        block rig: Gamefic::Rig::YesOrNo,
+      # @return [Symbol]
+      def yes_or_no name, prompt = 'Answer:', &proc
+        block name,
+              rig: Gamefic::Rig::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
               },
@@ -131,16 +138,18 @@ module Gamefic
       # the user (e.g., pressing Enter) to continue.
       #
       # @example
-      #   @scene = pause do |actor|
+      #   pause :wait do |actor|
       #     actor.tell "After you continue, you will be prompted for a command."
       #   end
       #
+      # @param name [Symbol]
       # @param prompt [String, nil] The text to display when prompting the user to continue
       # @param next_cue [Scene, Symbol, nil]
       # @yieldparam [Actor]
-      # @return [Scene]
-      def pause prompt: 'Press enter to continue...', next_cue: nil, &start
-        block rig: Gamefic::Rig::Pause,
+      # @return [Symbol]
+      def pause name, prompt: 'Press enter to continue...', next_cue: nil, &start
+        block name,
+              rig: Gamefic::Rig::Pause,
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
                 actor.cue(next_cue || :default_scene)
@@ -153,14 +162,16 @@ module Gamefic
       # scene is complete.
       #
       # @example
-      #   @ending = conclusion do |actor|
+      #   conclusion :ending do |actor|
       #     actor.tell 'GAME OVER'
       #   end
       #
+      # @param name [Symbol]
       # @yieldparam [Scene]
-      # @return [Scene]
-      def conclusion &start
-        block rig: Gamefic::Rig::Conclusion,
+      # @return [Symbol]
+      def conclusion name, &start
+        block name,
+              rig: Gamefic::Rig::Conclusion,
               on_start: proc { |actor, props|
                 start&.call(actor, props)
               }

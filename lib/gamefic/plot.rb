@@ -13,6 +13,14 @@ module Gamefic
     # @return [Hash]
     attr_reader :metadata
 
+    def initialize metadata = {}
+      super()
+      @metadata = metadata
+      block_default_scenes
+      playbook.freeze
+      scenebook.freeze
+    end
+
     def takes
       @takes ||= []
     end
@@ -26,7 +34,7 @@ module Gamefic
       player.playbooks.push playbook unless player.playbooks.include?(playbook)
       player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
       players_safe_push player
-      player.cue @introduction || default_scene
+      player.cue :introduction
     end
 
     # Cast an active entity.
@@ -73,7 +81,7 @@ module Gamefic
 
     def prepare_takes
       takes.replace(players.map do |pl|
-        pl.start_cue default_scene
+        pl.start_cue
       end)
     end
 
@@ -126,6 +134,14 @@ module Gamefic
 
     def inspect
       "#<#{self.class}>"
+    end
+
+    private
+
+    def block_default_scenes
+      block :introduction, rig: Gamefic::Rig::Activity unless scenebook.scene?(:introduction)
+      block :default_scene, rig: Gamefic::Rig::Activity unless scenebook.scene?(:default_scene)
+      block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenebook.scene?(:default_conclusion)
     end
   end
 end

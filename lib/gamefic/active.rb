@@ -171,7 +171,7 @@ module Gamefic
     #
     # @raise [ArgumentError] if the scene is not valid
     #
-    # @param scene [Scene]
+    # @param scene [Symbol]
     # @param context [Hash] Extra data to pass to the scene's props
     # @return [Cue]
     def cue scene, **context
@@ -186,6 +186,7 @@ module Gamefic
     # Start a take from the next cue. Start the default cue if a next one has
     # not been selected.
     #
+    # @todo Is this note still valid?
     # @note A nil default is permitted for testing purposes, but in practice,
     #   it will raise an exception when next_cue is undefined.
     #
@@ -193,12 +194,18 @@ module Gamefic
     #
     # @param default [Scene, Symbol, nil]
     # @return [Take]
-    def start_cue default
+    def start_cue
       unless next_cue
         logger.debug "Using default scene for actor without cue"
-        cue default
+        cue :default_scene
       end
-      take = Take.new(self, next_cue.scene, **next_cue.context)
+
+      available = scenebooks.map { |sb| sb[next_cue.scene] }.compact
+      raise "Scene named #{next_cue.scene} does not exist" if available.empty?
+
+      logger.warn "Found #{available.count} scenes named `#{next_cue.scene}`" if available.length > 1
+
+      take = Take.new(self, available.last, **next_cue.context)
       @last_cue = @next_cue
       @next_cue = nil
       take

@@ -127,9 +127,8 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.make_player_character
     plot.introduce player
-    player.cue plot.default_conclusion
+    player.cue :default_conclusion
     plot.ready
-    plot.update
     expect(player[:concluded]).to be(true)
   end
 
@@ -138,7 +137,7 @@ RSpec.describe Gamefic::Plot do
     player = plot.make_player_character
     plot.introduce player
     plot.ready
-    player.cue plot.default_conclusion
+    player.cue :default_conclusion
     plot.ready
     plot.update
     expect(plot).to be_concluded

@@ -12,21 +12,19 @@ module Gamefic
       end
     end
 
+    # @return [Playbook]
+    attr_reader :playbook
+
+    # @return [Scenebook]
+    attr_reader :scenebook
+
     def initialize
+      @playbook = Playbook.new
+      @scenebook = Scenebook.new
       run_scripts
       setup.entities.hydrate
       setup.scenes.hydrate
       setup.actions.hydrate
-      playbook.freeze
-      scenebook.freeze
-    end
-
-    def playbook
-      @playbook ||= Playbook.new
-    end
-
-    def scenebook
-      @scenebook ||= Scenebook.new
     end
 
     # @param block [Proc]
