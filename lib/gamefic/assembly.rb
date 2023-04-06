@@ -1,5 +1,5 @@
 module Gamefic
-  # A base class for managing the scripts that build plots and subplots.
+  # A base class for managing the resources that compose plots and subplots.
   #
   class Assembly
     class << self
@@ -13,13 +13,12 @@ module Gamefic
     end
 
     def initialize
-      self.class.blocks.each { |blk| stage &blk }
+      run_scripts
       setup.entities.hydrate
       setup.scenes.hydrate
       setup.actions.hydrate
-      default_scene && default_conclusion # Make sure they exist @todo Necessary?
       playbook.freeze
-      scenebook.freeze  
+      scenebook.freeze
     end
 
     def playbook
@@ -37,6 +36,10 @@ module Gamefic
     end
 
     private
+
+    def run_scripts
+      self.class.blocks.each { |blk| stage(&blk) }
+    end
 
     def setup
       @setup ||= Setup.new

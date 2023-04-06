@@ -131,6 +131,8 @@ module Gamefic
 end
 
 module Gamefic
+  # A shortcut to `Gamefic::Plot.script`
+  #
   def self.script &block
     Gamefic::Plot.script &block
   end

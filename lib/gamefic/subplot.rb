@@ -5,36 +5,24 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Assembly
-    # @return [Gamefic::Plot]
+    # The host plot.
+    #
+    # @return [Plot]
     attr_reader :plot
 
+    # A hash of data that was used to initialize the subplot.
+    #
     # @return [Hash]
     attr_reader :more
-
-    attr_reader :next_cue
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, nil]
     # @param next_cue [Class<Gamefic::Base>, nil]
     # @param more [Hash]
     def initialize plot, introduce: nil, next_cue: nil, **more
-      # @plot = plot
-      # @next_cue = next_cue
-      # @concluded = false
-      # @more = more.freeze
-      # configure(**more)
-      # run_scripts
-      # self.introduce introduce unless introduce.nil?
-      # theater
-      # define_static
       @plot = plot
-      run_scripts
-      setup.entities.hydrate
-      setup.scenes.hydrate
-      setup.actions.hydrate
-      default_scene && default_conclusion # Make sure they exist
-      playbook.freeze
-      scenebook.freeze
+      @next_cue = next_cue
+      super
       self.introduce introduce if introduce
     end
 
