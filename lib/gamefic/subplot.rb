@@ -5,6 +5,8 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Assembly
+    include Scriptable
+
     # The host plot.
     #
     # @return [Plot]
@@ -16,14 +18,14 @@ module Gamefic
     attr_reader :more
 
     # @param plot [Gamefic::Plot]
-    # @param introduce [Gamefic::Actor, nil]
+    # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param next_cue [Class<Gamefic::Base>, nil]
     # @param more [Hash]
     def initialize plot, introduce: nil, next_cue: nil, **more
       @plot = plot
       @next_cue = next_cue
-      super
-      self.introduce introduce if introduce
+      super()
+      self.introduce [introduce].flatten if introduce
     end
 
     def run_scripts

@@ -2,9 +2,6 @@
 
 module Gamefic
   class Scenebook
-    # @return [Array<Scene>]
-    attr_reader :scenes
-
     # @return [Array<Proc>]
     attr_reader :ready_blocks
 
@@ -51,6 +48,16 @@ module Gamefic
     # @return [Scene, nil]
     def [](name)
       @scene_map[name]
+    end
+
+    # @return [Array<Symbol>]
+    def names
+      @scene_map.keys
+    end
+
+    # @return [Array<Scene>]
+    def scenes
+      @scene_map.values
     end
 
     def freeze

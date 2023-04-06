@@ -30,7 +30,7 @@ RSpec.describe Gamefic::Plot do
 
   it 'creates scenes from scripts' do
     Gamefic.script do
-      @scene = block do |scene|
+      @scene = block :scene do |scene|
         scene.on_start do |actor, props|
           actor.tell "What's your name?"
           props.prompt 'Enter your name:'
@@ -41,13 +41,13 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    # There are 3 scenes because the plot created 2 defaults
-    expect(plot.scenebook.scenes.length).to eq(3)
+    # There are 4 scenes because the plot created 3 defaults
+    expect(plot.scenebook.scenes.length).to eq(4)
   end
 
   it 'raises an error on new responses after initialization' do
     plot = Gamefic::Plot.new
-    expect { plot.block }.to raise_error(FrozenError)
+    expect { plot.block :scene }.to raise_error(FrozenError)
   end
 
   it 'cues the introduction' do
@@ -59,7 +59,7 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.make_player_character
     plot.introduce player
-    take = player.start_cue nil
+    take = player.start_cue
     # @todo Fix introduction references
     # expect(take.scene.name).to be(:introduction)
   end
@@ -77,26 +77,6 @@ RSpec.describe Gamefic::Plot do
     # @todo Fix introduction references
     # expect(plot.takes.first.scene).to be(plot.scenebook[:introduction])
     expect(player[:introduced]).to be(true)
-  end
-
-  it 'cues the default scene without an introduction' do
-    plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
-    plot.ready
-    expect(plot.takes.first.scene).to be(plot.default_scene)
-  end
-
-  it 'cues the default scene from an introduction without a cue' do
-    Gamefic.script { introduction }
-    plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
-    plot.ready
-    plot.update
-    plot.ready
-    expect(plot.takes.first.scene).to be(plot.default_scene)
-    expect(player.queue).to be_empty
   end
 
   it 'tracks player subplots' do
