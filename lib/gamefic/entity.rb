@@ -42,7 +42,7 @@ module Gamefic
       session[key] = value
     end
 
-    UNMARSHALED_VARIABLES = [:@next_cue, :@last_cue, :@playbooks, :@scenebooks, :@entered_scenes]
+    UNMARSHALED_VARIABLES = [:@playbooks, :@scenebooks]
 
     def marshal_dump
       instance_variables.reject{|m| UNMARSHALED_VARIABLES.include? m}.inject({}) do |vars, attr|

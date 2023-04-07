@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
+require 'base64'
+
 module Gamefic
   class Plot < Assembly
-    autoload :Snapshot,  'gamefic/plot/snapshot'
-    autoload :Darkroom,  'gamefic/plot/darkroom'
-    autoload :Host,      'gamefic/plot/host'
-
-    include Host
-    include Snapshot
-
     # @return [Hash]
     attr_reader :metadata
 
@@ -26,7 +21,6 @@ module Gamefic
     end
 
     def ready
-      @started = true
       subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
       scenebook.ready_blocks.each(&:call)
@@ -72,8 +66,70 @@ module Gamefic
       subplot
     end
 
+    # Get an array of all the current subplots.
+    #
+    # @return [Array<Subplot>]
+    def subplots
+      @subplots ||= []
+    end
+
+    # Get the player's current subplots.
+    #
+    # @return [Array<Subplot>]
+    def subplots_featuring player
+      result = []
+      subplots.each { |s|
+        result.push s if s.players.include?(player)
+      }
+      result
+    end
+
+    # Determine whether the player is involved in a subplot.
+    #
+    # @return [Boolean]
+    def in_subplot? player
+      !subplots_featuring(player).empty?
+    end
+
     def inspect
       "#<#{self.class}>"
+    end
+
+    def save
+      binary = Marshal.dump(self)
+      Base64.encode64(binary)
+    end
+
+    def marshal_dump
+      {
+        plot: {
+          entities: entities,
+          players: players,
+          theater: instance_variable_get(:@theater)
+        },
+        subplots: subplots.map do |sp|
+          {
+            klass: sp.class,
+            entities: sp.entities,
+            players: sp.players,
+            theater: sp.instance_variable_get(:@theater)
+          }
+        end
+      }
+    end
+
+    def marshal_load data
+      rebuild self, data[:plot]
+      data[:subplots].each do |subdata|
+        subplot = subdata[:klass].allocate
+        rebuild subplot, subdata
+        subplots.push subplot
+      end
+    end
+
+    def self.restore snapshot
+      binary = Base64.decode64(snapshot)
+      Marshal.load(binary)
     end
 
     private
@@ -105,13 +161,19 @@ module Gamefic
       block :default_scene, rig: Gamefic::Rig::Activity unless scenebook.scene?(:default_scene)
       block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenebook.scene?(:default_conclusion)
     end
-  end
-end
 
-module Gamefic
-  # A shortcut to `Gamefic::Plot.script`
-  #
-  def self.script &block
-    Gamefic::Plot.script &block
+    def rebuild part, data
+      part.instance_variable_set(:@entities, data[:entities])
+      part.instance_variable_set(:@players, data[:players])
+      part.instance_variable_set(:@theater, data[:theater])
+      part.players.each do |plyr|
+        plyr.playbooks.push part.playbook
+        plyr.scenebooks.push part.scenebook
+      end
+      part.run_scripts
+      part.setup.entities.discard
+      part.setup.scenes.hydrate
+      part.setup.actions.hydrate
+    end
   end
 end

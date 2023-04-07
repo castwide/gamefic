@@ -29,3 +29,11 @@ require 'gamefic/dispatcher'
 require 'gamefic/active'
 require 'gamefic/active/cue'
 require 'gamefic/actor'
+
+module Gamefic
+  # A shortcut to `Gamefic::Plot.script`
+  #
+  def self.script &block
+    Gamefic::Plot.script &block
+  end
+end
