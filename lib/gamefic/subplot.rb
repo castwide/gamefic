@@ -5,8 +5,6 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Assembly
-    include Scriptable
-
     # The host plot.
     #
     # @return [Plot]
@@ -44,11 +42,17 @@ module Gamefic
       plot.default_conclusion
     end
 
-    # def cast cls, args = {}, &block
-    #   ent = super
-    #   ent.playbooks.push plot.playbook unless ent.playbooks.include?(plot.playbook)
-    #   ent
-    # end
+    def ready
+      scenebook.ready_blocks.each(&:call)
+      players.each { |plyr| scenebook.run_player_ready_blocks plyr }
+    end
+
+    def update
+      players.each do |plyr|
+        scenebook.player_update_blocks.each { |blk| blk.call plyr }
+      end
+      scenebook.update_blocks.each(&:call)
+    end
 
     def conclude
       @concluded = true

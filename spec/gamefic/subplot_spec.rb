@@ -22,14 +22,15 @@ describe Gamefic::Subplot do
   it "adds its playbook to casted characters" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
-    actor = subplot.cast Gamefic::Actor
+    actor = subplot.cast Gamefic::Actor.new
     expect(actor.playbooks).to include(subplot.playbook)
   end
 
   it "adds its playbook to introduced characters" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
-    actor = plot.cast Gamefic::Actor
+    actor = plot.make_player_character
+    plot.introduce actor
     subplot.introduce actor
     expect(actor.playbooks.length).to eq(2)
     expect(actor.playbooks).to include(subplot.playbook)
@@ -38,11 +39,11 @@ describe Gamefic::Subplot do
   it "removes its playbook from exited characters" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
-    actor = plot.cast Gamefic::Actor
+    actor = plot.cast Gamefic::Actor.new
     subplot.introduce actor
     subplot.exeunt actor
     expect(actor.playbooks.length).to eq(1)
-    expect(actor.playbooks).to_not include(subplot.playbook)
+    expect(actor.playbooks).not_to include(subplot.playbook)
   end
 
   it 'adds entities to the host plot' do

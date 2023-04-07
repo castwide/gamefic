@@ -6,7 +6,6 @@ module Gamefic
     autoload :Darkroom,  'gamefic/plot/darkroom'
     autoload :Host,      'gamefic/plot/host'
 
-    include Scriptable
     include Host
     include Snapshot
 
@@ -19,20 +18,6 @@ module Gamefic
       block_default_scenes
       playbook.freeze
       scenebook.freeze
-    end
-
-    # Cast an active entity.
-    # This method is similar to make, but it also provides the plot's
-    # playbook and scenebook to the entity so it can perform actions and
-    # participate in scenes. The entity should be an instance of
-    # Gamefic::Actor or include the Gamefic::Active module.
-    #
-    # @return [Gamefic::Actor, Gamefic::Active]
-    def cast cls, **args
-      ent = make cls, **args
-      ent.playbooks.push playbook
-      ent.scenebooks.push scenebook
-      ent
     end
 
     # @return [Array<Take>]
@@ -65,7 +50,7 @@ module Gamefic
       # @todo Should we even bother with player_class? This could stand to be
       #   more robust, but the adjustable player class seems like a step too
       #   far.
-      cast Gamefic::Actor, name: 'yourself', synonyms: 'self myself you me', proper_named: true
+      make Gamefic::Actor, name: 'yourself', synonyms: 'self myself you me', proper_named: true
     end
 
     # @param actor [Actor]

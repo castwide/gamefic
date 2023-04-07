@@ -14,6 +14,8 @@ module Gamefic
       end
     end
 
+    include Scriptable
+
     # @return [Playbook]
     attr_reader :playbook
 
@@ -36,16 +38,38 @@ module Gamefic
       @theater.instance_eval &block
     end
 
-    # Introduce a player to the story.
+    # Introduce an actor to the story.
     #
     # @param [Gamefic::Actor]
     # @return [void]
     def introduce(player)
-      @introduced = true
-      player.playbooks.push playbook unless player.playbooks.include?(playbook)
-      player.scenebooks.push scenebook unless player.scenebooks.include?(scenebook)
+      cast player
       players_safe_push player
       player.cue intro_name
+    end
+
+    def exeunt player
+      uncast player
+      players_safe_delete player
+    end
+
+    # Add this assembly's playbook and scenebook to an active entity.
+    #
+    # @return [Gamefic::Active]
+    def cast active
+      active.playbooks.push playbook
+      active.scenebooks.push scenebook
+      active
+    end
+
+    def uncast active
+      active.playbooks.delete playbook
+      active.scenebooks.delete scenebook
+    end
+
+    def destroy entity
+      entity.children.each { |child| child.parent = entity.parent }
+      entities_safe_delete entity
     end
 
     def intro_name
