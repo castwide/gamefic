@@ -35,6 +35,11 @@ module Gamefic
       ent
     end
 
+    # @return [Array<Take>]
+    def takes
+      @takes ||= [].freeze
+    end
+
     def ready
       @started = true
       subplots.delete_if(&:concluded?)
@@ -88,15 +93,8 @@ module Gamefic
 
     private
 
-    # @return [Array<Take>]
-    def takes
-      @takes ||= []
-    end
-
     def prepare_takes
-      takes.replace(players.map do |pl|
-        pl.start_cue
-      end)
+      @takes = players.map { |pl| pl.start_cue }.freeze
     end
 
     def start_takes
@@ -115,7 +113,7 @@ module Gamefic
 
         exeunt take.actor
       end
-      takes.clear
+      @takes = [].freeze
     end
 
     def block_default_scenes

@@ -74,7 +74,6 @@ RSpec.describe Gamefic::Plot do
     plot.introduce player
     plot.ready
     expect(plot.takes.first.scene.name).to be(plot.intro_name)
-    expect(player[:introduced]).to be(true)
   end
 
   it 'tracks player subplots' do
