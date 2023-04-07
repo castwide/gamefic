@@ -16,12 +16,6 @@ module Gamefic
 
     include Scriptable
 
-    # @return [Playbook]
-    attr_reader :playbook
-
-    # @return [Scenebook]
-    attr_reader :scenebook
-
     def initialize
       @playbook = Playbook.new
       @scenebook = Scenebook.new
@@ -30,6 +24,16 @@ module Gamefic
       setup.scenes.hydrate
       setup.actions.hydrate
       scenebook.add Scene.new(intro_name, rig: Gamefic::Rig::Activity) unless scenebook.scene?(intro_name)
+    end
+
+    # @return [Playbook]
+    def playbook
+      @playbook ||= Playbook.new
+    end
+
+    # @return [Scenebook]
+    def scenebook
+      @scenebook ||= Scenebook.new
     end
 
     # @param block [Proc]
@@ -48,6 +52,8 @@ module Gamefic
       player.cue intro_name
     end
 
+    # Remove a player from the game.
+    #
     def exeunt player
       uncast player
       players_safe_delete player

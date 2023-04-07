@@ -177,11 +177,25 @@ RSpec.describe Gamefic::Plot do
   describe 'snapshot' do
     let(:plot) do
       Gamefic::Plot.script do
-        @thing = make Gamefic::Entity, name: 'thing'
+        @room = make Gamefic::Entity, name: 'room'
+        @thing = make Gamefic::Entity, name: 'thing', parent: @room
+
+        introduction do |actor|
+          actor.parent = @room
+        end
+
+        respond :think do |actor|
+          actor.tell 'Yer thinkin'
+        end
+
+        respond :look, @thing do |actor, thing|
+          actor.tell "You see #{thing}"
+        end
       end
       Gamefic::Plot.new.tap do |plot|
         player = plot.make_player_character
         plot.introduce player
+        plot.ready
         plot.branch Gamefic::Subplot, introduce: player
       end
     end
