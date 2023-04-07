@@ -165,12 +165,16 @@ module Gamefic
     def rebuild part, data
       part.instance_variable_set(:@entities, data[:entities])
       part.instance_variable_set(:@players, data[:players])
-      part.instance_variable_set(:@theater, data[:theater])
+      part.stage {}
+      part.run_scripts
+      data[:theater].instance_variables.each do |attr|
+        value = data[:theater].instance_variable_get(attr)
+        part.instance_variable_get(:@theater).instance_variable_set(attr, value)
+      end
       part.players.each do |plyr|
         plyr.playbooks.push part.playbook
         plyr.scenebooks.push part.scenebook
       end
-      part.run_scripts
       part.setup.entities.discard
       part.setup.scenes.hydrate
       part.setup.actions.hydrate

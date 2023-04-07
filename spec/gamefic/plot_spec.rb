@@ -173,4 +173,34 @@ RSpec.describe Gamefic::Plot do
     plot.introduce player2
     expect(plot.players).to eq([player1, player2])
   end
+
+  describe 'snapshot' do
+    let(:plot) do
+      Gamefic::Plot.script do
+        @thing = make Gamefic::Entity, name: 'thing'
+      end
+      Gamefic::Plot.new.tap do |plot|
+        player = plot.make_player_character
+        plot.introduce player
+        plot.branch Gamefic::Subplot, introduce: player
+      end
+    end
+
+    let(:restored) { Gamefic::Plot.restore plot.save }
+
+    it 'restores players' do
+      player = restored.players.first
+      expect(player.playbooks).to eq([restored.playbook, restored.subplots.first.playbook])
+      expect(player.scenebooks).to eq([restored.scenebook, restored.subplots.first.scenebook])
+    end
+
+    it 'restores subplots' do
+      expect(restored.subplots).to be_one
+    end
+
+    it 'restores stage instance variables' do
+      thing = restored.stage { @thing }
+      expect(thing.name).to eq('thing')
+    end
+  end
 end
