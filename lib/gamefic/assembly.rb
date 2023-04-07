@@ -73,17 +73,13 @@ module Gamefic
       active.scenebooks.delete scenebook
     end
 
-    def destroy entity
-      entity.children.each { |child| child.parent = entity.parent }
-      entities_safe_delete entity
-    end
-
     def intro_name
       @intro_name ||= SecureRandom.uuid.to_sym
     end
 
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
+      @static_size = entities.length
     end
 
     def setup

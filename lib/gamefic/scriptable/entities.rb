@@ -37,7 +37,16 @@ module Gamefic
         Proxy.new(self, index)
       end
 
+      def destroy entity
+        entity.children.each { |child| child.parent = entity.parent }
+        entities_safe_delete entity
+      end
+
       private
+
+      def static_size
+        @static_size ||= 0
+      end
 
       def entities_safe_push entity
         @entities = @entities.dup || []
@@ -51,11 +60,16 @@ module Gamefic
 
       def entities_safe_delete entity
         return unless @entities
+
+        idx = @entities.find_index(entity)
+        return if idx.nil? || idx < static_size
+
         @entities = (@entities.dup - [entity]).freeze
       end
 
       def players_safe_delete player
         return unless @players
+
         @players = (@players.dup - [player]).freeze
       end
     end
