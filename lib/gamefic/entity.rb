@@ -50,6 +50,17 @@ module Gamefic
       session[key] = value
     end
 
+    def ==(other)
+      case other
+      when Gamefic::Proxy
+        other.entity.hash == hash
+      when Gamefic::Entity
+        other.hash == hash
+      else
+        false
+      end
+    end
+
     UNMARSHALED_VARIABLES = [:@playbooks, :@scenebooks]
 
     def marshal_dump

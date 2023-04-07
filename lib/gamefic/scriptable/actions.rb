@@ -28,9 +28,8 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond(verb, *queries, &proc)
-        response = Response.allocate
         setup.actions.prepare do
-          response.send :initialize, verb, *map_response_args(queries), &proc
+          response = Response.new(verb, *map_response_args(queries), &proc)
           playbook.respond_with response
         end
         verb
@@ -53,7 +52,7 @@ module Gamefic
       # @return [Symbol]
       def meta(verb, *queries, &proc)
         setup.actions.prepare do
-          response = Response.new(:initialize, verb, *map_response_args(queries), meta: true, &proc)
+          response = Response.new(verb, *map_response_args(queries), meta: true, &proc)
           playbook.respond_with response
         end
         verb
@@ -101,7 +100,7 @@ module Gamefic
       # @return [Syntax] the Syntax object
       def interpret command, translation
         setup.actions.prepare do
-          playbook.interpret command, translation
+          playbook.interpret_with Syntax.new(command, translation)
         end
       end
 

@@ -77,6 +77,10 @@ module Gamefic
       @intro_name ||= SecureRandom.uuid.to_sym
     end
 
+    def pick description
+      Gamefic::Query::General.new(entities).query(nil, description).match
+    end
+
     protected
 
     def run_scripts
