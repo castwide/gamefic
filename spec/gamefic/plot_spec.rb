@@ -60,8 +60,7 @@ RSpec.describe Gamefic::Plot do
     player = plot.make_player_character
     plot.introduce player
     take = player.start_cue
-    # @todo Fix introduction references
-    # expect(take.scene.name).to be(:introduction)
+    expect(take.scene.name).to be(plot.intro_name)
   end
 
   it 'starts the introduction on ready' do
@@ -74,8 +73,7 @@ RSpec.describe Gamefic::Plot do
     player = plot.make_player_character
     plot.introduce player
     plot.ready
-    # @todo Fix introduction references
-    # expect(plot.takes.first.scene).to be(plot.scenebook[:introduction])
+    expect(plot.takes.first.scene.name).to be(plot.intro_name)
     expect(player[:introduced]).to be(true)
   end
 
