@@ -86,6 +86,17 @@ module Gamefic
       self.class.blocks.each { |blk| stage(&blk) }
     end
 
+    def unproxy
+      stage do
+        instance_variables.each do |iv|
+          val = instance_variable_get(iv)
+          if val.is_a?(Proxy)
+            instance_variable_set(iv, val.entity)
+          end
+        end
+      end
+    end
+
     def setup
       @setup ||= Setup.new
     end

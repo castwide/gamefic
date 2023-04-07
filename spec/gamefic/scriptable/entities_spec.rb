@@ -10,9 +10,9 @@ describe Gamefic::Scriptable::Entities do
   }
 
   describe '#make' do
-    it 'allocates an entity' do
+    it 'allocates a proxy' do
       entity = object.make Gamefic::Entity, name: 'thing'
-      expect(entity).to be_a(Gamefic::Entity)
+      expect(entity).to be_a(Gamefic::Proxy)
     end
   end
 end

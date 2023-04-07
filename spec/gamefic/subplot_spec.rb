@@ -4,10 +4,10 @@ describe Gamefic::Subplot do
   it "destroys its elements upon conclusion" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
-    entity = subplot.make(Gamefic::Entity, name: 'entity')
-    expect(subplot.entities.include? entity).to be(true)
+    proxy = subplot.make(Gamefic::Entity, name: 'entity')
+    expect(subplot.entities.include? proxy.entity).to be(true)
     subplot.conclude
-    expect(subplot.entities.include? entity).to be(false)
+    expect(subplot.entities.include? proxy.entity).to be(false)
   end
 
   # @todo This might not be necessary, but if we do it, the player's playbook

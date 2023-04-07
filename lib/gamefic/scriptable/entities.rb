@@ -27,13 +27,14 @@ module Gamefic
       # @param args [Hash]
       # @return [Gamefic::Entity]
       def make klass, **opts
+        index = entities.length
         entity = klass.allocate
         entities_safe_push entity
         setup.entities.prepare do
           entity.send :initialize, **opts
           entity
         end
-        entity
+        Proxy.new(self, index)
       end
 
       private
