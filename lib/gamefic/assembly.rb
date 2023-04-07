@@ -77,6 +77,8 @@ module Gamefic
       @intro_name ||= SecureRandom.uuid.to_sym
     end
 
+    protected
+
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
       @static_size = entities.length
