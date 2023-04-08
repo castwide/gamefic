@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Gamefic
-  # An object that acts as a delegate between entity instances in a Plot and
+  # An object that acts as a delegate between entity instances in a plot and
   # entity references in the plot's theater.
   #
   # Proxies allow scripts to retain static references to entities across plot
@@ -7,8 +9,8 @@ module Gamefic
   # the script that reference entities should point correctly to the restored
   # entities.
   #
-  # Proxies and Entities are designed to be interchangeable. Authors should
-  # not need to care whether a variable points to a Proxy or an Entity.
+  # Proxies and entities are designed to be interchangeable. Authors should
+  # not need to care whether a variable points to a proxy or an entity.
   #
   class Proxy
     # @return [Plot, Subplot]
@@ -45,6 +47,7 @@ module Gamefic
 
     def respond_to_missing? symbol, private
       return false if private
+
       host.entities[index].public_methods.include? symbol
     end
 

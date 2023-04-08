@@ -234,13 +234,12 @@ module Gamefic
     # @oaram context [Hash] Additional scene data
     def conclude new_scene, **context
       cue new_scene, **context
-      raise NotConclusionError unless next_cue.scene.rig <= Rig::Conclusion
+      # raise NotConclusionError unless next_cue.scene.rig <= Rig::Conclusion
 
       next_cue
     end
 
-    # An actor is considered to be concluding when their most recent take
-    # is a conclusion.
+    # True if the actor starts a concluded cue.
     #
     def concluding?
       @concluding
