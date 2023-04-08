@@ -60,5 +60,12 @@ module Gamefic
     def is_a?(klass)
       entity.is_a?(klass)
     end
+
+    def self.maybe(host, entity)
+      index = host.entities.find_index(entity)
+      return entity unless index
+
+      Proxy.new(host, index)
+    end
   end
 end

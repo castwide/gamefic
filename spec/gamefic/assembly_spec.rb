@@ -1,8 +1,4 @@
 describe Gamefic::Assembly do
-  after :each do
-    Gamefic::Assembly.blocks.clear
-  end
-
   describe 'class' do
     it 'adds a script' do
       blk = proc {}

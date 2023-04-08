@@ -50,6 +50,17 @@ module Gamefic
       session[key] = value
     end
 
+    def ==(other)
+      case other
+      when Gamefic::Entity
+        hash == other.hash
+      when Gamefic::Proxy
+        self == other.entity
+      else
+        false
+      end
+    end
+
     class << self
       # Set or update the default values for new instances.
       #

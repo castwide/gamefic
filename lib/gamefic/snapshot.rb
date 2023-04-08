@@ -67,23 +67,17 @@ module Gamefic
       end
 
       def rebuild part, data
-        data[:entities].map.with_index do |rest, idx|
-          part.make rest.class unless part.entities[idx]
-          rest.instance_variables
-              .difference([:@parent, :@children])
-              .each { |iv| part.entities[idx].instance_variable_set(iv, rest.instance_variable_get(iv)) }
-        end
+        part.run_scripts
+        part.setup.entities.discard
+        part.setup.scenes.hydrate
+        part.setup.actions.hydrate
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
-        part.run_scripts
         part.instance_variable_set(:@theater, data[:theater])
         part.players.each do |plyr|
           plyr.playbooks.push part.playbook
           plyr.scenebooks.push part.scenebook
         end
-        part.setup.entities.discard
-        part.setup.scenes.hydrate
-        part.setup.actions.hydrate
       end
     end
   end

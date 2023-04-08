@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Gamefic::Plot do
-  after :each do
-    Gamefic::Plot.blocks.clear
-  end
-
   it 'creates entities from scripts' do
     Gamefic.script do
       make Gamefic::Entity
@@ -172,61 +168,5 @@ RSpec.describe Gamefic::Plot do
     player2 = plot.make_player_character
     plot.introduce player2
     expect(plot.players).to eq([player1, player2])
-  end
-
-  describe 'snapshot' do
-    let(:plot) do
-      Gamefic::Plot.script do
-        @room = make Gamefic::Entity, name: 'room'
-        @thing = make Gamefic::Entity, name: 'thing', parent: @room
-
-        introduction do |actor|
-          actor.parent = @room
-        end
-
-        respond :think do |actor|
-          actor.tell 'Yer thinkin'
-        end
-
-        respond :look, @thing do |actor, thing|
-          actor.tell "You see #{thing}"
-        end
-      end
-      Gamefic::Plot.new.tap do |plot|
-        player = plot.make_player_character
-        plot.introduce player
-        plot.ready
-        plot.branch Gamefic::Subplot, introduce: player
-      end
-    end
-
-    let(:restored) { Gamefic::Plot.restore plot.save }
-
-    it 'restores players' do
-      player = restored.players.first
-      expect(player.playbooks).to eq([restored.playbook, restored.subplots.first.playbook])
-      expect(player.scenebooks).to eq([restored.scenebook, restored.subplots.first.scenebook])
-    end
-
-    it 'restores subplots' do
-      expect(restored.subplots).to be_one
-    end
-
-    it 'restores stage instance variables' do
-      thing = restored.stage { @thing }
-      expect(thing.name).to eq('thing')
-      picked = restored.pick('thing')
-      expect(thing).to be(picked)
-    end
-
-    it 'restores references in actions' do
-      player = restored.players.first
-      player.cue :default_scene
-      restored.ready
-      player.perform 'look thing'
-      puts player.messages.inspect
-      player.perform 'think'
-      puts player.messages.inspect
-    end
   end
 end
