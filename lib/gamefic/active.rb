@@ -186,11 +186,7 @@ module Gamefic
     # Start a take from the next cue. Start the default cue if a next one has
     # not been selected.
     #
-    # @todo Is this note still valid?
-    # @note A nil default is permitted for testing purposes, but in practice,
-    #   it will raise an exception when next_cue is undefined.
-    #
-    # @raise [ArgumentError] if the actor fails to start a scene.
+    # @raise [ArgumentError] if the scene in next_cue does not exist.
     #
     # @param default [Scene, Symbol, nil]
     # @return [Take]
@@ -201,7 +197,7 @@ module Gamefic
       end
 
       available = scenebooks.map { |sb| sb[next_cue.scene] }.compact
-      raise "Scene named #{next_cue.scene} does not exist" if available.empty?
+      raise ArgumentError, "Scene named #{next_cue.scene} does not exist" if available.empty?
 
       logger.warn "Found #{available.count} scenes named `#{next_cue.scene}`" if available.length > 1
 

@@ -41,10 +41,7 @@ module Gamefic
     #
     # @return [Gamefic::Actor]
     def make_player_character
-      # @todo Should we even bother with player_class? This could stand to be
-      #   more robust, but the adjustable player class seems like a step too
-      #   far.
-      Gamefic::Actor.new name: 'yourself', synonyms: 'self myself you me', proper_named: true
+      Gamefic::Actor.new name: 'yourself', synonyms: 'yourself self myself you me', proper_named: true
     end
 
     # @param actor [Actor]

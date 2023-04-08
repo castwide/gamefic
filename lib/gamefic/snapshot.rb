@@ -25,13 +25,10 @@ module Gamefic
     def self.restore snapshot
       binary = Base64.decode64(snapshot)
       data = Marshal.load(binary)
-      plot = Gamefic::Plot.allocate # @todo Store this like subplot classes
-      rebuild plot, data[:plot]
+      plot = rebuild(data[:plot])
       plot.block_default_scenes
       data[:subplots].each do |subdata|
-        klass = string_to_constant(subdata[:klass])
-        subplot = klass.allocate
-        rebuild subplot, subdata
+        subplot = rebuild(subdata)
         plot.subplots.push subplot
       end
       plot
@@ -43,19 +40,24 @@ module Gamefic
       def collect plot
         {
           plot: {
+            klass: plot.class.to_s,
             entities: plot.entities,
             players: plot.players,
             theater: plot.instance_variable_get(:@theater)
           },
-          subplots: plot.subplots.map do |sp|
-            {
-              klass: sp.class.to_s,
-              entities: sp.entities,
-              players: sp.players,
-              theater: sp.instance_variable_get(:@theater)
-            }
-          end
+          subplots: collect_subplots(plot.subplots)
         }
+      end
+
+      def collect_subplots subplots
+        subplots.map do |sp|
+          {
+            klass: sp.class.to_s,
+            entities: sp.entities,
+            players: sp.players,
+            theater: sp.instance_variable_get(:@theater)
+          }
+        end
       end
 
       def string_to_constant string
@@ -66,7 +68,9 @@ module Gamefic
         space
       end
 
-      def rebuild part, data
+      def rebuild data
+        klass = string_to_constant(data[:klass])
+        part = klass.allocate
         part.run_scripts
         part.setup.entities.discard
         part.setup.scenes.hydrate
@@ -78,6 +82,7 @@ module Gamefic
           plyr.playbooks.push part.playbook
           plyr.scenebooks.push part.scenebook
         end
+        part
       end
     end
   end

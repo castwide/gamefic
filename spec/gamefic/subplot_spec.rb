@@ -10,15 +10,6 @@ describe Gamefic::Subplot do
     expect(subplot.entities.include? entity).to be(false)
   end
 
-  # @todo This might not be necessary, but if we do it, the player's playbook
-  #   should be a Set.
-  # it "adds its host's playbook to casted characters" do
-  #   plot = Gamefic::Plot.new
-  #   subplot = Gamefic::Subplot.new(plot)
-  #   actor = subplot.cast Gamefic::Actor
-  #   expect(actor.playbooks).to include(plot.playbook)
-  # end
-
   it "adds its playbook to casted characters" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
