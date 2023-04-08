@@ -20,9 +20,6 @@ module Gamefic
       @playbook = Playbook.new
       @scenebook = Scenebook.new
       run_scripts
-      setup.entities.hydrate
-      setup.scenes.hydrate
-      setup.actions.hydrate
       scenebook.add Scene.new(intro_name, rig: Gamefic::Rig::Activity) unless scenebook.scene?(intro_name)
     end
 
@@ -84,10 +81,6 @@ module Gamefic
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
       @static_size = entities.length
-    end
-
-    def setup
-      @setup ||= Setup.new
     end
   end
 end

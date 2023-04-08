@@ -27,13 +27,7 @@ module Gamefic
       # @param args [Hash]
       # @return [Gamefic::Entity]
       def make klass, **opts
-        entity = klass.allocate
-        entities_safe_push entity
-        setup.entities.prepare do
-          entity.send :initialize, **opts
-          entity
-        end
-        entity
+        entities_safe_push klass.new(**opts)
       end
 
       def destroy entity
@@ -50,11 +44,13 @@ module Gamefic
       def entities_safe_push entity
         @entities = @entities.dup || []
         @entities.push(entity).freeze
+        entity
       end
 
       def players_safe_push player
         @players = @players.dup || []
         @players.push(player).freeze
+        player
       end
 
       def entities_safe_delete entity

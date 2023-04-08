@@ -72,9 +72,6 @@ module Gamefic
         klass = string_to_constant(data[:klass])
         part = klass.allocate
         part.run_scripts
-        part.setup.entities.discard
-        part.setup.scenes.hydrate
-        part.setup.actions.hydrate
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
         part.instance_variable_set(:@theater, data[:theater])

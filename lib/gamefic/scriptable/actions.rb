@@ -28,10 +28,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond(verb, *queries, &proc)
-        setup.actions.prepare do
-          response = Response.new(verb, *map_response_args(queries), &proc)
-          playbook.respond_with response
-        end
+        playbook.respond_with Response.new(verb, *map_response_args(queries), &proc)
         verb
       end
 
@@ -51,10 +48,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def meta(verb, *queries, &proc)
-        setup.actions.prepare do
-          response = Response.new(verb, *map_response_args(queries), meta: true, &proc)
-          playbook.respond_with response
-        end
+        playbook.respond_with Response.new(verb, *map_response_args(queries), meta: true, &proc)
         verb
       end
 
@@ -66,9 +60,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action verb = nil, &block
-        setup.actions.prepare do
-          playbook.before_action verb, &block
-        end
+        playbook.before_action verb, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -79,9 +71,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action verb = nil, &block
-        setup.actions.prepare do
-          playbook.after_action verb, &block
-        end
+        playbook.after_action verb, &block
       end
 
       # Create an alternate Syntax for a response.
@@ -99,9 +89,7 @@ module Gamefic
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
       def interpret command, translation
-        setup.actions.prepare do
-          playbook.interpret_with Syntax.new(command, translation)
-        end
+        playbook.interpret_with Syntax.new(command, translation)
       end
 
       private

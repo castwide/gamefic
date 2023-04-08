@@ -34,10 +34,7 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        setup.scenes.prepare do
-          scene = Scene.new name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
-          scenebook.add scene
-        end
+        scenebook.add Scene.new name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
         name
       end
 
