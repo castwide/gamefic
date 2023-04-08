@@ -13,33 +13,20 @@ module Gamefic
     # A hash of data that was used to initialize the subplot.
     #
     # @return [Hash]
-    attr_reader :more
+    attr_reader :config
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
-    # @param next_cue [Class<Gamefic::Base>, nil]
-    # @param more [Hash]
-    def initialize plot, introduce: nil, next_cue: nil, **more
+    # @param config [Hash]
+    def initialize plot, introduce: nil, **config
       @plot = plot
-      @next_cue = next_cue
+      @config = config
       super()
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
     def players
       @players ||= []
-    end
-
-    def subplot
-      self
-    end
-
-    def default_scene
-      plot.default_scene
-    end
-
-    def default_conclusion
-      plot.default_conclusion
     end
 
     def ready
@@ -55,19 +42,18 @@ module Gamefic
     end
 
     def conclude
-      @concluded = true
       players.each { |p| exeunt p }
       entities.each { |e| entities_safe_delete e }
     end
 
     def concluded?
-      @concluded
+      players.empty?
     end
 
     # Subclasses can override this method to handle additional configuration
     # options.
     #
-    def configure **more; end
+    def configure **config; end
 
     def inspect
       "#<#{self.class}>"

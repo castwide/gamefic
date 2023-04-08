@@ -56,29 +56,34 @@ describe Gamefic::Subplot do
     expect(plot.entities).to be_one
   end
 
-  it 'proceeds in tandem with plots' do
+  it 'runs ready blocks' do
     readied = false
-    updated = false
     klass = Class.new(Gamefic::Subplot)
     klass.script do
       on_ready do
         readied = true
       end
+    end
+    plot = Gamefic::Plot.new
+    actor = plot.make_player_character
+    subplot = klass.new(plot, introduce: actor)
+    subplot.ready
+    expect(readied).to be(true)
+  end
+
+  it 'runs update blocks' do
+    updated = false
+    klass = Class.new(Gamefic::Subplot)
+    klass.script do
       on_update do
         updated = true
       end
     end
     plot = Gamefic::Plot.new
-    subplot = klass.new(plot)
-    # @todo Subplot#plot should probably be responsible for this.
-    plot.subplots.push subplot
-    # @todo The subplot needs at least one player to avoid being concluded.
-    #   See Subplot#ready
-    # actor = plot.cast Gamefic::Actor
-    # subplot.introduce actor
-    plot.ready
-    expect(readied).to be(true)
-    plot.update
+    actor = plot.make_player_character
+    subplot = klass.new(plot, introduce: actor)
+    subplot.ready
+    subplot.update
     expect(updated).to be(true)
   end
 end
