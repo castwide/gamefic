@@ -25,6 +25,8 @@ module Gamefic
 
       @scene.start_blocks.each { |blk| blk&.call(@actor, @rig.props) }
       @rig.ready
+      render_output
+      @actor.flush
     end
 
     def finish
@@ -34,8 +36,6 @@ module Gamefic
       return if @rig.cancelled?
 
       @scene.finish_blocks.each { |blk| blk&.call(@actor, @rig.props) }
-      render_output
-      @actor.flush
     end
 
     def output
@@ -53,11 +53,11 @@ module Gamefic
     private
 
     def render_output
-      @rig.props.output.merge!(
+      output.merge!(
         {
           last_prompt: @rig.props.prompt,
           last_input: @rig.props.input,
-          messages: @rig.props.output[:messages] + @actor.messages,
+          messages: output[:messages] + @actor.messages,
           queue: @actor.queue
         }
       )
