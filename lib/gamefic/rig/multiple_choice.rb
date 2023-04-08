@@ -9,8 +9,9 @@ module Gamefic
       use_props_class Props::MultipleChoice
 
       def ready
+        raise 'Options in MultipleChoice props are empty' if props.options.empty?
+
         props.output[:options] = props.options
-        # @todo Raise an error if the options are empty?
       end
 
       def finish actor
