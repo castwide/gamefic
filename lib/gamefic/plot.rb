@@ -135,7 +135,7 @@ module Gamefic
         scenebook.run_player_ready_blocks take.actor
         take.start
         scenebook.run_player_output_blocks take.actor, take.output
-        take.actor.output.replace take.output
+        take.actor.output.merge! take.output
         scenebook.run_player_conclude_blocks take.actor if take.conclusion?
       end
     end
