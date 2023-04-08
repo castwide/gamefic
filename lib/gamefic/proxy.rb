@@ -41,8 +41,14 @@ module Gamefic
       end
     end
 
-    def method_missing symbol, *args, **splat, &block
-      host.entities[index].public_send symbol, *args, **splat, &block
+    if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
+      def method_missing symbol, *args, &block
+        host.entities[index].public_send symbol, *args, &block
+      end
+    else
+      def method_missing symbol, *args, **splat, &block
+        host.entities[index].public_send symbol, *args, **splat, &block
+      end
     end
 
     def respond_to_missing? symbol, private
