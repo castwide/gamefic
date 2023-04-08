@@ -20,16 +20,6 @@ module Gamefic
     # @return [Active::Cue, nil]
     attr_reader :next_cue
 
-    # The prompt for the previous scene.
-    #
-    # @return [String]
-    attr_accessor :last_prompt
-
-    # The input for the previous scene.
-    #
-    # @return [String]
-    attr_accessor :last_input
-
     # The playbooks that will be used to perform commands. Every plot and
     # subplot has its own playbook.
     #

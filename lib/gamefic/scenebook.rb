@@ -28,8 +28,6 @@ module Gamefic
       @player_update_blocks = []
       @player_conclude_blocks = []
       @player_output_blocks = []
-
-      add_default_blocks
     end
 
     # Add a scene to the scenebook.
@@ -109,16 +107,6 @@ module Gamefic
 
     def run_player_conclude_blocks player
       player_conclude_blocks.each { |blk| blk.call player }
-    end
-
-    private
-
-    def add_default_blocks
-      on_player_output do |player, output|
-        output[:messages] += player.messages
-        output[:queue] = player.queue
-        player.flush
-      end
     end
   end
 end
