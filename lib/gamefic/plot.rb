@@ -97,41 +97,17 @@ module Gamefic
       "#<#{self.class}>"
     end
 
+    def block_default_scenes
+      block :default_scene, rig: Gamefic::Rig::Activity unless scenebook.scene?(:default_scene)
+      block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenebook.scene?(:default_conclusion)
+    end
+
     def save
-      binary = Marshal.dump(self)
-      Base64.encode64(binary)
-    end
-
-    def marshal_dump
-      {
-        plot: {
-          entities: entities,
-          players: players,
-          theater: instance_variable_get(:@theater)
-        },
-        subplots: subplots.map do |sp|
-          {
-            klass: sp.class,
-            entities: sp.entities,
-            players: sp.players,
-            theater: sp.instance_variable_get(:@theater)
-          }
-        end
-      }
-    end
-
-    def marshal_load data
-      rebuild self, data[:plot]
-      data[:subplots].each do |subdata|
-        subplot = subdata[:klass].allocate
-        rebuild subplot, subdata
-        subplots.push subplot
-      end
+      Snapshot.save self
     end
 
     def self.restore snapshot
-      binary = Base64.decode64(snapshot)
-      Marshal.load(binary)
+      Snapshot.restore snapshot
     end
 
     private
@@ -157,29 +133,6 @@ module Gamefic
         exeunt take.actor
       end
       @takes = [].freeze
-    end
-
-    def block_default_scenes
-      block :default_scene, rig: Gamefic::Rig::Activity unless scenebook.scene?(:default_scene)
-      block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenebook.scene?(:default_conclusion)
-    end
-
-    def rebuild part, data
-      part.instance_variable_set(:@entities, data[:entities])
-      part.instance_variable_set(:@players, data[:players])
-      part.stage {}
-      part.run_scripts
-      data[:theater].instance_variables.each do |attr|
-        value = data[:theater].instance_variable_get(attr)
-        part.instance_variable_get(:@theater).instance_variable_set(attr, value)
-      end
-      part.players.each do |plyr|
-        plyr.playbooks.push part.playbook
-        plyr.scenebooks.push part.scenebook
-      end
-      part.setup.entities.discard
-      part.setup.scenes.hydrate
-      part.setup.actions.hydrate
     end
   end
 end

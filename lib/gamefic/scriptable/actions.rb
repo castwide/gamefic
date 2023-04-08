@@ -109,7 +109,9 @@ module Gamefic
       def map_response_args args
         args.map do |arg|
           case arg
-          when Gamefic::Entity, Gamefic::Proxy, Class, Module, Symbol
+          when Entity
+            available(arg) # @todo This might need to be a proxy
+          when Class, Module, Symbol
             available(arg)
           when String, Regexp
             plaintext(arg)

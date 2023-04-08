@@ -41,7 +41,7 @@ module Gamefic
       def calculate_precision
         @arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
-          when Gamefic::Entity, Gamefic::Proxy
+          when Gamefic::Entity
             1000
           when Class, Module
             100

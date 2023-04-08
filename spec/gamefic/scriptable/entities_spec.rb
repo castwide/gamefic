@@ -8,11 +8,4 @@ describe Gamefic::Scriptable::Entities do
       obj.define_singleton_method(:setup) { Gamefic::Setup.new }
     end
   }
-
-  describe '#make' do
-    it 'allocates a proxy' do
-      entity = object.make Gamefic::Entity, name: 'thing'
-      expect(entity).to be_a(Gamefic::Proxy)
-    end
-  end
 end

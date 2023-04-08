@@ -215,6 +215,18 @@ RSpec.describe Gamefic::Plot do
     it 'restores stage instance variables' do
       thing = restored.stage { @thing }
       expect(thing.name).to eq('thing')
+      picked = restored.pick('thing')
+      expect(thing).to be(picked)
+    end
+
+    it 'restores references in actions' do
+      player = restored.players.first
+      player.cue :default_scene
+      restored.ready
+      player.perform 'look thing'
+      puts player.messages.inspect
+      player.perform 'think'
+      puts player.messages.inspect
     end
   end
 end

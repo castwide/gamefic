@@ -50,32 +50,6 @@ module Gamefic
       session[key] = value
     end
 
-    def ==(other)
-      case other
-      when Gamefic::Proxy
-        other.entity.hash == hash
-      when Gamefic::Entity
-        other.hash == hash
-      else
-        false
-      end
-    end
-
-    UNMARSHALED_VARIABLES = [:@playbooks, :@scenebooks]
-
-    def marshal_dump
-      instance_variables.reject{|m| UNMARSHALED_VARIABLES.include? m}.inject({}) do |vars, attr|
-        vars[attr] = instance_variable_get(attr)
-        vars
-      end
-    end
-
-    def marshal_load(vars)
-      vars.each do |attr, value|
-        instance_variable_set(attr, value) unless UNMARSHALED_VARIABLES.include?(attr)
-      end
-    end
-
     class << self
       # Set or update the default values for new instances.
       #

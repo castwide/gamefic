@@ -38,8 +38,8 @@ module Gamefic
 
     # @param block [Proc]
     def stage &block
-      @theater ||= Theater.new(self)
-      @theater.instance_eval &block
+      @theater ||= Theater.new
+      @theater.evaluate self, block
     end
 
     # Introduce an actor to the story.
@@ -80,8 +80,6 @@ module Gamefic
     def pick description
       Gamefic::Query::General.new(entities).query(nil, description).match
     end
-
-    protected
 
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
