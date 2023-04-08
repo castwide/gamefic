@@ -4,6 +4,12 @@ require 'base64'
 
 module Gamefic
   class Plot < Assembly
+    include Scriptable::Actions
+    # include   Scriptable::Branches.public_instance_methods +
+    include Scriptable::Entities
+    include Scriptable::Queries
+    include Scriptable::Scenes
+
     # @return [Hash]
     attr_reader :metadata
 
@@ -13,6 +19,17 @@ module Gamefic
       block_default_scenes
       playbook.freeze
       scenebook.freeze
+      @static_size = entities.length
+    end
+
+    def director
+      @director ||= Director.new(self,
+                                 Scriptable::Actions.public_instance_methods +
+                                 #  Scriptable::Branches.public_instance_methods +
+                                 Scriptable::Entities.public_instance_methods +
+                                 Scriptable::Queries.public_instance_methods +
+                                 Scriptable::Scenes.public_instance_methods +
+                                 [:branch])
     end
 
     # @return [Array<Take>]

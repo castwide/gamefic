@@ -5,6 +5,11 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Assembly
+    include Scriptable::Actions
+    include Scriptable::Entities
+    include Scriptable::Queries
+    include Scriptable::Scenes
+  
     # The host plot.
     #
     # @return [Plot]
@@ -22,7 +27,16 @@ module Gamefic
       @plot = plot
       @config = config
       super()
+      @static_size = entities.length
       [introduce].compact.flatten.each { |pl| self.introduce pl }
+    end
+
+    def director
+      @director ||= Director.new(self,
+                                 Scriptable::Actions.public_instance_methods +
+                                 Scriptable::Entities.public_instance_methods +
+                                 Scriptable::Queries.public_instance_methods +
+                                 Scriptable::Scenes.public_instance_methods)
     end
 
     def players

@@ -14,13 +14,19 @@ module Gamefic
       end
     end
 
-    include Scriptable
-
     def initialize
       @playbook = Playbook.new
       @scenebook = Scenebook.new
       run_scripts
       scenebook.add Scene.new(intro_name, rig: Gamefic::Rig::Activity) unless scenebook.scene?(intro_name)
+    end
+
+    def director
+      @director ||= Director.new(self, [])
+    end
+
+    def theater
+      @theater ||= Theater.new(director)
     end
 
     # @return [Playbook]
@@ -80,7 +86,6 @@ module Gamefic
 
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
-      @static_size = entities.length
     end
   end
 end
