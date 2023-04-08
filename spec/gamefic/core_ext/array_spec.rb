@@ -11,7 +11,7 @@ describe Array do
 
     it "handles multiple true arguments" do
       array = [['one'], ['two'], [], 'four']
-      expect(array.that_are(Array, :any?)).to eq([['one'], ['two']])
+      expect(array.that_are(Array, ->(a) { a.any? })).to eq([['one'], ['two']])
     end
 
     it 'keeps equivalent values' do
@@ -30,7 +30,7 @@ describe Array do
 
     it "handles multiple false arguments" do
       array = [['one'], ['two'], '', 'four']
-      expect(array.that_are_not(Array, :empty?)).to eq(['four'])
+      expect(array.that_are_not(Array, ->(e) { e.empty? })).to eq(['four'])
     end
 
     it 'rejects equivalent values' do
