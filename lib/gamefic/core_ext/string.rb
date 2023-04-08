@@ -12,6 +12,6 @@ class String
   #
   # @return [Array]
   def keywords
-    self.gsub(/[\s-]+/, ' ').strip.downcase.split.that_are_not('a', 'an', 'the')
+    self.gsub(/[\s-]+/, ' ').strip.downcase.split - ['a', 'an', 'the']
   end
 end

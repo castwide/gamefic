@@ -8,10 +8,19 @@ module Gamefic
 
     # @return [Logger]
     def logger
-      @@logger ||= Logger.new(STDERR, level: Logger::WARN)
-                        .tap do |l|
-                          l.formatter = proc { |sev, _dt, _prog, msg| "[#{sev}] #{msg}\n"}
-                        end
+      @@logger ||= select_logger.tap do |l|
+        l.formatter = proc { |sev, _dt, _prog, msg| "[#{sev}] #{msg}\n"}
+      end
+    end
+
+    private
+
+    def select_logger
+      if RUBY_ENGINE == 'opal'
+        Logger.new(STDERR)
+      else
+        Logger.new(STDERR, level: Logger::WARN)
+      end
     end
   end
 
