@@ -6,15 +6,15 @@ module Gamefic
     # objects. Theaters give authors a place where they can maintain their own
     # variables and other resources without polluting the plot's namespace.
     #
-    # @param director [Director] The object that will accept delegated messages
+    # @param director [Object] The object that will accept delegated messages
     def initialize director
       if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
         define_singleton_method :method_missing do |symbol, *args, &block|
-          director.send symbol, *args, &block
+          director.public_send symbol, *args, &block
         end
       else
         define_singleton_method :method_missing do |symbol, *args, **splat, &block|
-          director.send symbol, *args, **splat, &block
+          director.public_send symbol, *args, **splat, &block
         end
       end
     end
