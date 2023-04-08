@@ -37,8 +37,8 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    # There are 4 scenes because the plot created 3 defaults
-    expect(plot.scenebook.scenes.length).to eq(4)
+    # There are 3 scenes because the plot created 2 defaults
+    expect(plot.scenebook.scenes.length).to eq(3)
   end
 
   it 'raises an error on new responses after initialization' do
@@ -55,11 +55,10 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.make_player_character
     plot.introduce player
-    take = player.start_cue
-    expect(take.scene.name).to be(plot.intro_name)
+    expect(player.output[:messages]).to include('Hello, world!')
   end
 
-  it 'starts the introduction on ready' do
+  it 'starts the default scene after the introduction' do
     Gamefic.script do
       introduction do |actor|
         actor[:introduced] = true
@@ -69,7 +68,7 @@ RSpec.describe Gamefic::Plot do
     player = plot.make_player_character
     plot.introduce player
     plot.ready
-    expect(plot.takes.first.scene.name).to be(plot.intro_name)
+    expect(plot.takes.first.scene.name).to be(:default_scene)
   end
 
   it 'tracks player subplots' do

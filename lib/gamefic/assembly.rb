@@ -18,7 +18,6 @@ module Gamefic
       @playbook = Playbook.new
       @scenebook = Scenebook.new
       run_scripts
-      scenebook.add Scene.new(intro_name, rig: Gamefic::Rig::Activity) unless scenebook.scene?(intro_name)
     end
 
     def director
@@ -52,7 +51,12 @@ module Gamefic
     def introduce(player)
       cast player
       players_safe_push player
-      player.cue intro_name
+      return unless @introduction
+
+      take = Take.new(player, @introduction)
+      take.start
+      scenebook.run_player_output_blocks take.actor, take.output
+      take.actor.output.merge! take.output
     end
 
     # Remove a player from the game.
@@ -74,10 +78,6 @@ module Gamefic
     def uncast active
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
-    end
-
-    def intro_name
-      @intro_name ||= SecureRandom.uuid.to_sym
     end
 
     def pick description
