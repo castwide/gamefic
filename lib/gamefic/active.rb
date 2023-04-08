@@ -2,6 +2,7 @@
 
 require 'set'
 require 'gamefic/active/cue'
+require 'json'
 
 module Gamefic
   class NotConclusionError < RuntimeError; end
