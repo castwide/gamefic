@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   end
   s.require_paths = ['lib']
 
-  s.required_ruby_version = '>= 2.3.0'
+  s.required_ruby_version = '>= 2.6.0'
 
   s.add_development_dependency 'opal', '~> 1.7'
   s.add_development_dependency 'opal-rspec', '~> 1.0'
