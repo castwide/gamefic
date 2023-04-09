@@ -3,9 +3,13 @@
 require 'base64'
 
 module Gamefic
+  # @!method self.script &block
+  #   Plot scripting
+  #   @yieldself [Scriptable::Actions, Scriptable::Branches, Scriptable::Queries, Scriptable::Scenes]
+  #
   class Plot < Narrative
     include Scriptable::Actions
-    # include   Scriptable::Branches.public_instance_methods +
+    include Scriptable::Branches
     include Scriptable::Entities
     include Scriptable::Queries
     include Scriptable::Scenes
@@ -21,11 +25,10 @@ module Gamefic
     def director
       @director ||= Director.new(self,
                                  Scriptable::Actions.public_instance_methods +
-                                 #  Scriptable::Branches.public_instance_methods +
+                                 Scriptable::Branches.public_instance_methods +
                                  Scriptable::Entities.public_instance_methods +
                                  Scriptable::Queries.public_instance_methods +
-                                 Scriptable::Scenes.public_instance_methods +
-                                 [:branch])
+                                 Scriptable::Scenes.public_instance_methods)
     end
 
     # @return [Array<Take>]
@@ -80,18 +83,6 @@ module Gamefic
       subplots_featuring(actor).each { |sp| sp.exeunt actor }
       # scenebook.player_conclude_blocks.each { |blk| blk.call actor }
       super
-    end
-
-    # Start a new subplot based on the provided class.
-    #
-    # @param subplot_class [Class<Gamefic::Subplot>] The Subplot class
-    # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil] Players to introduce
-    # @param config [Hash] Subplot configuration
-    # @return [Gamefic::Subplot]
-    def branch subplot_class = Gamefic::Subplot, introduce: nil, **config
-      subplot = subplot_class.new(self, introduce: introduce, **config)
-      subplots.push subplot
-      subplot
     end
 
     # Get an array of all the current subplots.
@@ -164,5 +155,14 @@ module Gamefic
       end
       @takes = [].freeze
     end
+  end
+end
+
+module Gamefic
+  # A shortcut to `Gamefic::Plot.script`
+  #
+  # @yieldself [Scriptable::Actions, Scriptable::Branches, Scriptable::Queries, Scriptable::Scenes]
+  def self.script &block
+    Gamefic::Plot.script &block
   end
 end
