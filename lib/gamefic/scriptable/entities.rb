@@ -9,16 +9,6 @@ module Gamefic
     #   Instead, they should create new entities with the #make method.
     #
     module Entities
-      # @return [Array<Gamefic::Entity>]
-      def entities
-        @entities ||= [].freeze
-      end
-
-      # @return [Array<Gamefic::Actor>]
-      def players
-        @players ||= [].freeze
-      end
-
       # Create an entity.
       #
       # @raise [ArgumentError] if the entity has a non-unique EID.
@@ -32,40 +22,8 @@ module Gamefic
 
       def destroy entity
         entity.children.each { |child| child.parent = entity.parent }
+        entity.parent = nil
         entities_safe_delete entity
-      end
-
-      private
-
-      def static_size
-        @static_size ||= 0
-      end
-
-      def entities_safe_push entity
-        @entities = @entities.dup || []
-        @entities.push(entity).freeze
-        entity
-      end
-
-      def players_safe_push player
-        @players = @players.dup || []
-        @players.push(player).freeze
-        player
-      end
-
-      def entities_safe_delete entity
-        return unless @entities
-
-        idx = @entities.find_index(entity)
-        return if idx.nil? || idx < static_size
-
-        @entities = (@entities.dup - [entity]).freeze
-      end
-
-      def players_safe_delete player
-        return unless @players
-
-        @players = (@players.dup - [player]).freeze
       end
     end
   end

@@ -7,6 +7,7 @@ module Gamefic
   #
   class Theater
     def evaluate director, block
+      return unless block
       swap = clone
       swap.define_method_missing director
       result = swap.instance_eval &block

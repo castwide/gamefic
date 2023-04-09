@@ -174,6 +174,10 @@ module Gamefic
               }
       end
 
+      def scenes
+        scenebook.names
+      end
+
       # Add a block to be executed on preparation of every turn.
       #
       # @example Increment a turn counter

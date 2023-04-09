@@ -26,7 +26,6 @@ module Gamefic
       binary = Base64.decode64(snapshot)
       data = Marshal.load(binary)
       plot = rebuild(data[:plot])
-      plot.block_default_scenes
       data[:subplots].each do |subdata|
         subplot = rebuild(subdata)
         plot.subplots.push subplot

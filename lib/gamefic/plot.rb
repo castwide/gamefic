@@ -16,10 +16,6 @@ module Gamefic
     def initialize metadata = {}
       super()
       @metadata = metadata
-      block_default_scenes
-      playbook.freeze
-      scenebook.freeze
-      @static_size = entities.length
     end
 
     def director
@@ -127,13 +123,16 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def block_default_scenes
-      block :default_scene, rig: Gamefic::Rig::Activity unless scenebook.scene?(:default_scene)
-      block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenebook.scene?(:default_conclusion)
-    end
-
     def save
       Snapshot.save self
+    end
+
+    def run_scripts
+      super
+      stage do
+        block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
+        block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+      end
     end
 
     def self.restore snapshot

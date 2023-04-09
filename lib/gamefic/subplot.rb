@@ -27,7 +27,6 @@ module Gamefic
       @plot = plot
       @config = config
       super()
-      @static_size = entities.length
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 

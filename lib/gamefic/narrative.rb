@@ -2,6 +2,8 @@ module Gamefic
   # A base class for building and managing the resources that compose a story.
   #
   class Narrative
+    include Logging
+
     class << self
       def blocks
         @blocks ||= []
@@ -16,6 +18,8 @@ module Gamefic
       @playbook = Playbook.new
       @scenebook = Scenebook.new
       run_scripts
+      playbook.freeze
+      scenebook.freeze
     end
 
     def director
@@ -24,6 +28,16 @@ module Gamefic
 
     def theater
       @theater ||= Theater.new(director)
+    end
+
+    # @return [Array<Gamefic::Entity>]
+    def entities
+      @entities ||= [].freeze
+    end
+
+    # @return [Array<Gamefic::Actor>]
+    def players
+      @players ||= [].freeze
     end
 
     # @return [Playbook]
@@ -55,6 +69,7 @@ module Gamefic
       take.start
       scenebook.run_player_output_blocks take.actor, take.output
       take.actor.output.merge! take.output
+      @static_size = entities.length
     end
 
     # Remove a player from the game.
@@ -84,6 +99,42 @@ module Gamefic
 
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
+    end
+
+    def entities_safe_push entity
+      @entities = @entities.dup || []
+      @entities.push(entity).freeze
+      entity
+    end
+
+    def entities_safe_delete entity
+      idx = entities.find_index(entity)
+      if idx < static_size
+        logger.warn "Cannot delete static entity `#{entity}`"
+      else
+        @entities = (@entities.dup - [entity]).freeze
+      end
+    end
+
+    def players_safe_push player
+      @players = @players.dup || []
+      @players.push(player).freeze
+      player
+    end
+
+    def players_safe_delete player
+      return unless @players
+      @players = (@players.dup - [player]).freeze
+    end
+
+    # The size of the entities array after initialization. Narratives use this
+    # to determine how it should treat destroyed entities. If the entity is
+    # inside the section of the array considered static, its position needs
+    # to be retained to ensure the validity of entity proxies.
+    #
+    # @return [Integer]
+    def static_size
+      @static_size ||= 0
     end
   end
 end
