@@ -240,21 +240,6 @@ module Gamefic
       to_s
     end
 
-    # Track the entity's performance of a scene.
-    #
-    def entered scene
-      klass = (scene.is_a?(Gamefic::Base) ? scene.class : scene)
-      entered_scenes.add klass
-    end
-
-    # Determine whether the entity has performed the specified scene.
-    #
-    # @return [Boolean]
-    def entered? scene
-      klass = (scene.is_a?(Gamefic::Base) ? scene.class : scene)
-      entered_scenes.include?(klass)
-    end
-
     private
 
     def prepare_buffer quietly
@@ -271,11 +256,6 @@ module Gamefic
         set_buffer_stack(buffer_stack - 1)
         @buffer
       end
-    end
-
-    # @return [Set<Gamefic::Base>]
-    def entered_scenes
-      @entered_scenes ||= Set.new
     end
 
     def buffer_stack
@@ -302,12 +282,6 @@ module Gamefic
     # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
-    end
-
-    # @param scene [Scene, Symbol]
-    # @return [Scene, nil]
-    def select_scene scene
-      scene.is_a?(Scene) ? select_scene_by_instance(scene) : select_scene_by_name(scene)
     end
   end
 end
