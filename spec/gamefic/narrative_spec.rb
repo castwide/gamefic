@@ -1,9 +1,9 @@
-describe Gamefic::Assembly do
+describe Gamefic::Narrative do
   describe 'class' do
     it 'adds a script' do
       blk = proc {}
-      Gamefic::Assembly.script &blk
-      expect(Gamefic::Assembly.blocks).to eq([blk])
+      Gamefic::Narrative.script &blk
+      expect(Gamefic::Narrative.blocks).to eq([blk])
     end
   end
 
@@ -12,8 +12,8 @@ describe Gamefic::Assembly do
       it 'runs scripts' do
         executed = false
         blk = proc { executed = true }
-        Gamefic::Assembly.script &blk
-        Gamefic::Assembly.new
+        Gamefic::Narrative.script &blk
+        Gamefic::Narrative.new
         expect(executed).to be(true)
       end
     end

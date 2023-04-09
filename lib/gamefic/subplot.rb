@@ -4,7 +4,7 @@ module Gamefic
   # Subplots are disposable plots that run inside a parent plot. They can be
   # started and concluded at any time during the parent plot's runtime.
   #
-  class Subplot < Assembly
+  class Subplot < Narrative
     include Scriptable::Actions
     include Scriptable::Entities
     include Scriptable::Queries

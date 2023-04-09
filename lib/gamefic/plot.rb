@@ -3,7 +3,7 @@
 require 'base64'
 
 module Gamefic
-  class Plot < Assembly
+  class Plot < Narrative
     include Scriptable::Actions
     # include   Scriptable::Branches.public_instance_methods +
     include Scriptable::Entities
@@ -37,6 +37,16 @@ module Gamefic
       @takes ||= [].freeze
     end
 
+    # A plot is considered to be concluding when all of its players are in one
+    # of its conclusion scenes. Engines can use this method to determine when
+    # the game is ready to end.
+    #
+    # @todo This is a first implementation, subject to change.
+    #
+    def concluding?
+      takes.any? && takes.all? { |t| scenebook.scenes.include?(t.scene) && t.conclusion? }
+    end
+
     def ready
       subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
@@ -61,13 +71,19 @@ module Gamefic
       Gamefic::Actor.new name: 'yourself', synonyms: 'yourself self myself you me', proper_named: true
     end
 
+    # Remove an actor from the game.
+    #
+    # Calling `exeunt` on the plot will also remove the actor from its
+    # subplots.
+    #
+    # @todo This is a first implementation, subject to change.
+    #
     # @param actor [Actor]
     # @return [Actor]
     def exeunt actor
-      scenebook.player_conclude_blocks.each { |blk| blk.call actor }
-      actor.scenebooks.delete scenebook
-      actor.playbooks.delete playbook
-      players_safe_delete actor
+      subplots_featuring(actor).each { |sp| sp.exeunt actor }
+      # scenebook.player_conclude_blocks.each { |blk| blk.call actor }
+      super
     end
 
     # Start a new subplot based on the provided class.

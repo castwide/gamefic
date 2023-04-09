@@ -1,9 +1,9 @@
 require 'securerandom'
 
 module Gamefic
-  # A base class for managing the resources that compose plots and subplots.
+  # A base class for building and managing the resources that compose a story.
   #
-  class Assembly
+  class Narrative
     class << self
       def blocks
         @blocks ||= []
