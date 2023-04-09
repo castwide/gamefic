@@ -1,5 +1,3 @@
-require 'securerandom'
-
 module Gamefic
   # A base class for building and managing the resources that compose a story.
   #
