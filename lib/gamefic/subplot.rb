@@ -6,6 +6,7 @@ module Gamefic
   #
   class Subplot < Narrative
     include Scriptable::Actions
+    include Scriptable::Configurations
     include Scriptable::Entities
     include Scriptable::Queries
     include Scriptable::Scenes
@@ -15,17 +16,12 @@ module Gamefic
     # @return [Plot]
     attr_reader :plot
 
-    # A hash of data that was used to initialize the subplot.
-    #
-    # @return [Hash]
-    attr_reader :config
-
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
     def initialize plot, introduce: nil, **config
       @plot = plot
-      @config = config
+      @config = config.freeze
       super()
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
@@ -33,6 +29,7 @@ module Gamefic
     def director
       @director ||= Director.new(self,
                                  Scriptable::Actions.public_instance_methods +
+                                 Scriptable::Configurations.public_instance_methods +
                                  Scriptable::Entities.public_instance_methods +
                                  Scriptable::Queries.public_instance_methods +
                                  Scriptable::Scenes.public_instance_methods)
