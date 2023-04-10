@@ -5,11 +5,11 @@ module Gamefic
   # Narratives include the modules Theaters forward the messages.
   #
   module Scriptable
-    autoload :Actions,        'gamefic/scriptable/actions'
-    autoload :Branches,       'gamefic/scriptable/branches'
-    autoload :Configurations, 'gamefic/scriptable/configurations'
-    autoload :Entities,       'gamefic/scriptable/entities'
-    autoload :Queries,        'gamefic/scriptable/queries'
-    autoload :Scenes,         'gamefic/scriptable/scenes'
+    autoload :Actions,  'gamefic/scriptable/actions'
+    autoload :Branches, 'gamefic/scriptable/branches'
+    autoload :Configs,  'gamefic/scriptable/configs'
+    autoload :Entities, 'gamefic/scriptable/entities'
+    autoload :Queries,  'gamefic/scriptable/queries'
+    autoload :Scenes,   'gamefic/scriptable/scenes'
   end
 end

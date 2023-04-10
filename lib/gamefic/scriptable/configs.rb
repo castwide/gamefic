@@ -1,6 +1,6 @@
 module Gamefic
   module Scriptable
-    module Configurations
+    module Configs
       # The hash of data that was used to initialize the subplot.
       #
       # @return [Hash]
