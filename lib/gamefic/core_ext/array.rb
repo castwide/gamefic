@@ -14,7 +14,7 @@ class Array
   #
   # @return [Array]
   def that_are(*cls)
-    result = clone
+    result = dup
     cls.each do |c|
       _keep result, c, true
     end
@@ -26,7 +26,7 @@ class Array
   #
   # @return [Array]
   def that_are_not(*cls)
-    result = clone
+    result = dup
     cls.each do |c|
       _keep result, c, false
     end
