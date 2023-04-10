@@ -14,20 +14,20 @@ module Gamefic
       end
     end
 
-    def initialize
-      @playbook = Playbook.new
-      @scenebook = Scenebook.new
+    # @param scriptables [Array<Symbol>] Scriptable method names
+    def initialize(scriptables = [])
+      @scriptables = scriptables
       run_scripts
       playbook.freeze
       scenebook.freeze
     end
 
     def director
-      @director ||= Director.new(self, [])
+      @director ||= Director.new(self, @scriptables)
     end
 
     def theater
-      @theater ||= Theater.new(director)
+      @theater ||= Theater.new
     end
 
     # @return [Array<Gamefic::Entity>]
@@ -52,8 +52,7 @@ module Gamefic
 
     # @param block [Proc]
     def stage &block
-      @theater ||= Theater.new
-      @theater.evaluate self, block
+      theater.evaluate self, block
     end
 
     # Introduce an actor to the story.
@@ -79,8 +78,9 @@ module Gamefic
       players_safe_delete player
     end
 
-    # Add this assembly's playbook and scenebook to an active entity.
+    # Add this narrative's playbook and scenebook to an active entity.
     #
+    # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast active
       active.playbooks.push playbook
@@ -88,6 +88,8 @@ module Gamefic
       active
     end
 
+    # Remove this narrative's playbook and scenebook from an active entity.
+    #
     def uncast active
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
@@ -95,6 +97,16 @@ module Gamefic
 
     def pick description
       Gamefic::Query::General.new(entities).query(nil, description).match
+    end
+
+    def ready
+      scenebook.run_ready_blocks
+      scenebook.run_player_ready_blocks players
+    end
+
+    def update
+      players.each { |plyr| scenebook.run_player_update_blocks plyr }
+      scenebook.run_update_blocks
     end
 
     def run_scripts

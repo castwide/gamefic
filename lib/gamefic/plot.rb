@@ -8,27 +8,22 @@ module Gamefic
   #   @yieldself [Scriptable::Actions, Scriptable::Branches, Scriptable::Queries, Scriptable::Scenes]
   #
   class Plot < Narrative
-    include Scriptable::Actions
-    include Scriptable::Branches
-    include Scriptable::Entities
-    include Scriptable::Queries
-    include Scriptable::Scenes
+    module ScriptMethods
+      include Scriptable::Actions
+      include Scriptable::Branches
+      include Scriptable::Entities
+      include Scriptable::Queries
+      include Scriptable::Scenes
+    end
+
+    include ScriptMethods
 
     # @return [Hash]
     attr_reader :metadata
 
     def initialize metadata = {}
-      super()
+      super(ScriptMethods.public_instance_methods)
       @metadata = metadata
-    end
-
-    def director
-      @director ||= Director.new(self,
-                                 Scriptable::Actions.public_instance_methods +
-                                 Scriptable::Branches.public_instance_methods +
-                                 Scriptable::Entities.public_instance_methods +
-                                 Scriptable::Queries.public_instance_methods +
-                                 Scriptable::Scenes.public_instance_methods)
     end
 
     # @return [Array<Take>]
@@ -49,18 +44,14 @@ module Gamefic
     def ready
       subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
-      scenebook.ready_blocks.each(&:call)
-      prepare_takes
+      super
       start_takes
     end
 
     def update
       subplots.each(&:update)
       finish_takes
-      players.each do |plyr|
-        scenebook.player_update_blocks.each { |blk| blk.call plyr }
-      end
-      scenebook.update_blocks.each(&:call)
+      super
     end
 
     # Make a character that a player will control on introduction.
@@ -132,13 +123,9 @@ module Gamefic
 
     private
 
-    def prepare_takes
-      @takes = players.map { |pl| pl.start_cue }.freeze
-    end
-
     def start_takes
+      @takes = players.map { |pl| pl.start_cue }.freeze
       takes.each do |take|
-        scenebook.run_player_ready_blocks take.actor
         take.start
         scenebook.run_player_output_blocks take.actor, take.output
         take.actor.output.merge! take.output

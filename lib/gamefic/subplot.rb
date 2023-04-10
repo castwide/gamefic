@@ -5,12 +5,16 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Narrative
-    include Scriptable::Actions
-    include Scriptable::Configurations
-    include Scriptable::Entities
-    include Scriptable::Queries
-    include Scriptable::Scenes
-  
+    module ScriptMethods
+      include Scriptable::Actions
+      include Scriptable::Configurations
+      include Scriptable::Entities
+      include Scriptable::Queries
+      include Scriptable::Scenes
+    end
+
+    include ScriptMethods
+
     # The host plot.
     #
     # @return [Plot]
@@ -22,33 +26,12 @@ module Gamefic
     def initialize plot, introduce: nil, **config
       @plot = plot
       @config = config.freeze
-      super()
+      super(ScriptMethods.public_instance_methods)
       [introduce].compact.flatten.each { |pl| self.introduce pl }
-    end
-
-    def director
-      @director ||= Director.new(self,
-                                 Scriptable::Actions.public_instance_methods +
-                                 Scriptable::Configurations.public_instance_methods +
-                                 Scriptable::Entities.public_instance_methods +
-                                 Scriptable::Queries.public_instance_methods +
-                                 Scriptable::Scenes.public_instance_methods)
     end
 
     def players
       @players ||= []
-    end
-
-    def ready
-      scenebook.ready_blocks.each(&:call)
-      players.each { |plyr| scenebook.run_player_ready_blocks plyr }
-    end
-
-    def update
-      players.each do |plyr|
-        scenebook.player_update_blocks.each { |blk| blk.call plyr }
-      end
-      scenebook.update_blocks.each(&:call)
     end
 
     def conclude

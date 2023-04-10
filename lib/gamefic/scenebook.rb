@@ -2,24 +2,6 @@
 
 module Gamefic
   class Scenebook
-    # @return [Array<Proc>]
-    attr_reader :ready_blocks
-
-    # @return [Array<Proc>]
-    attr_reader :player_ready_blocks
-
-    # @return [Array<Proc>]
-    attr_reader :update_blocks
-
-    # @return [Array<Proc>]
-    attr_reader :player_update_blocks
-
-    # @return [Array<Proc>]
-    attr_reader :player_conclude_blocks
-
-    # @return [Array<Proc>]
-    attr_reader :player_output_blocks
-
     def initialize
       @scene_map = {}
       @ready_blocks = []
@@ -66,46 +48,62 @@ module Gamefic
 
     # @return [Proc]
     def on_ready &block
-      ready_blocks.push block
+      @ready_blocks.push block
     end
 
     # @yieldparam [Actor]
     # @return [Proc]
     def on_player_ready &block
-      player_ready_blocks.push block
+      @player_ready_blocks.push block
     end
 
     def on_update &block
-      update_blocks.push block
+      @update_blocks.push block
     end
 
     def on_player_update &block
-      player_update_blocks.push block
+      @player_update_blocks.push block
     end
 
     # @yieldparam [Actor]
     # @return [Proc]
     def on_player_conclude &block
-      player_conclude_blocks.push block
+      @player_conclude_blocks.push block
     end
 
     # @yieldparam [Actor]
     # @yieldparam [Hash]
     # @return [Proc]
     def on_player_output &block
-      player_output_blocks.push block
+      @player_output_blocks.push block
     end
 
-    def run_player_ready_blocks player
-      player_ready_blocks.each { |blk| blk.call player }
+    def run_ready_blocks
+      @ready_blocks.each(&:call)
+    end
+
+    def run_update_blocks
+      @update_blocks.each(&:call)
+    end
+
+    def run_player_ready_blocks *players
+      players.flatten.each do |plyr|
+        @player_ready_blocks.each { |blk| blk.call plyr }
+      end
+    end
+
+    def run_player_update_blocks *players
+      players.flatten.each do |plyr|
+        @player_update_blocks.each { |blk| blk.call plyr }
+      end
     end
 
     def run_player_output_blocks player, output
-      player_output_blocks.each { |blk| blk.call player, output }
+      @player_output_blocks.each { |blk| blk.call player, output }
     end
 
     def run_player_conclude_blocks player
-      player_conclude_blocks.each { |blk| blk.call player }
+      @player_conclude_blocks.each { |blk| blk.call player }
     end
   end
 end
