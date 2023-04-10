@@ -39,6 +39,9 @@ module Gamefic
       yield(self) if block_given?
     end
 
+    # The type of rig that was used to build the scene.
+    #
+    # @return [String]
     def type
       @type ||= rig.to_s.split('::').last
     end

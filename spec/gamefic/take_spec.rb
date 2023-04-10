@@ -52,10 +52,8 @@ describe Gamefic::Take do
     scene = Gamefic::Scene.new(:scene)
     actor = Gamefic::Actor.new
     take = Gamefic::Take.new(actor, scene)
-    # @todo Upcoming change to game state protocol
-    # expect(take.output[:scene][:name]).to eq(scene.name)
-    # expect(take.output[:scene][:type]).to eq(scene.type)
-    expect(take.output[:scene]).to eq(scene.type)
+    expect(take.output[:scene][:name]).to eq(scene.name)
+    expect(take.output[:scene][:type]).to eq(scene.type)
   end
 
   it 'adds options from MultipleChoice rigs' do
