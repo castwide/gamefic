@@ -52,6 +52,7 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s,
+            config: sp.config,
             entities: sp.entities,
             players: sp.players,
             theater: sp.instance_variable_get(:@theater)
@@ -70,6 +71,7 @@ module Gamefic
       def rebuild data
         klass = string_to_constant(data[:klass])
         part = klass.allocate
+        part.instance_variable_set(:@config, data[:config])
         part.run_scripts
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])

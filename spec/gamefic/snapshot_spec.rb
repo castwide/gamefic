@@ -6,6 +6,7 @@ describe Gamefic::Snapshot do
 
       introduction do |actor|
         actor.parent = @room
+        branch Gamefic::Subplot, introduce: actor, configured: @thing
       end
 
       respond :look, @thing do |actor, thing|
@@ -17,7 +18,6 @@ describe Gamefic::Snapshot do
       player = plot.make_player_character
       plot.introduce player
       plot.ready
-      plot.branch Gamefic::Subplot, introduce: player
     end
   end
 
@@ -50,5 +50,9 @@ describe Gamefic::Snapshot do
     restored.ready
     player.perform 'look thing'
     expect(player.messages).to include('thing')
+  end
+
+  it 'restores subplot config data' do
+    expect(restored.subplots.first.config[:configured]).to be(restored.stage { @thing })
   end
 end
