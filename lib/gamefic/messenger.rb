@@ -1,37 +1,58 @@
+require 'stringio'
+
 module Gamefic
-  # @todo This needs refactoring
-  module Messaging
+  class Messenger
+    def initialize
+      @buffers ||= ['']
+    end
+
+    # Create a temporary buffer while yielding the given block and return the
+    # buffered text.
+    #
+    # @return [String]
+    def buffer
+      @buffers.push('')
+      yield if block_given?
+      @buffers.pop
+    end
+
     # Send a message to the entity.
+    #
     # This method will automatically wrap the message in HTML paragraphs.
     # To send a message without paragraph formatting, use #stream instead.
     #
     # @param message [String]
     def tell(message)
-      @messages = @messages.to_s + format(message)
+      msg = @buffers.pop + format(message)
+      @buffers.push msg
+      msg
     end
 
     # Send a message to the Character as raw text.
+    #
     # Unlike #tell, this method will not wrap the message in HTML paragraphs.
     #
     # @param message [String]
     def stream(message)
-      @messages = @messages.to_s + message
+      msg = @buffers.pop + message
+      @buffers.push msg
+      msg
     end
 
     # Get all the currently buffered messages consolidated in a single string.
     #
     # @return [String]
     def messages
-      @messages ||= ''
+      @buffers.last
     end
 
     # Clear the buffered messages.
     #
     def flush
-      @messages = ''
+      @buffers.pop
+      @buffers.push ''
+      @buffers.last
     end
-
-    private
 
     def format message
       "<p>#{message.strip}</p>"

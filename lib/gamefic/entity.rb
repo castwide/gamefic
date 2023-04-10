@@ -4,7 +4,7 @@ module Gamefic
   class Entity
     include Describable
     include Node
-    include Messaging
+    # include Messaging
 
     def initialize **args
       klass = self.class

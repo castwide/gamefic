@@ -57,11 +57,12 @@ module Gamefic
     #
     # @param message [String]
     def tell(message)
-      if buffer_stack > 0
-        append_buffer format(message)
-      else
-        super
-      end
+      messenger.tell message
+      # if buffer_stack > 0
+      #   append_buffer format(message)
+      # else
+      #   super
+      # end
     end
 
     # Send a message to the entity as raw text.
@@ -69,11 +70,20 @@ module Gamefic
     #
     # @param message [String]
     def stream(message)
-      if buffer_stack > 0
-        append_buffer message
-      else
-        super
-      end
+      messenger.stream message
+      # if buffer_stack > 0
+      #   append_buffer message
+      # else
+      #   super
+      # end
+    end
+
+    def messages
+      messenger.messages
+    end
+
+    def flush
+      messenger.flush
     end
 
     # Perform a command.
@@ -153,9 +163,11 @@ module Gamefic
     # @return [String, nil]
     def proceed quietly: false
       a = dispatchers&.last&.next
-      prepare_buffer quietly
-      a&.execute
-      flush_buffer quietly
+      if quietly
+        messenger.buffer { a&.execute }
+      else
+        a&.execute
+      end
     end
 
     # Cue a scene to start in the next turn.
@@ -239,41 +251,8 @@ module Gamefic
 
     private
 
-    def prepare_buffer quietly
-      if quietly
-        if buffer_stack == 0
-          @buffer = ""
-        end
-        set_buffer_stack(buffer_stack + 1)
-      end
-    end
-
-    def flush_buffer quietly
-      if quietly
-        set_buffer_stack(buffer_stack - 1)
-        @buffer
-      end
-    end
-
-    def buffer_stack
-      @buffer_stack ||= 0
-    end
-
-    def set_buffer_stack num
-      @buffer_stack = num
-    end
-
-    # @return [String]
-    def buffer
-      @buffer ||= ''
-    end
-
-    def append_buffer str
-      @buffer += str
-    end
-
-    def clear_buffer
-      @buffer = ''
+    def messenger
+      @messenger ||= Messenger.new
     end
 
     # @return [Array<Dispatcher>]
