@@ -3,7 +3,7 @@ describe Gamefic::Playbook do
 
   let(:actor) do
     Gamefic::Actor.new do |actor|
-      actor.playbooks.push playbook
+      actor.playbooks.add playbook
     end
   end
 

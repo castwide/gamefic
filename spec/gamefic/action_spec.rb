@@ -31,7 +31,7 @@ describe Gamefic::Action do
     playbook = Gamefic::Playbook.new
     executed = false
     playbook.before_action { |_action| executed = true }
-    actor.playbooks.push playbook
+    actor.playbooks.add playbook
     response = Gamefic::Response.new(:verb, []) { |_| nil }
     action = Gamefic::Action.new(actor, [], response, true)
     action.execute
@@ -42,7 +42,7 @@ describe Gamefic::Action do
     playbook = Gamefic::Playbook.new
     executed = false
     playbook.after_action { |_action| executed = true }
-    actor.playbooks.push playbook
+    actor.playbooks.add playbook
     response = Gamefic::Response.new(:verb, []) { |_| nil }
     action = Gamefic::Action.new(actor, [], response, true)
     action.execute

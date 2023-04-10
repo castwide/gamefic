@@ -4,7 +4,7 @@ describe Gamefic::Rig::Activity do
     actor = Gamefic::Actor.new
     playbook = Gamefic::Playbook.new
     playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
-    actor.playbooks.push playbook
+    actor.playbooks.add playbook
     actor.queue.push 'command'
     type.finish(actor)
     expect(actor.queue).to be_empty

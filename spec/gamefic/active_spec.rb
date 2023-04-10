@@ -4,7 +4,7 @@ describe Gamefic::Active do
   it 'performs a command' do
     playbook = Gamefic::Playbook.new
     playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
-    object.playbooks.push playbook
+    object.playbooks.add playbook
     object.perform 'command'
     expect(object[:executed]).to be(true)
   end
@@ -22,7 +22,7 @@ describe Gamefic::Active do
   it 'performs actions quietly' do
     playbook = Gamefic::Playbook.new
     playbook.respond_with Gamefic::Response.new(:command) { |actor| actor.tell 'Keep this quiet' }
-    object.playbooks.push playbook
+    object.playbooks.add playbook
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')
     expect(object.messages).to be_empty
@@ -43,7 +43,7 @@ describe Gamefic::Active do
       actor.proceed quietly: true
       actor.tell "visible"
     end)
-    object.playbooks.push playbook
+    object.playbooks.add playbook
     object.execute :command
     expect(object.messages).not_to include('hidden')
     expect(object.messages).to include('visible')
@@ -52,7 +52,7 @@ describe Gamefic::Active do
   it 'cues a scene' do
     scenebook = Gamefic::Scenebook.new
     scenebook.add Gamefic::Scene.new(:scene)
-    object.scenebooks.push scenebook
+    object.scenebooks.add scenebook
     expect { object.cue :scene }.not_to raise_error
   end
 
@@ -63,7 +63,7 @@ describe Gamefic::Active do
   it 'is concluding when starting a conclusion' do
     scenebook = Gamefic::Scenebook.new
     scenebook.add Gamefic::Scene.new(:ending, rig: Gamefic::Rig::Conclusion)
-    object.scenebooks.push scenebook
+    object.scenebooks.add scenebook
     object.cue :ending
     object.start_cue
     expect(object).to be_concluding

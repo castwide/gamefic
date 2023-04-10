@@ -38,6 +38,7 @@ module Gamefic
       commands = Syntax.tokenize(input, actor.playbooks.flat_map(&:syntaxes))
       verbs = commands.map(&:verb).uniq
       responses = actor.playbooks
+                       .to_a
                        .reverse
                        .flat_map { |pb| pb.responses_for(*verbs) }
                        .reject(&:hidden?)
@@ -51,6 +52,7 @@ module Gamefic
     def self.dispatch_from_params actor, verb, params
       command = Command.new(verb, params)
       responses = actor.playbooks
+                       .to_a
                        .reverse
                        .flat_map { |pb| pb.responses_for(verb) }
       new(actor, [command], responses)

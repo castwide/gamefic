@@ -71,14 +71,14 @@ module Gamefic
       def rebuild data
         klass = string_to_constant(data[:klass])
         part = klass.allocate
-        part.instance_variable_set(:@config, data[:config])
+        part.instance_variable_set(:@config, data[:config]) if data[:config]
         part.run_scripts
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
         part.instance_variable_set(:@theater, data[:theater])
         part.players.each do |plyr|
-          plyr.playbooks.push part.playbook
-          plyr.scenebooks.push part.scenebook
+          plyr.playbooks.add part.playbook
+          plyr.scenebooks.add part.scenebook
         end
         part
       end

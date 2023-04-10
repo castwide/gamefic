@@ -83,16 +83,19 @@ module Gamefic
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast active
-      active.playbooks.push playbook
-      active.scenebooks.push scenebook
+      active.playbooks.add playbook
+      active.scenebooks.add scenebook
       active
     end
 
     # Remove this narrative's playbook and scenebook from an active entity.
     #
+    # @param [Gamefic::Active]
+    # @return [Gamefic::Active]
     def uncast active
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
+      active
     end
 
     def pick description

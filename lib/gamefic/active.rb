@@ -23,17 +23,17 @@ module Gamefic
     # The playbooks that will be used to perform commands. Every plot and
     # subplot has its own playbook.
     #
-    # @return [Array<Gamefic::World::Playbook>]
+    # @return [Set<Gamefic::World::Playbook>]
     def playbooks
-      @playbooks ||= []
+      @playbooks ||= Set.new
     end
 
     # The scenebooks that will be used to participate in scenes. Every plot and
     # subplot has its own scenebook.
     #
-    # @return [Array<Gamefic::World::Scenebook>]
+    # @return [Set<Gamefic::World::Scenebook>]
     def scenebooks
-      @scenebooks ||= []
+      @scenebooks ||= Set.new
     end
 
     # An array of commands waiting to be executed.

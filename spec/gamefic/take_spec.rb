@@ -27,7 +27,7 @@ describe Gamefic::Take do
     actor = Gamefic::Actor.new
     playbook = Gamefic::Playbook.new
     playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
-    actor.playbooks.push playbook
+    actor.playbooks.add playbook
     scene = Gamefic::Scene.new(:scene, rig: Gamefic::Rig::Activity)
     take = Gamefic::Take.new(actor, scene)
     take.start

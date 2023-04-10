@@ -4,7 +4,7 @@ describe Gamefic::Dispatcher do
     response1 = playbook.respond_with Gamefic::Response.new(:command) { |_| nil }
     response2 = playbook.respond_with Gamefic::Response.new(:command) { |_| nil }
     actor = Gamefic::Actor.new
-    actor.playbooks.push playbook
+    actor.playbooks.add playbook
     dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')
     expect(dispatcher.next.response).to be(response2)
     expect(dispatcher.next.response).to be(response1)
