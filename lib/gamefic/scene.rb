@@ -46,6 +46,10 @@ module Gamefic
       @type ||= rig.to_s.split('::').last
     end
 
+    def conclusion?
+      rig <= Rig::Conclusion
+    end
+
     # @yieldparam [Actor]
     # @yieldparam [SceneProps::Default]
     def on_start &block

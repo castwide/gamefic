@@ -193,7 +193,6 @@ module Gamefic
       logger.warn "Found #{available.count} scenes named `#{next_cue.scene}`" if available.length > 1
 
       take = Take.new(self, available.last, **next_cue.context)
-      @concluding = take.conclusion?
       @last_cue = @next_cue
       @next_cue = nil
       take
@@ -226,18 +225,16 @@ module Gamefic
       next_cue
     end
 
-    # True if the actor starts a concluded cue.
+    # True if the actor started a conclusion scene from a narrative.
     #
-    def concluding?
-      @concluding
+    # @param narrative [Narrative]
+    def concluding?(narrative)
+      return false unless @last_cue
+      narrative.scenebook[@last_cue.scene]&.conclusion?
     end
 
     def accessible?
       false
-    end
-
-    def inspect
-      to_s
     end
 
     private

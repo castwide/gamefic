@@ -61,6 +61,10 @@ module Gamefic
       end
     end
 
+    def inspect
+      "#<#{self.class} #{name}>"
+    end
+
     class << self
       # Set or update the default values for new instances.
       #

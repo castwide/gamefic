@@ -57,7 +57,9 @@ describe Gamefic::Active do
   end
 
   it 'is not concluding by default' do
-    expect(object).not_to be_concluding
+    scenebook = Gamefic::Scenebook.new
+    mock = double(Gamefic::Narrative, scenebook: scenebook)
+    expect(object.concluding?(mock)).to be(false)
   end
 
   it 'is concluding when starting a conclusion' do
@@ -66,6 +68,7 @@ describe Gamefic::Active do
     object.scenebooks.add scenebook
     object.cue :ending
     object.start_cue
-    expect(object).to be_concluding
+    mock = double(Gamefic::Narrative, scenebook: scenebook)
+    expect(object.concluding?(mock)).to be(true)
   end
 end

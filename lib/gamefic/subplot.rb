@@ -34,13 +34,18 @@ module Gamefic
       @players ||= []
     end
 
+    def ready
+      super
+      conclude if concluding?
+    end
+
     def conclude
       players.each { |p| exeunt p }
       entities.each { |e| entities_safe_delete e }
     end
 
-    def concluded?
-      players.empty?
+    def concluding?
+      players.empty? || players.all? { |plyr| plyr.concluding?(self) }
     end
 
     # Subclasses can override this method to handle additional configuration

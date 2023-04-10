@@ -38,12 +38,12 @@ module Gamefic
     # @todo This is a first implementation, subject to change.
     #
     def concluding?
-      takes.any? && takes.all? { |t| scenebook.scenes.include?(t.scene) && t.conclusion? }
+      players.empty? || players.all? { |plyr| plyr.concluding?(self) }
     end
 
     def ready
-      subplots.delete_if(&:concluded?)
       subplots.each(&:ready)
+      subplots.delete_if(&:concluding?)
       super
       start_takes
     end
