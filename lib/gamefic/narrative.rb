@@ -71,6 +71,14 @@ module Gamefic
       @static_size = entities.length
     end
 
+    # A narrative is considered to be concluding when it only players are in
+    # a conclusion scene. Engines can use this method to determine whether the
+    # game is ready to end.
+    #
+    def concluding?
+      players.empty? || players.all? { |plyr| plyr.concluding? }
+    end
+
     # Remove a player from the game.
     #
     def exeunt player

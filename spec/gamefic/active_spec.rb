@@ -56,10 +56,17 @@ describe Gamefic::Active do
     expect { object.cue :scene }.not_to raise_error
   end
 
+  it 'raises an error for non-conclusions' do
+    scenebook = Gamefic::Scenebook.new
+    scenebook.add Gamefic::Scene.new(:scene)
+    object.scenebooks.add scenebook
+    expect { object.conclude :scene }.to raise_error(ArgumentError)
+  end
+
   it 'is not concluding by default' do
     scenebook = Gamefic::Scenebook.new
-    mock = double(Gamefic::Narrative, scenebook: scenebook)
-    expect(object.concluding?(mock)).to be(false)
+    object.scenebooks.add scenebook
+    expect(object).not_to be_concluding
   end
 
   it 'is concluding when starting a conclusion' do
@@ -67,8 +74,8 @@ describe Gamefic::Active do
     scenebook.add Gamefic::Scene.new(:ending, rig: Gamefic::Rig::Conclusion)
     object.scenebooks.add scenebook
     object.cue :ending
-    object.start_cue
-    mock = double(Gamefic::Narrative, scenebook: scenebook)
-    expect(object.concluding?(mock)).to be(true)
+    take = object.start_cue
+    take.start
+    expect(object).to be_concluding
   end
 end

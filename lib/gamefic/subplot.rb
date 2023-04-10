@@ -7,10 +7,10 @@ module Gamefic
   class Subplot < Narrative
     module ScriptMethods
       include Scriptable::Actions
-      include Scriptable::Configs
       include Scriptable::Entities
       include Scriptable::Queries
       include Scriptable::Scenes
+      include Scriptable::Subplots
     end
 
     include ScriptMethods
@@ -42,10 +42,6 @@ module Gamefic
     def conclude
       players.each { |p| exeunt p }
       entities.each { |e| entities_safe_delete e }
-    end
-
-    def concluding?
-      players.empty? || players.all? { |plyr| plyr.concluding?(self) }
     end
 
     # Subclasses can override this method to handle additional configuration

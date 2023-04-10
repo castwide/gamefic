@@ -6,10 +6,10 @@ module Gamefic
   #
   module Scriptable
     autoload :Actions,  'gamefic/scriptable/actions'
-    autoload :Branches, 'gamefic/scriptable/branches'
-    autoload :Configs,  'gamefic/scriptable/configs'
     autoload :Entities, 'gamefic/scriptable/entities'
     autoload :Queries,  'gamefic/scriptable/queries'
+    autoload :Plots,    'gamefic/scriptable/plots'
     autoload :Scenes,   'gamefic/scriptable/scenes'
+    autoload :Subplots, 'gamefic/scriptable/subplots'
   end
 end

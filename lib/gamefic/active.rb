@@ -5,8 +5,6 @@ require 'gamefic/active/cue'
 require 'json'
 
 module Gamefic
-  class NotConclusionError < RuntimeError; end
-
   # The Active module gives entities the ability to perform actions and
   # participate in scenes. The Actor class, for example, is an Entity
   # subclass that includes this module.
@@ -58,11 +56,6 @@ module Gamefic
     # @param message [String]
     def tell(message)
       messenger.tell message
-      # if buffer_stack > 0
-      #   append_buffer format(message)
-      # else
-      #   super
-      # end
     end
 
     # Send a message to the entity as raw text.
@@ -71,11 +64,6 @@ module Gamefic
     # @param message [String]
     def stream(message)
       messenger.stream message
-      # if buffer_stack > 0
-      #   append_buffer message
-      # else
-      #   super
-      # end
     end
 
     def messages
@@ -223,26 +211,23 @@ module Gamefic
     end
 
     # Cue a conclusion. This method works like #cue, except it will raise an
-    # error if the scene is not a Conclusion.
+    # error if the scene is not a conclusion.
     #
-    # @raise [ArgumentError] if the requested scene is not valid
-    # @raise [NotConclusionError] if the scene is not a Conclusion
+    # @raise [ArgumentError] if the requested scene is not a conclusion
     #
     # @param new_scene [Scene]
     # @oaram context [Hash] Additional scene data
-    def conclude new_scene, **context
-      cue new_scene, **context
-      # raise NotConclusionError unless next_cue.scene.rig <= Rig::Conclusion
-
-      next_cue
+    def conclude scene, **context
+      cue scene, **context
+      available = scenebooks.map { |sb| sb[scene] }.compact.last
+      raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
+      @next_cue
     end
 
-    # True if the actor started a conclusion scene from a narrative.
+    # True if the actor is ready to leave the game.
     #
-    # @param narrative [Narrative]
-    def concluding?(narrative)
-      return false unless @last_cue
-      narrative.scenebook[@last_cue.scene]&.conclusion?
+    def concluding?
+      (playbooks.empty? && scenebooks.empty?) || scenebooks.map { |sb| sb[@last_cue&.scene] }.compact.last&.conclusion?
     end
 
     def accessible?

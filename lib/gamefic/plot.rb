@@ -10,8 +10,8 @@ module Gamefic
   class Plot < Narrative
     module ScriptMethods
       include Scriptable::Actions
-      include Scriptable::Branches
       include Scriptable::Entities
+      include Scriptable::Plots
       include Scriptable::Queries
       include Scriptable::Scenes
     end
@@ -29,16 +29,6 @@ module Gamefic
     # @return [Array<Take>]
     def takes
       @takes ||= [].freeze
-    end
-
-    # A plot is considered to be concluding when all of its players are in one
-    # of its conclusion scenes. Engines can use this method to determine when
-    # the game is ready to end.
-    #
-    # @todo This is a first implementation, subject to change.
-    #
-    def concluding?
-      players.empty? || players.all? { |plyr| plyr.concluding?(self) }
     end
 
     def ready
@@ -72,7 +62,6 @@ module Gamefic
     # @return [Actor]
     def exeunt actor
       subplots_featuring(actor).each { |sp| sp.exeunt actor }
-      # scenebook.player_conclude_blocks.each { |blk| blk.call actor }
       super
     end
 
@@ -81,24 +70,6 @@ module Gamefic
     # @return [Array<Subplot>]
     def subplots
       @subplots ||= []
-    end
-
-    # Get the player's current subplots.
-    #
-    # @return [Array<Subplot>]
-    def subplots_featuring player
-      result = []
-      subplots.each { |s|
-        result.push s if s.players.include?(player)
-      }
-      result
-    end
-
-    # Determine whether the player is involved in a subplot.
-    #
-    # @return [Boolean]
-    def in_subplot? player
-      !subplots_featuring(player).empty?
     end
 
     def inspect
@@ -135,10 +106,8 @@ module Gamefic
 
     def finish_takes
       takes.each do |take|
+        next if take.cancelled?
         take.finish
-        next if take.cancelled? || take.scene.type != 'Conclusion'
-
-        exeunt take.actor
       end
       @takes = [].freeze
     end
