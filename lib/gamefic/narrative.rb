@@ -20,6 +20,7 @@ module Gamefic
       run_scripts
       playbook.freeze
       scenebook.freeze
+      @static_size = entities.length
     end
 
     def director
@@ -66,9 +67,8 @@ module Gamefic
 
       take = Take.new(player, @introduction)
       take.start
-      scenebook.run_player_output_blocks take.actor, take.output
+      # scenebook.run_player_output_blocks take.actor, take.output
       take.actor.output.merge! take.output
-      @static_size = entities.length
     end
 
     # A narrative is considered to be concluding when it only players are in
