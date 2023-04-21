@@ -55,7 +55,7 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.make_player_character
     plot.introduce player
-    expect(player.output[:messages]).to include('Hello, world!')
+    expect(player.messages).to include('Hello, world!')
   end
 
   it 'starts the default scene after the introduction' do

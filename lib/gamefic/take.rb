@@ -25,8 +25,6 @@ module Gamefic
 
       @scene.start_blocks.each { |blk| blk&.call(@actor, @rig.props) }
       @rig.ready
-      render_output
-      @actor.flush
     end
 
     def finish
@@ -54,17 +52,6 @@ module Gamefic
 
     def conclusion?
       @rig.is_a?(Rig::Conclusion)
-    end
-
-    private
-
-    def render_output
-      output.merge!(
-        {
-          messages: output[:messages] + @actor.messages,
-          queue: @actor.queue
-        }
-      )
     end
   end
 end

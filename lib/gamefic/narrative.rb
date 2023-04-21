@@ -67,8 +67,6 @@ module Gamefic
 
       take = Take.new(player, @introduction)
       take.start
-      # scenebook.run_player_output_blocks take.actor, take.output
-      take.actor.output.merge! take.output
     end
 
     # A narrative is considered to be concluding when it only players are in

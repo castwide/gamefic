@@ -109,8 +109,8 @@ module Gamefic
       # will restart if the user input is not a valid choice.
       #
       # @example
-      #   yes_or_no :answer_scene, 'What is your answer?' do |actor, scene|
-      #     if scene.yes?
+      #   yes_or_no :answer_scene, 'What is your answer?' do |actor, props|
+      #     if props.yes?
       #       actor.tell "You said yes."
       #     else
       #       actor.tell "You said no."
