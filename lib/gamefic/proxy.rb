@@ -32,38 +32,9 @@ module Gamefic
       host.entities[index]
     end
 
-    def ==(other)
-      case other
-      when Gamefic::Entity, Gamefic::Proxy
-        other.entity == entity
-      else
-        false
-      end
-    end
-
-    if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
-      def method_missing symbol, *args, &block
-        host.entities[index].public_send symbol, *args, &block
-      end
-    else
-      def method_missing symbol, *args, **splat, &block
-        host.entities[index].public_send symbol, *args, **splat, &block
-      end
-    end
-
-    def respond_to_missing? symbol, private
-      return false if private
-
-      host.entities[index].public_methods.include? symbol
-    end
-
-    def is_a?(klass)
-      entity.is_a?(klass)
-    end
-
-    def self.maybe(host, entity)
+    def self.index(host, entity)
       index = host.entities.find_index(entity)
-      return entity unless index
+      raise 'Entity could not be proxied' unless index
 
       Proxy.new(host, index)
     end

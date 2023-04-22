@@ -20,14 +20,6 @@ module Gamefic
       yield(self) if block_given?
     end
 
-    def entity
-      self
-    end
-
-    def parent=(entity)
-      super(entity&.entity)
-    end
-
     # A freeform property dictionary.
     # Authors can use the session hash to assign custom properties to the
     # entity. It can also be referenced directly using [] without the method
@@ -48,17 +40,6 @@ module Gamefic
     # @param value The value to set
     def []=(key, value)
       session[key] = value
-    end
-
-    def ==(other)
-      case other
-      when Gamefic::Entity
-        hash == other.hash
-      when Gamefic::Proxy
-        self == other.entity
-      else
-        false
-      end
     end
 
     def inspect

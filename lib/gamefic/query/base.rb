@@ -62,6 +62,16 @@ module Gamefic
 
         Result.new(scan.matched.first, scan.remainder)
       end
+
+      def unproxy args
+        args.map do |arg|
+          if arg.is_a?(Proxy)
+            arg.entity
+          else
+            arg
+          end
+        end
+      end
     end
   end
 end
