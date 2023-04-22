@@ -34,8 +34,8 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        staged_start = proc { |actor, props| stage &on_start }
-        staged_finish = proc { |actor, props| stage &on_finish }
+        staged_start = proc { |actor, props| stage actor, props, &on_start }
+        staged_finish = proc { |actor, props| stage actor, props, &on_finish }
         staged_block = proc { |scene| stage scene, &block }
         scenebook.add Scene.new name, rig: rig, type: type, on_start: staged_start, on_finish: staged_finish, &staged_block
         name
@@ -172,9 +172,7 @@ module Gamefic
       def conclusion name, &start
         block name,
               rig: Gamefic::Rig::Conclusion,
-              on_start: proc { |actor, props|
-                stage  actor, props, &start
-              }
+              on_start: start
       end
 
       def scenes
