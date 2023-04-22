@@ -20,6 +20,7 @@ module Gamefic
       run_scripts
       playbook.freeze
       scenebook.freeze
+      theater.freeze
       @static_size = entities.length
     end
 
