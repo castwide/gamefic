@@ -52,8 +52,8 @@ module Gamefic
     end
 
     # @param block [Proc]
-    def stage &block
-      theater.evaluate self, block
+    def stage *args, &block
+      theater.evaluate self, *args, block
     end
 
     # Introduce an actor to the story.
@@ -109,12 +109,16 @@ module Gamefic
     end
 
     def ready
-      scenebook.run_ready_blocks
-      scenebook.run_player_ready_blocks players
+      scenebook.ready_blocks.each { |blk| stage &blk }
+      players.each do |plyr|
+        scenebook.player_ready_blocks.each { |blk| stage plyr, &blk }
+      end
     end
 
     def update
-      players.each { |plyr| scenebook.run_player_update_blocks plyr }
+      players.each do |plyr|
+        scenebook.player_update_blocks.each { |blk| stage plyr, &blk }
+      end
       scenebook.run_update_blocks
     end
 

@@ -6,14 +6,12 @@ module Gamefic
   # variables and other resources without polluting the plot's namespace.
   #
   class Theater
-    def evaluate director, block
+    def evaluate director, *args, block
       return unless block
-      swap = clone
-      swap.define_method_missing director
-      result = swap.instance_eval &block
-      swap.instance_variables.each do |iv|
-        instance_variable_set iv, swap.instance_variable_get(iv)
-      end
+
+      define_method_missing director
+      result = instance_exec *args, &block
+      undefine_method_missing
       result
     end
 
@@ -25,14 +23,22 @@ module Gamefic
 
     def define_method_missing director
       if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
-        define_singleton_method :method_missing do |symbol, *args, &block|
-          director.public_send symbol, *args, &block
+        self.class.instance_eval do
+          define_method :method_missing do |symbol, *args, &block|
+            director.public_send symbol, *args, &block
+          end
         end
       else
-        define_singleton_method :method_missing do |symbol, *args, **splat, &block|
-          director.public_send symbol, *args, **splat, &block
+        self.class.instance_eval do
+          define_method :method_missing do |symbol, *args, **splat, &block|
+            director.public_send symbol, *args, **splat, &block
+          end
         end
       end
+    end
+
+    def undefine_method_missing
+      # self.class.instance_eval { remove_method :method_missing }
     end
   end
 end

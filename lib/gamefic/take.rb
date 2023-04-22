@@ -23,7 +23,7 @@ module Gamefic
       @rig.start @actor
       return if @rig.cancelled?
 
-      @scene.start_blocks.each { |blk| blk&.call(@actor, @rig.props) }
+      @scene.start_blocks.each { |blk| blk.call @actor, @rig.props }
       @rig.ready
     end
 
@@ -33,7 +33,7 @@ module Gamefic
       @rig.finish @actor
       return if @rig.cancelled?
 
-      @scene.finish_blocks.each { |blk| blk&.call(@actor, @rig.props) }
+      @scene.finish_blocks.each { |blk| blk.call @actor, @rig.props }
       @actor.output.replace(
         {
           last_prompt: @rig.props.prompt,

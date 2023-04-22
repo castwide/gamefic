@@ -34,7 +34,10 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        scenebook.add Scene.new name, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
+        staged_start = proc { |actor, props| stage &on_start }
+        staged_finish = proc { |actor, props| stage &on_finish }
+        staged_block = proc { |scene| stage scene, &block }
+        scenebook.add Scene.new name, rig: rig, type: type, on_start: staged_start, on_finish: staged_finish, &staged_block
         name
       end
 
@@ -150,7 +153,7 @@ module Gamefic
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
                 actor.cue(next_cue || :default_scene)
-                start.call(actor)
+                stage actor, &start
               }
       end
 
@@ -170,7 +173,7 @@ module Gamefic
         block name,
               rig: Gamefic::Rig::Conclusion,
               on_start: proc { |actor, props|
-                start&.call(actor, props)
+                stage  actor, props, &start
               }
       end
 
@@ -187,7 +190,8 @@ module Gamefic
       #   end
       #
       def on_ready &block
-        scenebook.on_ready(&block)
+        staged = proc { stage &block }
+        scenebook.on_ready(&staged)
       end
 
       # Add a block to be executed for each player at the beginning of a turn.
@@ -201,33 +205,38 @@ module Gamefic
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
-        scenebook.on_player_ready(&block)
+        staged = proc { |player| stage player, &block }
+        scenebook.on_player_ready(&staged)
       end
 
       # Add a block to be executed after the Plot is finished updating a turn.
       #
       def on_update &block
-        scenebook.on_update(&block)
+        staged = proc { stage &block }
+        scenebook.on_update(&staged)
       end
 
       # Add a block to be executed for each player at the end of a turn.
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
-        scenebook.on_player_update(&block)
+        staged = proc { |player| stage player, &block }
+        scenebook.on_player_update(&staged)
       end
 
       # @yieldparam [Actor]
       # @return [Proc]
       def on_player_conclude &block
-        scenebook.on_player_conclude(&block)
+        staged = proc { |player| stage player, &block }
+        scenebook.on_player_conclude(&staged)
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
       # @return [Proc]
       def on_player_output &block
-        scenebook.on_player_output(&block)
+        staged = proc { |player, output| stage player, @block }
+        scenebook.on_player_output(&staged)
       end
     end
   end

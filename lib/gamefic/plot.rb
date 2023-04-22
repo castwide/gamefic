@@ -98,8 +98,10 @@ module Gamefic
       @takes = players.map { |pl| pl.start_cue }.freeze
       takes.each do |take|
         take.start
-        scenebook.run_player_conclude_blocks take.actor if take.conclusion?
-        scenebook.run_player_output_blocks take.actor, take.output
+        scenebook.player_conclude_blocks.each { |blk| stage take.actor, &blk } if take.conclusion?
+        players.each do |plyr|
+          scenebook.player_output_blocks.each { |blk| stage plyr, &blk }
+        end
         take.actor.output.merge! take.output
         take.actor.output.merge!({
           messages: take.output[:messages] + take.actor.messages,

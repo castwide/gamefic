@@ -1,3 +1,5 @@
+require 'corelib/marshal' if RUBY_ENGINE == 'opal'
+
 module Gamefic
   # Save and restore plots.
   #

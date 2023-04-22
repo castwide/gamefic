@@ -2,6 +2,16 @@
 
 module Gamefic
   class Scenebook
+    attr_reader :player_ready_blocks
+
+    attr_reader :player_update_blocks
+
+    attr_reader :player_output_blocks
+
+    attr_reader :player_conclude_blocks
+
+    attr_reader :ready_blocks
+
     def initialize
       @scene_map = {}
       @ready_blocks = []
@@ -78,32 +88,8 @@ module Gamefic
       @player_output_blocks.push block
     end
 
-    def run_ready_blocks
-      @ready_blocks.each(&:call)
-    end
-
     def run_update_blocks
       @update_blocks.each(&:call)
-    end
-
-    def run_player_ready_blocks *players
-      players.flatten.each do |plyr|
-        @player_ready_blocks.each { |blk| blk.call plyr }
-      end
-    end
-
-    def run_player_update_blocks *players
-      players.flatten.each do |plyr|
-        @player_update_blocks.each { |blk| blk.call plyr }
-      end
-    end
-
-    def run_player_output_blocks player, output
-      @player_output_blocks.each { |blk| blk.call player, output }
-    end
-
-    def run_player_conclude_blocks player
-      @player_conclude_blocks.each { |blk| blk.call player }
     end
   end
 end
