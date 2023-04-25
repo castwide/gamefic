@@ -48,7 +48,7 @@ module Gamefic
 
     # @return [Scenebook]
     def scenebook
-      @scenebook ||= Scenebook.new
+      @scenebook ||= Scenebook.new(method(:stage))
     end
 
     # @param block [Proc]
@@ -109,16 +109,17 @@ module Gamefic
     end
 
     def ready
-      scenebook.ready_blocks.each { |blk| stage &blk }
-      players.each do |plyr|
-        scenebook.player_ready_blocks.each { |blk| stage plyr, &blk }
-      end
+      # scenebook.ready_blocks.each { |blk| stage &blk }
+      # players.each do |plyr|
+      #   scenebook.player_ready_blocks.each { |blk| stage plyr, &blk }
+      # end
+      scenebook.run_ready_blocks
     end
 
     def update
-      players.each do |plyr|
-        scenebook.player_update_blocks.each { |blk| stage plyr, &blk }
-      end
+      # players.each do |plyr|
+      #   scenebook.player_update_blocks.each { |blk| stage plyr, &blk }
+      # end
       scenebook.run_update_blocks
     end
 

@@ -30,10 +30,6 @@ module Gamefic
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
-    def players
-      @players ||= []
-    end
-
     def ready
       super
       conclude if concluding?

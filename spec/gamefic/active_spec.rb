@@ -52,27 +52,27 @@ describe Gamefic::Active do
   end
 
   it 'cues a scene' do
-    scenebook = Gamefic::Scenebook.new
+    scenebook = Gamefic::Scenebook.new(stage_func)
     scenebook.add Gamefic::Scene.new(:scene, stage_func)
     object.scenebooks.add scenebook
     expect { object.cue :scene }.not_to raise_error
   end
 
   it 'raises an error for non-conclusions' do
-    scenebook = Gamefic::Scenebook.new
+    scenebook = Gamefic::Scenebook.new(stage_func)
     scenebook.add Gamefic::Scene.new(:scene, stage_func)
     object.scenebooks.add scenebook
     expect { object.conclude :scene }.to raise_error(ArgumentError)
   end
 
   it 'is not concluding by default' do
-    scenebook = Gamefic::Scenebook.new
+    scenebook = Gamefic::Scenebook.new(stage_func)
     object.scenebooks.add scenebook
     expect(object).not_to be_concluding
   end
 
   it 'is concluding when starting a conclusion' do
-    scenebook = Gamefic::Scenebook.new
+    scenebook = Gamefic::Scenebook.new(stage_func)
     scenebook.add Gamefic::Scene.new(:ending, stage_func, rig: Gamefic::Rig::Conclusion)
     object.scenebooks.add scenebook
     object.cue :ending

@@ -2,22 +2,17 @@
 
 module Gamefic
   class Scenebook
-    attr_reader :player_ready_blocks
-
-    attr_reader :player_update_blocks
-
     attr_reader :player_output_blocks
 
     attr_reader :player_conclude_blocks
 
     attr_reader :ready_blocks
 
-    def initialize
+    def initialize stage
+      @stage = stage
       @scene_map = {}
       @ready_blocks = []
-      @player_ready_blocks = []
       @update_blocks = []
-      @player_update_blocks = []
       @player_conclude_blocks = []
       @player_output_blocks = []
     end
@@ -58,21 +53,29 @@ module Gamefic
 
     # @return [Proc]
     def on_ready &block
-      @ready_blocks.push block
+      @ready_blocks.push(proc do
+        @stage.call &block
+      end)
     end
 
     # @yieldparam [Actor]
     # @return [Proc]
     def on_player_ready &block
-      @player_ready_blocks.push block
+      @ready_blocks.push(proc do
+        @stage.call { players }.each { |plyr| @stage.call plyr, &block }
+      end)
     end
 
     def on_update &block
-      @update_blocks.push block
+      @update_blocks.push(proc do
+        @stage.call &block
+      end)
     end
 
     def on_player_update &block
-      @player_update_blocks.push block
+      @update_blocks.push(proc do
+        @stage.call { players }.each { |plyr| @stage.call plyr, &block }
+      end)
     end
 
     # @yieldparam [Actor]
@@ -86,6 +89,10 @@ module Gamefic
     # @return [Proc]
     def on_player_output &block
       @player_output_blocks.push block
+    end
+
+    def run_ready_blocks
+      @ready_blocks.each(&:call)
     end
 
     def run_update_blocks
