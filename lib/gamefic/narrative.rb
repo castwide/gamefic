@@ -21,7 +21,6 @@ module Gamefic
       playbook.freeze
       scenebook.freeze
       theater.freeze
-      @static_size = entities.length
     end
 
     def director
@@ -125,6 +124,7 @@ module Gamefic
 
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
+      @static_size = entities.length
     end
 
     def entities_safe_push entity

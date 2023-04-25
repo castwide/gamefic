@@ -1,21 +1,23 @@
 # Frozen_string_literal: true
 
 RSpec.describe Gamefic::Response do
+  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+
   describe '#meta?' do
     it 'is false by default' do
-      response = Gamefic::Response.new(:verb) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func) { |actor| actor }
       expect(response).not_to be_meta
     end
 
     it 'is true when set' do
-      response = Gamefic::Response.new(:verb, meta: true) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func, meta: true) { |actor| actor }
       expect(response).to be_meta
     end
   end
 
   describe '#attempt' do
     it 'returns actions for valid commands' do
-      response = Gamefic::Response.new(:verb) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func) { |actor| actor }
       actor = Gamefic::Actor.new
       command = Gamefic::Command.new(:verb, [])
       action = response.attempt(actor, command)
@@ -23,7 +25,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'returns nil for invalid commands' do
-      response = Gamefic::Response.new(:verb) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func) { |actor| actor }
       actor = Gamefic::Actor.new
       command = Gamefic::Command.new(:invalid, [])
       action = response.attempt(actor, command)
@@ -32,7 +34,7 @@ RSpec.describe Gamefic::Response do
 
     it 'returns nil with an empty query match' do
       defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
-      response = Gamefic::Response.new(:verb, defn) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
       actor = Gamefic::Actor.new
       command = Gamefic::Command.new(:verb, ['arg'])
       action = response.attempt(actor, command)
@@ -41,7 +43,7 @@ RSpec.describe Gamefic::Response do
 
     it 'returns an action with a successful token match' do
       defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
-      response = Gamefic::Response.new(:verb, defn) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
       actor = Gamefic::Actor.new(parent: room)
@@ -55,7 +57,7 @@ RSpec.describe Gamefic::Response do
 
     it 'returns nil with a failed token match' do
       defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
-      response = Gamefic::Response.new(:verb, defn) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
       actor = Gamefic::Actor.new(parent: room)
@@ -68,7 +70,7 @@ RSpec.describe Gamefic::Response do
 
     it 'returns nil with ambiguous results' do
       defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
-      response = Gamefic::Response.new(:verb, defn) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
       actor = Gamefic::Actor.new(parent: room)
@@ -82,7 +84,7 @@ RSpec.describe Gamefic::Response do
 
     it 'returns ambiguous results when defined' do
       defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family, ambiguous: true)
-      response = Gamefic::Response.new(:verb, defn) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
       actor = Gamefic::Actor.new(parent: room)
@@ -96,7 +98,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'rejects commands with extra arguments' do
-      response = Gamefic::Response.new(:verb) { |actor| actor }
+      response = Gamefic::Response.new(:verb, stage_func) { |actor| actor }
       actor = Gamefic::Actor.new
       command = Gamefic::Command.new(:verb, ['argument'])
       expect(response.attempt(actor, command)).to be_nil

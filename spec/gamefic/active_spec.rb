@@ -1,9 +1,11 @@
 describe Gamefic::Active do
   let(:object) { Gamefic::Entity.new.tap { |obj| obj.extend Gamefic::Active } }
 
+  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+
   it 'performs a command' do
     playbook = Gamefic::Playbook.new
-    playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
+    playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     object.playbooks.add playbook
     object.perform 'command'
     expect(object[:executed]).to be(true)
@@ -21,7 +23,7 @@ describe Gamefic::Active do
 
   it 'performs actions quietly' do
     playbook = Gamefic::Playbook.new
-    playbook.respond_with Gamefic::Response.new(:command) { |actor| actor.tell 'Keep this quiet' }
+    playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor.tell 'Keep this quiet' }
     object.playbooks.add playbook
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')
@@ -36,10 +38,10 @@ describe Gamefic::Active do
 
   it 'proceeds quietly' do
     playbook = Gamefic::Playbook.new
-    playbook.respond_with(Gamefic::Response.new(:command) do |actor|
+    playbook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
       actor.tell "hidden"
     end)
-    playbook.respond_with(Gamefic::Response.new(:command) do |actor|
+    playbook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
       actor.proceed quietly: true
       actor.tell "visible"
     end)
@@ -51,14 +53,14 @@ describe Gamefic::Active do
 
   it 'cues a scene' do
     scenebook = Gamefic::Scenebook.new
-    scenebook.add Gamefic::Scene.new(:scene)
+    scenebook.add Gamefic::Scene.new(:scene, stage_func)
     object.scenebooks.add scenebook
     expect { object.cue :scene }.not_to raise_error
   end
 
   it 'raises an error for non-conclusions' do
     scenebook = Gamefic::Scenebook.new
-    scenebook.add Gamefic::Scene.new(:scene)
+    scenebook.add Gamefic::Scene.new(:scene, stage_func)
     object.scenebooks.add scenebook
     expect { object.conclude :scene }.to raise_error(ArgumentError)
   end
@@ -71,7 +73,7 @@ describe Gamefic::Active do
 
   it 'is concluding when starting a conclusion' do
     scenebook = Gamefic::Scenebook.new
-    scenebook.add Gamefic::Scene.new(:ending, rig: Gamefic::Rig::Conclusion)
+    scenebook.add Gamefic::Scene.new(:ending, stage_func, rig: Gamefic::Rig::Conclusion)
     object.scenebooks.add scenebook
     object.cue :ending
     take = object.start_cue

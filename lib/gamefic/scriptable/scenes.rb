@@ -34,10 +34,10 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        staged_start = proc { |actor, props| stage actor, props, &on_start }
-        staged_finish = proc { |actor, props| stage actor, props, &on_finish }
-        staged_block = proc { |scene| stage scene, &block }
-        scenebook.add Scene.new name, rig: rig, type: type, on_start: staged_start, on_finish: staged_finish, &block
+        # staged_start = proc { |actor, props| stage actor, props, &on_start }
+        # staged_finish = proc { |actor, props| stage actor, props, &on_finish }
+        # staged_block = proc { |scene| stage scene, &block }
+        scenebook.add Scene.new name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
         name
       end
 
@@ -71,6 +71,7 @@ module Gamefic
       # @return [Symbol]
       def introduction(rig: Gamefic::Rig::Activity, &start)
         @introduction ||= Scene.new nil,
+                                    method(:stage),
                                     rig: rig,
                                     on_start: proc { |actor, props|
                                       start&.call(actor, props)
@@ -188,8 +189,7 @@ module Gamefic
       #   end
       #
       def on_ready &block
-        staged = proc { stage &block }
-        scenebook.on_ready(&staged)
+        scenebook.on_ready(&block)
       end
 
       # Add a block to be executed for each player at the beginning of a turn.
@@ -203,38 +203,33 @@ module Gamefic
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
-        staged = proc { |player| stage player, &block }
-        scenebook.on_player_ready(&staged)
+        scenebook.on_player_ready(&block)
       end
 
       # Add a block to be executed after the Plot is finished updating a turn.
       #
       def on_update &block
-        staged = proc { stage &block }
-        scenebook.on_update(&staged)
+        scenebook.on_update(&block)
       end
 
       # Add a block to be executed for each player at the end of a turn.
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
-        staged = proc { |player| stage player, &block }
-        scenebook.on_player_update(&staged)
+        scenebook.on_player_update(&block)
       end
 
       # @yieldparam [Actor]
       # @return [Proc]
       def on_player_conclude &block
-        staged = proc { |player| stage player, &block }
-        scenebook.on_player_conclude(&staged)
+        scenebook.on_player_conclude(&block)
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
       # @return [Proc]
       def on_player_output &block
-        staged = proc { |player, output| stage player, @block }
-        scenebook.on_player_output(&staged)
+        scenebook.on_player_output(&block)
       end
     end
   end

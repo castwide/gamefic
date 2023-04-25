@@ -1,7 +1,9 @@
 describe Gamefic::Take do
+  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+
   it 'runs start blocks' do
     actor = Gamefic::Actor.new
-    scene = Gamefic::Scene.new(:scene) do |scene|
+    scene = Gamefic::Scene.new(:scene, stage_func) do |scene|
       scene.on_start do |actor, _props|
         actor[:scene_started] = true
       end
@@ -13,7 +15,7 @@ describe Gamefic::Take do
 
   it 'runs finish blocks' do
     actor = Gamefic::Actor.new
-    scene = Gamefic::Scene.new(:scene) do |scene|
+    scene = Gamefic::Scene.new(:scene, stage_func) do |scene|
       scene.on_finish do |actor, _props|
         actor[:scene_finished] = true
       end
@@ -26,9 +28,9 @@ describe Gamefic::Take do
   it 'performs actions in Activity scene types' do
     actor = Gamefic::Actor.new
     playbook = Gamefic::Playbook.new
-    playbook.respond_with Gamefic::Response.new(:command) { |actor| actor[:executed] = true }
+    playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     actor.playbooks.add playbook
-    scene = Gamefic::Scene.new(:scene, rig: Gamefic::Rig::Activity)
+    scene = Gamefic::Scene.new(:scene, stage_func, rig: Gamefic::Rig::Activity)
     take = Gamefic::Take.new(actor, scene)
     take.start
     actor.queue.push 'command'
@@ -37,7 +39,7 @@ describe Gamefic::Take do
   end
 
   it 'adds context to props' do
-    scene = Gamefic::Scene.new(:scene) do |scn|
+    scene = Gamefic::Scene.new(:scene, stage_func) do |scn|
       scn.on_start do |actor, props|
         actor.tell "You got extra #{props.context[:extra]}"
       end
@@ -49,7 +51,7 @@ describe Gamefic::Take do
   end
 
   it 'adds scene data to output' do
-    scene = Gamefic::Scene.new(:scene)
+    scene = Gamefic::Scene.new(:scene, stage_func)
     actor = Gamefic::Actor.new
     take = Gamefic::Take.new(actor, scene)
     expect(take.output[:scene][:name]).to eq(scene.name)
@@ -57,7 +59,7 @@ describe Gamefic::Take do
   end
 
   it 'adds options from MultipleChoice rigs' do
-    scene = Gamefic::Scene.new(:scene, rig: Gamefic::Rig::MultipleChoice) do |scene|
+    scene = Gamefic::Scene.new(:scene, stage_func, rig: Gamefic::Rig::MultipleChoice) do |scene|
       scene.on_start do |actor, props|
         props.options.concat ['one', 'two']
       end

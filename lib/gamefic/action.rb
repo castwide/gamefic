@@ -36,8 +36,9 @@ module Gamefic
       run_before_actions
       return if cancelled?
 
-      log_executing 'response', response.block.source_location
-      response.block[actor, *arguments]
+      # log_executing 'response', response.block.source_location
+      # response.block[actor, *arguments]
+      response.execute actor, *arguments
       @executed = true
       run_after_actions
     end

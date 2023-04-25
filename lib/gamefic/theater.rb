@@ -35,6 +35,11 @@ module Gamefic
           end
         end
       end
+      self.class.instance_eval do
+        define_method :stage do |*args, &block|
+          send :evaluate, director, *args, &block
+        end
+      end
     end
 
     def undefine_method_missing

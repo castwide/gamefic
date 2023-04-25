@@ -10,7 +10,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::General]
       def anywhere *args, ambiguous: false
-        Query::General.new -> { entities }, *args, ambiguous: ambiguous
+        Query::General.new -> { entities }, *args_to_proxies(args), ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's family of entities. The
@@ -20,7 +20,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def available *args, ambiguous: false
-        Query::Scoped.new Scope::Family, *args, ambiguous: ambiguous
+        Query::Scoped.new Scope::Family, *args_to_proxies(args), ambiguous: ambiguous
       end
       alias family available
 
@@ -29,7 +29,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def parent *args, ambiguous: false
-        Query::Scoped.new Scope::Parent, *args, ambiguous: ambiguous
+        Query::Scoped.new Scope::Parent, *args_to_proxies(args), ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's children.
@@ -37,7 +37,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def children *args, ambiguous: false
-        Query::Scoped.new Scope::Children, *args, ambiguous: ambiguous
+        Query::Scoped.new Scope::Children, *args_to_proxies(args), ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's siblings.
@@ -45,7 +45,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def siblings *args, ambiguous: false
-        Query::Scoped.new Scope::Siblings, *args, ambiguous: ambiguous
+        Query::Scoped.new Scope::Siblings, *args_to_proxies(args), ambiguous: ambiguous
       end
 
       # Define a query that returns the actor itself.
@@ -53,7 +53,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def myself *args, ambiguous: false
-        Query::Scoped.new Scope::Myself, *args, ambiguous: ambiguous
+        Query::Scoped.new Scope::Myself, *args_to_proxies(args), ambiguous: ambiguous
       end
 
       # Define a query that performs a plaintext search. It can take a String
@@ -65,6 +65,19 @@ module Gamefic
       # @return [Query::Text]
       def plaintext arg = nil
         Query::Text.new arg
+      end
+
+      private
+
+      def args_to_proxies args
+        args.map do |arg|
+          case arg
+          when Entity
+            Proxy.index(self, arg)
+          else
+            arg
+          end
+        end
       end
     end
   end

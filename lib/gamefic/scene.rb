@@ -15,13 +15,21 @@ module Gamefic
     attr_reader :name
 
     # @return [Array<Proc>]
-    def start_blocks
-      @start_blocks ||= []
+    # def start_blocks
+    #   @start_blocks ||= []
+    # end
+
+    def run_start_blocks actor, props
+      @start_blocks.each { |blk| @stage.call(actor, props, &blk) }
     end
 
     # @return [Array<Proc>]
-    def finish_blocks
-      @finish_blocks ||= []
+    # def finish_blocks
+    #   @finish_blocks ||= []
+    # end
+
+    def run_finish_blocks actor, props
+      @finish_blocks.each { |blk| @stage.call(actor, props, &blk) }
     end
 
     # @param name [Symbol]
@@ -30,13 +38,17 @@ module Gamefic
     # @param on_start [Proc, nil]
     # @param on_finish [Proc, nil]
     # @yieldparam [self]
-    def initialize name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil
+    def initialize name, stage, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
       @name = name
+      @stage = stage
       @rig = rig
       @type = type
-      start_blocks.push on_start if on_start
-      finish_blocks.push on_finish if on_finish
-      yield(self) if block_given?
+      @start_blocks = []
+      @finish_blocks = []
+      @start_blocks.push on_start if on_start
+      @finish_blocks.push on_finish if on_finish
+      # yield(self) if block_given?
+      stage.call self, &block if block
     end
 
     # The type of rig that was used to build the scene.
@@ -53,13 +65,13 @@ module Gamefic
     # @yieldparam [Actor]
     # @yieldparam [SceneProps::Default]
     def on_start &block
-      start_blocks.push block
+      @start_blocks.push block
     end
 
     # @yieldparam [Actor]
     # @yieldparam [SceneProps::Default]
     def on_finish &block
-      finish_blocks.push block
+      @finish_blocks.push block
     end
 
     def to_sym

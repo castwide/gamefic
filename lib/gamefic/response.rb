@@ -12,15 +12,16 @@ module Gamefic
     attr_reader :queries
 
     # @return [Proc]
-    attr_reader :block
+    # attr_reader :block
 
     # @param verb [Symbol]
     # @param queryies [Array<Query::Base>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, *queries, meta: false, &block
+    def initialize verb, stage, *queries, meta: false, &block
       @verb = verb
-      @queries = queries
+      @stage = stage
+      @queries = map_queryable_objects(queries)
       @meta = meta
       @block = block
     end
@@ -75,6 +76,10 @@ module Gamefic
       Action.new(actor, result, self, with_hooks)
     end
 
+    def execute *args
+      @stage.call *args, &@block
+    end
+
     def precision
       @precision ||= calculate_precision
     end
@@ -104,6 +109,11 @@ module Gamefic
       queries.each { |q| total += q.precision }
       total -= 1000 if verb.nil?
       total
+    end
+
+    def map_queryable_objects queries
+      # @todo Considering moving mapping from Actions to here
+      queries
     end
   end
 end

@@ -28,8 +28,8 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond(verb, *queries, &proc)
-        staged = proc { |*args| stage *args, &proc }
-        playbook.respond_with Response.new(verb, *map_response_args(queries), &staged)
+        args = map_response_args(queries)
+        playbook.respond_with Response.new(verb, method(:stage), *args, &proc)
         verb
       end
 
@@ -49,8 +49,8 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def meta(verb, *queries, &proc)
-        staged = proc { |*args| stage *args, &proc }
-        playbook.respond_with Response.new(verb, *map_response_args(queries), meta: true, &staged)
+        args = map_response_args(queries)
+        playbook.respond_with Response.new(verb, method(:stage), *args, meta: true, &proc)
         verb
       end
 
@@ -62,8 +62,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action verb = nil, &block
-        staged = proc { |action| stage action, &block }
-        playbook.before_action verb, &staged
+        playbook.before_action verb, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -74,8 +73,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action verb = nil, &block
-        staged = proc { |action| stage action, &block }
-        playbook.after_action verb, &staged
+        playbook.after_action verb, &block
       end
 
       # Create an alternate Syntax for a response.
@@ -95,8 +93,6 @@ module Gamefic
       def interpret command, translation
         playbook.interpret_with Syntax.new(command, translation)
       end
-
-      private
 
       def map_response_args args
         args.map do |arg|

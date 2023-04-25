@@ -1,25 +1,35 @@
 describe Gamefic::Scene do
-  it 'accepts start blocks from params' do
-    scene = Gamefic::Scene.new(:scene, on_start: -> { nil })
-    expect(scene.start_blocks.first).to be_a(Proc)
+  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+
+  it 'executes start blocks from params' do
+    executed = false
+    scene = Gamefic::Scene.new(:scene, stage_func, on_start: ->(_, _) { executed = true })
+    scene.run_start_blocks nil, nil
+    expect(executed).to be(true)
   end
 
-  it 'accepts finish blocks from params' do
-    scene = Gamefic::Scene.new(:scene, on_finish: -> { nil })
-    expect(scene.finish_blocks.first).to be_a(Proc)
+  it 'executes finish blocks from params' do
+    executed = false
+    scene = Gamefic::Scene.new(:scene, stage_func, on_finish: ->(_, _) { executed = true })
+    scene.run_finish_blocks nil, nil
+    expect(executed).to be(true)
   end
 
-  it 'accepts start blocks from yielded blocks' do
-    scene = Gamefic::Scene.new(:scene) do |scn|
-      scn.on_start { nil }
+  it 'executes start blocks from blocks' do
+    executed = false
+    scene = Gamefic::Scene.new(:scene, stage_func) do |scene|
+      scene.on_start { |_, _| executed = true }
     end
-    expect(scene.start_blocks.first).to be_a(Proc)
+    scene.run_start_blocks nil, nil
+    expect(executed).to be(true)
   end
 
-  it 'accepts finish blocks from yielded blocks' do
-    scene = Gamefic::Scene.new(:scene) do |scn|
-      scn.on_finish { nil }
+  it 'executes finish blocks from blocks' do
+    executed = false
+    scene = Gamefic::Scene.new(:scene, stage_func) do |scene|
+      scene.on_finish { |_, _| executed = true }
     end
-    expect(scene.finish_blocks.first).to be_a(Proc)
+    scene.run_finish_blocks nil, nil
+    expect(executed).to be(true)
   end
 end

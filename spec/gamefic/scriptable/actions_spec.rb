@@ -4,10 +4,11 @@ describe Gamefic::Scriptable::Actions do
       include Gamefic::Scriptable::Actions
       include Gamefic::Scriptable::Queries
       attr_accessor :playbook
+      define_method(:stage) { |*args, &block| block.call(*args) }
     end
 
     klass.new.tap do |obj|
-      obj.extend Gamefic::Scriptable::Actions
+      # obj.extend Gamefic::Scriptable::Actions
       obj.playbook = Gamefic::Playbook.new
     end
   }
@@ -24,8 +25,8 @@ describe Gamefic::Scriptable::Actions do
 
   it 'creates syntaxes' do
     object.respond(:verb, Gamefic::Entity) { |_, _| nil }
-    response = object.interpret('synonym', 'verb')
-    expect(response).to be_a(Gamefic::Syntax)
+    object.interpret('synonym', 'verb')
+    expect(object.playbook.syntaxes.first).to be_a(Gamefic::Syntax)
   end
 
   it 'raises errors for syntaxes without actions' do
