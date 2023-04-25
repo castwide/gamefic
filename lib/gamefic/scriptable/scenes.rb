@@ -37,7 +37,7 @@ module Gamefic
         staged_start = proc { |actor, props| stage actor, props, &on_start }
         staged_finish = proc { |actor, props| stage actor, props, &on_finish }
         staged_block = proc { |scene| stage scene, &block }
-        scenebook.add Scene.new name, rig: rig, type: type, on_start: staged_start, on_finish: staged_finish, &staged_block
+        scenebook.add Scene.new name, rig: rig, type: type, on_start: staged_start, on_finish: staged_finish, &block
         name
       end
 
@@ -97,7 +97,7 @@ module Gamefic
       # @param proc [Proc]
       # @yieldparam [Scene]
       # @return [Symbol]
-      def multiple_choice choices = [], prompt = 'What is your choice?', &proc
+      def multiple_choice name, choices = [], prompt = 'What is your choice?', &proc
         block name,
               rig: Gamefic::Rig::MultipleChoice,
               on_start: proc { |_actor, props|
