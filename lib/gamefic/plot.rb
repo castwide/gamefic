@@ -34,8 +34,8 @@ module Gamefic
     def ready
       subplots.each(&:ready)
       subplots.delete_if(&:concluding?)
-      super
       start_takes
+      super
     end
 
     def update
