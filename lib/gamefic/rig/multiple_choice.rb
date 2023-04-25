@@ -30,7 +30,7 @@ module Gamefic
       private
 
       def index_by_number
-        return props.input.to_i if props.input.match(/^\d+$/) && props.options[props.input.to_i]
+        return props.input.to_i - 1 if props.input.match(/^\d+$/) && props.options[props.input.to_i - 1]
 
         nil
       end
