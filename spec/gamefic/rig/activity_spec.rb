@@ -4,7 +4,7 @@ describe Gamefic::Rig::Activity do
   it 'performs a command' do
     type = Gamefic::Rig::Activity.new(nil)
     actor = Gamefic::Actor.new
-    playbook = Gamefic::Playbook.new
+    playbook = Gamefic::Playbook.new(stage_func)
     playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     actor.playbooks.add playbook
     actor.queue.push 'command'

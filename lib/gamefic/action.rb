@@ -79,28 +79,13 @@ module Gamefic
     def run_before_actions
       return unless with_hooks? && !cancelled?
 
-      run_hooks actor.playbooks.flat_map(&:before_actions)
+      actor.playbooks.flat_map { |pb| pb.run_before_actions self }
     end
 
     def run_after_actions
       return unless with_hooks? && !cancelled?
 
-      run_hooks actor.playbooks.flat_map(&:after_actions)
-    end
-
-    # @param [Array<Hook>]
-    def run_hooks hooks
-      hooks.each do |hook|
-        next unless hook.verb.nil? || hook.verb == verb
-
-        log_executing 'hook', hook.block.source_location
-        hook.block[self]
-        break if cancelled?
-      end
-    end
-
-    def log_executing type, location
-      logger.debug "Executing #{type} at #{location&.join(':') || '(undefined)'}"
+      actor.playbooks.flat_map { |pb| pb.run_after_actions self }
     end
   end
 end

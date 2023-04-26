@@ -1,7 +1,7 @@
 describe Gamefic::Playbook do
-  let(:playbook) { Gamefic::Playbook.new }
-
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+
+  let(:playbook) { Gamefic::Playbook.new(stage_func) }
 
   let(:actor) do
     Gamefic::Actor.new do |actor|

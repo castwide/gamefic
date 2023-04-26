@@ -1,4 +1,6 @@
 describe Gamefic::Scriptable::Actions do
+  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+
   let(:object) {
     klass = Class.new do
       include Gamefic::Scriptable::Actions
@@ -9,7 +11,7 @@ describe Gamefic::Scriptable::Actions do
 
     klass.new.tap do |obj|
       # obj.extend Gamefic::Scriptable::Actions
-      obj.playbook = Gamefic::Playbook.new
+      obj.playbook = Gamefic::Playbook.new(stage_func)
     end
   }
 

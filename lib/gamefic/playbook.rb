@@ -14,7 +14,8 @@ module Gamefic
     # @return [Array<Action::Hook>]
     attr_reader :after_actions
 
-    def initialize
+    def initialize stage
+      @stage = stage
       @before_actions = []
       @after_actions = []
       @verb_response_map = Hash.new { |hash, key| hash[key] = [] }
@@ -100,6 +101,14 @@ module Gamefic
       synonyms.flat_map { |syn| synonym_syntax_map.fetch(syn, []) }
     end
 
+    def run_before_actions action
+      run_action_hooks action, before_actions
+    end
+
+    def run_after_actions action
+      run_action_hooks action, after_actions
+    end
+
     private
 
     # @return [Hash]
@@ -139,6 +148,18 @@ module Gamefic
         else
           b.word_count <=> a.word_count
         end
+      end
+    end
+
+    def run_action_hooks action, hooks
+      return if action.cancelled?
+
+      hooks.each do |hook|
+        next unless hook.verb.nil? || hook.verb == verb
+
+        @stage.call action, &hook.block
+
+        break if action.cancelled?
       end
     end
   end

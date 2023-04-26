@@ -30,7 +30,7 @@ describe Gamefic::Action do
   end
 
   it 'runs before_action hooks' do
-    playbook = Gamefic::Playbook.new
+    playbook = Gamefic::Playbook.new(stage_func)
     executed = false
     playbook.before_action { |_action| executed = true }
     actor.playbooks.add playbook
@@ -41,7 +41,7 @@ describe Gamefic::Action do
   end
 
   it 'runs after_action hooks' do
-    playbook = Gamefic::Playbook.new
+    playbook = Gamefic::Playbook.new(stage_func)
     executed = false
     playbook.after_action { |_action| executed = true }
     actor.playbooks.add playbook

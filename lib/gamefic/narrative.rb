@@ -45,7 +45,7 @@ module Gamefic
 
     # @return [Playbook]
     def playbook
-      @playbook ||= Playbook.new
+      @playbook ||= Playbook.new(method(:stage))
     end
 
     # @return [Scenebook]

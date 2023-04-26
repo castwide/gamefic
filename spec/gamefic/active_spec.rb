@@ -4,7 +4,7 @@ describe Gamefic::Active do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   it 'performs a command' do
-    playbook = Gamefic::Playbook.new
+    playbook = Gamefic::Playbook.new(stage_func)
     playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     object.playbooks.add playbook
     object.perform 'command'
@@ -22,7 +22,7 @@ describe Gamefic::Active do
   end
 
   it 'performs actions quietly' do
-    playbook = Gamefic::Playbook.new
+    playbook = Gamefic::Playbook.new(stage_func)
     playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor.tell 'Keep this quiet' }
     object.playbooks.add playbook
     buffer = object.quietly 'command'
@@ -37,7 +37,7 @@ describe Gamefic::Active do
   end
 
   it 'proceeds quietly' do
-    playbook = Gamefic::Playbook.new
+    playbook = Gamefic::Playbook.new(stage_func)
     playbook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
       actor.tell "hidden"
     end)
