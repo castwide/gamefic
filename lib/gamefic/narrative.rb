@@ -14,6 +14,8 @@ module Gamefic
       end
     end
 
+    attr_reader :digest
+
     # @param scriptables [Array<Symbol>] Scriptable method names
     def initialize(scriptables = [])
       @scriptables = scriptables
@@ -119,6 +121,7 @@ module Gamefic
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
       @static_size = entities.length
+      @digest = Gamefic::Snapshot.digest(self)
     end
 
     def entities_safe_push entity

@@ -1,4 +1,5 @@
 require 'corelib/marshal' if RUBY_ENGINE == 'opal'
+# require 'zlib'
 
 module Gamefic
   # Save and restore plots.
@@ -35,18 +36,27 @@ module Gamefic
       plot
     end
 
+    def self.digest plot
+      binary = Marshal.dump({
+        entities: plot.entities,
+        theater: plot.instance_variable_get(:@theater)
+      })
+      calculate_digest binary
+    end
+
     class << self
       private
 
       def collect plot
         {
           plot: {
+            digest: plot.digest,
             klass: plot.class.to_s,
             entities: plot.entities,
             players: plot.players,
             theater: plot.instance_variable_get(:@theater)
           },
-          subplots: collect_subplots(plot.subplots)
+          subplots: plot.respond_to?(:subplots) ? collect_subplots(plot.subplots) : []
         }
       end
 
@@ -54,6 +64,7 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s,
+            digest: sp.digest,
             config: sp.config,
             entities: sp.entities,
             players: sp.players,
@@ -75,6 +86,8 @@ module Gamefic
         part = klass.allocate
         part.instance_variable_set(:@config, data[:config]) if data[:config]
         part.run_scripts
+        raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
+
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
         part.instance_variable_set(:@theater, data[:theater])
@@ -83,6 +96,22 @@ module Gamefic
           plyr.scenebooks.add part.scenebook
         end
         part
+      end
+
+      def calculate_digest binary
+        # @todo This is a cheesy digest, but it should work well enough for
+        #   this purpose as long as the number is small enough and collisions
+        #   are acceptably rare.
+        result = 0
+        multiplier = 1
+
+        binary.bytes.each_slice(64) do |slice|
+          result += slice.map.with_index { |byte, idx| byte * (255 ^ idx) }
+                         .sum + (multiplier * 64 * 255)
+          multiplier += 1
+        end
+
+        result
       end
     end
   end
