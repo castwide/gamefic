@@ -18,6 +18,11 @@ module Gamefic
     # @return [Active::Cue, nil]
     attr_reader :next_cue
 
+    # @return [Symbol, nil]
+    def next_scene
+      next_cue&.scene
+    end
+
     # The playbooks that will be used to perform commands. Every plot and
     # subplot has its own playbook.
     #
