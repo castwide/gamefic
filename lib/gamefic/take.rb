@@ -29,19 +29,19 @@ module Gamefic
     end
 
     def finish
+      @actor.flush
       return if @rig.cancelled?
 
       @rig.finish @actor
-      return if @rig.cancelled?
-
-      # @scene.finish_blocks.each { |blk| blk.call @actor, @rig.props }
-      @scene.run_finish_blocks @actor, @rig.props
       @actor.output.replace(
         {
           last_prompt: @rig.props.prompt,
           last_input: @rig.props.input
         }
       )
+      return if @rig.cancelled?
+
+      @scene.run_finish_blocks @actor, @rig.props
     end
 
     def output

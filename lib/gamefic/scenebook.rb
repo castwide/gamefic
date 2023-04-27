@@ -98,5 +98,13 @@ module Gamefic
     def run_update_blocks
       @update_blocks.each(&:call)
     end
+
+    def run_player_output_blocks player, output
+      @player_output_blocks.each { |blk| @stage.call player, output, &blk }
+    end
+
+    def run_player_conclude_blocks player
+      @player_conclude_blocks.each { |blk| @stage.call player, &blk }
+    end
   end
 end

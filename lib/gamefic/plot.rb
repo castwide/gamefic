@@ -32,16 +32,27 @@ module Gamefic
     end
 
     def ready
+      @takes = players.map { |pl| pl.start_cue }.freeze
+      takes.each(&:start)
+      super
       subplots.each(&:ready)
       subplots.delete_if(&:concluding?)
-      start_takes
-      super
+      takes.each do |take|
+        scenebook.run_player_conclude_blocks take.actor if take.conclusion?
+        scenebook.run_player_output_blocks take.actor, take.output
+        subplots.each { |sp| sp.scenebook.run_player_output_blocks take.actor, take.output }
+        take.actor.output.merge! take.output
+        take.actor.output.merge!({
+          messages: take.output[:messages] + take.actor.messages,
+          queue: take.actor.queue
+        })
+      end
     end
 
     def update
-      subplots.each(&:update)
-      finish_takes
+      takes.each(&:finish)
       super
+      subplots.each(&:update)
     end
 
     # Make a character that a player will control on introduction.
@@ -90,34 +101,6 @@ module Gamefic
 
     def self.restore snapshot
       Snapshot.restore snapshot
-    end
-
-    private
-
-    def start_takes
-      @takes = players.map { |pl| pl.start_cue }.freeze
-      takes.each do |take|
-        take.start
-        scenebook.player_conclude_blocks.each { |blk| stage take.actor, &blk } if take.conclusion?
-        players.each do |plyr|
-          scenebook.player_output_blocks.each { |blk| stage plyr, &blk }
-        end
-        take.actor.output.merge! take.output
-        take.actor.output.merge!({
-          messages: take.output[:messages] + take.actor.messages,
-          queue: take.actor.queue
-        })
-      end
-    end
-
-    def finish_takes
-      takes.each do |take|
-        take.actor.flush
-        next if take.cancelled?
-
-        take.finish
-      end
-      @takes = [].freeze
     end
   end
 end
