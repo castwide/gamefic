@@ -43,7 +43,7 @@ module Gamefic
         subplots.each { |sp| sp.scenebook.run_player_output_blocks take.actor, take.output }
         take.actor.output.merge! take.output
         take.actor.output.merge!({
-          messages: take.output[:messages] + take.actor.messages,
+          messages: take.actor.messages + take.output[:messages],
           queue: take.actor.queue
         })
       end

@@ -26,8 +26,9 @@ module Gamefic
 
       # @param scene [Scene, nil]
       # @param context [Hash]
-      def initialize scene, **context
-        @scene = scene
+      def initialize name, type, **context
+        @scene_name = name
+        @scene_type = type
         @context = context
       end
 
@@ -38,8 +39,8 @@ module Gamefic
       def output
         @output ||= {
           scene: {
-            name: @scene.name,
-            type: @scene.type
+            name: @scene_name,
+            type: @scene_type
           },
           messages: '',
           prompt: prompt

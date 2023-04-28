@@ -33,6 +33,7 @@ module Gamefic
         subplot = rebuild(subdata)
         plot.subplots.push subplot
       end
+      plot.players.each(&:recue)
       plot
     end
 

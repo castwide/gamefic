@@ -69,6 +69,7 @@ module Gamefic
 
       take = Take.new(player, @introduction)
       take.start
+      player.stream take.output[:messages]
     end
 
     # A narrative is considered to be concluding when it only players are in

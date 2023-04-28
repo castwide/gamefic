@@ -75,6 +75,10 @@ module Gamefic
       messenger.messages
     end
 
+    def buffer &block
+      messenger.buffer &block
+    end
+
     def flush
       messenger.flush
     end
@@ -175,7 +179,7 @@ module Gamefic
 
       logger.warn "Overwriting existing cue `#{@next_cue.scene}` with `#{scene}`" if @next_cue
 
-      @next_cue = Cue.new(scene, **context)
+      @next_cue = Cue.new(scene, context)
     end
     alias prepare cue
 
@@ -207,12 +211,9 @@ module Gamefic
     #
     # @return [Cue, nil]
     def recue
-      if @last_cue
-        cue @last_cue.scene, **@last_cue.context
-      else
-        logger.warn "No scene to recue"
-        @next_cue = nil
-      end
+      logger.warn "No scene to recue" unless @last_cue
+
+      @next_cue = @last_cue
     end
 
     # Cue a conclusion. This method works like #cue, except it will raise an

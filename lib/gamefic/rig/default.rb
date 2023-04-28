@@ -7,18 +7,18 @@ module Gamefic
     # own, but can be subclassed or extended through callbacks.
     #
     class Default
-      # @param scene [Scene, nil]
-      # @param context [Hash]
-      def initialize scene, **context
-        @scene = scene
-        @context = context
-      end
-
       # A collection of data associated with the plot.
       #
       # @return [Props::Default]
-      def props
-        @props ||= props_class.new(@scene, **@context)
+      attr_reader :props
+
+      attr_reader :context
+
+      # @param scene [Scene, nil]
+      # @param context [Hash]
+      def initialize scene, **context
+        @props = props_class.new(scene&.name, scene&.type, **context)
+        @context = context
       end
 
       def cancelled?

@@ -20,11 +20,12 @@ module Gamefic
     end
 
     def start
-      @rig.start @actor
-      return if @rig.cancelled?
+      buffer = @actor.buffer do
+        @rig.start @actor
+        scene.run_start_blocks @actor, @rig.props unless @rig.cancelled?
 
-      # @scene.start_blocks.each { |blk| blk.call @actor, @rig.props }
-      scene.run_start_blocks @actor, @rig.props
+      end
+      output[:messages] += buffer
       @rig.ready
     end
 
