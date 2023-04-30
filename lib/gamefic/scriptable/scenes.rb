@@ -37,7 +37,7 @@ module Gamefic
         # staged_start = proc { |actor, props| stage actor, props, &on_start }
         # staged_finish = proc { |actor, props| stage actor, props, &on_finish }
         # staged_block = proc { |scene| stage scene, &block }
-        scenebook.add Scene.new name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block
+        scenebook.add Scene.new(name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
         name
       end
 
@@ -153,8 +153,7 @@ module Gamefic
               rig: Gamefic::Rig::Pause,
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
-                actor.cue(next_cue || :default_scene)
-                stage actor, &start
+                start&.call actor, props
               }
       end
 

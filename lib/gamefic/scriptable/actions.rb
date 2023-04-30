@@ -33,7 +33,7 @@ module Gamefic
         verb
       end
 
-      # Create a meta rsponse for a command.
+      # Create a meta response for a command.
       # Meta responses are very similar to standard responses, except they're
       # flagged as meta (`Response#meta?`) to indicate that they provide a
       # feature that is not considered an in-game action, such as displaying
