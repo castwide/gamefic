@@ -120,7 +120,7 @@ module Gamefic
     def add_response response
       verb_response_map[response.verb].unshift response
       sort_responses verb_response_map[response.verb]
-      add_syntax response.syntax
+      add_syntax response.syntax unless response.verb.to_s.start_with?('_')
       response
     end
 

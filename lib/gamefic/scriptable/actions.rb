@@ -94,6 +94,21 @@ module Gamefic
         playbook.interpret_with Syntax.new(command, translation)
       end
 
+      # @return [Array<Symbol>]
+      def verbs
+        playbook.verbs
+      end
+
+      # @return [Array<Symbol>]
+      def synonyms
+        playbook.synonyms
+      end
+
+      # @return [Array<Syntax>]
+      def syntaxes
+        playbook.syntaxes
+      end
+
       def map_response_args args
         args.map do |arg|
           case arg
