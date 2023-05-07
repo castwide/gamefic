@@ -55,7 +55,8 @@ module Gamefic
             klass: plot.class.to_s,
             entities: plot.entities,
             players: plot.players,
-            theater: plot.instance_variable_get(:@theater)
+            theater: plot.instance_variable_get(:@theater),
+            delegator: plot.instance_variable_get(:@delegator)
           },
           subplots: plot.respond_to?(:subplots) ? collect_subplots(plot.subplots) : []
         }
@@ -69,7 +70,8 @@ module Gamefic
             config: sp.config,
             entities: sp.entities,
             players: sp.players,
-            theater: sp.instance_variable_get(:@theater)
+            theater: sp.instance_variable_get(:@theater),
+            delegator: sp.instance_variable_get(:@delegator)
           }
         end
       end
@@ -85,6 +87,7 @@ module Gamefic
       def rebuild data
         klass = string_to_constant(data[:klass])
         part = klass.allocate
+        part.instance_variable_set(:@delegator, data[:delegator])
         part.instance_variable_set(:@config, data[:config]) if data[:config]
         part.run_scripts
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]

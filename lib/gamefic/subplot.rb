@@ -26,7 +26,7 @@ module Gamefic
     def initialize plot, introduce: nil, **config
       @plot = plot
       @config = config.freeze
-      super(ScriptMethods.public_instance_methods)
+      super(ScriptMethods)
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 

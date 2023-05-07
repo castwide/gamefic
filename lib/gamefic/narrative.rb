@@ -2,7 +2,20 @@ module Gamefic
   # A base class for building and managing the resources that compose a story.
   #
   class Narrative
+    module ScriptMethods
+      # @return [Array<Gamefic::Entity>]
+      def entities
+        @entities ||= [].freeze
+      end
+
+      # @return [Array<Gamefic::Actor>]
+      def players
+        @players ||= [].freeze
+      end
+    end
+
     include Logging
+    include ScriptMethods
 
     class << self
       def blocks
@@ -16,31 +29,17 @@ module Gamefic
 
     attr_reader :digest
 
-    # @param scriptables [Array<Symbol>] Scriptable method names
-    def initialize(scriptables = [])
-      @scriptables = scriptables
+    # @param delegator [Module] Scriptable methods
+    def initialize(delegator = nil)
+      @delegator = delegator
       run_scripts
       playbook.freeze
       scenebook.freeze
       theater.freeze
     end
 
-    def director
-      @director ||= Director.new(self, @scriptables)
-    end
-
     def theater
-      @theater ||= Theater.new(self)
-    end
-
-    # @return [Array<Gamefic::Entity>]
-    def entities
-      @entities ||= [].freeze
-    end
-
-    # @return [Array<Gamefic::Actor>]
-    def players
-      @players ||= [].freeze
+      @theater ||= Theater.new(self, [@delegator, ScriptMethods])
     end
 
     # @return [Playbook]

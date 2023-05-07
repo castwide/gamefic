@@ -22,7 +22,7 @@ module Gamefic
     attr_reader :metadata
 
     def initialize metadata = {}
-      super(ScriptMethods.public_instance_methods)
+      super(ScriptMethods)
       @metadata = metadata
     end
 
