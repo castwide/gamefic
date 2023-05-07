@@ -10,9 +10,7 @@ module Gamefic
       return unless block
 
       define_method_missing director
-      result = instance_exec *args, &block
-      undefine_method_missing
-      result
+      instance_exec *args, &block
     end
 
     def inspect
@@ -35,15 +33,6 @@ module Gamefic
           end
         end
       end
-      self.class.instance_eval do
-        define_method :stage do |*args, &block|
-          send :evaluate, director, *args, &block
-        end
-      end
-    end
-
-    def undefine_method_missing
-      # self.class.instance_eval { remove_method :method_missing }
     end
   end
 end
