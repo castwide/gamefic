@@ -2,12 +2,13 @@
 
 describe Gamefic::Scope::Family do
   it 'finds extended family' do
-    parent = Gamefic::Entity.new
-    context = Gamefic::Entity.new parent: parent
-    sibling = Gamefic::Entity.new parent: parent
-    nephew = Gamefic::Entity.new parent: sibling
+    parent = Gamefic::Entity.new name: 'parent'
+    context = Gamefic::Entity.new parent: parent, name: 'context'
+    sibling = Gamefic::Entity.new parent: parent, name: 'sibling'
+    nephew = Gamefic::Entity.new parent: sibling, name: 'nephew'
+    child = Gamefic::Entity.new parent: context, name: 'child'
     family = Gamefic::Scope::Family.matches(context)
-    expect(family).to eq([parent, sibling, nephew])
+    expect(family).to eq([parent, child, sibling, nephew])
   end
 
   it 'rejects inaccessible entities' do
