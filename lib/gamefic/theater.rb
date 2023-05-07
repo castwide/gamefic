@@ -6,10 +6,13 @@ module Gamefic
   # variables and other resources without polluting the plot's namespace.
   #
   class Theater
-    def evaluate director, *args, block
+    def initialize director
+      define_method_missing director
+    end
+
+    def evaluate *args, block
       return unless block
 
-      define_method_missing director
       instance_exec *args, &block
     end
 

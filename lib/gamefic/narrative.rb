@@ -30,7 +30,7 @@ module Gamefic
     end
 
     def theater
-      @theater ||= Theater.new
+      @theater ||= Theater.new(self)
     end
 
     # @return [Array<Gamefic::Entity>]
@@ -55,7 +55,7 @@ module Gamefic
 
     # @param block [Proc]
     def stage *args, &block
-      theater.evaluate self, *args, block
+      theater.evaluate *args, block
     end
 
     # Introduce an actor to the story.
