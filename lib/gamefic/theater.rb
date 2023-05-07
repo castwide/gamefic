@@ -17,7 +17,7 @@ module Gamefic
     end
 
     def inspect
-      "#<self.class>"
+      "#<#{self.class}>"
     end
 
     protected
