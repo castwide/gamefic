@@ -8,7 +8,12 @@ module Gamefic
       def matches
         result = context.parent ? [context.parent] : []
         result.concat subquery_accessible(context.parent)
-        result - [context]
+        result.delete context
+        context.children.each do |c|
+          result.push c
+          result.concat subquery_accessible(c)
+        end
+        result.uniq
       end
     end
   end
