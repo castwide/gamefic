@@ -80,4 +80,15 @@ describe Gamefic::Syntax do
     s2 = Gamefic::Syntax.new 'make :x from :y', 'manufacture :x :y'
     expect(s1).not_to eq(s2)
   end
+
+  it 'tokenizes commands from an array of syntaxes' do
+    s2 = Gamefic::Syntax.new 'make :x :y', 'make :x :y'
+    s1 = Gamefic::Syntax.new 'make :a from :b', 'make :a :b'
+    s4 = Gamefic::Syntax.new 'use :x :y', 'use :x :y'
+    s3 = Gamefic::Syntax.new 'use :x on :y', 'use :x :y'
+    commands = Gamefic::Syntax.tokenize 'make thing from material', [s1, s2, s3, s4]
+    expect(commands.map(&:verb)).to eq([:make, :make])
+    expect(commands.first.arguments).to eq(['thing', 'material'])
+    expect(commands.last.arguments).to eq(['thing from material', nil])
+  end
 end

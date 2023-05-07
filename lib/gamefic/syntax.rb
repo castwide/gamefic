@@ -151,13 +151,7 @@ module Gamefic
       syntaxes
         .map { |syn| syn.tokenize(text) }
         .compact
-        .sort do |a, b|
-          if a.verb == b.verb
-            b.arguments.length <=> a.arguments.length
-          else
-            b.verb.to_s <=> a.verb.to_s
-          end
-        end
+        .sort { |a, b| b.arguments.compact.length <=> a.arguments.compact.length }
     end
   end
 end
