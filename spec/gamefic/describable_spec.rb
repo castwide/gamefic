@@ -98,8 +98,8 @@ describe Gamefic::Describable do
     expect(described.description).to eq(text)
   end
 
-  # it 'has a default description' do
-  #   d = Describedescribed.new
-  #   expect(described.description).to eq(Gamefic::Describable.default_description)
-  # end
+  it 'has a default description' do
+    described.name = 'thing'
+    expect(described.description).to eq(Gamefic::Describable.default_description % {name: 'the thing', Name: 'The thing'})
+  end
 end
