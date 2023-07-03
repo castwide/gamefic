@@ -114,7 +114,7 @@ module Gamefic
           case arg
           when Entity
             available(Proxy.index(self, arg))
-          when Class, Module, Symbol
+          when Class, Module, Symbol, Proc
             available(arg)
           when String, Regexp
             plaintext(arg)
