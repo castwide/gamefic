@@ -23,7 +23,6 @@ module Gamefic
       buffer = @actor.buffer do
         @rig.start @actor
         scene.run_start_blocks @actor, @rig.props unless @rig.cancelled?
-
       end
       output[:messages] += buffer
       @rig.ready
