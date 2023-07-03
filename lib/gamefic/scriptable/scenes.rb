@@ -34,26 +34,9 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        # staged_start = proc { |actor, props| stage actor, props, &on_start }
-        # staged_finish = proc { |actor, props| stage actor, props, &on_finish }
-        # staged_block = proc { |scene| stage scene, &block }
         scenebook.add Scene.new(name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
         name
       end
-
-      # @return [Scene]
-      # def default_scene
-      #   @default_scene ||= block(rig: Rig::Activity)
-      # end
-
-      # @return [Scene]
-      # def default_conclusion
-      #   @default_conclusion ||=
-      #     block(:default_conclusion,
-      #           rig: Rig::Conclusion,
-      #           on_start: proc { |actor, _props|
-      #                     })
-      # end
 
       # Add a block to be executed when a player is added to the game.
       # Each Plot should only have one introduction.
@@ -83,29 +66,28 @@ module Gamefic
       # will restart if the user input is not a valid choice.
       #
       # @example
-      #   multiple_choice :go_somewhere, ['Go to work', 'Go to school'] do |scene|
-      #     scene.on_finish do |actor, props|
-      #       # Assuming the user selected the first choice:
-      #       props.selection # => 'Go to work'
-      #       props.index     # => 0
-      #       props.number    # => 1
-      #     end
+      #   multiple_choice :go_somewhere, ['Go to work', 'Go to school'] do |actor, props|
+      #     # Assuming the user selected the first choice:
+      #     props.selection # => 'Go to work'
+      #     props.index     # => 0
+      #     props.number    # => 1
       #   end
       #
       # @param name [Symbol]
       # @param choices [Array<String>]
       # @param prompt [String, nil]
       # @param proc [Proc]
-      # @yieldparam [Scene]
+      # @yieldparam [Actor]
+      # @yieldparam [Props::MultipleChoice]
       # @return [Symbol]
-      def multiple_choice name, choices = [], prompt = 'What is your choice?', &proc
+      def multiple_choice name, choices = [], prompt = 'What is your choice?', &block
         block name,
               rig: Gamefic::Rig::MultipleChoice,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
                 props.options.concat choices
               },
-              &proc
+              on_finish: block
       end
 
       # Create a yes-or-no scene.
@@ -123,15 +105,16 @@ module Gamefic
       #
       # @param name [Symbol]
       # @param prompt [String, nil]
-      # @yieldparam [Scene]
+      # @yieldparam [Actor]
+      # @yieldparam [Props::YesOrNo]
       # @return [Symbol]
-      def yes_or_no name, prompt = 'Answer:', &proc
+      def yes_or_no name, prompt = 'Answer:', &block
         block name,
               rig: Gamefic::Rig::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
               },
-              &proc
+              on_finish: block
       end
 
       # Create a scene that pauses the game.
@@ -216,6 +199,10 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
         scenebook.on_player_update(&block)
+      end
+
+      def on_conclude &block
+        scenebook.on_conclude(&block)
       end
 
       # @yieldparam [Actor]
