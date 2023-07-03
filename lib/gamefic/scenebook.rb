@@ -13,6 +13,7 @@ module Gamefic
       @scene_map = {}
       @ready_blocks = []
       @update_blocks = []
+      @conclude_blocks = []
       @player_conclude_blocks = []
       @player_output_blocks = []
     end
@@ -78,6 +79,11 @@ module Gamefic
       end)
     end
 
+    # @return [Proc]
+    def on_conclude &block
+      @conclude_blocks.push block
+    end
+
     # @yieldparam [Actor]
     # @return [Proc]
     def on_player_conclude &block
@@ -101,6 +107,10 @@ module Gamefic
 
     def run_player_output_blocks player, output
       @player_output_blocks.each { |blk| @stage.call player, output, &blk }
+    end
+
+    def run_conclude_blocks
+      @conclude_blocks.each { |blk| @stage.call &blk }
     end
 
     def run_player_conclude_blocks player
