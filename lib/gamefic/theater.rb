@@ -9,52 +9,50 @@ module Gamefic
     # @param director [Object]
     # @param delegators [Array<Module>]
     def initialize director, delegators
-      define_method_missing director, delegators
+      # define_method_missing director, delegators
     end
 
-    def evaluate *args, block
+    def evaluate director, *args, block
       return unless block
 
-      instance_exec *args, &block
+      directors.push director
+      result = instance_exec *args, &block
+      directors.pop
+      result
     end
 
     def inspect
       "#<#{self.class}>"
     end
 
-    protected
+    if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
+      instance_eval do
+        define_method :method_missing do |symbol, *args, &block|
+          # raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{director}" unless delegated.include?(symbol)
 
-    # @param director [Object]
-    # @param delegators [Array<Module>]
-    # @return [void]
-    def define_method_missing director, delegators
-      delegated = delegators.compact.flat_map(&:public_instance_methods)
-
-      if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
-        self.class.instance_eval do
-          define_method :method_missing do |symbol, *args, &block|
-            raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{director}" unless delegated.include?(symbol)
-
-            director.public_send symbol, *args, &block
-          end
-        end
-      else
-        self.class.instance_eval do
-          define_method :method_missing do |symbol, *args, **splat, &block|
-            raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{director}" unless delegated.include?(symbol)
-
-            director.public_send symbol, *args, **splat, &block
-          end
+          directors.last.public_send symbol, *args, &block
         end
       end
+    else
+      instance_eval do
+        define_method :method_missing do |symbol, *args, **splat, &block|
+          # raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{director}" unless delegated.include?(symbol)
 
-      self.class.instance_eval do
-        define_method :respond_to_missing? do |symbol, private|
-          return false if private
-    
-          delegated.include?(symbol)
-        end    
+          directors.last.public_send symbol, *args, **splat, &block
+        end
       end
+    end
+
+    instance_eval do
+      define_method :respond_to_missing? do |symbol, private|
+        return false if private
+
+        # delegated.include?(symbol)
+        directors.last.methods.include?(symbol)
+      end
+
+      director_array = []
+      define_method(:directors) { director_array }
     end
   end
 end

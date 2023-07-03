@@ -54,7 +54,7 @@ module Gamefic
 
     # @param block [Proc]
     def stage *args, &block
-      theater.evaluate *args, block
+      theater.evaluate self, *args, block
     end
 
     # Introduce an actor to the story.
@@ -63,7 +63,6 @@ module Gamefic
     # @return [void]
     def introduce(player)
       cast player
-      players_safe_push player
       return unless @introduction
 
       take = Take.new(player, @introduction)
@@ -82,8 +81,8 @@ module Gamefic
     # Remove a player from the game.
     #
     def exeunt player
+      scenebook.run_player_conclude_blocks player
       uncast player
-      players_safe_delete player
     end
 
     # Add this narrative's playbook and scenebook to an active entity.
@@ -93,6 +92,7 @@ module Gamefic
     def cast active
       active.playbooks.add playbook
       active.scenebooks.add scenebook
+      players_safe_push active
       active
     end
 
@@ -103,6 +103,7 @@ module Gamefic
     def uncast active
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
+      players_safe_delete active
       active
     end
 
@@ -140,6 +141,8 @@ module Gamefic
     end
 
     def players_safe_push player
+      return player if @players&.include?(player)
+
       @players = @players.dup || []
       @players.push(player).freeze
       player
