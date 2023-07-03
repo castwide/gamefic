@@ -11,8 +11,8 @@ module Gamefic
     # @return [String]
     def self.save plot
       plot.players.each do |plyr|
-        plyr.playbooks.clear
         plyr.scenebooks.clear
+        plyr.playbooks.clear
       end
       snapshot = collect(plot)
       binary = Marshal.dump(snapshot)
@@ -30,7 +30,7 @@ module Gamefic
       data = Marshal.load(binary)
       plot = rebuild(data[:plot])
       data[:subplots].each do |subdata|
-        subplot = rebuild(subdata)
+        subplot = rebuild(subdata, plot)
         plot.subplots.push subplot
       end
       plot.players.each(&:recue)
@@ -84,11 +84,15 @@ module Gamefic
         space
       end
 
-      def rebuild data
+      def rebuild data, plot = nil
         klass = string_to_constant(data[:klass])
         part = klass.allocate
         part.instance_variable_set(:@delegator, data[:delegator])
-        part.instance_variable_set(:@config, data[:config]) if data[:config]
+        part.instance_variable_set(:@plot, plot) if plot
+        if data[:config]
+          part.instance_variable_set(:@config, data[:config])
+          part.configure(**data[:config])
+        end
         part.run_scripts
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
