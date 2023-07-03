@@ -58,8 +58,6 @@ module Gamefic
 
       queries.each do |qd|
         token = tokens.shift
-        return nil if tokens.nil?
-
         txt = "#{remainder} #{token}".strip
         return nil if txt.empty?
 
