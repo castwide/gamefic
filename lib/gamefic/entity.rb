@@ -18,7 +18,14 @@ module Gamefic
       end
 
       yield(self) if block_given?
+
+      post_initialize
     end
+
+    # This method can be overridden for additional processing after the entity
+    # has been created.
+    #
+    def post_initialize; end
 
     # A freeform property dictionary.
     # Authors can use the session hash to assign custom properties to the
