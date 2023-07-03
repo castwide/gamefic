@@ -1,4 +1,5 @@
 require 'gamefic/plot'
+require 'securerandom'
 
 module Gamefic
   # Subplots are disposable plots that run inside a parent plot. They can be
@@ -20,13 +21,17 @@ module Gamefic
     # @return [Plot]
     attr_reader :plot
 
+    attr_reader :uuid
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
     def initialize plot, introduce: nil, **config
       @plot = plot
+      configure **config
       @config = config.freeze
       super(ScriptMethods)
+      @uuid ||= SecureRandom.uuid
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
@@ -36,6 +41,7 @@ module Gamefic
     end
 
     def conclude
+      scenebook.run_conclude_blocks
       players.each { |p| exeunt p }
       entities.each { |e| entities_safe_delete e }
     end
@@ -44,6 +50,11 @@ module Gamefic
     # options.
     #
     def configure **config; end
+
+    # @todo This is ugly. Necessary for the Open Cases Burglary subplot
+    def subplot
+      self
+    end
 
     def inspect
       "#<#{self.class}>"
