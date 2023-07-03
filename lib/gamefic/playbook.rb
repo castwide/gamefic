@@ -155,7 +155,7 @@ module Gamefic
       return if action.cancelled?
 
       hooks.each do |hook|
-        next unless hook.verb.nil? || hook.verb == verb
+        next unless hook.verb.nil? || hook.verb == action.verb
 
         @stage.call action, &hook.block
 
