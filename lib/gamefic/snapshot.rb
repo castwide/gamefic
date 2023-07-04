@@ -28,9 +28,9 @@ module Gamefic
     def self.restore snapshot
       binary = Base64.decode64(snapshot)
       data = Marshal.load(binary)
-      plot = rebuild(data[:plot])
+      plot = rebuild_plot(data[:plot])
       data[:subplots].each do |subdata|
-        subplot = rebuild(subdata, plot)
+        subplot = rebuild_subplot(subdata, plot)
         plot.subplots.push subplot
       end
       plot.players.each(&:recue)
@@ -83,26 +83,44 @@ module Gamefic
         space
       end
 
-      def rebuild data, plot = nil
-        klass = string_to_constant(data[:klass])
-        part = klass.allocate
-        part.instance_variable_set(:@delegator, data[:delegator])
-        part.instance_variable_set(:@plot, plot) if plot
-        if data[:config]
-          part.instance_variable_set(:@config, data[:config])
-          part.configure(**data[:config])
-        end
+      def rebuild_plot data
+        part = rebuild_common(data)
         part.run_scripts
-        raise LoadError, 'Incompatible snapshot' if plot.nil? && part.digest != data[:digest]
+        raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
         part.instance_variable_set(:@theater, data[:theater])
+        rebuild_players part
+        part
+      end
+
+      def rebuild_subplot data, plot
+        part = rebuild_common(data)
+        part.instance_variable_set(:@plot, plot)
+        part.instance_variable_set(:@config, data[:config])
+        part.configure(**data[:config])
+        part.run_scripts
+
+        part.instance_variable_set(:@entities, data[:entities])
+        part.instance_variable_set(:@players, data[:players])
+        part.instance_variable_set(:@theater, data[:theater])
+        rebuild_players part
+        part
+      end
+
+      def rebuild_common data
+        klass = string_to_constant(data[:klass])
+        part = klass.allocate
+        part.instance_variable_set(:@delegator, data[:delegator])
+        part
+      end
+
+      def rebuild_players part
         part.players.each do |plyr|
           plyr.playbooks.add part.playbook
           plyr.scenebooks.add part.scenebook
         end
-        part
       end
 
       def calculate_digest binary
