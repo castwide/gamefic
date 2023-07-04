@@ -66,7 +66,6 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s,
-            digest: sp.digest,
             config: sp.config,
             entities: sp.entities,
             players: sp.players,
@@ -94,7 +93,7 @@ module Gamefic
           part.configure(**data[:config])
         end
         part.run_scripts
-        raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
+        raise LoadError, 'Incompatible snapshot' if plot.nil? && part.digest != data[:digest]
 
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])

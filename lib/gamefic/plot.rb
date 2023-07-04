@@ -21,6 +21,8 @@ module Gamefic
     # @return [Hash]
     attr_reader :metadata
 
+    attr_reader :digest
+
     def initialize metadata = {}
       super(ScriptMethods)
       @metadata = metadata
@@ -93,6 +95,7 @@ module Gamefic
 
     def run_scripts
       super
+      @digest = Gamefic::Snapshot.digest(self)
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
         block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)

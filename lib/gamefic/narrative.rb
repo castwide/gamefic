@@ -27,8 +27,6 @@ module Gamefic
       end
     end
 
-    attr_reader :digest
-
     # @param delegator [Module] Scriptable methods
     def initialize(delegator = nil)
       @delegator = delegator
@@ -122,7 +120,6 @@ module Gamefic
     def run_scripts
       self.class.blocks.each { |blk| stage(&blk) }
       @static_size = entities.length
-      @digest = Gamefic::Snapshot.digest(self)
     end
 
     def entities_safe_push entity
