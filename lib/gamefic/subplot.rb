@@ -27,11 +27,11 @@ module Gamefic
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
     def initialize plot, introduce: nil, **config
+      @uuid = SecureRandom.uuid
       @plot = plot
       configure **config
       @config = config.freeze
       super(ScriptMethods)
-      @uuid ||= SecureRandom.uuid
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
