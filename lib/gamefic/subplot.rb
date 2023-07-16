@@ -43,7 +43,7 @@ module Gamefic
     def conclude
       scenebook.run_conclude_blocks
       players.each { |p| exeunt p }
-      entities.each { |e| entities_safe_delete e }
+      entities.each { |e| destroy e }
     end
 
     # Subclasses can override this method to handle additional configuration
