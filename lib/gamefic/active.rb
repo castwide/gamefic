@@ -200,7 +200,7 @@ module Gamefic
       end
 
       available = scenebooks.map { |sb| sb[next_cue.scene] }.compact
-      raise ArgumentError, "Scene named #{next_cue.scene} does not exist" if available.empty?
+      raise ArgumentError, "Scene named `#{next_cue.scene}` does not exist" if available.empty?
 
       logger.warn "Found #{available.count} scenes named `#{next_cue.scene}`" if available.length > 1
 
