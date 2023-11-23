@@ -13,9 +13,13 @@ module Gamefic
       # @return [Boolean]
       attr_reader :ambiguous
 
+      # @raise [ArgumentError] if any of the arguments are nil
+      #
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
       def initialize *arguments, ambiguous: false
+        raise ArgumentError, "nil argument in query" if arguments.any?(&:nil?)
+
         @arguments = arguments
         @ambiguous = ambiguous
       end
@@ -24,7 +28,7 @@ module Gamefic
       # @param token [String]
       # @return [Result]
       def query(subject, token)
-        raise 'Not implemented'
+        raise "#query not implemented for #{self.class}"
       end
 
       # @return [Integer]
@@ -44,11 +48,20 @@ module Gamefic
           when Gamefic::Entity, Gamefic::Proxy
             1000
           when Class, Module
-            100
+            class_depth(arg) * 100
           else
             1
           end
         end
+      end
+
+      def class_depth klass
+        return 1 if klass.is_a?(Module)
+
+        depth = 1
+        sup = klass
+        depth += 1 while (sup = sup.superclass)
+        depth
       end
 
       def ambiguous_result scan
