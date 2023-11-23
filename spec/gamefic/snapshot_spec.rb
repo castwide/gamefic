@@ -1,8 +1,14 @@
+require 'date'
+
 describe Gamefic::Snapshot do
   let(:plot) do
     Gamefic::Plot.script do
       @room = make Gamefic::Entity, name: 'room'
       @thing = make Gamefic::Entity, name: 'thing', parent: @room
+
+      # Make sure various other objects can get serialized
+      @object = Object.new
+      @date_time = DateTime.new
 
       introduction do |actor|
         actor.parent = @room
@@ -54,5 +60,10 @@ describe Gamefic::Snapshot do
 
   it 'restores subplot config data' do
     expect(restored.subplots.first.config[:configured]).to be(restored.stage { @thing })
+  end
+
+  it 'generates a reproducible digest' do
+    digest = Gamefic::Snapshot.digest(plot)
+    expect(digest).to eq(plot.digest)
   end
 end
