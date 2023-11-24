@@ -38,10 +38,12 @@ module Gamefic
     end
 
     def self.digest plot
-      binary = Marshal.dump({
-        entities: plot.entities,
-        theater: plot.instance_variable_get(:@theater)
-      })
+      binary = {
+        entities: plot.entities.map(&:inspect),
+        theater: plot.instance_variable_get(:@theater).instance_variables.map do |iv|
+          [iv, plot.instance_variable_get(:@theater).instance_variable_get(iv).class]
+        end
+      }.inspect
       calculate_digest binary
     end
 
@@ -58,7 +60,7 @@ module Gamefic
             theater: plot.instance_variable_get(:@theater),
             delegator: plot.instance_variable_get(:@delegator)
           },
-          subplots: plot.respond_to?(:subplots) ? collect_subplots(plot.subplots) : []
+          subplots: collect_subplots(plot.subplots)
         }
       end
 
@@ -66,6 +68,7 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s,
+            uuid: sp.uuid,
             config: sp.config,
             entities: sp.entities,
             players: sp.players,
@@ -102,6 +105,7 @@ module Gamefic
         part.configure(**data[:config])
         part.run_scripts
 
+        part.instance_variable_set(:@uuid, data[:uuid])
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
         part.instance_variable_set(:@theater, data[:theater])
@@ -135,7 +139,6 @@ module Gamefic
                          .sum + (multiplier * 64 * 255)
           multiplier += 1
         end
-
         result
       end
     end
