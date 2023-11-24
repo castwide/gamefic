@@ -6,12 +6,6 @@ module Gamefic
   # variables and other resources without polluting the plot's namespace.
   #
   class Theater
-    # @param director [Object]
-    # @param delegators [Array<Module>]
-    def initialize director, delegators
-      # define_method_missing director, delegators
-    end
-
     def evaluate director, *args, block
       return unless block
 
@@ -28,7 +22,7 @@ module Gamefic
     if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
       instance_eval do
         define_method :method_missing do |symbol, *args, &block|
-          # raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{director}" unless delegated.include?(symbol)
+          raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{directors.last}" unless directors.last.respond_to?(symbol, false)
 
           directors.last.public_send symbol, *args, &block
         end
@@ -36,7 +30,7 @@ module Gamefic
     else
       instance_eval do
         define_method :method_missing do |symbol, *args, **splat, &block|
-          # raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{director}" unless delegated.include?(symbol)
+          raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{directors.last}" unless directors.last.respond_to?(symbol, false)
 
           directors.last.public_send symbol, *args, **splat, &block
         end
@@ -44,11 +38,8 @@ module Gamefic
     end
 
     instance_eval do
-      define_method :respond_to_missing? do |symbol, private|
-        return false if private
-
-        # delegated.include?(symbol)
-        directors.last.methods.include?(symbol)
+      define_method :respond_to_missing? do |symbol, include_all|
+        directors.last.respond_to?(symbol, include_all)
       end
 
       director_array = []

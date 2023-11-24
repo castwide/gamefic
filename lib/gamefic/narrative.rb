@@ -46,7 +46,7 @@ module Gamefic
     end
 
     def theater
-      @theater ||= Theater.new(self, [@delegator, ScriptMethods])
+      @theater ||= Theater.new
     end
 
     # @return [Playbook]
