@@ -29,11 +29,14 @@ module Gamefic
     def initialize plot, introduce: nil, **config
       @uuid = SecureRandom.uuid
       @plot = plot
-      configure **config
+      configure(**config)
       @config = config.freeze
-      super(ScriptMethods)
+      super()
+      post_initialize
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
+
+    def post_initialize; end
 
     def ready
       super

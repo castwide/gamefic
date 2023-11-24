@@ -36,9 +36,7 @@ module Gamefic
       end
     end
 
-    # @param delegator [Module] Scriptable methods
-    def initialize(delegator = nil)
-      @delegator = delegator
+    def initialize
       run_scripts
       playbook.freeze
       scenebook.freeze

@@ -24,7 +24,7 @@ module Gamefic
     attr_reader :digest
 
     def initialize metadata = {}
-      super(ScriptMethods)
+      super()
       @metadata = metadata
     end
 

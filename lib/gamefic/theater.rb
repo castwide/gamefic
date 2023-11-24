@@ -19,25 +19,21 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
-      instance_eval do
+    instance_eval do
+      if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
         define_method :method_missing do |symbol, *args, &block|
-          raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{directors.last}" unless directors.last.respond_to?(symbol, false)
+          # raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{directors.last}" unless directors.last.respond_to?(symbol, false)
 
           directors.last.public_send symbol, *args, &block
         end
-      end
-    else
-      instance_eval do
+      else
         define_method :method_missing do |symbol, *args, **splat, &block|
-          raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{directors.last}" unless directors.last.respond_to?(symbol, false)
+          # raise NoMethodError, "#{self} cannot delegate method `#{symbol}` to #{directors.last}" unless directors.last.respond_to?(symbol, false)
 
           directors.last.public_send symbol, *args, **splat, &block
         end
       end
-    end
 
-    instance_eval do
       define_method :respond_to_missing? do |symbol, include_all|
         directors.last.respond_to?(symbol, include_all)
       end
