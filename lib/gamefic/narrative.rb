@@ -30,7 +30,6 @@ module Gamefic
       # get executed, the playbook and scenebook will be frozen. Any entities
       # created in these blocks will be considered "static."
       #
-      # @param block [Proc]
       def script &block
         scripts.push block
       end
