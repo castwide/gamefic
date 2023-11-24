@@ -18,12 +18,21 @@ module Gamefic
     include ScriptMethods
 
     class << self
-      def blocks
-        @blocks ||= []
+      # @return [Array<Proc>]
+      def scripts
+        @scripts ||= []
       end
+      alias blocks scripts
 
+      # Add a block to be executed during initialization.
+      #
+      # These blocks are where actions and scenes should be defined. After they
+      # get executed, the playbook and scenebook will be frozen. Any entities
+      # created in these blocks will be considered "static."
+      #
+      # @param block [Proc]
       def script &block
-        blocks.push block
+        scripts.push block
       end
     end
 
