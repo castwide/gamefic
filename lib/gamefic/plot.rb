@@ -8,11 +8,8 @@ module Gamefic
   #
   class Plot < Narrative
     module ScriptMethods
-      include Scriptable::Actions
-      include Scriptable::Entities
+      include Narrative::ScriptMethods
       include Scriptable::Plots
-      include Scriptable::Queries
-      include Scriptable::Scenes
     end
 
     # @!method self.script &block

@@ -7,10 +7,7 @@ module Gamefic
   #
   class Subplot < Narrative
     module ScriptMethods
-      include Scriptable::Actions
-      include Scriptable::Entities
-      include Scriptable::Queries
-      include Scriptable::Scenes
+      include Narrative::ScriptMethods
       include Scriptable::Subplots
     end
 
