@@ -8,7 +8,6 @@ module Gamefic
   #
   class Plot < Narrative
     module ScriptMethods
-      include Narrative::ScriptMethods
       include Scriptable::Actions
       include Scriptable::Entities
       include Scriptable::Plots
@@ -24,11 +23,14 @@ module Gamefic
     # @return [Hash]
     attr_reader :metadata
 
-    attr_reader :digest
-
     def initialize metadata = {}
+      block_default_scenes
       super()
       @metadata = metadata
+    end
+
+    def self.allocate
+      super.tap(&:block_default_scenes)
     end
 
     # @return [Array<Take>]
@@ -96,9 +98,15 @@ module Gamefic
       Snapshot.save self
     end
 
-    def run_scripts
-      super
-      @digest = Gamefic::Snapshot.digest(self)
+    # def run_scripts
+    #   super
+    #   stage do
+    #     block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
+    #     block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+    #   end
+    # end
+
+    def block_default_scenes
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
         block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)

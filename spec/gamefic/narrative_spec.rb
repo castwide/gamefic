@@ -3,7 +3,7 @@ describe Gamefic::Narrative do
     it 'adds a script' do
       blk = proc {}
       Gamefic::Narrative.script &blk
-      expect(Gamefic::Narrative.blocks).to eq([blk])
+      expect(Gamefic::Narrative.blocks.map(&:proc)).to eq([blk])
     end
   end
 

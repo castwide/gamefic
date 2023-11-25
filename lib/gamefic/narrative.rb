@@ -5,15 +5,7 @@ module Gamefic
   #
   class Narrative
     module ScriptMethods
-      # @return [Array<Gamefic::Entity>]
-      def entities
-        @entities ||= [].freeze
-      end
-
-      # @return [Array<Gamefic::Actor>]
-      def players
-        @players ||= [].freeze
-      end
+      include Scriptable::Entities
     end
 
     class << self
@@ -23,15 +15,31 @@ module Gamefic
       end
       alias blocks scripts
 
-      # Add a block to be executed during initialization.
+      # Add a block of code to be executed during initialization.
       #
-      # These blocks are where actions and scenes should be defined. After they
-      # get executed, the playbook and scenebook will be frozen. Any entities
-      # created in these blocks will be considered "static."
+      # These blocks are used to define actions, scenes, and static entities.
+      # After they get executed, the playbook and scenebook will be frozen.
+      #
+      # Dynamic entities should be created with #seed.
       #
       # @yieldself [ScriptMethods]
       def script &block
-        scripts.push block
+        scripts.push Block.new(:script, block)
+      end
+
+      # Add a block of code to generate dynamic content after initialization.
+      #
+      # These blocks run after the initial scripts have been executed. Their
+      # primary use is to add dynamic entities and other components that can
+      # vary from instance to instance (e.g., random or procedurally generated
+      # content).
+      #
+      # @note Seeds do not get executed when a narrative is restored from a
+      #   snapshot.
+      #
+      # @yieldself [Scriptable::Entities]
+      def seed &block
+        scripts.push Block.new(:seed, block)
       end
 
       # The module containing methods that can be delegated to the narrative
@@ -56,12 +64,16 @@ module Gamefic
     end
 
     include Logging
+    # @!parse include ScriptMethods
     delegate ScriptMethods
+
+    attr_reader :digest
 
     def initialize
       run_scripts
       playbook.freeze
       scenebook.freeze
+      run_seeds
       theater.freeze
     end
 
@@ -101,7 +113,7 @@ module Gamefic
       player.stream take.output[:messages]
     end
 
-    # A narrative is considered to be concluding when it only players are in
+    # A narrative is considered to be concluding when all of its players are in
     # a conclusion scene. Engines can use this method to determine whether the
     # game is ready to end.
     #
@@ -138,10 +150,6 @@ module Gamefic
       active
     end
 
-    def pick description
-      Gamefic::Query::General.new(entities).query(nil, description).match
-    end
-
     def ready
       scenebook.run_ready_blocks
     end
@@ -150,37 +158,16 @@ module Gamefic
       scenebook.run_update_blocks
     end
 
+    # @return [void]
     def run_scripts
-      self.class.blocks.each { |blk| stage(&blk) }
+      self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
       @static_size = entities.length
+      @digest = Gamefic::Snapshot.digest(self)
     end
 
-    def entities_safe_push entity
-      @entities = @entities.dup || []
-      @entities.push(entity).freeze
-      entity
-    end
-
-    def entities_safe_delete entity
-      idx = entities.find_index(entity)
-      if idx < static_size
-        logger.warn "Cannot delete static entity `#{entity}`"
-      else
-        @entities = (@entities.dup - [entity]).freeze
-      end
-    end
-
-    def players_safe_push player
-      return player if @players&.include?(player)
-
-      @players = @players.dup || []
-      @players.push(player).freeze
-      player
-    end
-
-    def players_safe_delete player
-      return unless @players
-      @players = (@players.dup - [player]).freeze
+    # @return [void]
+    def run_seeds
+      self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
     end
 
     # The size of the entities array after initialization. Narratives use this
