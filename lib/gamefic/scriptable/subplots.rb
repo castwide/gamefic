@@ -20,6 +20,12 @@ module Gamefic
         actor.cue next_cue if next_cue
       end
 
+      def conclude
+        scenebook.run_conclude_blocks
+        players.each { |p| exeunt p }
+        entities.each { |e| destroy e }
+      end
+  
       # @return [Subplot]
       def subplot
         self
