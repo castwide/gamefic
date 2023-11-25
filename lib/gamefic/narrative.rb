@@ -5,7 +5,10 @@ module Gamefic
   #
   class Narrative
     module ScriptMethods
+      include Scriptable::Actions
       include Scriptable::Entities
+      include Scriptable::Queries
+      include Scriptable::Scenes
     end
 
     class << self
@@ -106,11 +109,11 @@ module Gamefic
     # @return [void]
     def introduce(player)
       cast player
-      return unless @introduction
-
-      take = Take.new(player, @introduction)
-      take.start
-      player.stream take.output[:messages]
+      scenebook.introductions.each do |scene|
+        take = Take.new(player, scene)
+        take.start
+        player.stream take.output[:messages]
+      end
     end
 
     # A narrative is considered to be concluding when all of its players are in
@@ -168,6 +171,10 @@ module Gamefic
     # @return [void]
     def run_seeds
       self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
+    rescue FrozenScenebookError => e
+      raise e.class, "Scenebooks cannot be modified from seeds. Try `script` instead", e.backtrace
+    rescue FrozenPlaybookError => e
+      raise e.class, "Playbooks cannot be modified from seeds. Try `script` instead", e.backtrace
     end
 
     # The size of the entities array after initialization. Narratives use this

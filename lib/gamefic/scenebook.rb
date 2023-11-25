@@ -2,11 +2,15 @@
 
 module Gamefic
   class Scenebook
+    include Logging
+
     attr_reader :player_output_blocks
 
     attr_reader :player_conclude_blocks
 
     attr_reader :ready_blocks
+
+    attr_reader :introductions
 
     def initialize stage
       @stage = stage
@@ -16,6 +20,7 @@ module Gamefic
       @conclude_blocks = []
       @player_conclude_blocks = []
       @player_output_blocks = []
+      @introductions = []
     end
 
     # Add a scene to the scenebook.
@@ -50,6 +55,10 @@ module Gamefic
       super
       instance_variables.each { |k| instance_variable_get(k).freeze }
       self
+    end
+
+    def introduction scene = nil
+      introductions.push scene
     end
 
     # @return [Proc]
