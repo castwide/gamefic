@@ -7,6 +7,7 @@ module Gamefic
   #
   class Subplot < Narrative
     module ScriptMethods
+      include Narrative::ScriptMethods
       include Scriptable::Actions
       include Scriptable::Entities
       include Scriptable::Queries
@@ -14,12 +15,10 @@ module Gamefic
       include Scriptable::Subplots
     end
 
-    include ScriptMethods
-
-    # The host plot.
-    #
-    # @return [Plot]
-    attr_reader :plot
+    # @!method self.script &block
+    #   @see Gamefic::Narrative.script
+    #   @yieldself [ScriptMethods]
+    delegate ScriptMethods
 
     attr_reader :uuid
 
@@ -53,11 +52,6 @@ module Gamefic
     # options.
     #
     def configure **config; end
-
-    # @todo This is ugly. Necessary for the Open Cases Burglary subplot
-    def subplot
-      self
-    end
 
     def inspect
       "#<#{self.class}>"

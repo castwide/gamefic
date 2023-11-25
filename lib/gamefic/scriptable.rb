@@ -1,8 +1,10 @@
 module Gamefic
   # A collection of methods that can be used in Gamefic scripts.
   #
-  # Scriptable modules are designed to be integrate narratives with theaters.
-  # Narratives include the modules Theaters forward the messages.
+  # Scriptable modules are designed to integrate narratives with theaters.
+  # Narratives assign a delegator module that includes all the scriptables
+  # required by the narrative's scripts. Theaters forward scriptable method
+  # calls to the narrative.
   #
   module Scriptable
     autoload :Actions,  'gamefic/scriptable/actions'

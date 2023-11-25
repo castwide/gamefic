@@ -1,5 +1,7 @@
 module Gamefic
   # A base class for building and managing the resources that compose a story.
+  # The Plot and Subplot classes inherit from Narrative and provide additional
+  # functionality.
   #
   class Narrative
     module ScriptMethods
@@ -14,9 +16,6 @@ module Gamefic
       end
     end
 
-    include Logging
-    include ScriptMethods
-
     class << self
       # @return [Array<Proc>]
       def scripts
@@ -30,10 +29,34 @@ module Gamefic
       # get executed, the playbook and scenebook will be frozen. Any entities
       # created in these blocks will be considered "static."
       #
+      # @yieldself [ScriptMethods]
       def script &block
         scripts.push block
       end
+
+      # The module containing methods that can be delegated to the narrative
+      # from scripts.
+      #
+      # @return [Module]
+      attr_reader :delegator
+
+      # Assign a delegator module for scripts.
+      #
+      # @param [Module]
+      def delegate delegator
+        include delegator
+        @delegator = delegator
+      end
+
+      # @return [void]
+      def inherited subclass
+        super
+        subclass.delegate delegator
+      end
     end
+
+    include Logging
+    delegate ScriptMethods
 
     def initialize
       run_scripts
@@ -44,6 +67,10 @@ module Gamefic
 
     def theater
       @theater ||= Theater.new
+    end
+
+    def delegator
+      self.class.delegator
     end
 
     # @return [Playbook]

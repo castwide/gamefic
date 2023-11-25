@@ -3,12 +3,12 @@
 require 'base64'
 
 module Gamefic
-  # @!method self.script &block
-  #   Plot scripting
-  #   @yieldself [Scriptable::Actions, Scriptable::Branches, Scriptable::Queries, Scriptable::Scenes]
+  # The plot is the central narrative. It provides a script interface with
+  # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
     module ScriptMethods
+      include Narrative::ScriptMethods
       include Scriptable::Actions
       include Scriptable::Entities
       include Scriptable::Plots
@@ -16,7 +16,10 @@ module Gamefic
       include Scriptable::Scenes
     end
 
-    include ScriptMethods
+    # @!method self.script &block
+    #   @see Gamefic::Narrative.script
+    #   @yieldself [ScriptMethods]
+    delegate ScriptMethods
 
     # @return [Hash]
     attr_reader :metadata
@@ -109,9 +112,11 @@ module Gamefic
 end
 
 module Gamefic
-  # A shortcut to `Gamefic::Plot.script`
+  # A shortcut to Gamefic::Plot.script.
   #
-  # @yieldself [Scriptable::Actions, Scriptable::Branches, Scriptable::Queries, Scriptable::Scenes]
+  # @see Gamefic::Plot.script
+  #
+  # @yieldself [Plot::ScriptMethods]
   def self.script &block
     Gamefic::Plot.script &block
   end
