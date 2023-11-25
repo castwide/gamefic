@@ -22,13 +22,13 @@ module Gamefic
     instance_eval do
       if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
         define_method :method_missing do |symbol, *args, &block|
-          raise NoMethodError, "#{director} cannot delegate method #{symbol}" unless director.delegator.public_instance_methods.include?(symbol)
+          raise NoMethodError, "#{director} cannot delegate method `#{symbol}`" unless director.delegator.public_instance_methods.include?(symbol)
 
           director.public_send symbol, *args, &block
         end
       else
         define_method :method_missing do |symbol, *args, **splat, &block|
-          raise NoMethodError, "#{director} cannot delegate method #{symbol}" unless director.delegator.public_instance_methods.include?(symbol)
+          raise NoMethodError, "#{director} cannot delegate method `#{symbol}`" unless director.delegator.public_instance_methods.include?(symbol)
 
           director.public_send symbol, *args, **splat, &block
         end
