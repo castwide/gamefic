@@ -95,14 +95,6 @@ module Gamefic
       Snapshot.save self
     end
 
-    # def run_scripts
-    #   super
-    #   stage do
-    #     block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
-    #     block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
-    #   end
-    # end
-
     def block_default_scenes
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
