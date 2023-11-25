@@ -7,6 +7,8 @@ module Gamefic
     # Scriptable methods related to creating actions.
     #
     module Actions
+      include Queries
+
       # Create a response to a command.
       # A Response uses the `verb` argument to identify the imperative verb
       # that triggers the action. It can also accept queries to tokenize the
@@ -122,6 +124,9 @@ module Gamefic
       end
 
       private
+
+      # @!attribute [r] playbook
+      #   @return [Playbook]
 
       def map_response_args args
         args.map do |arg|

@@ -240,6 +240,9 @@ module Gamefic
 
       private
 
+      # @!attribute [r] scenebook
+      #   @return [Scenebook]
+
       # @param err [FrozenError]
       # @return [void]
       def raise_frozen_scenebook_error e
