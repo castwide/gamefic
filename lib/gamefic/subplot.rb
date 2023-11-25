@@ -30,11 +30,8 @@ module Gamefic
       configure(**config)
       @config = config.freeze
       super()
-      post_initialize
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
-
-    def post_initialize; end
 
     def ready
       super
