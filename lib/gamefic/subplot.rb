@@ -35,6 +35,15 @@ module Gamefic
       conclude if concluding?
     end
 
+    # Remove an actor from the subplot with an optional cue
+    #
+    # @param actor [Gamefic::Actor]
+    # @next_cue [Symbol, nil]
+    def exeunt actor, next_cue = nil
+      super(actor)
+      actor.cue next_cue if next_cue
+    end
+
     # Subclasses can override this method to handle additional configuration
     # options.
     #
