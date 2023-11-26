@@ -52,7 +52,7 @@ module Gamefic
       def pick! description
         ary = Gamefic::Query::General.new(entities, ambiguous: true).query(nil, description).match
 
-        raise "no entity matching '#{description}'" if ary.empty?
+        raise "no entity matching '#{description}'" if ary.nil?
 
         raise "multiple entities matching '#{description}': #{ary.join_and}" unless ary.one?
 
