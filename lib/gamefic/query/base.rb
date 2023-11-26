@@ -56,7 +56,7 @@ module Gamefic
       end
 
       def class_depth klass
-        return 1 if klass.is_a?(Module)
+        return 1 unless klass.is_a?(Class)
 
         depth = 1
         sup = klass
