@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Query
     # A Scoped query uses a Scope to select entities to filter based on their

@@ -30,7 +30,7 @@ module Gamefic
 
       def available_entities(subject)
         if @entities.is_a?(Proc)
-          if @entities.arity == 0
+          if @entities.arity.zero?
             @entities.call
           else
             @entities.call(subject)
