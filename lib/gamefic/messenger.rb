@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'stringio'
 
 module Gamefic
   class Messenger
     def initialize
-      @buffers ||= ['']
+      @buffers = ['']
     end
 
     # Create a temporary buffer while yielding the given block and return the
@@ -58,8 +60,8 @@ module Gamefic
       "<p>#{message.strip}</p>"
         .gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, "</p><p>")
         .gsub(/[ \t]*\n[ \t]*/, ' ')
-        .gsub(/<p>[\s]*<p>/, '<p>')
-        .gsub(/<\/p>[\s]*<\/p>/, '</p>')
+        .gsub(/<p>\s*<p>/, '<p>')
+        .gsub(%r{</p>\s*</p>}, '</p>')
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Scope
     # The base class for a Scoped query's scope.
@@ -34,7 +36,7 @@ module Gamefic
         return [] unless entity&.accessible?
 
         entity.children.flat_map do |c|
-          [c]  + subquery_accessible(c)
+          [c] + subquery_accessible(c)
         end
       end
     end

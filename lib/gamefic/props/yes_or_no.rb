@@ -12,7 +12,7 @@ module Gamefic
       end
 
       def options
-        @options ||= ['Yes', 'No'].freeze
+        @options ||= %w[Yes No].freeze
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Scope
     class Parent < Base

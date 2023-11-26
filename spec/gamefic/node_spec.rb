@@ -30,8 +30,7 @@ describe Gamefic::Node do
     y.parent = x
     z.parent = y
     flat = x.flatten
-    expect(flat.include? y).to eq(true)
-    expect(flat.include? z).to eq(true)
+    expect(flat).to eq([y, z])
   end
 
   it "does not permit a node to be its own parent" do

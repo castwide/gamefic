@@ -129,6 +129,7 @@ module Gamefic
 
     def ==(other)
       return false unless other.is_a?(Syntax)
+
       signature == other.signature
     end
 

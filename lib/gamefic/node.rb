@@ -18,11 +18,7 @@ module Gamefic
     #
     # @return [Array]
     def flatten
-      array = Array.new
-      children.each { |child|
-        array = array + recurse_flatten(child)
-      }
-      array
+      children.flat_map { |child| recurse_flatten(child) }
     end
 
     # The object's parent.
@@ -35,28 +31,23 @@ module Gamefic
     # Set the object's parent.
     #
     def parent=(node)
-      return if node == @parent 
+      return if node == @parent
 
       raise NodeError, 'Parent must be a Node' unless node.is_a?(Node) || node.nil?
 
       raise NodeError, "Node cannot be its own parent" if node == self
 
       # Do not permit circular references
-      if node&.parent == self
-        node.parent = nil
-      end
+      node.parent = nil if node&.parent == self
 
       raise NodeError, 'Node cannot be a child of a descendant' if flatten.include?(node)
 
-      if @parent != node
-        if @parent != nil
-          @parent.send(:rem_child, self)
-        end
-        @parent = node
-        if @parent != nil
-          @parent.send(:add_child, self)
-        end
-      end
+      return if @parent == node
+
+
+      @parent&.send(:rem_child, self)
+      @parent = node
+      @parent&.send(:add_child, self)
     end
 
     # Determine if external objects can interact with this object's children.
@@ -87,12 +78,9 @@ module Gamefic
     private
 
     def recurse_flatten(node)
-      array = Array.new
-      array.push(node)
-      node.children.each { |child|
-        array = array + recurse_flatten(child)
-      }
-      return array
+      array = [node]
+      node.children.each { |child| array += recurse_flatten(child) }
+      array
     end
   end
 end

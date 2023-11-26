@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 require 'corelib/marshal' if RUBY_ENGINE == 'opal'
-# require 'zlib'
 
 module Gamefic
   # Save and restore plots.
@@ -53,10 +54,8 @@ module Gamefic
       def collect plot
         {
           plot: {
-            digest: plot.digest,
-            klass: plot.class.to_s,
-            entities: plot.entities,
-            players: plot.players,
+            digest: plot.digest, klass: plot.class.to_s,
+            entities: plot.entities, players: plot.players,
             theater: plot.instance_variable_get(:@theater),
             delegator: plot.instance_variable_get(:@delegator)
           },
@@ -67,11 +66,8 @@ module Gamefic
       def collect_subplots subplots
         subplots.map do |sp|
           {
-            klass: sp.class.to_s,
-            uuid: sp.uuid,
-            config: sp.config,
-            entities: sp.entities,
-            players: sp.players,
+            klass: sp.class.to_s, uuid: sp.uuid, config: sp.config,
+            entities: sp.entities, players: sp.players,
             theater: sp.instance_variable_get(:@theater),
             delegator: sp.instance_variable_get(:@delegator)
           }

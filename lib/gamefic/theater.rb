@@ -10,7 +10,7 @@ module Gamefic
       return unless block
 
       directors.push director
-      result = instance_exec *args, &block
+      result = instance_exec(*args, &block)
       directors.pop
       result
     end

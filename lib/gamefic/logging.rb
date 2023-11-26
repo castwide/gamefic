@@ -15,7 +15,7 @@ module Gamefic
   class << self
     def logger
       @logger ||= select_logger.tap do |l|
-        l.formatter = proc { |sev, _dt, _prog, msg| "[#{sev}] #{msg}\n"}
+        l.formatter = proc { |sev, _dt, _prog, msg| "[#{sev}] #{msg}\n" }
       end
     end
 
@@ -24,7 +24,7 @@ module Gamefic
     def select_logger
       # We use #tap here because `Logger.new(STDERR, level: Logger::WARN)`
       # fails in Opal
-      Logger.new(STDERR).tap { |log| log.level = Logger::WARN }
+      Logger.new($stderr).tap { |log| log.level = Logger::WARN }
     end
   end
 end
