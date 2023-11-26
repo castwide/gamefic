@@ -171,6 +171,8 @@ module Gamefic
     # @return [void]
     def run_seeds
       self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
+    # These errors are modified to provide a more informative message when
+    # frozen rulebook errors occur from seed scripts.
     rescue FrozenScenebookError => e
       raise e.class, "Scenebooks cannot be modified from seeds. Try `script` instead", e.backtrace
     rescue FrozenPlaybookError => e

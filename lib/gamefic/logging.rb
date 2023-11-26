@@ -22,11 +22,9 @@ module Gamefic
     private
 
     def select_logger
-      if RUBY_ENGINE == 'opal'
-        Logger.new(STDERR).tap { |log| log.level = Logger::WARN }
-      else
-        Logger.new(STDERR, level: Logger::WARN)
-      end
+      # We use #tap here because `Logger.new(STDERR, level: Logger::WARN)`
+      # fails in Opal
+      Logger.new(STDERR).tap { |log| log.level = Logger::WARN }
     end
   end
 end

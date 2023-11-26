@@ -41,6 +41,7 @@ module Gamefic
       rescue FrozenError => e
         raise_frozen_scenebook_error e
       end
+      alias scene block
 
       # Add a block to be executed when a player is added to the game.
       # Each Plot should only have one introduction.

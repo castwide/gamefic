@@ -23,9 +23,7 @@ module Gamefic
         filtered = available_entities(subject).that_are(*unproxy(@arguments))
         scan = Scanner.scan(filtered, token)
 
-        return ambiguous_result(scan) if ambiguous?
-
-        unambiguous_result(scan)
+        ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
       end
 
       private

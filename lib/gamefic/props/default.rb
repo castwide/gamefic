@@ -23,6 +23,7 @@ module Gamefic
       #
       # @return [Hash]
       attr_reader :context
+      alias data context
 
       # @param scene [Scene, nil]
       # @param context [Hash]
