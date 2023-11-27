@@ -13,30 +13,42 @@ module Gamefic
   # not need to care whether a variable points to a proxy or an entity.
   #
   class Proxy
-    # @return [Plot, Subplot]
-    attr_reader :host
+    # @return [Narrative]
+    attr_reader :narrative
 
     # @return [Integer]
     attr_reader :index
 
-    # @param host [Plot, Subplot]
+    # @param host [Narrative]
     # @param index [Integer]
-    def initialize host, index
-      @host = host
+    def initialize narrative, index
+      @narrative = narrative
       @index = index
       freeze
     end
 
     # @return [Gamefic::Entity]
     def entity
-      host.entities[index]
+      narrative.entities[index]
     end
 
-    def self.index(host, entity)
-      index = host.entities.find_index(entity)
+    # Get a proxy for an entity.
+    #
+    # If the entity is managed on a host and does not need to be proxied,
+    # return the original entity instead.
+    #
+    # @raise [RuntimeError] if the entity is not found in the narrative
+    #
+    # @param narrative [Narrative]
+    # @param entity [Entity]
+    # @return [Proxy, Entity]
+    def self.index(narrative, entity)
+      return entity if narrative.hosted? && narrative.host.entities.include?(entity)
+
+      index = narrative.entities.find_index(entity)
       raise 'Entity could not be proxied' unless index
 
-      Proxy.new(host, index)
+      Proxy.new(narrative, index)
     end
   end
 end

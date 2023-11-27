@@ -70,7 +70,11 @@ module Gamefic
     # @!parse include ScriptMethods
     delegate ScriptMethods
 
+    # @return [Integer]
     attr_reader :digest
+
+    # @return [Narrative]
+    attr_reader :host
 
     def initialize
       run_scripts
@@ -159,6 +163,10 @@ module Gamefic
 
     def update
       scenebook.run_update_blocks
+    end
+
+    def hosted?
+      !!host
     end
 
     # @return [void]

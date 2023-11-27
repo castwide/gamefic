@@ -18,12 +18,15 @@ module Gamefic
 
     attr_reader :uuid
 
+    attr_reader :plot
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
     def initialize plot, introduce: nil, **config
       @uuid = SecureRandom.uuid
       @plot = plot
+      @host = Host.new(plot)
       configure(**config)
       @config = config.freeze
       super()

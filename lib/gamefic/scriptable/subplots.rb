@@ -6,20 +6,15 @@ module Gamefic
       # @return [Hash]
       attr_reader :config
 
-      # The host plot.
+      # The subplot's host.
       #
-      # @return [Plot]
-      attr_reader :plot
+      # @return [Host]
+      attr_reader :host
 
       def conclude
         scenebook.run_conclude_blocks
         players.each { |p| exeunt p }
         entities.each { |e| destroy e }
-      end
-  
-      # @return [Subplot]
-      def subplot
-        self
       end
     end
   end

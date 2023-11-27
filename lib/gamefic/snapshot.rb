@@ -96,7 +96,7 @@ module Gamefic
 
       def rebuild_subplot data, plot
         part = rebuild_common(data)
-        part.instance_variable_set(:@plot, plot)
+        part.instance_variable_set(:@host, plot)
         part.instance_variable_set(:@config, data[:config])
         part.configure(**data[:config])
         part.run_scripts
