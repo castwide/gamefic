@@ -107,14 +107,3 @@ module Gamefic
     end
   end
 end
-
-module Gamefic
-  # A shortcut to Gamefic::Plot.script.
-  #
-  # @see Gamefic::Plot.script
-  #
-  # @yieldself [Plot::ScriptMethods]
-  def self.script &block
-    Gamefic::Plot.script &block
-  end
-end
