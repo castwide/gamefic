@@ -12,9 +12,6 @@ module Gamefic
   module Active
     include Logging
 
-    # @return [String, nil]
-    attr_accessor :last_input
-
     # The cue that will be used to create a scene at the beginning of the next
     # turn.
     #
@@ -79,7 +76,7 @@ module Gamefic
     end
 
     def buffer &block
-      messenger.buffer &block
+      messenger.buffer(&block)
     end
 
     def flush

@@ -39,7 +39,6 @@ module Gamefic
           last_input: @rig.props.input
         }
       )
-      @actor.last_input = @rig.props.input
       return if @rig.cancelled?
 
       @scene.run_finish_blocks @actor, @rig.props
