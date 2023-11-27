@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'base64'
-
 module Gamefic
   # The plot is the central narrative. It provides a script interface with
   # methods for creating entities, actions, scenes, and hooks.

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'corelib/marshal' if RUBY_ENGINE == 'opal'
+require 'base64'
 
 module Gamefic
   # Save and restore plots.
