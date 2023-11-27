@@ -90,7 +90,7 @@ module Gamefic
 
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
-        part.instance_variable_set(:@theater, data[:theater])
+        part.instance_variable_set(:@theater, data[:theater]).freeze
         rebuild_players part
         part
       end
@@ -105,7 +105,7 @@ module Gamefic
         part.instance_variable_set(:@uuid, data[:uuid])
         part.instance_variable_set(:@entities, data[:entities])
         part.instance_variable_set(:@players, data[:players])
-        part.instance_variable_set(:@theater, data[:theater])
+        part.instance_variable_set(:@theater, data[:theater]).freeze
         rebuild_players part
         part
       end
