@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gamefic/plot'
 require 'securerandom'
 
@@ -16,8 +18,10 @@ module Gamefic
     #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
+    # @return [String]
     attr_reader :uuid
 
+    # @return [Plot]
     attr_reader :plot
 
     # @param plot [Gamefic::Plot]

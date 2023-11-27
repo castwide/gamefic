@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional
@@ -125,7 +127,7 @@ module Gamefic
     # game is ready to end.
     #
     def concluding?
-      players.empty? || players.all? { |plyr| plyr.concluding? }
+      players.empty? || players.all?(&:concluding?)
     end
 
     # Remove a player from the game.
