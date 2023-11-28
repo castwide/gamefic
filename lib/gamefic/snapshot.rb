@@ -57,8 +57,7 @@ module Gamefic
           plot: {
             digest: plot.digest, klass: plot.class.to_s,
             entities: plot.entities, players: plot.players,
-            theater: plot.instance_variable_get(:@theater),
-            delegator: plot.instance_variable_get(:@delegator)
+            theater: plot.instance_variable_get(:@theater)
           },
           subplots: collect_subplots(plot.subplots)
         }
@@ -69,8 +68,7 @@ module Gamefic
           {
             klass: sp.class.to_s, uuid: sp.uuid, config: sp.config,
             entities: sp.entities, players: sp.players,
-            theater: sp.instance_variable_get(:@theater),
-            delegator: sp.instance_variable_get(:@delegator)
+            theater: sp.instance_variable_get(:@theater)
           }
         end
       end
@@ -111,10 +109,7 @@ module Gamefic
       end
 
       def rebuild_common data
-        klass = string_to_constant(data[:klass])
-        part = klass.allocate
-        part.instance_variable_set(:@delegator, data[:delegator])
-        part
+        string_to_constant(data[:klass]).allocate
       end
 
       def rebuild_players part
