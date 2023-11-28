@@ -31,9 +31,7 @@ module Gamefic
       @uuid = SecureRandom.uuid
       @plot = plot
       @host = Host.new(plot)
-      configure(**config)
-      @config = config.freeze
-      super()
+      super(**config)
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
@@ -50,11 +48,6 @@ module Gamefic
       super(actor)
       actor.cue next_cue if next_cue
     end
-
-    # Subclasses can override this method to handle additional configuration
-    # options.
-    #
-    def configure **config; end
 
     def inspect
       "#<#{self.class}>"

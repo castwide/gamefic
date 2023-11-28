@@ -14,6 +14,14 @@ module Gamefic
     end
 
     class << self
+      def delegators(with_inherited: true)
+        (with_inherited && superclass <= Narrative ? superclass.delegators : []) + local_delegators
+      end
+
+      def delegated_methods(with_inherited: true)
+        delegators(with_inherited: with_inherited).flat_map(&:public_instance_methods).uniq
+      end
+
       # @return [Array<Proc>]
       def scripts
         @scripts ||= []
@@ -32,12 +40,11 @@ module Gamefic
         scripts.push Block.new(:script, block)
       end
 
-      # Add a block of code to generate dynamic content after initialization.
+      # Add a block of code to generate content after initialization.
       #
-      # These blocks run after the initial scripts have been executed. Their
-      # primary use is to add dynamic entities and other components that can
-      # vary from instance to instance (e.g., random or procedurally generated
-      # content).
+      # Seeds run after the initial scripts have been executed. Their primary
+      # use is to add entities and other components, especially randomized or
+      # procedurally generated content that can vary from instance to instance.
       #
       # @note Seeds do not get executed when a narrative is restored from a
       #   snapshot.
@@ -47,24 +54,18 @@ module Gamefic
         scripts.push Block.new(:seed, block)
       end
 
-      # The module containing methods that can be delegated to the narrative
-      # from scripts.
-      #
-      # @return [Module]
-      attr_reader :delegator
-
       # Assign a delegator module for scripts.
       #
       # @param [Module]
       def delegate delegator
         include delegator
-        @delegator = delegator
+        local_delegators.push delegator
       end
 
-      # @return [void]
-      def inherited subclass
-        super
-        subclass.delegate delegator
+      private
+
+      def local_delegators
+        @local_delegators ||= []
       end
     end
 
@@ -75,23 +76,22 @@ module Gamefic
     # @return [Integer]
     attr_reader :digest
 
-    # @return [Narrative]
+    # @return [Host, nil]
     attr_reader :host
 
-    def initialize
+    # @return [Hash]
+    attr_reader :config
+
+    def initialize **config
+      @config = config
+      configure
       run_scripts
-      playbook.freeze
-      scenebook.freeze
       run_seeds
       theater.freeze
     end
 
     def theater
       @theater ||= Theater.new
-    end
-
-    def delegator
-      self.class.delegator
     end
 
     # @return [Playbook]
@@ -171,11 +171,29 @@ module Gamefic
       !!host
     end
 
+    # Subclasses can override this method to handle additional configuration
+    # options.
+    #
+    def configure; end
+
     # @return [void]
     def run_scripts
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+      block_default_scenes
       @static_size = entities.length
       @digest = Gamefic::Snapshot.digest(self)
+      playbook.freeze
+      scenebook.freeze
+    end
+
+    # @return [void]
+    def block_default_scenes
+      return if hosted?
+
+      stage do
+        block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
+        block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+      end
     end
 
     # @return [void]

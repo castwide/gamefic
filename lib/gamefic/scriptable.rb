@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # A collection of methods that can be used in Gamefic scripts.
   #

@@ -19,7 +19,6 @@ module Gamefic
     attr_reader :metadata
 
     def initialize metadata = {}
-      block_default_scenes
       super()
       @metadata = metadata
     end
@@ -91,13 +90,6 @@ module Gamefic
 
     def save
       Snapshot.save self
-    end
-
-    def block_default_scenes
-      stage do
-        block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
-        block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
-      end
     end
 
     def self.restore snapshot

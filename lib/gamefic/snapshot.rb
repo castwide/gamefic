@@ -99,7 +99,7 @@ module Gamefic
         part = rebuild_common(data)
         part.instance_variable_set(:@host, plot)
         part.instance_variable_set(:@config, data[:config])
-        part.configure(**data[:config])
+        part.configure
         part.run_scripts
 
         part.instance_variable_set(:@uuid, data[:uuid])
