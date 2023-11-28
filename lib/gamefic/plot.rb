@@ -92,6 +92,19 @@ module Gamefic
       Snapshot.save self
     end
 
+    # Get a proxy for an entity.
+    #
+    # @raise [RuntimeError] if the entity is not found in the narrative
+    #
+    # @param entity [Entity]
+    # @return [Proxy]
+    def proxy entity
+      index = entities.find_index(entity)
+      raise 'Entity could not be proxied' unless index
+
+      Proxy.new(self, index)
+    end
+
     def self.restore snapshot
       Snapshot.restore snapshot
     end

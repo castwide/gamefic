@@ -73,7 +73,7 @@ module Gamefic
         args.map do |arg|
           case arg
           when Entity
-            Proxy.index(self, arg)
+            proxy(arg)
           else
             arg
           end

@@ -132,7 +132,7 @@ module Gamefic
         args.map do |arg|
           case arg
           when Entity
-            available(Proxy.index(self, arg))
+            available(proxy(arg))
           when Class, Module, Symbol, Proc
             available(arg)
           when String, Regexp

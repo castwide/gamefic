@@ -49,6 +49,19 @@ module Gamefic
       actor.cue next_cue if next_cue
     end
 
+    # @see Plot#proxy
+    #
+    # If the entity is managed on a host and does not need to be proxied,
+    # subplots return the original entity instead.
+    #
+    # @param entity [Entity]
+    # @return [Proxy, Entity]
+    def proxy entity
+      return entity if host.entities.include?(entity)
+
+      super
+    end
+
     def inspect
       "#<#{self.class}>"
     end

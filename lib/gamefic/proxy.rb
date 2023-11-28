@@ -31,24 +31,5 @@ module Gamefic
     def entity
       narrative.entities[index]
     end
-
-    # Get a proxy for an entity.
-    #
-    # If the entity is managed on a host and does not need to be proxied,
-    # return the original entity instead.
-    #
-    # @raise [RuntimeError] if the entity is not found in the narrative
-    #
-    # @param narrative [Narrative]
-    # @param entity [Entity]
-    # @return [Proxy, Entity]
-    def self.index(narrative, entity)
-      return entity if narrative.hosted? && narrative.host.entities.include?(entity)
-
-      index = narrative.entities.find_index(entity)
-      raise 'Entity could not be proxied' unless index
-
-      Proxy.new(narrative, index)
-    end
   end
 end
