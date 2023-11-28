@@ -39,11 +39,21 @@ module Gamefic
       plot
     end
 
-    def self.digest plot
+    # Generate a digest of a narrative.
+    #
+    # Digests are used to validate snapshots. If a snapshot's digest does not
+    # match the digest of its allocated class, the snapshot cannot be restored.
+    #
+    # @note A narrative's digest can change during its runtime, so the digest
+    #   in the snapshot should be the value that was calculated during
+    #   initialization.
+    #
+    # @param narrative [Narrative]
+    def self.digest narrative
       binary = {
-        entities: plot.entities.map(&:inspect),
-        theater: plot.instance_variable_get(:@theater).instance_variables.map do |iv|
-          [iv, plot.instance_variable_get(:@theater).instance_variable_get(iv).class]
+        entities: narrative.entities.map(&:inspect),
+        theater: narrative.instance_variable_get(:@theater).instance_variables.map do |iv|
+          [iv, narrative.instance_variable_get(:@theater).instance_variable_get(iv).class]
         end
       }.inspect
       calculate_digest binary
@@ -131,7 +141,7 @@ module Gamefic
                          .sum + (multiplier * 64 * 255)
           multiplier += 1
         end
-        result
+        result.to_s(16)
       end
     end
   end
