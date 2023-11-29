@@ -44,7 +44,7 @@ module Gamefic
       #
       # Seeds run after the initial scripts have been executed. Their primary
       # use is to add entities and other components, especially randomized or
-      # procedurally generated content that can vary from instance to instance.
+      # procedurally generated content that can vary between instances.
       #
       # @note Seeds do not get executed when a narrative is restored from a
       #   snapshot.

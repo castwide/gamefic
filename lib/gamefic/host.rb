@@ -12,10 +12,6 @@ module Gamefic
       @narrative = narrative
     end
 
-    def persist klass, **args
-      @narrative.make klass, *args
-    end
-
     if RUBY_ENGINE == 'opal'
       def method_missing symbol, *args
         return @narrative.send(symbol, *args) if DELEGATED_METHODS.include?(symbol)

@@ -11,6 +11,10 @@ module Gamefic
       # @return [Host]
       attr_reader :host
 
+      def persist klass, **args
+        host.make klass, *args
+      end
+
       def conclude
         scenebook.run_conclude_blocks
         players.each { |p| exeunt p }

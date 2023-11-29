@@ -24,12 +24,6 @@ module Gamefic
     # @return [Plot]
     attr_reader :plot
 
-    # @return [Host, nil]
-    attr_reader :host
-
-    # @return [Hash]
-    attr_reader :config
-
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
