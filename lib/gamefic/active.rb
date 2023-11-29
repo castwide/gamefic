@@ -194,20 +194,10 @@ module Gamefic
     # @param default [Scene, Symbol, nil]
     # @return [Take]
     def start_cue
-      unless next_cue
-        logger.debug "Using default scene for actor without cue"
-        cue :default_scene
-      end
-
+      ensure_cue
       available = scenebooks.map { |sb| sb[next_cue.scene] }.compact
-      raise ArgumentError, "Scene named `#{next_cue.scene}` does not exist" if available.empty?
-
-      logger.warn "Found #{available.count} scenes named `#{next_cue.scene}`" if available.length > 1
-
-      take = Take.new(self, available.last, **next_cue.context)
-      @last_cue = @next_cue
-      @next_cue = nil
-      take
+      validate_scene_selection(available)
+      new_take(available.last, **next_cue.context)
     end
 
     # Restart the scene from the most recent cue.
@@ -230,6 +220,7 @@ module Gamefic
       cue scene, **context
       available = scenebooks.map { |sb| sb[scene] }.compact.last
       raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
+
       @next_cue
     end
 
@@ -252,6 +243,26 @@ module Gamefic
     # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
+    end
+
+    def ensure_cue
+      return if next_cue
+
+      logger.debug "Using default scene for actor without cue"
+      cue :default_scene
+    end
+
+    def validate_scene_selection scenes
+      raise ArgumentError, "Scene named `#{next_cue.scene}` does not exist" if scenes.empty?
+
+      logger.warn "Found #{scenes.length} scenes named `#{next_cue.scene}`" if scenes.length > 1
+    end
+
+    def new_take scene, **context
+      take = Take.new(self, scene, **context)
+      @last_cue = @next_cue
+      @next_cue = nil
+      take
     end
   end
 end
