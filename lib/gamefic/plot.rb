@@ -15,14 +15,6 @@ module Gamefic
     #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
-    # @return [Hash]
-    attr_reader :metadata
-
-    def initialize metadata = {}
-      super()
-      @metadata = metadata
-    end
-
     def self.allocate
       super.tap(&:block_default_scenes)
     end
