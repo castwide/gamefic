@@ -29,6 +29,10 @@ describe Gamefic::Snapshot do
 
   let(:restored) { Gamefic::Plot.restore plot.save }
 
+  it 'freezes theaters' do
+    expect(restored.theater).to be_frozen
+  end
+
   it 'restores players' do
     player = restored.players.first
     expect(player.playbooks.to_a).to eq([restored.playbook, restored.subplots.first.playbook])
@@ -41,6 +45,10 @@ describe Gamefic::Snapshot do
 
   it 'restores subplots' do
     expect(restored.subplots).to be_one
+  end
+
+  it 'freezes subplot theaters' do
+    expect(restored.subplots.first.theater).to be_frozen
   end
 
   it 'restores stage instance variables' do

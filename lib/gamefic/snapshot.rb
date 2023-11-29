@@ -52,8 +52,8 @@ module Gamefic
     def self.digest narrative
       binary = {
         entities: narrative.entities.map(&:inspect),
-        theater: narrative.instance_variable_get(:@theater).instance_variables.map do |iv|
-          [iv, narrative.instance_variable_get(:@theater).instance_variable_get(iv).class]
+        theater: narrative.theater.instance_variables.map do |iv|
+          [iv, narrative.theater.instance_variable_get(iv).class]
         end
       }.inspect
       calculate_digest binary
@@ -67,7 +67,7 @@ module Gamefic
           plot: {
             digest: plot.digest, klass: plot.class.to_s,
             entities: plot.entities, players: plot.players,
-            theater: plot.instance_variable_get(:@theater)
+            theater: plot.theater
           },
           subplots: collect_subplots(plot.subplots)
         }
@@ -77,8 +77,7 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s, uuid: sp.uuid, config: sp.config,
-            entities: sp.entities, players: sp.players,
-            theater: sp.instance_variable_get(:@theater)
+            entities: sp.entities, players: sp.players, theater: sp.theater
           }
         end
       end
@@ -98,6 +97,7 @@ module Gamefic
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
         %i[entities players theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
+        part.theater.freeze
         rebuild_players part
         part
       end
@@ -111,6 +111,7 @@ module Gamefic
         part.set_static
 
         %i[uuid entities players theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
+        part.theater.freeze
         rebuild_players part
         part
       end
