@@ -38,6 +38,7 @@ module Gamefic
       @plot = plot
       @host = Host.new(plot)
       @config = config.freeze
+      configure
       super()
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
@@ -61,7 +62,7 @@ module Gamefic
     #
     def configure; end
 
-    # @see Plot#proxy
+    # @see Narrative#proxy
     #
     # If the entity is managed on a host and does not need to be proxied,
     # subplots return the original entity instead.
