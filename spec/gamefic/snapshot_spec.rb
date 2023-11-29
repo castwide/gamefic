@@ -78,4 +78,11 @@ describe Gamefic::Snapshot do
     digest = Gamefic::Snapshot.digest(plot)
     expect(digest).to eq(plot.digest)
   end
+
+  it 'retains player configuration after save' do
+    plot.save
+    expect(plot.players).to be_one
+    expect(plot.players.first.scenebooks.length).to eq(2)
+    expect(plot.players.first.playbooks.length).to eq(2)
+  end
 end

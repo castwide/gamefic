@@ -13,6 +13,8 @@ module Gamefic
 
     # @param object [Object]
     def add object
+      return object if @array.include?(object)
+
       @array = (@array.clone + [object]).freeze
       object
     end
