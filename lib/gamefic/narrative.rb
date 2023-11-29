@@ -86,6 +86,14 @@ module Gamefic
       theater.freeze
     end
 
+    def entity_vault
+      @entity_vault ||= Vault.new
+    end
+
+    def player_vault
+      @player_vault ||= Vault.new
+    end
+
     def theater
       @theater ||= Theater.new
     end
@@ -140,7 +148,7 @@ module Gamefic
     def cast active
       active.playbooks.add playbook
       active.scenebooks.add scenebook
-      players_safe_push active
+      player_vault.add active
       active
     end
 
@@ -151,7 +159,7 @@ module Gamefic
     def uncast active
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
-      players_safe_delete active
+      player_vault.delete active
       active
     end
 
@@ -182,7 +190,7 @@ module Gamefic
     end
 
     def set_static
-      @static_size = entities.length
+      entity_vault.lock
       @digest = Gamefic::Snapshot.digest(self).freeze
       playbook.freeze
       scenebook.freeze
@@ -197,16 +205,6 @@ module Gamefic
       raise e.class, "Scenebooks cannot be modified from seeds. Try `script` instead", e.backtrace
     rescue FrozenPlaybookError => e
       raise e.class, "Playbooks cannot be modified from seeds. Try `script` instead", e.backtrace
-    end
-
-    # The size of the entities array after initialization. Narratives use this
-    # to determine how it should treat destroyed entities. If the entity is
-    # inside the section of the array considered static, its position needs
-    # to be retained to ensure the validity of entity proxies.
-    #
-    # @return [Integer]
-    def static_size
-      @static_size ||= 0
     end
   end
 end

@@ -2,9 +2,14 @@
 
 describe Gamefic::Scriptable::Entities do
   let(:object) {
-    Object.new.tap do |obj|
-      obj.extend Gamefic::Scriptable::Entities
+    Class.new do
+      include Gamefic::Scriptable::Entities
+
+      def entity_vault
+        @entity_vault ||= Gamefic::Vault.new
+      end
     end
+    .new
   }
 
   describe '#pick!' do

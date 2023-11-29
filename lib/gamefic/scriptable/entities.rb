@@ -2,21 +2,21 @@
 
 module Gamefic
   module Scriptable
-    # Scriptable methods related to creating entities.
+    # Scriptable methods related to managing entities.
     #
     # @note The public versions of the entity and player arrays are frozen.
-    #   Authors need access to them but shouldn't modify them directly.
-    #   Instead, they should create new entities with the #make method.
+    #   Authors need access to them but shouldn't modify them directly. Use
+    #   #make and #destroy instead.
     #
     module Entities
       # @return [Array<Gamefic::Entity>]
       def entities
-        @entities ||= [].freeze
+        entity_vault.array
       end
 
       # @return [Array<Gamefic::Actor, Gamefic::Active>]
       def players
-        @players ||= [].freeze
+        player_vault.array
       end
 
       # Create an entity.
@@ -27,13 +27,13 @@ module Gamefic
       # @param args [Hash]
       # @return [Gamefic::Entity]
       def make klass, **opts
-        entities_safe_push klass.new(**opts)
+        entity_vault.add klass.new(**opts)
       end
 
       def destroy entity
-        entity.children.each { |child| child.parent = entity.parent }
+        entity.children.each { |child| destroy child }
         entity.parent = nil
-        entities_safe_delete entity
+        entity_vault.delete entity
       end
 
       # Pick an entity based on a unique name or description. Return nil if an
@@ -57,39 +57,6 @@ module Gamefic
         raise "multiple entities matching '#{description}': #{ary.join_and}" unless ary.one?
 
         ary.first
-      end
-
-      private
-
-      # @param entity [Entity]
-      def entities_safe_push entity
-        @entities = @entities.dup || []
-        @entities.push(entity).freeze
-        entity
-      end
-
-      # @param entity [Entity]
-      def entities_safe_delete entity
-        idx = entities.find_index(entity)
-        if idx < static_size
-          logger.warn "Cannot delete static entity `#{entity}`"
-        else
-          @entities = (@entities.dup - [entity]).freeze
-        end
-      end
-
-      # @param player [Actor, Active]
-      def players_safe_push player
-        return player if @players&.include?(player)
-
-        @players = @players.dup || []
-        @players.push(player).freeze
-        player
-      end
-
-      def players_safe_delete player
-        return unless @players
-        @players = (@players.dup - [player]).freeze
       end
     end
   end

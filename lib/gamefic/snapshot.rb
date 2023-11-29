@@ -66,7 +66,7 @@ module Gamefic
         {
           plot: {
             digest: plot.digest, klass: plot.class.to_s,
-            entities: plot.entities, players: plot.players,
+            entity_vault: plot.entity_vault, player_vault: plot.player_vault,
             theater: plot.theater
           },
           subplots: collect_subplots(plot.subplots)
@@ -77,7 +77,7 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s, uuid: sp.uuid, config: sp.config,
-            entities: sp.entities, players: sp.players, theater: sp.theater
+            entity_vault: sp.entity_vault, player_vault: sp.player_vault, theater: sp.theater
           }
         end
       end
@@ -96,8 +96,8 @@ module Gamefic
         part.set_static
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
-        %i[entities players theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
-        part.theater.freeze
+        %i[entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
+        [part.entity_vault.array, part.player_vault.array, part.theater].each(&:freeze)
         rebuild_players part
         part
       end
@@ -110,8 +110,8 @@ module Gamefic
         part.run_scripts
         part.set_static
 
-        %i[uuid entities players theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
-        part.theater.freeze
+        %i[uuid entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
+        [part.entity_vault.array, part.player_vault.array, part.theater].each(&:freeze)
         rebuild_players part
         part
       end
