@@ -92,34 +92,27 @@ module Gamefic
       end
 
       def rebuild_plot data
-        part = rebuild_common(data)
+        part = string_to_constant(data[:klass]).allocate
         part.run_scripts
+        part.set_static
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
-        part.instance_variable_set(:@entities, data[:entities])
-        part.instance_variable_set(:@players, data[:players])
-        part.instance_variable_set(:@theater, data[:theater]).freeze
+        %i[entities players theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
         rebuild_players part
         part
       end
 
       def rebuild_subplot data, plot
-        part = rebuild_common(data)
+        part = string_to_constant(data[:klass]).allocate
         part.instance_variable_set(:@host, plot)
         part.instance_variable_set(:@config, data[:config])
         part.configure
         part.run_scripts
+        part.set_static
 
-        part.instance_variable_set(:@uuid, data[:uuid])
-        part.instance_variable_set(:@entities, data[:entities])
-        part.instance_variable_set(:@players, data[:players])
-        part.instance_variable_set(:@theater, data[:theater]).freeze
+        %i[uuid entities players theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
         rebuild_players part
         part
-      end
-
-      def rebuild_common data
-        string_to_constant(data[:klass]).allocate
       end
 
       def rebuild_players part

@@ -81,6 +81,7 @@ module Gamefic
 
     def initialize
       run_scripts
+      set_static
       run_seeds
       theater.freeze
     end
@@ -178,8 +179,11 @@ module Gamefic
     # @return [void]
     def run_scripts
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+    end
+
+    def set_static
       @static_size = entities.length
-      @digest = Gamefic::Snapshot.digest(self)
+      @digest = Gamefic::Snapshot.digest(self).freeze
       playbook.freeze
       scenebook.freeze
     end

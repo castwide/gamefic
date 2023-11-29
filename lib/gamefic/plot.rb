@@ -15,15 +15,6 @@ module Gamefic
     #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
-    def initialize
-      block_default_scenes
-      super
-    end
-
-    def self.allocate
-      super.tap(&:block_default_scenes)
-    end
-
     # @return [Array<Take>]
     def takes
       @takes ||= [].freeze
@@ -89,12 +80,12 @@ module Gamefic
       Snapshot.save self
     end
 
-    # @return [void]
-    def block_default_scenes
+    def set_static
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
         block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
       end
+      super
     end
 
     def self.restore snapshot
