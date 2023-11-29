@@ -79,9 +79,7 @@ module Gamefic
     # @return [Hash]
     attr_reader :config
 
-    def initialize **config
-      @config = config
-      configure
+    def initialize
       run_scripts
       run_seeds
       theater.freeze
@@ -163,11 +161,6 @@ module Gamefic
     def update
       scenebook.run_update_blocks
     end
-
-    # Subclasses can override this method to handle additional configuration
-    # options.
-    #
-    def configure; end
 
     # @return [void]
     def run_scripts

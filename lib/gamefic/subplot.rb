@@ -27,6 +27,9 @@ module Gamefic
     # @return [Host, nil]
     attr_reader :host
 
+    # @return [Hash]
+    attr_reader :config
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
@@ -34,7 +37,8 @@ module Gamefic
       @uuid = SecureRandom.uuid
       @plot = plot
       @host = Host.new(plot)
-      super(**config)
+      @config = config.freeze
+      super()
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
 
@@ -51,6 +55,11 @@ module Gamefic
       super(actor)
       actor.cue next_cue if next_cue
     end
+
+    # Subclasses can override this method to handle additional configuration
+    # options.
+    #
+    def configure; end
 
     # @see Plot#proxy
     #
