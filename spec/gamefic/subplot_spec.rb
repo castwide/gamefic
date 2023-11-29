@@ -77,4 +77,20 @@ describe Gamefic::Subplot do
     subplot.update
     expect(updated).to be(true)
   end
+
+  describe '#proxy' do
+    it 'returns a proxy for local entities' do
+      plot = Gamefic::Plot.new
+      subplot = Gamefic::Subplot.new(plot)
+      subplot.make Gamefic::Entity, name: 'subplot entity'
+      expect(subplot.proxy(subplot.entities.first)).to be_a(Gamefic::Proxy)
+    end
+
+    it 'returns hosted entities' do
+      plot = Gamefic::Plot.new
+      plot.make Gamefic::Entity, name: 'plot entity'
+      subplot = Gamefic::Subplot.new(plot)
+      expect(subplot.proxy(plot.entities.first)).to be(plot.entities.first)
+    end
+  end
 end
