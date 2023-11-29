@@ -76,9 +76,6 @@ module Gamefic
     # @return [Integer]
     attr_reader :digest
 
-    # @return [Host, nil]
-    attr_reader :host
-
     # @return [Hash]
     attr_reader :config
 
@@ -167,10 +164,6 @@ module Gamefic
       scenebook.run_update_blocks
     end
 
-    def hosted?
-      !!host
-    end
-
     # Subclasses can override this method to handle additional configuration
     # options.
     #
@@ -179,21 +172,10 @@ module Gamefic
     # @return [void]
     def run_scripts
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
-      block_default_scenes
       @static_size = entities.length
       @digest = Gamefic::Snapshot.digest(self)
       playbook.freeze
       scenebook.freeze
-    end
-
-    # @return [void]
-    def block_default_scenes
-      return if hosted?
-
-      stage do
-        block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
-        block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
-      end
     end
 
     # @return [void]

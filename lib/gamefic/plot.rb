@@ -15,6 +15,11 @@ module Gamefic
     #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
+    def initialize
+      block_default_scenes
+      super
+    end
+
     def self.allocate
       super.tap(&:block_default_scenes)
     end
@@ -95,6 +100,15 @@ module Gamefic
       raise 'Entity could not be proxied' unless index
 
       Proxy.new(self, index)
+    end
+
+
+    # @return [void]
+    def block_default_scenes
+      stage do
+        block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
+        block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+      end
     end
 
     def self.restore snapshot
