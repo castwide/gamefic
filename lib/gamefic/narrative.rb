@@ -118,7 +118,7 @@ module Gamefic
     # @param [Gamefic::Actor]
     # @return [void]
     def introduce(player)
-      cast player
+      enter player
       scenebook.introductions.each do |scene|
         take = Take.new(player, scene)
         take.start
@@ -134,11 +134,20 @@ module Gamefic
       players.empty? || players.all?(&:concluding?)
     end
 
+    # Add a player to the game.
+    #
+    # @param player [Active]
+    def enter player
+      cast player
+      player_vault.add player
+    end
+
     # Remove a player from the game.
     #
     def exeunt player
       scenebook.run_player_conclude_blocks player
       uncast player
+      player_vault.delete player
     end
 
     # Add this narrative's playbook and scenebook to an active entity.
@@ -148,7 +157,6 @@ module Gamefic
     def cast active
       active.playbooks.add playbook
       active.scenebooks.add scenebook
-      player_vault.add active
       active
     end
 
@@ -159,8 +167,23 @@ module Gamefic
     def uncast active
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
-      player_vault.delete active
       active
+    end
+
+    # Cast all players in the narrative.
+    #
+    # @see #cast
+    #
+    def cast_all
+      players.each { |plyr| cast plyr }
+    end
+
+    # Uncast all players in the narrative.
+    #
+    # @see #uncast
+    #
+    def uncast_all
+      players.each { |plyr| uncast plyr }
     end
 
     def ready

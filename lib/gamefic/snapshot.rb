@@ -12,14 +12,10 @@ module Gamefic
     # @param plot [Plot]
     # @return [String]
     def self.save plot
-      plot.players.each do |plyr|
-        plyr.scenebooks.clear
-        plyr.playbooks.clear
-      end
+      plot.uncast_all
       snapshot = collect(plot)
       binary = Marshal.dump(snapshot)
-      plot.players.each { |plyr| plot.cast(plyr) }
-      plot.subplots.each { |sp| sp.players.each { |plyr| sp.cast plyr } }
+      plot.cast_all
       Base64.encode64(binary)
     end
 
@@ -96,8 +92,7 @@ module Gamefic
         part.set_static
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
-        %i[entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
-        [part.entity_vault.array, part.player_vault.array, part.theater].each(&:freeze)
+        rebuild_world_model data, part
         rebuild_players part
         part
       end
@@ -110,10 +105,14 @@ module Gamefic
         part.run_scripts
         part.set_static
 
-        %i[uuid entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
-        [part.entity_vault.array, part.player_vault.array, part.theater].each(&:freeze)
+        rebuild_world_model data, part
         rebuild_players part
         part
+      end
+
+      def rebuild_world_model data, part
+        %i[entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
+        [part.entity_vault.array, part.player_vault.array, part.theater].each(&:freeze)
       end
 
       def rebuild_players part

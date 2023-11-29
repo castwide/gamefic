@@ -72,6 +72,16 @@ module Gamefic
       @subplots ||= []
     end
 
+    def cast_all
+      super
+      subplots.each(&:cast_all)
+    end
+
+    def uncast_all
+      super
+      subplots.each(&:uncast_all)
+    end
+
     def inspect
       "#<#{self.class}>"
     end
