@@ -1,5 +1,5 @@
 module Gamefic
-  module Scriptable
+  module Delegatable
     module Subplots
       # The hash of data that was used to initialize the subplot.
       #

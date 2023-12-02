@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scriptable
+  module Delegatable
     # Scriptable methods related to creating action queries.
     #
     module Queries

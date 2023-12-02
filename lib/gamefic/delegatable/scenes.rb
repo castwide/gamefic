@@ -3,7 +3,7 @@
 module Gamefic
   class FrozenScenebookError < FrozenError; end
 
-  module Scriptable
+  module Delegatable
     # Scriptable methods related to creating scenes.
     #
     module Scenes

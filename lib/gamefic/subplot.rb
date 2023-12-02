@@ -10,7 +10,7 @@ module Gamefic
   class Subplot < Narrative
     module ScriptMethods
       include Narrative::ScriptMethods
-      include Scriptable::Subplots
+      include Delegatable::Subplots
     end
 
     # @!method self.script &block

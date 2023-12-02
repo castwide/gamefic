@@ -1,9 +1,9 @@
-describe Gamefic::Scriptable::Queries do
+describe Gamefic::Delegatable::Queries do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   let(:object) {
     klass = Class.new do
-      include Gamefic::Scriptable::Queries
+      include Gamefic::Delegatable::Queries
 
       def entities
         @entities ||= []

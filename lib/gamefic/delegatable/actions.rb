@@ -3,7 +3,7 @@
 module Gamefic
   class FrozenPlaybookError < FrozenError; end
 
-  module Scriptable
+  module Delegatable
     # Scriptable methods related to creating actions.
     #
     module Actions

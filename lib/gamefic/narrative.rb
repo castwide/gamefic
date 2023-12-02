@@ -6,67 +6,13 @@ module Gamefic
   # functionality.
   #
   class Narrative
+    extend Scriptable
+
     module ScriptMethods
-      include Scriptable::Actions
-      include Scriptable::Entities
-      include Scriptable::Queries
-      include Scriptable::Scenes
-    end
-
-    class << self
-      def delegators(with_inherited: true)
-        (with_inherited && superclass <= Narrative ? superclass.delegators : []) + local_delegators
-      end
-
-      def delegated_methods(with_inherited: true)
-        delegators(with_inherited: with_inherited).flat_map(&:public_instance_methods).uniq
-      end
-
-      # @return [Array<Proc>]
-      def scripts
-        @scripts ||= []
-      end
-      alias blocks scripts
-
-      # Add a block of code to be executed during initialization.
-      #
-      # These blocks are used to define actions, scenes, and static entities.
-      # After they get executed, the playbook and scenebook will be frozen.
-      #
-      # Dynamic entities should be created with #seed.
-      #
-      # @yieldself [ScriptMethods]
-      def script &block
-        scripts.push Block.new(:script, block)
-      end
-
-      # Add a block of code to generate content after initialization.
-      #
-      # Seeds run after the initial scripts have been executed. Their primary
-      # use is to add entities and other components, especially randomized or
-      # procedurally generated content that can vary between instances.
-      #
-      # @note Seeds do not get executed when a narrative is restored from a
-      #   snapshot.
-      #
-      # @yieldself [Scriptable::Entities]
-      def seed &block
-        scripts.push Block.new(:seed, block)
-      end
-
-      # Assign a delegator module for scripts.
-      #
-      # @param [Module]
-      def delegate delegator
-        include delegator
-        local_delegators.push delegator
-      end
-
-      private
-
-      def local_delegators
-        @local_delegators ||= []
-      end
+      include Delegatable::Actions
+      include Delegatable::Entities
+      include Delegatable::Queries
+      include Delegatable::Scenes
     end
 
     include Logging

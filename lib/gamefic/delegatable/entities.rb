@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scriptable
+  module Delegatable
     # Scriptable methods related to managing entities.
     #
     # @note The public versions of the entity and player arrays are frozen.

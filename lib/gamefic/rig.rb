@@ -5,7 +5,7 @@ module Gamefic
   # scene types, such as Activity (text-based commands), MultipleChoice
   # (requiring the user to select from a list of options), and Pause. The
   # easiest way to author custom scenes is to block them using a predefined rig
-  # and adding functionality through callbacks. Scriptable::Scenes provides
+  # and adding functionality through callbacks. Delegatable::Scenes provides
   # helper methods for defining scenes from Plot scripts.
   #
   module Rig

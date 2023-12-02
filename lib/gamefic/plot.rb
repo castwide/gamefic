@@ -7,7 +7,7 @@ module Gamefic
   class Plot < Narrative
     module ScriptMethods
       include Narrative::ScriptMethods
-      include Scriptable::Plots
+      include Delegatable::Plots
     end
 
     # @!method self.script &block

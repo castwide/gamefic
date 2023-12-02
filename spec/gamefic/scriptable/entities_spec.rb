@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe Gamefic::Scriptable::Entities do
+describe Gamefic::Delegatable::Entities do
   let(:object) {
     Class.new do
-      include Gamefic::Scriptable::Entities
+      include Gamefic::Delegatable::Entities
 
       def entity_vault
         @entity_vault ||= Gamefic::Vault.new
