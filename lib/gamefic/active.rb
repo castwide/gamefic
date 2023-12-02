@@ -18,9 +18,6 @@ module Gamefic
     # @return [Active::Cue, nil]
     attr_reader :next_cue
 
-    # @return [String]
-    attr_accessor :last_input
-
     # @return [Symbol, nil]
     def next_scene
       next_cue&.scene
