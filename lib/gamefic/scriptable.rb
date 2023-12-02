@@ -41,7 +41,6 @@ module Gamefic
     #
     # Dynamic entities should be created with #seed.
     #
-    # @yieldself [ScriptMethods]
     def script &block
       scripts.push Block.new(:script, block)
     end
@@ -55,7 +54,6 @@ module Gamefic
     # @note Seeds do not get executed when a narrative is restored from a
     #   snapshot.
     #
-    # @yieldself [Delegatable::Entities]
     def seed &block
       scripts.push Block.new(:seed, block)
     end

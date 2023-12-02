@@ -5,6 +5,14 @@ module Gamefic
   # The Plot and Subplot classes inherit from Narrative and provide additional
   # functionality.
   #
+  # @!method self.script &block
+  #   @yieldself [ScriptMethods]
+  #
+  # @!method self.seed &block
+  #   @note Although methods related to actions and scenes are available in
+  #     seeds, they generally result in errors because playbooks and scenebooks
+  #     get frozen after the scripts get executed.
+  #   @yieldself [Delegatable::Entities]
   class Narrative
     extend Scriptable
 

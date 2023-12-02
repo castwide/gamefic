@@ -4,15 +4,15 @@ module Gamefic
   # The plot is the central narrative. It provides a script interface with
   # methods for creating entities, actions, scenes, and hooks.
   #
+  # @!method self.script &block
+  #   @yieldself [ScriptMethods]
+  #
   class Plot < Narrative
     module ScriptMethods
       include Narrative::ScriptMethods
       include Delegatable::Plots
     end
 
-    # @!method self.script &block
-    #   @see Gamefic::Narrative.script
-    #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
     # @return [Array<Take>]
