@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Gamefic
+  class RulebookError < RuntimeError; end
+
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional
   # functionality.
@@ -54,12 +56,12 @@ module Gamefic
 
     # @return [Playbook]
     def playbook
-      @playbook || raise('Playbooks can only be modified in scripts')
+      @playbook || raise(RulebookError, 'Playbooks can only be modified in scripts')
     end
 
     # @return [Scenebook]
     def scenebook
-      @scenebook || raise('Scenebooks can only be modified in scripts')
+      @scenebook || raise(RulebookError, 'Scenebooks can only be modified in scripts')
     end
 
     # @param block [Proc]
@@ -163,10 +165,8 @@ module Gamefic
     end
 
     # @return [void]
-    def run_scripts
-      @playbook = Playbook.new(method(:stage))
-      @scenebook = Scenebook.new(method(:stage))
-      self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+    def run_seeds
+      self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
     end
 
     def set_seeds
@@ -175,14 +175,16 @@ module Gamefic
       theater.freeze
     end
 
+    # @return [void]
+    def run_scripts
+      @playbook = Playbook.new(method(:stage))
+      @scenebook = Scenebook.new(method(:stage))
+      self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+    end
+
     def set_rules
       playbook.freeze
       scenebook.freeze
-    end
-
-    # @return [void]
-    def run_seeds
-      self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
     end
   end
 end
