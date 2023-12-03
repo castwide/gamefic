@@ -179,7 +179,11 @@ module Gamefic
     def run_scripts
       @playbook = Playbook.new(method(:stage))
       @scenebook = Scenebook.new(method(:stage))
+      seed_length = entities.length
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+      return if entities.length == seed_length
+
+      logger.warn "Entities were created or deleted in scripts. Using `seed` to manage entities is recommended"
     end
 
     def set_rules
