@@ -45,7 +45,7 @@ module Gamefic
       def calculate_precision
         @arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
-          when Gamefic::Entity, Gamefic::Proxy
+          when Gamefic::Entity
             1000
           when Class, Module
             class_depth(arg) * 100
@@ -74,16 +74,6 @@ module Gamefic
         return Result.new(nil, scan.token) unless scan.matched.one?
 
         Result.new(scan.matched.first, scan.remainder)
-      end
-
-      def unproxy args
-        args.map do |arg|
-          if arg.is_a?(Proxy)
-            arg.entity
-          else
-            arg
-          end
-        end
       end
     end
   end

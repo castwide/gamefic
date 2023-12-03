@@ -150,20 +150,6 @@ module Gamefic
       scenebook.run_update_blocks
     end
 
-    # Get a proxy for an entity.
-    #
-    # @raise [RuntimeError] if the entity is not found in the narrative
-    #
-    # @param entity [Entity]
-    # @return [Proxy]
-    def proxy entity
-      logger.debug "Proxying #{entity.inspect}"
-      index = entities.find_index(entity)
-      raise "#{entity.inspect} could not be proxied" unless index
-
-      Proxy.new(self, index)
-    end
-
     # @return [void]
     def run_seeds
       self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }

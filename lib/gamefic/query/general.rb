@@ -20,7 +20,7 @@ module Gamefic
       end
 
       def query subject, token
-        filtered = available_entities(subject).that_are(*unproxy(@arguments))
+        filtered = available_entities(subject).that_are(*@arguments)
         scan = Scanner.scan(filtered, token)
 
         ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
