@@ -4,8 +4,8 @@ module Gamefic
   # A class module that enables scripting.
   #
   # Narratives extend Scriptable to enable definition of scripts and seeds.
-  # Scriptable also provides the ability to import scripts from modules that
-  # extend Scriptable.
+  # Modules can also be extended with Scriptable to make them importable into
+  # other Scriptables.
   #
   # @example Import a scriptable module into Plot
   #   module MyScript
@@ -67,7 +67,9 @@ module Gamefic
       local_delegators.push delegator
     end
 
-    # @param mod [Importable]
+    # Add a Scriptable module's scripts to the caller.
+    #
+    # @param mod [Scriptable]
     def import mod
       return false if imported.include?(mod)
 
