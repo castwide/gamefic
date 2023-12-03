@@ -16,13 +16,13 @@ module Gamefic
       # properties. The `block`` argument is the proc to execute when the input
       # matches all of the Response's criteria (i.e., verb and queries).
       #
-      # @example A simple Action.
+      # @example A simple Response.
       #   respond :salute do |actor|
       #     actor.tell "Hello, sir!"
       #   end
       #   # The command "salute" will respond "Hello, sir!"
       #
-      # @example An Action that accepts a Character
+      # @example A Response that accepts a Character
       #   respond :salute, available(Character) do |actor, character|
       #     actor.tell "#{The character} returns your salute."
       #   end
@@ -45,7 +45,7 @@ module Gamefic
       # feature that is not considered an in-game action, such as displaying
       # help documentation or a scoreboard.
       #
-      # @example A simple Meta Action
+      # @example A simple meta Response
       #   meta :credits do |actor|
       #     actor.tell "This game was written by John Smith."
       #   end
@@ -79,7 +79,7 @@ module Gamefic
       # When a verb is specified, the proc will only be evaluated if the
       # action's verb matches it.
       #
-      # @param [Symbol, nil]
+      # @param verb [Symbol, nil]
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action verb = nil, &block
@@ -108,11 +108,32 @@ module Gamefic
         raise_frozen_playbook_error e
       end
 
+      # Verbs are the symbols that have responses defined in the playbook.
+      #
+      # @example
+      #   Gamefic.script do
+      #     respond :think { |actor| actor.tell 'You think.' }
+      #
+      #     verbs # => [:think]
+      #   end
+      #
       # @return [Array<Symbol>]
       def verbs
         playbook.verbs
       end
 
+      # Synonyms are a combination of the playbook's concrete verbs plus the
+      # alternative variants defined in syntaxes.
+      #
+      # @example
+      #   Gamefic.script do
+      #     respond :think { |actor| actor.tell 'You think.' }
+      #     interpret 'ponder', 'think'
+      #
+      #     verbs # => [:think]
+      #     synonyms # => [:think, :ponder]
+      #   end
+      #
       # @return [Array<Symbol>]
       def synonyms
         playbook.synonyms
@@ -131,9 +152,7 @@ module Gamefic
       def map_response_args args
         args.map do |arg|
           case arg
-          when Entity
-            available(proxy(arg))
-          when Class, Module, Symbol, Proc
+          when Entity, Class, Module, Symbol, Proc
             available(arg)
           when String, Regexp
             plaintext(arg)
@@ -145,8 +164,8 @@ module Gamefic
 
       # @param e [FrozenError]
       # @return [void]
-      def raise_frozen_playbook_error e
-        raise FrozenPlaybookError, "can't modify frozen Playbook", e.backtrace
+      def raise_frozen_playbook_error err
+        raise FrozenPlaybookError, "can't modify frozen Playbook", err.backtrace
       end
     end
   end

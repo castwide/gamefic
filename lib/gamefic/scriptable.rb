@@ -61,6 +61,24 @@ module Gamefic
 
     # Assign a delegator module for scripts.
     #
+    # Delegators provide scripts with access to methods that get forwarded to
+    # the narrative instance.
+    #
+    # @example
+    #   module MyDelegator
+    #     def entity_count
+    #       entities.count
+    #     end
+    #   end
+    #
+    #   Gamefic::Plot.delegate MyDelegator
+    #
+    #   Gamefic::Plot.script do
+    #     on_update do
+    #       puts "There are #{entity_count} entities."
+    #     end
+    #   end
+    #
     # @param [Module]
     def delegate delegator
       include delegator

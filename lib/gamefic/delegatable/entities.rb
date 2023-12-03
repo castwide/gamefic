@@ -21,7 +21,10 @@ module Gamefic
 
       # Create an entity.
       #
-      # @raise [ArgumentError] if the entity has a non-unique EID.
+      # @example
+      #   Gamefic.script do
+      #     make Gamefic::Entity, name: 'thing'
+      #   end
       #
       # @param [Class<Gamefic::Entity>]
       # @param args [Hash]
