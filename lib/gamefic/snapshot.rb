@@ -102,6 +102,7 @@ module Gamefic
         part.instance_variable_set(:@host, plot)
         part.instance_variable_set(:@config, data[:config])
         part.configure
+        part.config.freeze
         part.run_scripts
         part.set_static
 

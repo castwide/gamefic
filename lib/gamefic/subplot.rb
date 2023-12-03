@@ -34,8 +34,9 @@ module Gamefic
       @uuid = SecureRandom.uuid
       @plot = plot
       @host = Host.new(plot)
-      @config = config.freeze
+      @config = config
       configure
+      @config.freeze
       super()
       [introduce].compact.flatten.each { |pl| self.introduce pl }
     end
