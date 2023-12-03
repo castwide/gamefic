@@ -11,21 +11,20 @@ module Gamefic
       @actor = actor
       @commands = commands
       @responses = responses
-      @started = false
     end
 
     # Get the next executable action.
     #
     # @return [Action, nil]
     def next
-      until responses.empty?
-        response = responses.shift
+      while response = responses.shift
         commands.each do |cmd|
           action = response.attempt(actor, cmd, !@started)
-          if action
-            @started = true
-            return action
-          end
+          next unless action && arguments_match?(action.arguments)
+
+          @started = true
+          @pattern ||= action.arguments
+          return action
         end
       end
       nil # Without this, return value in Opal is undefined
@@ -68,5 +67,16 @@ module Gamefic
 
     # @return [Array<Response>]
     attr_reader :responses
+
+    private
+
+    # After the first action gets selected, subsequent actions need to use the
+    # same arguments.
+    #
+    def arguments_match? arguments
+      return true if @pattern.nil?
+
+      arguments == @pattern
+    end
   end
 end
