@@ -90,7 +90,7 @@ module Gamefic
       Snapshot.save self
     end
 
-    def set_static
+    def set_rules
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
         block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)

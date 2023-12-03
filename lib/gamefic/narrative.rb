@@ -34,10 +34,10 @@ module Gamefic
     attr_reader :config
 
     def initialize
-      run_scripts
-      set_static
       run_seeds
-      theater.freeze
+      set_seeds
+      run_scripts
+      set_rules
     end
 
     def entity_vault
@@ -54,12 +54,12 @@ module Gamefic
 
     # @return [Playbook]
     def playbook
-      @playbook ||= Playbook.new(method(:stage))
+      @playbook || raise('Playbooks can only be modified in scripts')
     end
 
     # @return [Scenebook]
     def scenebook
-      @scenebook ||= Scenebook.new(method(:stage))
+      @scenebook || raise('Scenebooks can only be modified in scripts')
     end
 
     # @param block [Proc]
@@ -155,20 +155,27 @@ module Gamefic
     # @param entity [Entity]
     # @return [Proxy]
     def proxy entity
+      logger.debug "Proxying #{entity.inspect}"
       index = entities.find_index(entity)
-      raise 'Entity could not be proxied' unless index
+      raise "#{entity.inspect} could not be proxied" unless index
 
       Proxy.new(self, index)
     end
 
     # @return [void]
     def run_scripts
+      @playbook = Playbook.new(method(:stage))
+      @scenebook = Scenebook.new(method(:stage))
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
     end
 
-    def set_static
+    def set_seeds
       entity_vault.lock
       @digest = Gamefic::Snapshot.digest(self).freeze
+      theater.freeze
+    end
+
+    def set_rules
       playbook.freeze
       scenebook.freeze
     end
@@ -176,12 +183,6 @@ module Gamefic
     # @return [void]
     def run_seeds
       self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
-    # These errors are modified to provide a more informative message when
-    # frozen rulebook errors occur from seed scripts.
-    rescue FrozenScenebookError => e
-      raise e.class, "Scenebooks cannot be modified from seeds. Try `script` instead", e.backtrace
-    rescue FrozenPlaybookError => e
-      raise e.class, "Playbooks cannot be modified from seeds. Try `script` instead", e.backtrace
     end
   end
 end

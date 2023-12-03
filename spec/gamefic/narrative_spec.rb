@@ -58,14 +58,14 @@ describe Gamefic::Narrative do
         Gamefic::Narrative.seed do
           pause(:scene) { |actor| actor.tell 'Pause' }
         end
-        expect { Gamefic::Narrative.new }.to raise_error(Gamefic::FrozenScenebookError)
+        expect { Gamefic::Narrative.new }.to raise_error(RuntimeError)
       end
 
       it 'rejects actions from seeds' do
         Gamefic::Narrative.seed do
           respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
         end
-        expect { Gamefic::Narrative.new }.to raise_error(Gamefic::FrozenPlaybookError)
+        expect { Gamefic::Narrative.new }.to raise_error(RuntimeError)
       end
     end
   end

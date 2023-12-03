@@ -35,7 +35,7 @@ module Gamefic
     # can be deleted.
     #
     def lock
-      raise 'Vault is already locked' if @lock_index
+      return @lock_index if @lock_index
 
       @lock_index = @array.length
     end

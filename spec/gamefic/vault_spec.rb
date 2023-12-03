@@ -54,10 +54,4 @@ describe Gamefic::Vault do
     expect(vault.delete(object2)).to be(true)
     expect(vault.array).to eq([object1])
   end
-
-  it 'raises an error on duplicate locks' do
-    vault = Gamefic::Vault.new
-    vault.lock
-    expect { vault.lock }.to raise_error(RuntimeError)
-  end
 end

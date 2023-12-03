@@ -88,11 +88,12 @@ module Gamefic
 
       def rebuild_plot data
         part = string_to_constant(data[:klass]).allocate
-        part.run_scripts
-        part.set_static
+        rebuild_world_model data, part
+        part.set_seeds
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
-        rebuild_world_model data, part
+        part.run_scripts
+        part.set_rules
         rebuild_players part
         part
       end
@@ -103,10 +104,11 @@ module Gamefic
         part.instance_variable_set(:@config, data[:config])
         part.configure
         part.config.freeze
-        part.run_scripts
-        part.set_static
-
         rebuild_world_model data, part
+        part.set_seeds
+
+        part.run_scripts
+        part.set_rules
         rebuild_players part
         part
       end

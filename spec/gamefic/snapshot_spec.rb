@@ -2,14 +2,16 @@ require 'date'
 
 describe Gamefic::Snapshot do
   let(:plot) do
-    Gamefic::Plot.script do
+    Gamefic::Plot.seed do
       @room = make Gamefic::Entity, name: 'room'
       @thing = make Gamefic::Entity, name: 'thing', parent: @room
 
       # Make sure various other objects can get serialized
       @object = Object.new
       @date_time = DateTime.new
+    end
 
+    Gamefic::Plot.script do
       introduction do |actor|
         actor.parent = @room
         branch Gamefic::Subplot, introduce: actor, configured: @thing

@@ -26,7 +26,7 @@ RSpec.describe Gamefic::Plot do
 
   it 'creates scenes from scripts' do
     Gamefic.script do
-      @scene = block :scene do |scene|
+      block :scene do |scene|
         scene.on_start do |actor, props|
           actor.tell "What's your name?"
           props.prompt 'Enter your name:'

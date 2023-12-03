@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class FrozenPlaybookError < FrozenError; end
-
   module Delegatable
     # Scriptable methods related to creating actions.
     #
@@ -35,8 +33,6 @@ module Gamefic
         args = map_response_args(queries)
         playbook.respond_with Response.new(verb, method(:stage), *args, &proc)
         verb
-      rescue FrozenError => e
-        raise_frozen_playbook_error e
       end
 
       # Create a meta response for a command.
@@ -58,8 +54,6 @@ module Gamefic
         args = map_response_args(queries)
         playbook.respond_with Response.new(verb, method(:stage), *args, meta: true, &proc)
         verb
-      rescue FrozenError => e
-        raise_frozen_playbook_error e
       end
 
       # Add a proc to be evaluated before a character executes an action.
@@ -71,8 +65,6 @@ module Gamefic
       # @return [Action::Hook]
       def before_action verb = nil, &block
         playbook.before_action verb, &block
-      rescue FrozenError => e
-        raise_frozen_playbook_error e
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -84,8 +76,6 @@ module Gamefic
       # @return [Action::Hook]
       def after_action verb = nil, &block
         playbook.after_action verb, &block
-      rescue FrozenError => e
-        raise_frozen_playbook_error e
       end
 
       # Create an alternate Syntax for a response.
@@ -104,8 +94,6 @@ module Gamefic
       # @return [Syntax] the Syntax object
       def interpret command, translation
         playbook.interpret_with Syntax.new(command, translation)
-      rescue FrozenError => e
-        raise_frozen_playbook_error e
       end
 
       # Verbs are the symbols that have responses defined in the playbook.
@@ -152,7 +140,9 @@ module Gamefic
       def map_response_args args
         args.map do |arg|
           case arg
-          when Entity, Class, Module, Symbol, Proc
+          when Entity
+            available(proxy(arg))
+          when Class, Module, Proc
             available(arg)
           when String, Regexp
             plaintext(arg)
@@ -160,12 +150,6 @@ module Gamefic
             arg
           end
         end
-      end
-
-      # @param e [FrozenError]
-      # @return [void]
-      def raise_frozen_playbook_error err
-        raise FrozenPlaybookError, "can't modify frozen Playbook", err.backtrace
       end
     end
   end

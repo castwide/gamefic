@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class FrozenScenebookError < FrozenError; end
-
   module Delegatable
     # Scriptable methods related to creating scenes.
     #
@@ -38,8 +36,6 @@ module Gamefic
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
         scenebook.add Scene.new(name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
         name
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
       alias scene block
 
@@ -64,8 +60,6 @@ module Gamefic
                                          on_start: proc { |actor, props|
                                            start&.call(actor, props)
                                          }
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       # Create a multiple-choice scene.
@@ -179,8 +173,6 @@ module Gamefic
       #
       def on_ready &block
         scenebook.on_ready(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       # Add a block to be executed for each player at the beginning of a turn.
@@ -195,16 +187,12 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
         scenebook.on_player_ready(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       # Add a block to be executed after the Plot is finished updating a turn.
       #
       def on_update &block
         scenebook.on_update(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       # Add a block to be executed for each player at the end of a turn.
@@ -212,22 +200,16 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
         scenebook.on_player_update(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       def on_conclude &block
         scenebook.on_conclude(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       # @yieldparam [Actor]
       # @return [Proc]
       def on_player_conclude &block
         scenebook.on_player_conclude(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       # @yieldparam [Actor]
@@ -235,20 +217,12 @@ module Gamefic
       # @return [Proc]
       def on_player_output &block
         scenebook.on_player_output(&block)
-      rescue FrozenError => e
-        raise_frozen_scenebook_error e
       end
 
       private
 
       # @!attribute [r] scenebook
       #   @return [Scenebook]
-
-      # @param err [FrozenError]
-      # @return [void]
-      def raise_frozen_scenebook_error e
-        raise FrozenScenebookError, "can't modify frozen Scenebook", e.backtrace
-      end
     end
   end
 end

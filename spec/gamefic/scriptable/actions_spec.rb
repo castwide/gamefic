@@ -36,14 +36,6 @@ describe Gamefic::Delegatable::Actions do
   end
 
   describe '#respond' do
-    it 'raises FrozenPlaybookError' do
-      object.playbook.freeze
-
-      expect {
-        object.respond(:foo) {}
-      }.to raise_error(Gamefic::FrozenPlaybookError)
-    end
-
     it 'handles plaintext arguments' do
       response = nil
       object.respond :say, 'hello' do |actor, hello|
@@ -54,36 +46,6 @@ describe Gamefic::Delegatable::Actions do
       dispatcher = Gamefic::Dispatcher.new(actor, [command], object.playbook.responses)
       dispatcher.next.execute
       expect(response).to eq('Just hello')
-    end
-  end
-
-  describe '#meta' do
-    it 'raises FrozenPlaybookError' do
-      object.playbook.freeze
-
-      expect {
-        object.meta(:foo) {}
-      }.to raise_error(Gamefic::FrozenPlaybookError)
-    end
-  end
-
-  describe '#before_action' do
-    it 'raises FrozenPlaybookError' do
-      object.playbook.freeze
-
-      expect {
-        object.before_action {}
-      }.to raise_error(Gamefic::FrozenPlaybookError)
-    end
-  end
-
-  describe '#after_action' do
-    it 'raises FrozenPlaybookError' do
-      object.playbook.freeze
-
-      expect {
-        object.after_action {}
-      }.to raise_error(Gamefic::FrozenPlaybookError)
     end
   end
 end
