@@ -21,13 +21,6 @@ module Gamefic
   #   Gamefic::Plot.import MyScript
   #
   module Scriptable
-    autoload :Actions,  'gamefic/scriptable/actions'
-    autoload :Entities, 'gamefic/scriptable/entities'
-    autoload :Queries,  'gamefic/scriptable/queries'
-    autoload :Plots,    'gamefic/scriptable/plots'
-    autoload :Scenes,   'gamefic/scriptable/scenes'
-    autoload :Subplots, 'gamefic/scriptable/subplots'
-
     # @return [Array<Block>]
     def scripts
       @scripts ||= []
