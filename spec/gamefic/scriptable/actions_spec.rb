@@ -43,6 +43,18 @@ describe Gamefic::Delegatable::Actions do
         object.respond(:foo) {}
       }.to raise_error(Gamefic::FrozenPlaybookError)
     end
+
+    it 'handles plaintext arguments' do
+      response = nil
+      object.respond :say, 'hello' do |actor, hello|
+        response = "Just #{hello}"
+      end
+      command = Gamefic::Command.new(:say, ['hello'])
+      actor = Gamefic::Actor.new
+      dispatcher = Gamefic::Dispatcher.new(actor, [command], object.playbook.responses)
+      dispatcher.next.execute
+      expect(response).to eq('Just hello')
+    end
   end
 
   describe '#meta' do
