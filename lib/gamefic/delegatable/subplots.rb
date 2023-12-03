@@ -9,7 +9,9 @@ module Gamefic
       # The subplot's host.
       #
       # @return [Host]
-      attr_reader :host
+      def host
+        @host ||= Host.new(@plot)
+      end
 
       def persist klass, **args
         host.make klass, *args

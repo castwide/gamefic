@@ -40,14 +40,10 @@ module Gamefic
     # Digests are used to validate snapshots. If a snapshot's digest does not
     # match the digest of its allocated class, the snapshot cannot be restored.
     #
-    # @note A narrative's digest can change during its runtime, so the digest
-    #   in the snapshot should be the value that was calculated during
-    #   initialization.
-    #
     # @param narrative [Narrative]
     def self.digest narrative
       binary = {
-        entities: narrative.entities.map(&:inspect),
+        entities: narrative.entities[0, narrative.entity_vault.lock].map(&:class),
         theater: narrative.theater.instance_variables.map do |iv|
           [iv, narrative.theater.instance_variable_get(iv).class]
         end
@@ -100,7 +96,7 @@ module Gamefic
 
       def rebuild_subplot data, plot
         part = string_to_constant(data[:klass]).allocate
-        part.instance_variable_set(:@host, plot)
+        part.instance_variable_set(:@plot, plot)
         part.instance_variable_set(:@config, data[:config])
         part.configure
         part.config.freeze
@@ -115,7 +111,7 @@ module Gamefic
 
       def rebuild_world_model data, part
         %i[entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
-        [part.entity_vault.array, part.player_vault.array, part.theater].each(&:freeze)
+        [part.entity_vault.array, part.player_vault.array].each(&:freeze)
       end
 
       def rebuild_players part
