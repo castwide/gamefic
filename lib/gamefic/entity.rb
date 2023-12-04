@@ -14,7 +14,7 @@ module Gamefic
         klass = klass.superclass
       end
       defaults.merge(args).each_pair do |k, v|
-        public_send "#{k}=", v
+        send "#{k}=", v
       end
 
       yield(self) if block_given?
