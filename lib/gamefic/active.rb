@@ -159,7 +159,7 @@ module Gamefic
     # @param quietly [Boolean] If true, return the action's output instead of appending it to #messages
     # @return [String, nil]
     def proceed quietly: false
-      a = dispatchers&.last&.next
+      a = dispatchers&.last&.proceed
       if quietly
         messenger.buffer { a&.execute }
       else

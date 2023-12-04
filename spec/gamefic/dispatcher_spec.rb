@@ -8,8 +8,8 @@ describe Gamefic::Dispatcher do
     actor = Gamefic::Actor.new
     actor.playbooks.add playbook
     dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')
-    expect(dispatcher.next.response).to be(response2)
-    expect(dispatcher.next.response).to be(response1)
-    expect(dispatcher.next).to be_nil
+    expect(dispatcher.proceed.response).to be(response2)
+    expect(dispatcher.proceed.response).to be(response1)
+    expect(dispatcher.proceed).to be_nil
   end
 end

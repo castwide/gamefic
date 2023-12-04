@@ -16,7 +16,7 @@ module Gamefic
     # Get the next executable action.
     #
     # @return [Action, nil]
-    def next
+    def proceed
       while response = responses.shift
         commands.each do |cmd|
           action = response.attempt(actor, cmd, !@started)
