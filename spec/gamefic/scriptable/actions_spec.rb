@@ -44,8 +44,12 @@ describe Gamefic::Delegatable::Actions do
       command = Gamefic::Command.new(:say, ['hello'])
       actor = Gamefic::Actor.new
       dispatcher = Gamefic::Dispatcher.new(actor, [command], object.playbook.responses)
-      dispatcher.next.execute
+      dispatcher.proceed.execute
       expect(response).to eq('Just hello')
+    end
+
+    it 'raises ArgumentError for invalid arguments' do
+      expect { object.respond(:use, nil) {} }.to raise_error(ArgumentError)
     end
   end
 end

@@ -144,8 +144,10 @@ module Gamefic
             available(arg)
           when String, Regexp
             plaintext(arg)
-          else
+          when Gamefic::Query::Base, Gamefic::Query::Text
             arg
+          else
+            raise ArgumentError, "invalid argument in response: #{arg.inspect}"
           end
         end
       end
