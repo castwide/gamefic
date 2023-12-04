@@ -8,10 +8,6 @@ module Gamefic
       def matches
         [context.parent].compact
       end
-
-      def self.precision
-        1000
-      end
     end
   end
 end
