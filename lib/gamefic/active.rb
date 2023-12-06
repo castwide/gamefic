@@ -177,7 +177,7 @@ module Gamefic
     def cue scene, **context
       return @next_cue if @next_cue&.scene == scene && @next_cue&.context == context
 
-      logger.warn "Overwriting existing cue `#{@next_cue.scene}` with `#{scene}`" if @next_cue
+      logger.debug "Overwriting existing cue `#{@next_cue.scene}` with `#{scene}`" if @next_cue
 
       @next_cue = Cue.new(scene, context)
     end
