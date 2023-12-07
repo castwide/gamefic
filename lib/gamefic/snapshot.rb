@@ -59,7 +59,7 @@ module Gamefic
           plot: {
             digest: plot.digest, klass: plot.class.to_s,
             entity_vault: plot.entity_vault, player_vault: plot.player_vault,
-            theater: plot.theater
+            theater: plot.theater, session: plot.session
           },
           subplots: collect_subplots(plot.subplots)
         }
@@ -69,7 +69,8 @@ module Gamefic
         subplots.map do |sp|
           {
             klass: sp.class.to_s, uuid: sp.uuid, config: sp.config,
-            entity_vault: sp.entity_vault, player_vault: sp.player_vault, theater: sp.theater
+            entity_vault: sp.entity_vault, player_vault: sp.player_vault, theater: sp.theater,
+            session: sp.session
           }
         end
       end
@@ -110,7 +111,7 @@ module Gamefic
       end
 
       def rebuild_world_model data, part
-        %i[entity_vault player_vault theater].each { |key| part.instance_variable_set("@#{key}", data[key]) }
+        %i[entity_vault player_vault theater session].each { |key| part.instance_variable_set("@#{key}", data[key]) }
         [part.entity_vault.array, part.player_vault.array].each(&:freeze)
       end
 
