@@ -77,4 +77,11 @@ describe Gamefic::Subplot do
     subplot.update
     expect(updated).to be(true)
   end
+
+  it 'branches additional subplots' do
+    plot = Gamefic::Plot.new
+    subplot1 = plot.branch(Gamefic::Subplot)
+    subplot2 = subplot1.branch(Gamefic::Subplot)
+    expect(plot.subplots).to eq([subplot1, subplot2])
+  end
 end
