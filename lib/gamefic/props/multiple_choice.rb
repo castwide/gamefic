@@ -5,18 +5,8 @@ module Gamefic
     class MultipleChoice < Default
       # The zero-based index of the selected option.
       #
-      # @return [Integer]
+      # @return [Integer, nil]
       attr_accessor :index
-
-      # The one-based index of the selected option.
-      #
-      # @return [Integer]
-      attr_accessor :number
-
-      # The full text of the selected option.
-      #
-      # @return [String]
-      attr_accessor :selection
 
       # A message to send the player for an invalid choice. A formatting
       # token named %<input>s can be used to inject the user input.
@@ -33,6 +23,24 @@ module Gamefic
 
       def invalid_message
         @invalid_message ||= '"%<input>s" is not a valid choice.'
+      end
+
+      # The one-based index of the selected option.
+      #
+      # @return [Integer, nil]
+      def number
+        return nil unless index
+
+        index + 1
+      end
+
+      # The full text of the selected option.
+      #
+      # @return [String, nil]
+      def selection
+        return nil unless index
+
+        options[index]
       end
     end
   end

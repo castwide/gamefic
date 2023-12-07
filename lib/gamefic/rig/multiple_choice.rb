@@ -17,14 +17,11 @@ module Gamefic
       def finish actor
         super
         props.index = index_by_number || index_by_text
-        if props.index
-          props.number = props.index + 1
-          props.selection = props.options[props.index]
-        else
-          actor.tell format(props.invalid_message, input: props.input)
-          actor.recue
-          cancel
-        end
+        return if props.index
+
+        actor.tell format(props.invalid_message, input: props.input)
+        actor.recue
+        cancel
       end
 
       private

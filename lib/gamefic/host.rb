@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # A container for a host narrative (e.g., a subplot's parent plot) that
   # provides safe limited access.

@@ -13,9 +13,7 @@ module Gamefic
         defaults = klass.default_attributes.merge(defaults)
         klass = klass.superclass
       end
-      defaults.merge(args).each_pair do |k, v|
-        send "#{k}=", v
-      end
+      defaults.merge(args).each_pair { |k, v| send "#{k}=", v }
 
       yield(self) if block_given?
 
