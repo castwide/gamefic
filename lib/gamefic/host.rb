@@ -7,7 +7,7 @@ module Gamefic
   # @todo Document delegated methods
   #
   class Host
-    DELEGATED_METHODS = %i[entities players verbs synonyms syntaxes scenes make pick pick!].freeze
+    DELEGATED_METHODS = %i[entities players session verbs synonyms syntaxes scenes make pick pick!].freeze
 
     # @param narrative [Narrative]
     def initialize narrative
