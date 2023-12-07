@@ -116,8 +116,6 @@ module Gamefic
       active.playbooks.add playbook
       active.scenebooks.add scenebook
       active
-    rescue RulebookError
-      # its ok
     end
 
     # Remove this narrative's playbook and scenebook from an active entity.
@@ -128,15 +126,17 @@ module Gamefic
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
       active
-    rescue RulebookError
-      # its ok
     end
 
     # Cast all players in the narrative.
     #
     # @see #cast
     #
+    # @note This method does nothing if the rulebooks are undefined
+    #
     def cast_all
+      return unless @playbook && @scenebook
+
       players.each { |plyr| cast plyr }
     end
 
@@ -144,7 +144,11 @@ module Gamefic
     #
     # @see #uncast
     #
+    # @note This method does nothing if the rulebooks are undefined
+    #
     def uncast_all
+      return unless @playbook && @scenebook
+
       players.each { |plyr| uncast plyr }
     end
 

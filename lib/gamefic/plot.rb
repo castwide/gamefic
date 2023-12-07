@@ -21,7 +21,7 @@ module Gamefic
     end
 
     def ready
-      @takes = players.map { |pl| pl.start_cue }.freeze
+      @takes = players.map(&:start_cue).freeze
       takes.each(&:start)
       super
       subplots.each(&:ready)
@@ -32,9 +32,9 @@ module Gamefic
         subplots.each { |sp| sp.scenebook.run_player_output_blocks take.actor, take.output }
         take.actor.output.merge! take.output
         take.actor.output.merge!({
-          messages: take.actor.messages + take.output[:messages],
-          queue: take.actor.queue
-        })
+                                   messages: take.actor.messages + take.output[:messages],
+                                   queue: take.actor.queue
+                                 })
       end
     end
 
@@ -94,7 +94,9 @@ module Gamefic
       before = Snapshot.save(self)
       super
       after = Snapshot.save(self)
-      logger.warn "#{self.class} data changed during scripting. Snapshots may not work properly" if before != after
+      return if before == after
+
+      logger.warn "#{self.class} data changed during script setup. Snapshots may not work properly"
     end
 
     def set_rules

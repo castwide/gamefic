@@ -60,7 +60,9 @@ module Gamefic
       before = Snapshot.save(@plot)
       super
       after = Snapshot.save(@plot)
-      logger.warn "#{self.class} data changed during scripting. Snapshots may not work properly" if before != after
+      return if before == after
+
+      logger.warn "#{self.class} data changed during script setup. Snapshots may not work properly"
     end
 
     def inspect
