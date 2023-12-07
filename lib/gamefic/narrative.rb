@@ -23,6 +23,7 @@ module Gamefic
       include Delegatable::Entities
       include Delegatable::Queries
       include Delegatable::Scenes
+      include Delegatable::Sessions
     end
 
     include Logging
@@ -36,6 +37,7 @@ module Gamefic
     attr_reader :config
 
     def initialize
+      @session = {}
       run_seeds
       set_seeds
       run_scripts
@@ -114,6 +116,8 @@ module Gamefic
       active.playbooks.add playbook
       active.scenebooks.add scenebook
       active
+    rescue RulebookError
+      # its ok
     end
 
     # Remove this narrative's playbook and scenebook from an active entity.
@@ -124,6 +128,8 @@ module Gamefic
       active.playbooks.delete playbook
       active.scenebooks.delete scenebook
       active
+    rescue RulebookError
+      # its ok
     end
 
     # Cast all players in the narrative.
