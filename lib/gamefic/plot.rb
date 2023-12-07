@@ -96,7 +96,7 @@ module Gamefic
       after = Snapshot.save(self)
       return if before == after
 
-      logger.warn "#{self.class} data changed during script setup. Snapshots may not work properly"
+      logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
     end
 
     def set_rules
