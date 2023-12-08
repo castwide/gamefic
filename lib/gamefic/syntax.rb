@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # Syntaxes provide rules for matching input patterns to existing responses.
   # Common uses are to provide synonyms for response verbs and allow for
@@ -61,7 +63,7 @@ module Gamefic
       tokens = []
       variable_tokens = []
       last_token_is_reg = false
-      words.each { |w|
+      words.each do |w|
         if w.match(/^:[a-z0-9_]+$/i)
           variable_tokens.push w
           if last_token_is_reg
@@ -74,17 +76,17 @@ module Gamefic
           tokens.push w
           last_token_is_reg = false
         end
-      }
+      end
       subs = []
       index = 0
-      command_words.each { |t|
+      command_words.each do |t|
         if t[0] == ':'
           index = variable_tokens.index(t) + 1
           subs.push "{$#{index}}"
         else
           subs.push t
         end
-      }
+      end
       @replace = subs.join(' ')
       @regexp = Regexp.new("^#{tokens.join(' ')}$", Regexp::IGNORECASE)
     end
@@ -100,7 +102,7 @@ module Gamefic
       arguments = []
       b = @verb.nil? ? 0 : 1
       xverb = @verb
-      @replace.to_s.keywords[b..-1].each { |r|
+      @replace.to_s.keywords[b..].each do |r|
         if r.match(/^\{\$[0-9]+\}$/)
           arguments.push m[r[2..-2].to_i]
         elsif arguments.empty? && xverb.nil?
@@ -108,7 +110,7 @@ module Gamefic
         else
           arguments.push r
         end
-      }
+      end
       Command.new xverb, arguments
     end
 

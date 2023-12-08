@@ -1,4 +1,10 @@
+# frozen_string_literal: true
+
 module Gamefic
+  # A decomposition of a text-based command into its verb and arguments.
+  #
+  # Commands are typically derived from tokenization against syntaxes.
+  #
   class Command
     # @return [Symbol]
     attr_reader :verb
