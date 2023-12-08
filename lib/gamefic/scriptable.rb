@@ -95,6 +95,11 @@ module Gamefic
       imported.add mod
     end
 
+    def inherited subclass
+      super
+      subclass.import self
+    end
+
     private
 
     def imported
