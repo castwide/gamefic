@@ -50,10 +50,11 @@ module Gamefic
 
     # Clear the buffered messages.
     #
+    # @return [String] The flushed message
     def flush
-      @buffers.pop
+      last = @buffers.pop
       @buffers.push ''
-      @buffers.last
+      last
     end
 
     def format message
