@@ -168,4 +168,12 @@ RSpec.describe Gamefic::Plot do
     plot.introduce player2
     expect(plot.players).to eq([player1, player2])
   end
+
+  it 'warns of data changes during script setup' do
+    expect(Gamefic::Logging.logger).to receive(:warn).with(/data changed during script setup/)
+    Gamefic.script do
+      session[:test] = 'bad practice'
+    end
+    Gamefic::Plot.new
+  end
 end

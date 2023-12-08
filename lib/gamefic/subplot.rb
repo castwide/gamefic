@@ -57,9 +57,11 @@ module Gamefic
     def configure; end
 
     def run_scripts
+      @plot.subplots.push self
       before = Snapshot.save(@plot)
       super
       after = Snapshot.save(@plot)
+      @plot.subplots.delete self
       return if before == after
 
       logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"

@@ -84,4 +84,13 @@ describe Gamefic::Subplot do
     subplot2 = subplot1.branch(Gamefic::Subplot)
     expect(plot.subplots).to eq([subplot1, subplot2])
   end
+
+  it 'warns of data changes during script setup' do
+    expect(Gamefic::Logging.logger).to receive(:warn).with(/data changed during script setup/)
+    Gamefic::Subplot.script do
+      session[:test] = 'bad practice'
+    end
+    plot = Gamefic::Plot.new
+    subplot = plot.branch(Gamefic::Subplot)
+  end
 end

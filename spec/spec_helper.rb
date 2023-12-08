@@ -21,5 +21,6 @@ RSpec.configure do |config|
 
   config.after :each do
     Gamefic::Plot.blocks.clear
+    Gamefic::Subplot.blocks.clear
   end
 end
