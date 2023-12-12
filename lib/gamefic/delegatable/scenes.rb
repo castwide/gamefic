@@ -69,9 +69,9 @@ module Gamefic
       # @example
       #   multiple_choice :go_somewhere, ['Go to work', 'Go to school'] do |actor, props|
       #     # Assuming the user selected the first choice:
-      #     props.selection # => 'Go to work'
-      #     props.index     # => 0
-      #     props.number    # => 1
+      #     props.selection #=> 'Go to work'
+      #     props.index     #=> 0
+      #     props.number    #=> 1
       #   end
       #
       # @param name [Symbol]

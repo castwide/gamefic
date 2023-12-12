@@ -102,7 +102,7 @@ module Gamefic
       #   Gamefic.script do
       #     respond :think { |actor| actor.tell 'You think.' }
       #
-      #     verbs # => [:think]
+      #     verbs #=> [:think]
       #   end
       #
       # @return [Array<Symbol>]
@@ -118,8 +118,8 @@ module Gamefic
       #     respond :think { |actor| actor.tell 'You think.' }
       #     interpret 'ponder', 'think'
       #
-      #     verbs # => [:think]
-      #     synonyms # => [:think, :ponder]
+      #     verbs #=> [:think]
+      #     synonyms #=> [:think, :ponder]
       #   end
       #
       # @return [Array<Symbol>]
