@@ -51,12 +51,16 @@ module Gamefic
       scripts.push Block.new(:seed, block)
     end
 
+    # @return [Array<Module>]
     def delegators(with_inherited: true)
       (with_inherited && superclass <= Narrative ? superclass.delegators : []) + local_delegators
     end
 
+    # @return [Array<Symbol>]
     def delegated_methods(with_inherited: true)
-      delegators(with_inherited: with_inherited).flat_map(&:public_instance_methods).uniq
+      delegators(with_inherited: with_inherited).flat_map(&:public_instance_methods)
+                                                .concat(local_delegated_methods)
+                                                .uniq
     end
 
     # Assign a delegator module for scripts.
@@ -85,6 +89,10 @@ module Gamefic
       local_delegators.push delegator
     end
 
+    def delegate_method symbol
+      local_delegated_methods.push symbol
+    end
+
     # Add a Scriptable module's scripts to the caller.
     #
     # @param mod [Scriptable]
@@ -106,8 +114,14 @@ module Gamefic
       @imported ||= Set.new
     end
 
+    # @return [Array<Module>]
     def local_delegators
       @local_delegators ||= []
+    end
+
+    # @return [Array<Symbol>]
+    def local_delegated_methods
+      @local_delegated_methods ||= []
     end
   end
 end

@@ -69,4 +69,11 @@ describe Gamefic::Narrative do
       end
     end
   end
+
+  it 'delegates attributes' do
+    Gamefic::Narrative.seed { @thing = make Gamefic::Entity, name: 'thing' }
+    Gamefic::Narrative.attr_delegate :thing
+    narr = Gamefic::Narrative.new
+    expect(narr.thing).to be(narr.stage { @thing })
+  end
 end

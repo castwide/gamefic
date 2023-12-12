@@ -182,5 +182,23 @@ module Gamefic
       playbook.freeze
       scenebook.freeze
     end
+
+    # Define a method that delegates an attr_reader to the stage.
+    #
+    # @example
+    #   class MyNarrative < Gamefic::Narrative
+    #     attr_delegate :npc
+    #     seed { @npc = make Gamefic::Entity, name: 'npc' }
+    #   end
+    #
+    #   narr = MyNarrative.new
+    #   narr.npc #=> #<Gamefic::Entity npc>
+    #
+    def self.attr_delegate symbol
+      define_method symbol do
+        stage(symbol) { |sym| instance_variable_get("@#{sym}") }
+      end
+      delegate_method symbol
+    end
   end
 end
