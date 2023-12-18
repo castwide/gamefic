@@ -45,7 +45,6 @@ module Gamefic
       @template = normalize(template)
       @command = normalize(command)
       parse_first_word
-      @variable_tokens = @template.keywords.select { |w| w.start_with?(':') }
       parse_template_tokens
       parse_replace
       @regexp = Regexp.new("^#{@tokens.join(' ')}$", Regexp::IGNORECASE)
@@ -63,7 +62,7 @@ module Gamefic
       b = @verb.nil? ? 0 : 1
       xverb = @verb
       @replace.to_s.keywords[b..].each do |r|
-        if r.match(/^\{\$[0-9]+\}$/)
+        if r.match?(/^\{\$[0-9]+\}$/)
           arguments.push m[r[2..-2].to_i]
         elsif arguments.empty? && xverb.nil?
           xverb = r.to_sym
@@ -137,26 +136,24 @@ module Gamefic
     end
 
     def parse_template_tokens
-      last_token_is_reg = false
-      @tokens = template.keywords.map do |w|
-        if w.match(/^:[a-z0-9_]+$/i)
-          next nil if last_token_is_reg
+      @tokens = template.keywords.map.with_index do |w, idx|
+        if w.match?(/^:[a-z0-9_]+$/i)
+          next nil if idx > 0 && template.keywords[idx - 1].match?(/^:[a-z0-9_]+$/i)
 
-          last_token_is_reg = true
           '([\w\W\s\S]*?)'
         else
-          last_token_is_reg = false
           w
         end
       end.compact
     end
 
     def parse_replace
-      index = 0
+      variable_tokens = @template.keywords.select { |w| w.start_with?(':') }
       @replace = command.keywords.map do |t|
         if t[0] == ':'
-          index = @variable_tokens.index(t) + 1
-          "{$#{index}}"
+          index = variable_tokens.index(t) ||
+                  raise(ArgumentError, "syntax command references undefined parameter `#{t}`")
+          "{$#{index + 1}}"
         else
           t
         end

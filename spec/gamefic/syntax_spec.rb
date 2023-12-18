@@ -91,4 +91,10 @@ describe Gamefic::Syntax do
     expect(commands.first.arguments).to eq(['thing', 'material'])
     expect(commands.last.arguments).to eq(['thing from material', nil])
   end
+
+  it 'validates command parameters' do
+    expect {
+      Gamefic::Syntax.new('make', 'make :thing')
+    }.to raise_error(ArgumentError)
+  end
 end
