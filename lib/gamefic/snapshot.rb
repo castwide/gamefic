@@ -99,6 +99,7 @@ module Gamefic
         part = string_to_constant(data[:klass]).allocate
         part.instance_variable_set(:@plot, plot)
         part.instance_variable_set(:@config, data[:config])
+        part.instance_variable_set(:@uuid, data[:uuid])
         part.configure
         part.config.freeze
         rebuild_world_model data, part
