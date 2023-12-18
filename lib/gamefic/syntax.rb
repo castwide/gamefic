@@ -123,13 +123,13 @@ module Gamefic
         end
     end
 
-    def self.sort! syntaxes
-      syntaxes.sort! do |a, b|
-        if a.template.keywords.length == b.template.keywords.length
-          b.synonym <=> a.synonym
-        else
-          b.template.keywords.length <=> a.template.keywords.length
-        end
+    # Compare two syntaxes for the purpose of ordering them in playbooks.
+    #
+    def compare other
+      if template.keywords.length == other.template.keywords.length
+        other.synonym <=> synonym
+      else
+        other.template.keywords.length <=> template.keywords.length
       end
     end
 

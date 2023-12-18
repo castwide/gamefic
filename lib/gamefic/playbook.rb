@@ -142,7 +142,7 @@ module Gamefic
     end
 
     def sort_syntaxes syntaxes
-      Syntax.sort!(syntaxes)
+      syntaxes.sort! { |a, b| a.compare b }
     end
 
     def run_action_hooks action, hooks
