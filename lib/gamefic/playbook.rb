@@ -142,13 +142,7 @@ module Gamefic
     end
 
     def sort_syntaxes syntaxes
-      syntaxes.sort! do |a, b|
-        if a.word_count == b.word_count
-          b.synonym <=> a.synonym
-        else
-          b.word_count <=> a.word_count
-        end
-      end
+      Syntax.sort!(syntaxes)
     end
 
     def run_action_hooks action, hooks

@@ -41,54 +41,14 @@ module Gamefic
     # @return [Symbol]
     attr_reader :verb
 
-    # The number of words in the template. Playbooks use word counts to sort
-    # syntaxes in descending order of precision.
-    #
-    # @return [Integer]
-    attr_reader :word_count
-
     def initialize template, command
-      words = template.keywords
-      @word_count = words.length
-      command_words = command.keywords
-      @verb = nil
-      if words[0][0] == ':'
-        @word_count -= 1
-      else
-        @synonym = words[0].to_sym
-        @verb = command_words[0].to_sym
-      end
-      @command = command_words.join(' ')
-      @template = words.join(' ')
-      tokens = []
-      variable_tokens = []
-      last_token_is_reg = false
-      words.each do |w|
-        if w.match(/^:[a-z0-9_]+$/i)
-          variable_tokens.push w
-          if last_token_is_reg
-            next
-          else
-            tokens.push '([\w\W\s\S]*?)'
-            last_token_is_reg = true
-          end
-        else
-          tokens.push w
-          last_token_is_reg = false
-        end
-      end
-      subs = []
-      index = 0
-      command_words.each do |t|
-        if t[0] == ':'
-          index = variable_tokens.index(t) + 1
-          subs.push "{$#{index}}"
-        else
-          subs.push t
-        end
-      end
-      @replace = subs.join(' ')
-      @regexp = Regexp.new("^#{tokens.join(' ')}$", Regexp::IGNORECASE)
+      @template = normalize(template)
+      @command = normalize(command)
+      parse_first_word
+      @variable_tokens = @template.keywords.select { |w| w.start_with?(':') }
+      parse_template_tokens
+      parse_replace
+      @regexp = Regexp.new("^#{@tokens.join(' ')}$", Regexp::IGNORECASE)
     end
 
     # Convert a String into a Command.
@@ -161,6 +121,56 @@ module Gamefic
             b.verb.to_s <=> a.verb.to_s
           end
         end
+    end
+
+    def self.sort! syntaxes
+      syntaxes.sort! do |a, b|
+        if a.template.keywords.length == b.template.keywords.length
+          b.synonym <=> a.synonym
+        else
+          b.template.keywords.length <=> a.template.keywords.length
+        end
+      end
+    end
+
+    private
+
+    def parse_first_word
+      return if @template.keywords[0].start_with?(':')
+
+      @synonym = @template.keywords[0].to_sym
+      @verb = @command.keywords[0].to_sym
+    end
+
+    def parse_template_tokens
+      last_token_is_reg = false
+      @tokens = template.keywords.map do |w|
+        if w.match(/^:[a-z0-9_]+$/i)
+          next nil if last_token_is_reg
+
+          last_token_is_reg = true
+          '([\w\W\s\S]*?)'
+        else
+          last_token_is_reg = false
+          w
+        end
+      end.compact
+    end
+
+    def parse_replace
+      index = 0
+      @replace = command.keywords.map do |t|
+        if t[0] == ':'
+          index = @variable_tokens.index(t) + 1
+          "{$#{index}}"
+        else
+          t
+        end
+      end.join(' ')
+    end
+
+    def normalize string
+      string.keywords.join(' ')
     end
   end
 end
