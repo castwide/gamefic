@@ -183,7 +183,7 @@ module Gamefic
       scenebook.freeze
     end
 
-    # Define a method that delegates an attr_reader to the stage.
+    # Define a method that delegates an attribute reader to the stage.
     #
     # @example
     #   class MyNarrative < Gamefic::Narrative

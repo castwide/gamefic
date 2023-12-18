@@ -61,7 +61,7 @@ module Gamefic
     # @return [Array<Symbol>]
     def delegated_methods(with_inherited: true)
       delegators(with_inherited: with_inherited).flat_map(&:public_instance_methods)
-                                                .concat(local_delegated_methods)
+                                                .concat(inner_delegated_methods(with_inherited: with_inherited))
                                                 .uniq
     end
 
@@ -120,6 +120,12 @@ module Gamefic
     def local_delegators
       @local_delegators ||= []
     end
+
+    def inner_delegated_methods(with_inherited: true)
+      (with_inherited && superclass <= Narrative ? superclass.local_delegated_methods : []) + local_delegated_methods
+    end
+
+    protected
 
     # @return [Array<Symbol>]
     def local_delegated_methods

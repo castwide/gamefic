@@ -93,4 +93,13 @@ describe Gamefic::Subplot do
     plot = Gamefic::Plot.new
     subplot = plot.branch(Gamefic::Subplot)
   end
+
+  it 'delegates attributes to plots' do
+    Gamefic.seed { @foo = 'foo' }
+    Gamefic::Plot.attr_delegate :foo
+    Gamefic::Subplot.attr_host :foo
+    plot = Gamefic::Plot.new
+    subplot = plot.branch(Gamefic::Subplot)
+    expect(subplot.foo).to eq('foo')
+  end
 end
