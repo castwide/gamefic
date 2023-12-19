@@ -10,7 +10,6 @@ describe Gamefic::Delegatable::Actions do
     end
 
     klass.new.tap do |obj|
-      # obj.extend Gamefic::Delegatable::Actions
       obj.playbook = Gamefic::Playbook.new(stage_func)
     end
   }
@@ -29,6 +28,16 @@ describe Gamefic::Delegatable::Actions do
     object.respond(:verb, Gamefic::Entity) { |_, _| nil }
     object.interpret('synonym', 'verb')
     expect(object.playbook.syntaxes.first).to be_a(Gamefic::Syntax)
+  end
+
+  it 'creates before actions' do
+    object.before_action { |_| nil }
+    expect(object.playbook.before_actions.first).to be_a(Gamefic::Action::Hook)
+  end
+
+  it 'creates after actions' do
+    object.after_action { |_| nil }
+    expect(object.playbook.after_actions.first).to be_a(Gamefic::Action::Hook)
   end
 
   it 'raises errors for syntaxes without actions' do

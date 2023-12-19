@@ -176,4 +176,15 @@ RSpec.describe Gamefic::Plot do
     end
     Gamefic::Plot.new
   end
+
+  it 'exeunts players from plot and subplots' do
+    plot = Gamefic::Plot.new
+    player = plot.make_player_character
+    plot.introduce player
+    plot.branch Gamefic::Subplot, introduce: player
+    plot.exeunt player
+
+    expect(plot.players).to be_empty
+    expect(plot.subplots.first.players).to be_empty
+  end
 end
