@@ -98,27 +98,6 @@ module Gamefic
         return last_result if parts.empty?
         denest(last_result.matched.first.children, parts.join(' '))
       end
-
-      # Determine whether the specified entity passes the query's arguments.
-      #
-      # @param [Entity]
-      # @return [Boolean]
-      def accept?(entity)
-        result = true
-        arguments.each do |a|
-          result = if a.is_a?(Symbol)
-            (entity.send(a) != false)
-          elsif a.is_a?(Regexp)
-            !entity.to_s.match(a).nil?
-          elsif a.is_a?(Module) || a.is_a?(Class)
-            entity.is_a?(a)
-          else
-            (entity == a)
-          end
-          break if result == false
-        end
-        result
-      end
     end
   end
 end
