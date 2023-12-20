@@ -14,19 +14,9 @@ module Gamefic
     # @return [Symbol]
     attr_reader :name
 
-    # @return [Array<Proc>]
-    # def start_blocks
-    #   @start_blocks ||= []
-    # end
-
     def run_start_blocks actor, props
       @start_blocks.each { |blk| @stage.call(actor, props, &blk) }
     end
-
-    # @return [Array<Proc>]
-    # def finish_blocks
-    #   @finish_blocks ||= []
-    # end
 
     def run_finish_blocks actor, props
       @finish_blocks.each { |blk| @stage.call(actor, props, &blk) }
@@ -47,7 +37,6 @@ module Gamefic
       @finish_blocks = []
       @start_blocks.push on_start if on_start
       @finish_blocks.push on_finish if on_finish
-      # yield(self) if block_given?
       stage.call self, &block if block
     end
 

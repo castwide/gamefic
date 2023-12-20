@@ -159,11 +159,11 @@ module Gamefic
     # @param quietly [Boolean] If true, return the action's output instead of appending it to #messages
     # @return [String, nil]
     def proceed quietly: false
-      a = dispatchers&.last&.proceed
+      action = dispatchers&.last&.proceed
       if quietly
-        messenger.buffer { a&.execute }
+        messenger.buffer { action&.execute }
       else
-        a&.execute
+        action&.execute
       end
     end
 
@@ -250,9 +250,9 @@ module Gamefic
     end
 
     def validate_scene_selection scenes
-      raise ArgumentError, "Scene named `#{next_cue.scene}` does not exist" if scenes.empty?
+      raise ArgumentError, "Scene named `#{next_cue}` does not exist" if scenes.empty?
 
-      logger.warn "Found #{scenes.length} scenes named `#{next_cue.scene}`" if scenes.length > 1
+      logger.warn "Found #{scenes.length} scenes named `#{next_cue}`" unless scenes.one?
     end
 
     def new_take scene, **context

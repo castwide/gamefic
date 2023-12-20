@@ -24,15 +24,8 @@ module Gamefic
     # @param snapshot [String]
     # @return [Plot]
     def self.restore snapshot
-      binary = Base64.decode64(snapshot)
-      data = Marshal.load(binary)
-      plot = rebuild_plot(data[:plot])
-      data[:subplots].each do |subdata|
-        subplot = rebuild_subplot(subdata, plot)
-        plot.subplots.push subplot
-      end
-      plot.players.each(&:recue)
-      plot
+      data = decode_and_load(snapshot)
+      rebuild_all(data)
     end
 
     # Generate a digest of a narrative.
@@ -44,9 +37,7 @@ module Gamefic
     def self.digest narrative
       binary = {
         entities: narrative.entities[0, narrative.entity_vault.lock].map(&:class),
-        theater: narrative.theater.instance_variables.map do |iv|
-          [iv, narrative.theater.instance_variable_get(iv).class]
-        end
+        theater: narrative.theater.instance_metadata
       }.inspect
       calculate_digest binary
     end
@@ -83,40 +74,52 @@ module Gamefic
         space
       end
 
+      def decode_and_load snapshot
+        Marshal.load(Base64.decode64(snapshot))
+      end
+
+      def rebuild_all data
+        plot = rebuild_plot(data[:plot])
+        data[:subplots].each { |subdata| rebuild_subplot(subdata, plot) }
+        plot.players.each(&:recue)
+        plot
+      end
+
       def rebuild_plot data
-        part = string_to_constant(data[:klass]).allocate
+        part = allocate_object(data[:klass])
         rebuild_world_model data, part
-        part.set_seeds
         raise LoadError, 'Incompatible snapshot' unless part.digest == data[:digest]
 
-        part.run_scripts
-        part.set_rules
-        rebuild_players part
+        finish_build part
         part
       end
 
       def rebuild_subplot data, plot
-        part = string_to_constant(data[:klass]).allocate
+        part = allocate_object(data[:klass])
         part.instance_variable_set(:@plot, plot)
-        part.instance_variable_set(:@config, data[:config])
-        part.instance_variable_set(:@uuid, data[:uuid])
+        %i[config uuid].each { |key| part.instance_variable_set("@#{key}", data[key]) }
         part.configure
         part.config.freeze
         rebuild_world_model data, part
-        part.set_seeds
 
-        part.run_scripts
-        part.set_rules
-        rebuild_players part
+        finish_build part
+        plot.subplots.push part
         part
+      end
+
+      def allocate_object klass
+        string_to_constant(klass).allocate
       end
 
       def rebuild_world_model data, part
         %i[entity_vault player_vault theater session].each { |key| part.instance_variable_set("@#{key}", data[key]) }
         [part.entity_vault.array, part.player_vault.array].each(&:freeze)
+        part.set_seeds
       end
 
-      def rebuild_players part
+      def finish_build part
+        part.run_scripts
+        part.set_rules
         part.players.each do |plyr|
           plyr.playbooks.add part.playbook
           plyr.scenebooks.add part.scenebook

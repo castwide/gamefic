@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Gamefic
   class Syntax
+    # Template data for syntaxes.
+    #
     class Template
       # @return [String]
       attr_reader :text

@@ -15,6 +15,10 @@ module Gamefic
         @scene = scene
         @context = context
       end
+
+      def to_s
+        scene.to_s
+      end
     end
   end
 end

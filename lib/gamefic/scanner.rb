@@ -59,7 +59,7 @@ module Gamefic
         words.each_with_index do |word, idx|
           tested = select_strict(available, word)
           tested = select_fuzzy(available, word) if tested.empty?
-          return Result.new(objects, token, filtered, words[idx..-1].join(' ')) if tested.empty?
+          return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?
 
           filtered = tested
           available = filtered
@@ -91,11 +91,13 @@ module Gamefic
           current = "#{parts.last} #{current}"
           result = scan(last_result.matched, current)
           break if result.matched.empty?
+
           parts.pop
           last_result = result
         end
         return Result.new(objects, token, [], '') if last_result.matched.empty? || last_result.matched.length > 1
         return last_result if parts.empty?
+
         denest(last_result.matched.first.children, parts.join(' '))
       end
     end

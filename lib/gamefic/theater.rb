@@ -19,6 +19,12 @@ module Gamefic
       "#<#{self.class}>"
     end
 
+    def instance_metadata
+      instance_variables.map do |iv|
+        [iv, instance_variable_get(iv).class]
+      end
+    end
+
     instance_eval do
       if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
         define_method :method_missing do |symbol, *args, &block|

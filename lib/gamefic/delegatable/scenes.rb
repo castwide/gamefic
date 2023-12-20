@@ -129,10 +129,9 @@ module Gamefic
       #
       # @param name [Symbol]
       # @param prompt [String, nil] The text to display when prompting the user to continue
-      # @param next_cue [Scene, Symbol, nil]
       # @yieldparam [Actor]
       # @return [Symbol]
-      def pause name, prompt: 'Press enter to continue...', next_cue: nil, &start
+      def pause name, prompt: 'Press enter to continue...', &start
         block name,
               rig: Gamefic::Rig::Pause,
               on_start: proc { |actor, props|
