@@ -23,9 +23,19 @@ describe Gamefic::Query::Text do
     expect(result.match).to be_nil
   end
 
+  it 'rejects unmatched partial strings' do
+    querydef = Gamefic::Query::Text.new('right')
+    result = querydef.query(nil, 'rig')
+    expect(result.match).to be_nil
+  end
+
   it 'rejects unmatched expressions' do
     querydef = Gamefic::Query::Text.new(/right/)
     result = querydef.query(nil, 'wrong')
     expect(result.match).to be_nil
+  end
+
+  it 'raises errors for invalid arguments' do
+    expect { Gamefic::Query::Text.new({ bad: :arg }) }.to raise_error(ArgumentError)
   end
 end
