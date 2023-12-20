@@ -16,4 +16,14 @@ class String
   def keywords
     gsub(/[\s-]+/, ' ').strip.downcase.split - %w[a an the]
   end
+
+  # @return [String]
+  def normalize
+    keywords.join(' ')
+  end
+
+  # @return [Gamefic::Syntax::Template]
+  def to_template
+    Gamefic::Syntax::Template.new(self)
+  end
 end
