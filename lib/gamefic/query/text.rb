@@ -8,6 +8,7 @@ module Gamefic
       # @param argument [String, Regexp, nil]
       def initialize argument = nil
         @argument = argument
+        validate
       end
 
       def query _subject, token
@@ -28,13 +29,17 @@ module Gamefic
         return true if @argument.nil?
 
         case @argument
-        when String
-          token == @argument
         when Regexp
           token =~ @argument
         else
-          raise ArgumentError, 'Invalid text query argument'
+          token == @argument
         end
+      end
+
+      def validate
+        return if @argument.nil? || @argument.is_a?(String) || @argument.is_a?(Regexp)
+
+        raise ArgumentError, 'Invalid text query argument'
       end
     end
   end
