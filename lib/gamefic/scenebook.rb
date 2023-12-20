@@ -10,6 +10,8 @@ module Gamefic
 
     attr_reader :ready_blocks
 
+    attr_reader :conclude_blocks
+
     attr_reader :introductions
 
     def initialize stage
