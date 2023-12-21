@@ -26,6 +26,12 @@ module Gamefic
       end
       output[:messages] += buffer
       @rig.ready
+      actor.rulebooks.each { |rlbk| rlbk.events.run_player_output_blocks actor, output }
+      actor.output.merge! output
+      actor.output.merge!({
+                            messages: actor.messages + output[:messages],
+                            queue: actor.queue
+                          })
     end
 
     def finish

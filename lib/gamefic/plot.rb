@@ -28,13 +28,6 @@ module Gamefic
       subplots.delete_if(&:concluding?)
       takes.each do |take|
         rulebook.events.run_player_conclude_blocks take.actor if take.conclusion?
-        rulebook.events.run_player_output_blocks take.actor, take.output
-        subplots.each { |sp| sp.rulebook.events.run_player_output_blocks take.actor, take.output }
-        take.actor.output.merge! take.output
-        take.actor.output.merge!({
-                                   messages: take.actor.messages + take.output[:messages],
-                                   queue: take.actor.queue
-                                 })
       end
     end
 
