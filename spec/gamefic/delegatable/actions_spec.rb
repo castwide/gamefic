@@ -32,12 +32,12 @@ describe Gamefic::Delegatable::Actions do
 
   it 'creates before actions' do
     object.before_action { |_| nil }
-    expect(object.rulebook.before_actions.first).to be_a(Gamefic::Action::Hook)
+    expect(object.rulebook.hooks.before_actions.first).to be_a(Gamefic::Action::Hook)
   end
 
   it 'creates after actions' do
     object.after_action { |_| nil }
-    expect(object.rulebook.after_actions.first).to be_a(Gamefic::Action::Hook)
+    expect(object.rulebook.hooks.after_actions.first).to be_a(Gamefic::Action::Hook)
   end
 
   it 'raises errors for syntaxes without actions' do

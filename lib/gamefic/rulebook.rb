@@ -22,16 +22,6 @@ module Gamefic
       @scenes = Scenes.new(stage)
     end
 
-    # @return [Array<Action::Hook>]
-    def before_actions
-      @hooks.before_actions
-    end
-
-    # @return [Array<Action::Hook>]
-    def after_actions
-      @hooks.after_actions
-    end
-
     def freeze
       super
       @calls.freeze
@@ -50,11 +40,11 @@ module Gamefic
     end
 
     def before_action verb = nil, &hook
-      before_actions.push Action::Hook.new(verb, hook)
+      hooks.before_actions.push Action::Hook.new(verb, hook)
     end
 
     def after_action verb = nil, &hook
-      after_actions.push Action::Hook.new(verb, hook)
+      hooks.after_actions.push Action::Hook.new(verb, hook)
     end
 
     # @return [Array<Response>]
@@ -107,14 +97,6 @@ module Gamefic
     # @return [Array<Syntax>]
     def syntaxes_for *synonyms
       @calls.syntaxes_for *synonyms
-    end
-
-    def run_before_actions action
-      @hooks.run_before_actions action
-    end
-
-    def run_after_actions action
-      @hooks.run_after_actions action
     end
   end
 end
