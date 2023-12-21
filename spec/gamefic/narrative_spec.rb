@@ -44,7 +44,7 @@ describe Gamefic::Narrative do
           respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
         end
         narr = Gamefic::Narrative.new
-        expect(narr.playbook.responses).to be_one
+        expect(narr.rulebook.responses).to be_one
       end
 
       it 'adds entities from seeds' do

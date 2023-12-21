@@ -12,7 +12,7 @@ module Gamefic
   #
   # @!method self.seed &block
   #   @note Although methods related to actions and scenes are available in
-  #     seeds, they generally result in errors because playbooks and scenebooks
+  #     seeds, they generally result in errors because rulebooks and scenebooks
   #     get frozen after the scripts get executed.
   #   @yieldself [Delegatable::Entities]
   class Narrative
@@ -56,9 +56,9 @@ module Gamefic
       @theater ||= Theater.new
     end
 
-    # @return [Playbook]
-    def playbook
-      @playbook || raise(RulebookError, 'Playbooks can only be modified in scripts')
+    # @return [Rulebook]
+    def rulebook
+      @rulebook || raise(RulebookError, 'Rulebooks can only be modified in scripts')
     end
 
     # @return [Scenebook]
@@ -108,22 +108,22 @@ module Gamefic
       player_vault.delete player
     end
 
-    # Add this narrative's playbook and scenebook to an active entity.
+    # Add this narrative's rulebook and scenebook to an active entity.
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast active
-      active.playbooks.add playbook
+      active.rulebooks.add rulebook
       active.scenebooks.add scenebook
       active
     end
 
-    # Remove this narrative's playbook and scenebook from an active entity.
+    # Remove this narrative's rulebook and scenebook from an active entity.
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def uncast active
-      active.playbooks.delete playbook
+      active.rulebooks.delete rulebook
       active.scenebooks.delete scenebook
       active
     end
@@ -135,7 +135,7 @@ module Gamefic
     # @note This method does nothing if the rulebooks are undefined
     #
     def cast_all
-      return unless @playbook && @scenebook
+      return unless @rulebook && @scenebook
 
       players.each { |plyr| cast plyr }
     end
@@ -147,7 +147,7 @@ module Gamefic
     # @note This method does nothing if the rulebooks are undefined
     #
     def uncast_all
-      return unless @playbook && @scenebook
+      return unless @rulebook && @scenebook
 
       players.each { |plyr| uncast plyr }
     end
@@ -173,13 +173,13 @@ module Gamefic
 
     # @return [void]
     def run_scripts
-      @playbook = Playbook.new(method(:stage))
+      @rulebook = Rulebook.new(method(:stage))
       @scenebook = Scenebook.new(method(:stage))
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
     end
 
     def set_rules
-      playbook.freeze
+      rulebook.freeze
       scenebook.freeze
     end
 

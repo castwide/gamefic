@@ -4,9 +4,9 @@ describe Gamefic::Active do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   it 'performs a command' do
-    playbook = Gamefic::Playbook.new(stage_func)
-    playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
-    object.playbooks.add playbook
+    rulebook = Gamefic::Rulebook.new(stage_func)
+    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
+    object.rulebooks.add rulebook
     object.perform 'command'
     expect(object[:executed]).to be(true)
   end
@@ -22,9 +22,9 @@ describe Gamefic::Active do
   end
 
   it 'performs actions quietly' do
-    playbook = Gamefic::Playbook.new(stage_func)
-    playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor.tell 'Keep this quiet' }
-    object.playbooks.add playbook
+    rulebook = Gamefic::Rulebook.new(stage_func)
+    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor.tell 'Keep this quiet' }
+    object.rulebooks.add rulebook
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')
     expect(object.messages).to be_empty
@@ -37,15 +37,15 @@ describe Gamefic::Active do
   end
 
   it 'proceeds quietly' do
-    playbook = Gamefic::Playbook.new(stage_func)
-    playbook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
+    rulebook = Gamefic::Rulebook.new(stage_func)
+    rulebook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
       actor.tell "hidden"
     end)
-    playbook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
+    rulebook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
       actor.proceed quietly: true
       actor.tell "visible"
     end)
-    object.playbooks.add playbook
+    object.rulebooks.add rulebook
     object.execute :command
     expect(object.messages).not_to include('hidden')
     expect(object.messages).to include('visible')

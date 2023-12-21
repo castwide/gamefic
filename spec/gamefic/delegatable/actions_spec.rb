@@ -5,12 +5,12 @@ describe Gamefic::Delegatable::Actions do
     klass = Class.new do
       include Gamefic::Delegatable::Actions
       include Gamefic::Delegatable::Queries
-      attr_accessor :playbook
+      attr_accessor :rulebook
       define_method(:stage) { |*args, &block| block.call(*args) }
     end
 
     klass.new.tap do |obj|
-      obj.playbook = Gamefic::Playbook.new(stage_func)
+      obj.rulebook = Gamefic::Rulebook.new(stage_func)
     end
   }
 
@@ -27,17 +27,17 @@ describe Gamefic::Delegatable::Actions do
   it 'creates syntaxes' do
     object.respond(:verb, Gamefic::Entity) { |_, _| nil }
     object.interpret('synonym', 'verb')
-    expect(object.playbook.syntaxes.first).to be_a(Gamefic::Syntax)
+    expect(object.rulebook.syntaxes.first).to be_a(Gamefic::Syntax)
   end
 
   it 'creates before actions' do
     object.before_action { |_| nil }
-    expect(object.playbook.before_actions.first).to be_a(Gamefic::Action::Hook)
+    expect(object.rulebook.before_actions.first).to be_a(Gamefic::Action::Hook)
   end
 
   it 'creates after actions' do
     object.after_action { |_| nil }
-    expect(object.playbook.after_actions.first).to be_a(Gamefic::Action::Hook)
+    expect(object.rulebook.after_actions.first).to be_a(Gamefic::Action::Hook)
   end
 
   it 'raises errors for syntaxes without actions' do
@@ -52,7 +52,7 @@ describe Gamefic::Delegatable::Actions do
       end
       command = Gamefic::Command.new(:say, ['hello'])
       actor = Gamefic::Actor.new
-      dispatcher = Gamefic::Dispatcher.new(actor, [command], object.playbook.responses)
+      dispatcher = Gamefic::Dispatcher.new(actor, [command], object.rulebook.responses)
       dispatcher.proceed.execute
       expect(response).to eq('Just hello')
     end

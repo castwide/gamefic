@@ -23,12 +23,12 @@ module Gamefic
       next_cue&.scene
     end
 
-    # The playbooks that will be used to perform commands. Every plot and
-    # subplot has its own playbook.
+    # The rulebooks that will be used to perform commands. Every plot and
+    # subplot has its own rulebook.
     #
-    # @return [Set<Gamefic::World::Playbook>]
-    def playbooks
-      @playbooks ||= Set.new
+    # @return [Set<Gamefic::World::Rulebook>]
+    def rulebooks
+      @rulebooks ||= Set.new
     end
 
     # The scenebooks that will be used to participate in scenes. Every plot and
@@ -224,7 +224,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      (playbooks.empty? && scenebooks.empty?) || scenebooks.map { |sb| sb[@last_cue&.scene] }.compact.last&.conclusion?
+      (rulebooks.empty? && scenebooks.empty?) || scenebooks.map { |sb| sb[@last_cue&.scene] }.compact.last&.conclusion?
     end
 
     def accessible?

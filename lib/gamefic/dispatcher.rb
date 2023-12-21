@@ -34,9 +34,9 @@ module Gamefic
     # @param input [String]
     # @return [Dispatcher]
     def self.dispatch actor, input
-      commands = Syntax.tokenize(input, actor.playbooks.flat_map(&:syntaxes))
+      commands = Syntax.tokenize(input, actor.rulebooks.flat_map(&:syntaxes))
       verbs = commands.map(&:verb).uniq
-      responses = actor.playbooks
+      responses = actor.rulebooks
                        .to_a
                        .reverse
                        .flat_map { |pb| pb.responses_for(*verbs) }
@@ -50,7 +50,7 @@ module Gamefic
     # @return [Dispatcher]
     def self.dispatch_from_params actor, verb, params
       command = Command.new(verb, params)
-      responses = actor.playbooks
+      responses = actor.rulebooks
                        .to_a
                        .reverse
                        .flat_map { |pb| pb.responses_for(verb) }
@@ -74,7 +74,7 @@ module Gamefic
     # same arguments.
     #
     def arguments_match? arguments
-      return true if @pattern.nil?
+      return true unless @pattern
 
       arguments == @pattern
     end

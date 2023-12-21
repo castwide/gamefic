@@ -30,10 +30,10 @@ describe Gamefic::Action do
   end
 
   it 'runs before_action hooks' do
-    playbook = Gamefic::Playbook.new(stage_func)
+    rulebook = Gamefic::Rulebook.new(stage_func)
     executed = false
-    playbook.before_action { |_action| executed = true }
-    actor.playbooks.add playbook
+    rulebook.before_action { |_action| executed = true }
+    actor.rulebooks.add rulebook
     response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
     action = Gamefic::Action.new(actor, [], response, true)
     action.execute
@@ -41,10 +41,10 @@ describe Gamefic::Action do
   end
 
   it 'runs after_action hooks' do
-    playbook = Gamefic::Playbook.new(stage_func)
+    rulebook = Gamefic::Rulebook.new(stage_func)
     executed = false
-    playbook.after_action { |_action| executed = true }
-    actor.playbooks.add playbook
+    rulebook.after_action { |_action| executed = true }
+    actor.rulebooks.add rulebook
     response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
     action = Gamefic::Action.new(actor, [], response, true)
     action.execute

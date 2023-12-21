@@ -31,7 +31,7 @@ module Gamefic
       # @return [Symbol]
       def respond(verb, *queries, &proc)
         args = map_response_args(queries)
-        playbook.respond_with Response.new(verb, method(:stage), *args, &proc)
+        rulebook.respond_with Response.new(verb, method(:stage), *args, &proc)
         verb
       end
 
@@ -52,7 +52,7 @@ module Gamefic
       # @return [Symbol]
       def meta(verb, *queries, &proc)
         args = map_response_args(queries)
-        playbook.respond_with Response.new(verb, method(:stage), *args, meta: true, &proc)
+        rulebook.respond_with Response.new(verb, method(:stage), *args, meta: true, &proc)
         verb
       end
 
@@ -64,7 +64,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action verb = nil, &block
-        playbook.before_action verb, &block
+        rulebook.before_action verb, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -75,7 +75,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action verb = nil, &block
-        playbook.after_action verb, &block
+        rulebook.after_action verb, &block
       end
 
       # Create an alternate Syntax for a response.
@@ -93,10 +93,10 @@ module Gamefic
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
       def interpret command, translation
-        playbook.interpret_with Syntax.new(command, translation)
+        rulebook.interpret_with Syntax.new(command, translation)
       end
 
-      # Verbs are the symbols that have responses defined in the playbook.
+      # Verbs are the symbols that have responses defined in the rulebook.
       #
       # @example
       #   Gamefic.script do
@@ -107,10 +107,10 @@ module Gamefic
       #
       # @return [Array<Symbol>]
       def verbs
-        playbook.verbs
+        rulebook.verbs
       end
 
-      # Synonyms are a combination of the playbook's concrete verbs plus the
+      # Synonyms are a combination of the rulebook's concrete verbs plus the
       # alternative variants defined in syntaxes.
       #
       # @example
@@ -124,18 +124,15 @@ module Gamefic
       #
       # @return [Array<Symbol>]
       def synonyms
-        playbook.synonyms
+        rulebook.synonyms
       end
 
       # @return [Array<Syntax>]
       def syntaxes
-        playbook.syntaxes
+        rulebook.syntaxes
       end
 
       private
-
-      # @!attribute [r] playbook
-      #   @return [Playbook]
 
       def map_response_args args
         args.map do |arg|

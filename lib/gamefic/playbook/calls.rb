@@ -7,8 +7,8 @@ module Gamefic
     #
     class Calls
       def initialize
-        @verb_response_map = Hash.new { |hash, key| hash[key] = [] }
-        @synonym_syntax_map = Hash.new { |hash, key| hash[key] = [] }
+        @verb_response_map = Calls.new_array_map
+        @synonym_syntax_map = Calls.new_array_map
       end
 
       def freeze
@@ -46,7 +46,7 @@ module Gamefic
 
       def add_response response
         verb_response_map[response.verb].unshift response
-        sort_responses verb_response_map[response.verb]
+        sort_responses_for response.verb
         add_syntax response.syntax unless response.verb.to_s.start_with?('_')
         response
       end
@@ -59,12 +59,12 @@ module Gamefic
         return if synonym_syntax_map[syntax.synonym].include?(syntax)
 
         synonym_syntax_map[syntax.synonym].unshift syntax
-        sort_syntaxes synonym_syntax_map[syntax.synonym]
+        sort_syntaxes_for syntax.synonym
         syntax
       end
 
-      def sort_syntaxes syntaxes
-        syntaxes.sort! { |a, b| a.compare b }
+      def self.new_array_map
+        Hash.new { |hash, key| hash[key] = [] }
       end
 
       private
@@ -74,8 +74,12 @@ module Gamefic
       attr_reader :synonym_syntax_map
 
       # @param responses [Array<Response>]
-      def sort_responses responses
-        responses.sort_by!.with_index { |a, i| [a.precision, -i] }.reverse!
+      def sort_responses_for verb
+        verb_response_map[verb].sort_by!.with_index { |a, i| [a.precision, -i] }.reverse!
+      end
+
+      def sort_syntaxes_for synonym
+        synonym_syntax_map[synonym].sort! { |a, b| a.compare b }
       end
     end
   end

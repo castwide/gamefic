@@ -16,7 +16,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    expect(plot.playbook.responses.length).to eq(1)
+    expect(plot.rulebook.responses.length).to eq(1)
   end
 
   it 'raises an error on new responses after initialization' do

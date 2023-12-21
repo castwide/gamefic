@@ -48,7 +48,7 @@ module Gamefic
       @replace = parse_replace
     end
 
-    # A symbol for the first word in the template. Used by playbooks to
+    # A symbol for the first word in the template. Used by rulebooks to
     # classify groups of related syntaxes.
     #
     # @example
@@ -106,7 +106,7 @@ module Gamefic
         .sort { |syn, other_syn| syn.compare other_syn }
     end
 
-    # Compare two syntaxes for the purpose of ordering them in playbooks.
+    # Compare two syntaxes for the purpose of ordering them in rulebooks.
     #
     def compare other
       template.compare other.template

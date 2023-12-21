@@ -27,9 +27,9 @@ describe Gamefic::Take do
 
   it 'performs actions in Activity scene types' do
     actor = Gamefic::Actor.new
-    playbook = Gamefic::Playbook.new(stage_func)
-    playbook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
-    actor.playbooks.add playbook
+    rulebook = Gamefic::Rulebook.new(stage_func)
+    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
+    actor.rulebooks.add rulebook
     scene = Gamefic::Scene.new(:scene, stage_func, rig: Gamefic::Rig::Activity)
     take = Gamefic::Take.new(actor, scene)
     take.start

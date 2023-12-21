@@ -8,6 +8,7 @@ require 'gamefic/rulebook/scenes'
 module Gamefic
   class Rulebook
     def initialize(stage)
+      @stage = stage
       @calls = Calls.new(stage)
       @events = Events.new(stage)
       @hooks = Hooks.new(stage)
@@ -59,14 +60,14 @@ module Gamefic
       @calls.syntaxes
     end
 
-    # An array of all the verbs available in the playbook. This list only
+    # An array of all the verbs available in the rulebook. This list only
     # includes verbs that are explicitly defined in reponses. It excludes
     # synonyms that might be defined in syntaxes (see #synonyms).
     #
     # @example
-    #   playbook.respond :verb { |_| nil }
-    #   playbook.interpret 'synonym', 'verb'
-    #   playbook.verbs #=> [:verb]
+    #   rulebook.respond :verb { |_| nil }
+    #   rulebook.interpret 'synonym', 'verb'
+    #   rulebook.verbs #=> [:verb]
     #
     # @return [Array<Symbol>]
     def verbs
@@ -77,9 +78,9 @@ module Gamefic
     # in syntaxes.
     #
     # @example
-    #   playbook.respond :verb { |_| nil }
-    #   playbook.interpret 'synonym', 'verb'
-    #   playbook.synonyms #=> [:synonym, :verb]
+    #   rulebook.respond :verb { |_| nil }
+    #   rulebook.interpret 'synonym', 'verb'
+    #   rulebook.synonyms #=> [:synonym, :verb]
     #
     def synonyms
       @calls.synonyms
