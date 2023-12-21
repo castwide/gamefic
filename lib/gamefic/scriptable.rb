@@ -32,7 +32,7 @@ module Gamefic
     # Add a block of code to be executed during initialization.
     #
     # These blocks are used to define actions, scenes, and static entities.
-    # After they get executed, the rulebook and scenebook will be frozen.
+    # After they get executed, the rulebook will be frozen.
     #
     # Dynamic entities should be created with #seed.
     #

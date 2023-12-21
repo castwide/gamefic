@@ -38,7 +38,7 @@ RSpec.describe Gamefic::Plot do
     end
     plot = Gamefic::Plot.new
     # There are 3 scenes because the plot created 2 defaults
-    expect(plot.scenebook.scenes.length).to eq(3)
+    expect(plot.rulebook.scenes.scenes.length).to eq(3)
   end
 
   it 'raises an error on new responses after initialization' do

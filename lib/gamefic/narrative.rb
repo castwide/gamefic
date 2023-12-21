@@ -12,8 +12,8 @@ module Gamefic
   #
   # @!method self.seed &block
   #   @note Although methods related to actions and scenes are available in
-  #     seeds, they generally result in errors because rulebooks and scenebooks
-  #     get frozen after the scripts get executed.
+  #     seeds, they generally result in errors because rulebooks get frozen
+  #     after the scripts get executed.
   #   @yieldself [Delegatable::Entities]
   class Narrative
     extend Scriptable
@@ -61,11 +61,6 @@ module Gamefic
       @rulebook || raise(RulebookError, 'Rulebooks can only be modified in scripts')
     end
 
-    # @return [Scenebook]
-    def scenebook
-      @scenebook || raise(RulebookError, 'Scenebooks can only be modified in scripts')
-    end
-
     # @param block [Proc]
     def stage *args, &block
       theater.evaluate self, *args, block
@@ -77,7 +72,7 @@ module Gamefic
     # @return [void]
     def introduce(player)
       enter player
-      scenebook.introductions.each do |scene|
+      rulebook.scenes.introductions.each do |scene|
         take = Take.new(player, scene)
         take.start
         player.stream take.output[:messages]
@@ -103,7 +98,7 @@ module Gamefic
     # Remove a player from the game.
     #
     def exeunt player
-      scenebook.run_player_conclude_blocks player
+      rulebook.events.run_player_conclude_blocks player
       uncast player
       player_vault.delete player
     end
@@ -114,17 +109,15 @@ module Gamefic
     # @return [Gamefic::Active]
     def cast active
       active.rulebooks.add rulebook
-      active.scenebooks.add scenebook
       active
     end
 
-    # Remove this narrative's rulebook and scenebook from an active entity.
+    # Remove this narrative's rulebook from an active entity.
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def uncast active
       active.rulebooks.delete rulebook
-      active.scenebooks.delete scenebook
       active
     end
 
@@ -135,7 +128,7 @@ module Gamefic
     # @note This method does nothing if the rulebooks are undefined
     #
     def cast_all
-      return unless @rulebook && @scenebook
+      return unless @rulebook
 
       players.each { |plyr| cast plyr }
     end
@@ -147,17 +140,17 @@ module Gamefic
     # @note This method does nothing if the rulebooks are undefined
     #
     def uncast_all
-      return unless @rulebook && @scenebook
+      return unless @rulebook
 
       players.each { |plyr| uncast plyr }
     end
 
     def ready
-      scenebook.run_ready_blocks
+      rulebook.events.run_ready_blocks
     end
 
     def update
-      scenebook.run_update_blocks
+      rulebook.events.run_update_blocks
     end
 
     # @return [void]
@@ -174,13 +167,11 @@ module Gamefic
     # @return [void]
     def run_scripts
       @rulebook = Rulebook.new(method(:stage))
-      @scenebook = Scenebook.new(method(:stage))
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
     end
 
     def set_rules
       rulebook.freeze
-      scenebook.freeze
     end
 
     # Define a method that delegates an attribute reader to the stage.

@@ -34,7 +34,7 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        scenebook.add Scene.new(name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
+        rulebook.scenes.add Scene.new(name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
         name
       end
       alias scene block
@@ -54,7 +54,7 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Symbol]
       def introduction(rig: Gamefic::Rig::Activity, &start)
-        scenebook.introduction Scene.new nil,
+        rulebook.scenes.introduction Scene.new nil,
                                          method(:stage),
                                          rig: rig,
                                          on_start: proc { |actor, props|
@@ -159,7 +159,7 @@ module Gamefic
       end
 
       def scenes
-        scenebook.names
+        rulebook.scenes.names
       end
 
       # Add a block to be executed on preparation of every turn.
@@ -171,7 +171,7 @@ module Gamefic
       #   end
       #
       def on_ready &block
-        scenebook.on_ready(&block)
+        rulebook.events.on_ready(&block)
       end
 
       # Add a block to be executed for each player at the beginning of a turn.
@@ -185,43 +185,38 @@ module Gamefic
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
-        scenebook.on_player_ready(&block)
+        rulebook.events.on_player_ready(&block)
       end
 
       # Add a block to be executed after the Plot is finished updating a turn.
       #
       def on_update &block
-        scenebook.on_update(&block)
+        rulebook.events.on_update(&block)
       end
 
       # Add a block to be executed for each player at the end of a turn.
       #
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
-        scenebook.on_player_update(&block)
+        rulebook.events.on_player_update(&block)
       end
 
       def on_conclude &block
-        scenebook.on_conclude(&block)
+        rulebook.events.on_conclude(&block)
       end
 
       # @yieldparam [Actor]
       # @return [Proc]
       def on_player_conclude &block
-        scenebook.on_player_conclude(&block)
+        rulebook.events.on_player_conclude(&block)
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
       # @return [Proc]
       def on_player_output &block
-        scenebook.on_player_output(&block)
+        rulebook.events.on_player_output(&block)
       end
-
-      private
-
-      # @!attribute [r] scenebook
-      #   @return [Scenebook]
     end
   end
 end

@@ -36,7 +36,7 @@ describe Gamefic::Narrative do
           pause(:scene) { |actor| actor.tell 'Pause' }
         end
         narr = Gamefic::Narrative.new
-        expect(narr.scenebook.scenes).to be_one
+        expect(narr.rulebook.scenes.names).to be_one
       end
 
       it 'adds actions from scripts' do

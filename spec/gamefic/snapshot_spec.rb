@@ -40,7 +40,6 @@ describe Gamefic::Snapshot do
   it 'restores players' do
     player = restored.players.first
     expect(player.rulebooks.to_a).to eq([restored.rulebook, restored.subplots.first.rulebook])
-    expect(player.scenebooks.to_a).to eq([restored.scenebook, restored.subplots.first.scenebook])
   end
 
   it 'handles restored introduction cues' do
@@ -84,7 +83,6 @@ describe Gamefic::Snapshot do
   it 'retains player configuration after save' do
     plot.save
     expect(plot.players).to be_one
-    expect(plot.players.first.scenebooks.length).to eq(2)
     expect(plot.players.first.rulebooks.length).to eq(2)
   end
 end

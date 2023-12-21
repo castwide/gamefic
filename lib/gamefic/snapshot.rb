@@ -122,7 +122,6 @@ module Gamefic
         part.set_rules
         part.players.each do |plyr|
           plyr.rulebooks.add part.rulebook
-          plyr.scenebooks.add part.scenebook
         end
       end
 

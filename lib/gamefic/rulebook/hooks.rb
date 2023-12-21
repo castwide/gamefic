@@ -21,6 +21,26 @@ module Gamefic
         @after_actions.freeze
         self
       end
+
+      def run_before_actions action
+        run_action_hooks action, before_actions
+      end
+
+      def run_after_actions action
+        run_action_hooks action, after_actions
+      end
+
+      private
+
+      def run_action_hooks action, hooks
+        hooks.each do |hook|
+          break if action.cancelled?
+
+          next unless hook.verb.nil? || hook.verb == action.verb
+
+          @stage.call action, &hook.block
+        end
+      end
     end
   end
 end

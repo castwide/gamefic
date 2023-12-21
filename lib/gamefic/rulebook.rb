@@ -7,8 +7,15 @@ require 'gamefic/rulebook/scenes'
 
 module Gamefic
   class Rulebook
+    attr_reader :calls
+
+    attr_reader :events
+
+    attr_reader :hooks
+
+    attr_reader :scenes
+
     def initialize(stage)
-      @stage = stage
       @calls = Calls.new(stage)
       @events = Events.new(stage)
       @hooks = Hooks.new(stage)
@@ -103,23 +110,11 @@ module Gamefic
     end
 
     def run_before_actions action
-      run_action_hooks action, before_actions
+      @hooks.run_before_actions action
     end
 
     def run_after_actions action
-      run_action_hooks action, after_actions
-    end
-
-    private
-
-    def run_action_hooks action, hooks
-      hooks.each do |hook|
-        break if action.cancelled?
-
-        next unless hook.verb.nil? || hook.verb == action.verb
-
-        @stage.call action, &hook.block
-      end
+      @hooks.run_after_actions action
     end
   end
 end

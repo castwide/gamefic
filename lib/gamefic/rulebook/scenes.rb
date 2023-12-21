@@ -11,6 +11,13 @@ module Gamefic
         @introductions = []
       end
 
+      def freeze
+        super
+        @scene_map.freeze
+        @introductions.freeze
+        self
+      end
+
       # Add a scene to the scenebook.
       #
       # @param [Scene]

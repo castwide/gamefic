@@ -31,14 +31,6 @@ module Gamefic
       @rulebooks ||= Set.new
     end
 
-    # The scenebooks that will be used to participate in scenes. Every plot and
-    # subplot has its own scenebook.
-    #
-    # @return [Set<Gamefic::World::Scenebook>]
-    def scenebooks
-      @scenebooks ||= Set.new
-    end
-
     # An array of commands waiting to be executed.
     #
     # @return [Array<String>]
@@ -192,7 +184,7 @@ module Gamefic
     # @return [Take]
     def start_cue
       ensure_cue
-      available = scenebooks.map { |sb| sb[next_cue.scene] }.compact
+      available = rulebooks.map { |rlbk| rlbk.scenes[next_cue.scene] }.compact
       validate_scene_selection(available)
       new_take(available.last, **next_cue.context)
     end
@@ -215,7 +207,7 @@ module Gamefic
     # @oaram context [Hash] Additional scene data
     def conclude scene, **context
       cue scene, **context
-      available = scenebooks.map { |sb| sb[scene] }.compact.last
+      available = rulebooks.map { |rlbk| rlbk.scenes[scene] }.compact.last
       raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
 
       @next_cue
@@ -224,7 +216,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      (rulebooks.empty? && scenebooks.empty?) || scenebooks.map { |sb| sb[@last_cue&.scene] }.compact.last&.conclusion?
+      rulebooks.empty? || rulebooks.map { |rlbk| rlbk.scenes[@last_cue&.scene] }.compact.last&.conclusion?
     end
 
     def accessible?
