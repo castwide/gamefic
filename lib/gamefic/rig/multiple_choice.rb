@@ -16,24 +16,11 @@ module Gamefic
 
       def finish actor
         super
-        props.index = index_by_number || index_by_text
         return if props.index
 
         actor.tell format(props.invalid_message, input: props.input)
         actor.recue
         cancel
-      end
-
-      private
-
-      def index_by_number
-        return props.input.to_i - 1 if props.input.match(/^\d+$/) && props.options[props.input.to_i - 1]
-
-        nil
-      end
-
-      def index_by_text
-        props.options.find_index { |text| props.input.downcase == text.downcase }
       end
     end
   end
