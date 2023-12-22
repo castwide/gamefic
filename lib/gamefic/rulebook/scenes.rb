@@ -42,12 +42,16 @@ module Gamefic
       end
 
       # @return [Array<Scene>]
-      def scenes
+      def all
         @scene_map.values
       end
 
       def introduction scene = nil
         introductions.push scene
+      end
+
+      def empty?
+        @scene_map.empty? && introductions.empty?
       end
     end
   end

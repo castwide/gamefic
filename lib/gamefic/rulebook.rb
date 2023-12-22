@@ -98,5 +98,9 @@ module Gamefic
     def syntaxes_for *synonyms
       @calls.syntaxes_for *synonyms
     end
+
+    def empty?
+      calls.empty? && hooks.empty? && scenes.empty? && events.empty?
+    end
   end
 end

@@ -22,6 +22,10 @@ module Gamefic
         @player_output_blocks = []
       end
 
+      def empty?
+        [player_output_blocks, player_conclude_blocks, ready_blocks, update_blocks, conclude_blocks].all?(&:empty?)
+      end
+
       def freeze
         super
         instance_variables.each { |k| instance_variable_get(k).freeze }

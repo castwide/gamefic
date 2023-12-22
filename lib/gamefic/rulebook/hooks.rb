@@ -30,6 +30,10 @@ module Gamefic
         run_action_hooks action, after_actions
       end
 
+      def empty?
+        before_actions.empty? && after_actions.empty?
+      end
+
       private
 
       def run_action_hooks action, hooks

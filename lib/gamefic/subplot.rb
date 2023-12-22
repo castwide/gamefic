@@ -74,11 +74,10 @@ module Gamefic
     #   subplot.hello #=> 'Hello, world!'
     #
     def self.attr_host symbol
-      # @todo Maybe get rid of this?
-      # define_method symbol do
-      #   @plot.stage(symbol) { |sym| instance_variable_get("@#{sym}") }
-      # end
-      # delegate_method symbol
+      define_method symbol do
+        @plot.stage(symbol) { |sym| instance_variable_get("@#{sym}") }
+      end
+      delegate_method symbol
     end
   end
 end

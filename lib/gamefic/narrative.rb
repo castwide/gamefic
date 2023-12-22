@@ -58,7 +58,7 @@ module Gamefic
 
     # @return [Rulebook]
     def rulebook
-      @rulebook || raise(RulebookError, 'Rulebooks can only be modified in scripts')
+      @rulebook ||= Rulebook.new(method(:stage))
     end
 
     # @param block [Proc]
@@ -162,17 +162,19 @@ module Gamefic
       entity_vault.lock
       @digest = Gamefic::Snapshot.digest(self).freeze
       theater.freeze
+      return if rulebook.empty?
+
+      logger.warn "Rulebook was modified in seeds. Snapshots may not restore properly"
     end
 
     # @return [void]
     def run_scripts
-      # before = Snapshot.digest(self)
-      @rulebook = Rulebook.new(method(:stage))
+      before = Marshal.dump([session, theater])
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
-      # after = Snapshot.digest(self)
-      # return if before == after
+      after = Marshal.dump([session, theater])
+      return if before == after
 
-      # logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
+      logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
     end
 
     def set_rules
