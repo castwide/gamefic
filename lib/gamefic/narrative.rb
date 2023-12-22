@@ -39,7 +39,7 @@ module Gamefic
       run_seeds
       set_seeds
       run_scripts
-      set_rules
+      rulebook.freeze
     end
 
     def entity_vault
@@ -159,10 +159,6 @@ module Gamefic
       logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
     end
 
-    def set_rules
-      rulebook.freeze
-    end
-
     # Define a method that delegates an attribute reader to the stage.
     #
     # @example
@@ -196,10 +192,10 @@ module Gamefic
       end
       @rulebook = Rulebook.new(method(:stage))
       run_scripts
-      set_rules
       theater.freeze
       entity_vault.array.freeze
       player_vault.array.freeze
+      rulebook.freeze
     end
   end
 end

@@ -83,12 +83,12 @@ module Gamefic
       Snapshot.save self
     end
 
-    def set_rules
+    def run_scripts
+      super
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
         block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
       end
-      super
     end
 
     def self.restore snapshot
