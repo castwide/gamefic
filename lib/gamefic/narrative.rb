@@ -85,39 +85,27 @@ module Gamefic
       players.empty? || players.all?(&:concluding?)
     end
 
-    # Add a player to the game.
-    #
-    # @param player [Active]
-    def enter player
-      cast player
-      player_vault.add player
-    end
-
-    # Remove a player from the game.
-    #
-    def exeunt player
-      rulebook.events.run_player_conclude_blocks player
-      uncast player
-      player_vault.delete player
-    end
-
-    # Add this narrative's rulebook and scenebook to an active entity.
+    # Add an active entity to the narrative.
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast active
       active.narratives.add self
+      player_vault.add active
       active
     end
+    alias enter cast
 
-    # Remove this narrative's rulebook from an active entity.
+    # Remove an active entity from the narrative.
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def uncast active
       active.narratives.delete self
+      player_vault.delete active
       active
     end
+    alias exeunt uncast
 
     # Cast all players in the narrative.
     #
@@ -206,9 +194,9 @@ module Gamefic
       vars.each do |attr, value|
         instance_variable_set(attr, value) unless UNMARSHALED_VARIABLES.include?(attr)
       end
+      @rulebook = Rulebook.new(method(:stage))
       run_scripts
       set_rules
-      players.each { |plyr| cast plyr }
       theater.freeze
       entity_vault.array.freeze
       player_vault.array.freeze
