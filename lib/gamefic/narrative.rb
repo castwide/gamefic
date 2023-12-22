@@ -31,9 +31,6 @@ module Gamefic
     # @return [Integer]
     attr_reader :digest
 
-    # @return [Hash]
-    attr_reader :config
-
     def initialize
       @session = {}
       run_seeds

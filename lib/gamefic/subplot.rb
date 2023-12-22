@@ -24,6 +24,9 @@ module Gamefic
     # @return [String]
     attr_reader :uuid
 
+    # @return [Hash]
+    attr_reader :config
+
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
