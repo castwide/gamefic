@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class RulebookError < RuntimeError; end
-
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional
   # functionality.
@@ -128,8 +126,6 @@ module Gamefic
     # @note This method does nothing if the rulebooks are undefined
     #
     def cast_all
-      return unless @rulebook
-
       players.each { |plyr| cast plyr }
     end
 
@@ -140,8 +136,6 @@ module Gamefic
     # @note This method does nothing if the rulebooks are undefined
     #
     def uncast_all
-      return unless @rulebook
-
       players.each { |plyr| uncast plyr }
     end
 
