@@ -49,30 +49,28 @@ describe Gamefic::Subplot do
 
   it 'runs ready blocks' do
     readied = false
-    klass = Class.new(Gamefic::Subplot)
-    klass.script do
+    Gamefic::Subplot.script do
       on_ready do
         readied = true
       end
     end
     plot = Gamefic::Plot.new
     actor = plot.make_player_character
-    subplot = klass.new(plot, introduce: actor)
+    subplot = Gamefic::Subplot.new(plot, introduce: actor)
     subplot.ready
     expect(readied).to be(true)
   end
 
   it 'runs update blocks' do
     updated = false
-    klass = Class.new(Gamefic::Subplot)
-    klass.script do
+    Gamefic::Subplot.script do
       on_update do
         updated = true
       end
     end
     plot = Gamefic::Plot.new
     actor = plot.make_player_character
-    subplot = klass.new(plot, introduce: actor)
+    subplot = Gamefic::Subplot.new(plot, introduce: actor)
     subplot.ready
     subplot.update
     expect(updated).to be(true)

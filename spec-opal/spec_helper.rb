@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'gamefic'
+require 'ostruct'
 
 RSpec.configure do |config|
   # Run specs in random order to surface order dependencies. If you find an
@@ -16,6 +17,7 @@ RSpec.configure do |config|
   # Kernel.srand config.seed
 
   config.after :each do
+    Gamefic::Narrative.blocks.clear
     Gamefic::Plot.blocks.clear
     Gamefic::Subplot.blocks.clear
   end
