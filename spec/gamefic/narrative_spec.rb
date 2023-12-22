@@ -76,4 +76,19 @@ describe Gamefic::Narrative do
     narr = Gamefic::Narrative.new
     expect(narr.thing).to be(narr.stage { @thing })
   end
+
+  it 'marshals' do
+    Gamefic::Narrative.script do
+      respond(:cmd) { |_| nil }
+    end
+    narr = Gamefic::Narrative.new
+
+    plyr = Gamefic::Actor.new
+    narr.enter plyr
+
+    dump = Marshal.dump(narr)
+    rest = Marshal.load(dump)
+    expect(rest).to be_a(Gamefic::Narrative)
+    expect(rest.players.first.narratives).to eq([rest].to_set)
+  end
 end

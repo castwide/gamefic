@@ -108,7 +108,7 @@ module Gamefic
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast active
-      active.rulebooks.add rulebook
+      active.narratives.add self
       active
     end
 
@@ -117,7 +117,7 @@ module Gamefic
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def uncast active
-      active.rulebooks.delete rulebook
+      active.narratives.delete self
       active
     end
 
@@ -190,6 +190,24 @@ module Gamefic
         stage(symbol) { |sym| instance_variable_get("@#{sym}") }
       end
       delegate_method symbol
+    end
+
+    UNMARSHALED_VARIABLES = [:@rulebook].freeze
+
+    def marshal_dump
+      (instance_variables - UNMARSHALED_VARIABLES).inject({}) do |vars, attr|
+        vars[attr] = instance_variable_get(attr)
+        vars
+      end
+    end
+
+    def marshal_load(vars)
+      vars.each do |attr, value|
+        instance_variable_set(attr, value) unless UNMARSHALED_VARIABLES.include?(attr)
+      end
+      run_scripts
+      set_rules
+      players.each { |plyr| cast plyr }
     end
   end
 end
