@@ -213,6 +213,9 @@ module Gamefic
       run_scripts
       set_rules
       players.each { |plyr| cast plyr }
+      theater.freeze
+      entity_vault.array.freeze
+      player_vault.array.freeze
     end
   end
 end
