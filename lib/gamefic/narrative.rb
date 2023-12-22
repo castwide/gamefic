@@ -166,8 +166,13 @@ module Gamefic
 
     # @return [void]
     def run_scripts
+      # before = Snapshot.digest(self)
       @rulebook = Rulebook.new(method(:stage))
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+      # after = Snapshot.digest(self)
+      # return if before == after
+
+      # logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
     end
 
     def set_rules
@@ -192,7 +197,7 @@ module Gamefic
       delegate_method symbol
     end
 
-    UNMARSHALED_VARIABLES = [:@rulebook].freeze
+    UNMARSHALED_VARIABLES = [:@rulebook, :@takes].freeze
 
     def marshal_dump
       (instance_variables - UNMARSHALED_VARIABLES).inject({}) do |vars, attr|

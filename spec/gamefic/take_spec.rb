@@ -26,12 +26,14 @@ describe Gamefic::Take do
   end
 
   it 'performs actions in Activity scene types' do
+    Gamefic::Narrative.script do
+      respond(:command) { |actor| actor[:executed] = true }
+      block :scene, rig: Gamefic::Rig::Activity
+    end
     actor = Gamefic::Actor.new
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
-    actor.rulebooks.add rulebook
-    scene = Gamefic::Scene.new(:scene, stage_func, rig: Gamefic::Rig::Activity)
-    take = Gamefic::Take.new(actor, scene)
+    narr = Gamefic::Narrative.new
+    narr.enter actor
+    take = Gamefic::Take.new(actor, narr.rulebook.scenes[:scene])
     take.start
     actor.queue.push 'command'
     take.finish

@@ -83,15 +83,6 @@ module Gamefic
       Snapshot.save self
     end
 
-    def run_scripts
-      before = Snapshot.save(self)
-      super
-      after = Snapshot.save(self)
-      return if before == after
-
-      logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
-    end
-
     def set_rules
       stage do
         block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)

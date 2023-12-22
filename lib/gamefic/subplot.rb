@@ -56,17 +56,6 @@ module Gamefic
     #
     def configure; end
 
-    def run_scripts
-      @plot.subplots.push self
-      before = Snapshot.save(@plot)
-      super
-      after = Snapshot.save(@plot)
-      @plot.subplots.delete self
-      return if before == after
-
-      logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
-    end
-
     def inspect
       "#<#{self.class}>"
     end
@@ -85,10 +74,11 @@ module Gamefic
     #   subplot.hello #=> 'Hello, world!'
     #
     def self.attr_host symbol
-      define_method symbol do
-        @plot.stage(symbol) { |sym| instance_variable_get("@#{sym}") }
-      end
-      delegate_method symbol
+      # @todo Maybe get rid of this?
+      # define_method symbol do
+      #   @plot.stage(symbol) { |sym| instance_variable_get("@#{sym}") }
+      # end
+      # delegate_method symbol
     end
   end
 end
