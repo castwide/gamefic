@@ -4,9 +4,11 @@ describe Gamefic::Active do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   it 'performs a command' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
-    object.rulebooks.add rulebook
+    Gamefic::Narrative.script do
+      respond(:command) { |actor| actor[:executed] = true }
+    end
+    narrative = Gamefic::Narrative.new
+    narrative.enter object
     object.perform 'command'
     expect(object[:executed]).to be(true)
   end
@@ -22,9 +24,11 @@ describe Gamefic::Active do
   end
 
   it 'performs actions quietly' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor.tell 'Keep this quiet' }
-    object.rulebooks.add rulebook
+    Gamefic::Narrative.script do
+      respond(:command) { |actor| actor.tell 'Keep this quiet' }
+    end
+    narr = Gamefic::Narrative.new
+    narr.enter object
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')
     expect(object.messages).to be_empty
@@ -37,44 +41,41 @@ describe Gamefic::Active do
   end
 
   it 'proceeds quietly' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
-      actor.tell "hidden"
-    end)
-    rulebook.respond_with(Gamefic::Response.new(:command, stage_func) do |actor|
-      actor.proceed quietly: true
-      actor.tell "visible"
-    end)
-    object.rulebooks.add rulebook
+    Gamefic::Narrative.script do
+      respond(:command) { |actor| actor.tell 'hidden' }
+      respond(:command) { |actor| actor.tell 'visible' }
+    end
+    narr = Gamefic::Narrative.new
+    narr.enter object
     object.execute :command
     expect(object.messages).not_to include('hidden')
     expect(object.messages).to include('visible')
   end
 
   it 'cues a scene' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.scenes.add Gamefic::Scene.new(:scene, stage_func)
-    object.rulebooks.add rulebook
+    Gamefic::Narrative.script { block :scene }
+    narr = Gamefic::Narrative.new
+    narr.enter object
     expect { object.cue :scene }.not_to raise_error
   end
 
   it 'raises an error for non-conclusions' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.scenes.add Gamefic::Scene.new(:scene, stage_func)
-    object.rulebooks.add rulebook
+    Gamefic::Narrative.script { block :scene }
+    narr = Gamefic::Narrative.new
+    narr.enter object
     expect { object.conclude :scene }.to raise_error(ArgumentError)
   end
 
   it 'is not concluding by default' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    object.rulebooks.add rulebook
+    narr = Gamefic::Narrative.new
+    narr.enter object
     expect(object).not_to be_concluding
   end
 
   it 'is concluding when starting a conclusion' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.scenes.add Gamefic::Scene.new(:ending, stage_func, rig: Gamefic::Rig::Conclusion)
-    object.rulebooks.add rulebook
+    Gamefic::Narrative.script { conclusion :ending }
+    narr = Gamefic::Narrative.new
+    narr.enter object
     object.cue :ending
     take = object.start_cue
     take.start

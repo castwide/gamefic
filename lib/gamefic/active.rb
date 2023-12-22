@@ -27,8 +27,15 @@ module Gamefic
     # subplot has its own rulebook.
     #
     # @return [Set<Gamefic::World::Rulebook>]
-    def rulebooks
-      @rulebooks ||= Set.new
+    # def rulebooks
+    #   @rulebooks ||= Set.new
+    # end
+
+    # The narratives in which the entity is participating.
+    #
+    # @return [Set<Gamefic::Narrative]
+    def narratives
+      @narratives ||= Set.new
     end
 
     # An array of commands waiting to be executed.
@@ -184,7 +191,9 @@ module Gamefic
     # @return [Take]
     def start_cue
       ensure_cue
-      available = rulebooks.map { |rlbk| rlbk.scenes[next_cue.scene] }.compact
+      available = narratives.map(&:rulebook)
+                            .map { |rlbk| rlbk.scenes[next_cue.scene] }
+                            .compact
       validate_scene_selection(available)
       new_take(available.last, **next_cue.context)
     end
@@ -207,7 +216,7 @@ module Gamefic
     # @oaram context [Hash] Additional scene data
     def conclude scene, **context
       cue scene, **context
-      available = rulebooks.map { |rlbk| rlbk.scenes[scene] }.compact.last
+      available = narratives.map(&:rulebook).map { |rlbk| rlbk.scenes[scene] }.compact.last
       raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
 
       @next_cue
@@ -216,7 +225,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      rulebooks.empty? || rulebooks.map { |rlbk| rlbk.scenes[@last_cue&.scene] }.compact.last&.conclusion?
+      narratives.empty? || narratives.map(&:rulebook).map { |rlbk| rlbk.scenes[@last_cue&.scene] }.compact.last&.conclusion?
     end
 
     def accessible?

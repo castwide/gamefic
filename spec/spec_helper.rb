@@ -20,6 +20,7 @@ RSpec.configure do |config|
   # Kernel.srand config.seed
 
   config.after :each do
+    Gamefic::Narrative.blocks.clear
     Gamefic::Plot.blocks.clear
     Gamefic::Subplot.blocks.clear
   end
