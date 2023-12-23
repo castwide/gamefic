@@ -16,8 +16,7 @@ module Gamefic
     delegate ScriptMethods
 
     def ready
-      takes = players.map(&:start_cue)
-      takes.each(&:start)
+      takes = players.map(&:start_take)
       super
       subplots.each(&:ready)
       subplots.delete_if(&:concluding?)
@@ -27,8 +26,7 @@ module Gamefic
     end
 
     def update
-      takes = players.map(&:start_cue)
-      takes.each(&:finish)
+      players.map(&:finish_take)
       super
       subplots.each(&:update)
     end
@@ -59,16 +57,6 @@ module Gamefic
     # @return [Array<Subplot>]
     def subplots
       @subplots ||= []
-    end
-
-    def cast_all
-      super
-      subplots.each(&:cast_all)
-    end
-
-    def uncast_all
-      super
-      subplots.each(&:uncast_all)
     end
 
     def inspect

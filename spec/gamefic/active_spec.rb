@@ -77,8 +77,7 @@ describe Gamefic::Active do
     narr = Gamefic::Narrative.new
     narr.enter object
     object.cue :ending
-    take = object.start_cue
-    take.start
+    object.start_take
     expect(object).to be_concluding
   end
 end

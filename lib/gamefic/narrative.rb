@@ -104,26 +104,6 @@ module Gamefic
     end
     alias exeunt uncast
 
-    # Cast all players in the narrative.
-    #
-    # @see #cast
-    #
-    # @note This method does nothing if the rulebooks are undefined
-    #
-    def cast_all
-      players.each { |plyr| cast plyr }
-    end
-
-    # Uncast all players in the narrative.
-    #
-    # @see #uncast
-    #
-    # @note This method does nothing if the rulebooks are undefined
-    #
-    def uncast_all
-      players.each { |plyr| uncast plyr }
-    end
-
     def ready
       rulebook.events.run_ready_blocks
     end

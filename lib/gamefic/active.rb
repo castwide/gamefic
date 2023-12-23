@@ -182,20 +182,22 @@ module Gamefic
     end
     alias prepare cue
 
-    # Start a take from the next cue. Start the default cue if a next one has
-    # not been selected.
-    #
-    # @raise [ArgumentError] if the scene in next_cue does not exist.
-    #
-    # @param default [Scene, Symbol, nil]
-    # @return [Take]
-    def start_cue
+    def start_take
       ensure_cue
       available = narratives.map(&:rulebook)
                             .map { |rlbk| rlbk.scenes[next_cue.scene] }
                             .compact
       validate_scene_selection(available)
-      new_take(available.last, **next_cue.context)
+      new_take(available.last, **next_cue.context).tap(&:start)
+    end
+
+    def finish_take
+      return nil unless @last_cue
+
+      available = narratives.map(&:rulebook)
+                            .map { |rlbk| rlbk.scenes[@last_cue.scene] }
+                            .compact
+      Take.new(self, available.last, **@last_cue.context).tap(&:finish)
     end
 
     # Restart the scene from the most recent cue.
@@ -232,11 +234,11 @@ module Gamefic
       false
     end
 
-    private
-
     def messenger
       @messenger ||= Messenger.new
     end
+
+    private
 
     # @return [Array<Dispatcher>]
     def dispatchers
