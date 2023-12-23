@@ -30,9 +30,6 @@ module Gamefic
     # @!parse include ScriptMethods
     delegate ScriptMethods
 
-    # @return [Integer]
-    attr_reader :digest
-
     def initialize
       @session = {}
       run_seeds
@@ -121,7 +118,6 @@ module Gamefic
 
     def set_seeds
       entity_vault.lock
-      @digest = Gamefic::Snapshot.digest(self).freeze
       theater.freeze
       return if rulebook.empty?
 

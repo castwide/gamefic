@@ -4,32 +4,50 @@ module Gamefic
   # A container for a host narrative (e.g., a subplot's parent plot) that
   # provides safe limited access.
   #
-  # @todo Document delegated methods
-  #
   class Host
-    DELEGATED_METHODS = %i[entities players session verbs synonyms syntaxes scenes make pick pick!].freeze
-
     # @param narrative [Narrative]
     def initialize narrative
       @narrative = narrative
     end
 
-    if RUBY_ENGINE == 'opal'
-      def method_missing symbol, *args
-        return @narrative.send(symbol, *args) if DELEGATED_METHODS.include?(symbol)
-
-        super
-      end
-    else
-      def method_missing symbol, *args, **kwargs
-        return @narrative.send(symbol, *args, **kwargs) if DELEGATED_METHODS.include?(symbol)
-
-        super
-      end
+    def entities
+      @narrative.entities
     end
 
-    def respond_to_missing?(symbol, _include_private = false)
-      DELEGATED_METHODS.include?(symbol)
+    def players
+      @narrative.players
+    end
+
+    def session
+      @narrative.session
+    end
+
+    def verbs
+      @narrative.verbs
+    end
+
+    def synonyms
+      @narrative.synonyms
+    end
+
+    def syntaxes
+      @narrative.syntaxes
+    end
+
+    def scenes
+      @narrative.scenes
+    end
+
+    def make(...)
+      @narrative.make(...)
+    end
+
+    def pick(...)
+      @narrative.pick(...)
+    end
+
+    def pick!(...)
+      @narrative.pick!(...)
     end
   end
 end

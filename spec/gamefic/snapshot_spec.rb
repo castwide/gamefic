@@ -75,11 +75,6 @@ describe Gamefic::Snapshot do
     expect(restored.subplots.first.config[:configured]).to be(restored.stage { @thing })
   end
 
-  it 'generates a reproducible digest' do
-    digest = Gamefic::Snapshot.digest(plot)
-    expect(digest).to eq(plot.digest)
-  end
-
   it 'retains player configuration after save' do
     plot.save
     expect(plot.players).to be_one
