@@ -20,5 +20,6 @@ RSpec.configure do |config|
     Gamefic::Narrative.blocks.clear
     Gamefic::Plot.blocks.clear
     Gamefic::Subplot.blocks.clear
+    Gamefic::Rulebook.clear
   end
 end

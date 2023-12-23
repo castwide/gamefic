@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'corelib/marshal' if RUBY_ENGINE == 'opal'
+# require 'corelib/marshal' if RUBY_ENGINE == 'opal'
 require 'base64'
 
 module Gamefic
@@ -12,6 +12,7 @@ module Gamefic
     # @param plot [Plot]
     # @return [String]
     def self.save plot
+      plot.instance_variable_set(:@takes, nil)
       binary = Marshal.dump(plot)
       Base64.encode64(binary)
     end
@@ -22,7 +23,14 @@ module Gamefic
     # @return [Plot]
     def self.restore snapshot
       binary = Base64.decode64(snapshot)
-      Marshal.load(binary)
+      Marshal.load(binary).tap do |plot|
+        ([plot] + plot.subplots).each do |part|
+          part.run_scripts
+          part.theater.freeze
+          part.entity_vault.array.freeze
+          part.player_vault.array.freeze
+        end
+      end
     end
 
     # Generate a digest of a narrative.

@@ -91,8 +91,8 @@ module Gamefic
       end
     end
 
-    def self.restore snapshot
-      Snapshot.restore snapshot
+    def self.restore data
+      Snapshot.restore data
     end
   end
 end

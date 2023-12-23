@@ -53,7 +53,8 @@ module Gamefic
 
     # @return [Rulebook]
     def rulebook
-      @rulebook ||= Rulebook.new(method(:stage))
+      # @rulebook ||= Rulebook.new(method(:stage))
+      Rulebook.register self
     end
 
     # @param block [Proc]
@@ -148,10 +149,9 @@ module Gamefic
 
     # @return [void]
     def run_scripts
-      before = Marshal.dump([session, theater])
+      before = instance_metadata
       self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
-      after = Marshal.dump([session, theater])
-      return if before == after
+      return if before == instance_metadata
 
       logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
     end
@@ -174,25 +174,10 @@ module Gamefic
       delegate_method symbol
     end
 
-    UNMARSHALED_VARIABLES = [:@rulebook, :@takes].freeze
+    private
 
-    def marshal_dump
-      (instance_variables - UNMARSHALED_VARIABLES).inject({}) do |vars, attr|
-        vars[attr] = instance_variable_get(attr)
-        vars
-      end
-    end
-
-    def marshal_load(vars)
-      vars.each do |attr, value|
-        instance_variable_set(attr, value) unless UNMARSHALED_VARIABLES.include?(attr)
-      end
-      @rulebook = Rulebook.new(method(:stage))
-      run_scripts
-      theater.freeze
-      entity_vault.array.freeze
-      player_vault.array.freeze
-      rulebook.freeze
+    def instance_metadata
+      [entities.inspect, session.inspect, theater.instance_metadata]
     end
   end
 end
