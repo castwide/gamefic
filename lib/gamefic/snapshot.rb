@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# require 'corelib/marshal' if RUBY_ENGINE == 'opal'
 require 'base64'
 
 module Gamefic
@@ -25,9 +24,7 @@ module Gamefic
       Marshal.load(binary).tap do |plot|
         ([plot] + plot.subplots).each do |part|
           part.run_scripts
-          part.theater.freeze
-          part.entity_vault.array.freeze
-          part.player_vault.array.freeze
+          [part.theater, part.entity_vault.array, part.player_vault.array].each(&:freeze)
         end
       end
     end
