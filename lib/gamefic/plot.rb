@@ -8,11 +8,20 @@ module Gamefic
   #   @yieldself [ScriptMethods]
   #
   class Plot < Narrative
+    # A collection of methods that are delegated to plots from theaters.
+    #
     module ScriptMethods
       include Narrative::ScriptMethods
       include Delegatable::Plots
     end
 
+    # @!parse include ScriptMethods
+    # @!method self.script &block
+    #   @see Gamefic::Scriptable#script
+    #   @yieldself [ScriptMethods]
+    # @!method self.seed &block
+    #   @see Gamefic::Scriptable#seed
+    #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
     def ready

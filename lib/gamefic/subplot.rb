@@ -10,13 +10,19 @@ module Gamefic
   #   @yieldself [ScriptMethods]
   #
   class Subplot < Narrative
+    # A collection of methods that are delegated to subplots from theaters.
+    #
     module ScriptMethods
       include Narrative::ScriptMethods
       include Delegatable::Subplots
     end
 
+    # @!parse include ScriptMethods
     # @!method self.script &block
     #   @see Gamefic::Narrative.script
+    #   @yieldself [ScriptMethods]
+    # @!method self.seed &block
+    #   @see Gamefic::Scriptable#seed
     #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 

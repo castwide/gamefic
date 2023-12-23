@@ -16,6 +16,8 @@ module Gamefic
   class Narrative
     extend Scriptable
 
+    # A collection of methods that are delegated to narratives from theaters.
+    #
     module ScriptMethods
       include Delegatable::Actions
       include Delegatable::Entities

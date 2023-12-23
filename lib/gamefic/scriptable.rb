@@ -31,8 +31,9 @@ module Gamefic
 
     # Add a block of code to be executed during initialization.
     #
-    # These blocks are used to define actions, scenes, and static entities.
-    # After they get executed, the rulebook will be frozen.
+    # These blocks are primarily used to define actions, scenes, and hooks in
+    # the narrative's rulebook. After they get executed, the rulebook will be
+    # frozen.
     #
     # Dynamic entities should be created with #seed.
     #
@@ -43,8 +44,8 @@ module Gamefic
     # Add a block of code to generate content after initialization.
     #
     # Seeds run after the initial scripts have been executed. Their primary
-    # use is to add entities and other components, especially randomized or
-    # procedurally generated content that can vary between instances.
+    # use is to add entities and other data components, especially randomized
+    # or procedurally generated content that can vary between instances.
     #
     # @note Seeds do not get executed when a narrative is restored from a
     #   snapshot.
