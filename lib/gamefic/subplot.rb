@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'gamefic/plot'
-require 'securerandom'
 
 module Gamefic
   # Subplots are disposable plots that run inside a parent plot. They can be
@@ -21,9 +20,6 @@ module Gamefic
     #   @yieldself [ScriptMethods]
     delegate ScriptMethods
 
-    # @return [String]
-    attr_reader :uuid
-
     # @return [Hash]
     attr_reader :config
 
@@ -31,7 +27,6 @@ module Gamefic
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
     def initialize plot, introduce: nil, **config
-      @uuid = SecureRandom.uuid
       @plot = plot
       @config = config
       configure
