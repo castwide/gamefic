@@ -21,6 +21,7 @@ module Gamefic
         rulebook.events.run_conclude_blocks
         players.each { |p| exeunt p }
         entities.each { |e| destroy e }
+        Rulebook.unregister self
       end
 
       # Start a new subplot based on the provided class.
