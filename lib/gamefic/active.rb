@@ -106,7 +106,7 @@ module Gamefic
     # @return [String] The output that resulted from performing the command.
     def quietly(command)
       dispatchers.push Dispatcher.dispatch(self, command)
-      result = proceed quietly: true
+      result = messenger.buffer { proceed }
       dispatchers.pop
       result
     end
@@ -124,11 +124,10 @@ module Gamefic
     #
     # @param verb [Symbol]
     # @param params [Array]
-    # @params quietly [Boolean]
     # @return [Gamefic::Action]
-    def execute(verb, *params, quietly: false)
+    def execute(verb, *params)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
-      proceed quietly: quietly
+      proceed
       dispatchers.pop
     end
 
@@ -155,15 +154,9 @@ module Gamefic
     #     end
     #   end
     #
-    # @param quietly [Boolean] If true, return the action's output instead of appending it to #messages
-    # @return [String, nil]
-    def proceed quietly: false
-      action = dispatchers&.last&.proceed
-      if quietly
-        messenger.buffer { action&.execute }
-      else
-        action&.execute
-      end
+    # @return [void]
+    def proceed
+      dispatchers&.last&.proceed&.execute
     end
 
     # Cue a scene to start in the next turn.
@@ -192,7 +185,7 @@ module Gamefic
     end
 
     def finish_take
-      return nil unless @last_cue
+      return unless @last_cue
 
       available = narratives.map(&:rulebook)
                             .map { |rlbk| rlbk.scenes[@last_cue.scene] }
