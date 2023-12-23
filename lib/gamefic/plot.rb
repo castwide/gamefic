@@ -15,13 +15,8 @@ module Gamefic
 
     delegate ScriptMethods
 
-    # @return [Array<Take>]
-    def takes
-      @takes ||= [].freeze
-    end
-
     def ready
-      @takes = players.map(&:start_cue).freeze
+      takes = players.map(&:start_cue)
       takes.each(&:start)
       super
       subplots.each(&:ready)
@@ -32,6 +27,7 @@ module Gamefic
     end
 
     def update
+      takes = players.map(&:start_cue)
       takes.each(&:finish)
       super
       subplots.each(&:update)

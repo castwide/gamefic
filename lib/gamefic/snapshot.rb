@@ -12,7 +12,6 @@ module Gamefic
     # @param plot [Plot]
     # @return [String]
     def self.save plot
-      plot.instance_variable_set(:@takes, nil)
       binary = Marshal.dump(plot)
       Base64.encode64(binary)
     end
