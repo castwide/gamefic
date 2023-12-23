@@ -4,6 +4,7 @@ require 'gamefic/rulebook/calls'
 require 'gamefic/rulebook/events'
 require 'gamefic/rulebook/hooks'
 require 'gamefic/rulebook/scenes'
+require 'gamefic/rulebook/registry'
 
 module Gamefic
   class Rulebook
@@ -101,22 +102,6 @@ module Gamefic
 
     def empty?
       calls.empty? && hooks.empty? && scenes.empty? && events.empty?
-    end
-
-    def self.registry
-      @registry ||= {}
-    end
-
-    def self.register narrative
-      registry[narrative] ||= Rulebook.new(narrative.method(:stage))
-    end
-
-    def self.unregister narrative
-      registry.delete narrative
-    end
-
-    def self.clear
-      registry.clear
     end
   end
 end

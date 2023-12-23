@@ -19,9 +19,12 @@ module Gamefic
 
       def conclude
         rulebook.events.run_conclude_blocks
-        players.each { |p| exeunt p }
-        entities.each { |e| destroy e }
-        Rulebook.unregister self
+        players.each do |plyr|
+          rulebook.events.run_player_conclude_blocks plyr
+          exeunt plyr
+        end
+        entities.each { |ent| destroy ent }
+        Rulebook::Registry.unregister self
       end
 
       # Start a new subplot based on the provided class.

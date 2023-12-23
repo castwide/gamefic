@@ -32,6 +32,10 @@ module Gamefic
       def in_subplot? player
         !subplots_featuring(player).empty?
       end
+
+      def save
+        Snapshot.save self
+      end
     end
   end
 end

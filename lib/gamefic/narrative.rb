@@ -53,8 +53,7 @@ module Gamefic
 
     # @return [Rulebook]
     def rulebook
-      # @rulebook ||= Rulebook.new(method(:stage))
-      Rulebook.register self
+      Rulebook::Registry.register self
     end
 
     # @param block [Proc]

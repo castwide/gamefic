@@ -28,7 +28,7 @@ module Gamefic
       end
     end
 
-    def respond_to_missing?(symbol)
+    def respond_to_missing?(symbol, _include_private = false)
       DELEGATED_METHODS.include?(symbol)
     end
   end

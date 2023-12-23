@@ -79,10 +79,6 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def save
-      Snapshot.save self
-    end
-
     def run_scripts
       super
       stage do
