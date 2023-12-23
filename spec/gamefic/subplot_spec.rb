@@ -100,4 +100,18 @@ describe Gamefic::Subplot do
     subplot = plot.branch(Gamefic::Subplot)
     expect(subplot.foo).to eq('foo')
   end
+
+  it 'runs player conclude blocks' do
+    Gamefic::Subplot.script do
+      on_player_conclude do |player|
+        player[:concluded] = true
+      end
+    end
+    plot = Gamefic::Plot.new
+    player = plot.make_player_character
+    plot.introduce player
+    subplot = plot.branch Gamefic::Subplot, introduce: player
+    subplot.conclude
+    expect(player[:concluded]).to be(true)
+  end
 end
