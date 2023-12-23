@@ -16,17 +16,15 @@ module Gamefic
     delegate ScriptMethods
 
     def ready
-      takes = players.map(&:start_take)
+      players.each(&:start_take)
       super
       subplots.each(&:ready)
       subplots.delete_if(&:concluding?)
-      takes.each do |take|
-        rulebook.events.run_player_conclude_blocks take.actor if take.conclusion?
-      end
+      players.select(&:concluding?).each { |plyr| rulebook.events.run_player_conclude_blocks plyr }
     end
 
     def update
-      players.map(&:finish_take)
+      players.each(&:finish_take)
       super
       subplots.each(&:update)
     end

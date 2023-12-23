@@ -16,8 +16,8 @@ module Gamefic
 
       # @param scene [Scene, nil]
       # @param context [Hash]
-      def initialize scene, **context
-        @props = props_class.new(scene&.name, scene&.type, **context)
+      def initialize scene, props = nil, **context
+        @props = props || props_class.new(scene&.name, scene&.type, **context)
         @context = context
       end
 

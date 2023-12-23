@@ -188,7 +188,7 @@ module Gamefic
                             .map { |rlbk| rlbk.scenes[next_cue.scene] }
                             .compact
       validate_scene_selection(available)
-      new_take(available.last, **next_cue.context).tap(&:start)
+      @props = new_take(available.last, **next_cue.context).start
     end
 
     def finish_take
@@ -197,7 +197,7 @@ module Gamefic
       available = narratives.map(&:rulebook)
                             .map { |rlbk| rlbk.scenes[@last_cue.scene] }
                             .compact
-      Take.new(self, available.last, **@last_cue.context).tap(&:finish)
+      Take.new(self, available.last, @props, **@last_cue.context).finish
     end
 
     # Restart the scene from the most recent cue.

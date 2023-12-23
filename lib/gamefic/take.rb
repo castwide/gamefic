@@ -13,10 +13,10 @@ module Gamefic
     # @param actor [Active]
     # @param scene [Scene]
     # @param context [Hash]
-    def initialize actor, scene, **context
+    def initialize actor, scene, props = nil, **context
       @actor = actor
       @scene = scene
-      @rig = scene.rig.new(scene, **context)
+      @rig = scene.rig.new(scene, props, **context)
     end
 
     def start
@@ -32,6 +32,7 @@ module Gamefic
                             messages: actor.messages + output[:messages],
                             queue: actor.queue
                           })
+      @rig.props
     end
 
     def finish
@@ -66,8 +67,8 @@ module Gamefic
       Take.new(actor, scene, **context).start
     end
 
-    def self.finish actor, scene, **context
-      Take.new(actor, scene, **context).finish
+    def self.finish actor, scene, props, **context
+      Take.new(actor, scene, props, **context).finish
     end
   end
 end
