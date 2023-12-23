@@ -62,13 +62,5 @@ module Gamefic
     def conclusion?
       @rig.is_a?(Rig::Conclusion)
     end
-
-    def self.start actor, scene, **context
-      Take.new(actor, scene, **context).start
-    end
-
-    def self.finish actor, scene, props, **context
-      Take.new(actor, scene, props, **context).finish
-    end
   end
 end
