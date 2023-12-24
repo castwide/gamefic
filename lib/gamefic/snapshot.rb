@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'corelib/marshal' if RUBY_ENGINE == 'opal' # Required in browser
 require 'base64'
 
 module Gamefic
