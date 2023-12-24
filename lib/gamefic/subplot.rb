@@ -79,7 +79,7 @@ module Gamefic
     #
     def self.attr_host symbol
       define_method symbol do
-        @plot.stage(symbol) { |sym| instance_variable_get("@#{sym}") }
+        @plot.stage(symbol) { |sym| public_send(sym) }
       end
       delegate_method symbol
     end
