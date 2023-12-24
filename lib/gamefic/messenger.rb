@@ -23,9 +23,9 @@ module Gamefic
     # This method will automatically wrap the message in HTML paragraphs.
     # To send a message without paragraph formatting, use #stream instead.
     #
-    # @param message [String]
+    # @param message [String, #to_s]
     def tell(message)
-      msg = @buffers.pop + format(message)
+      msg = @buffers.pop + format(message.to_s)
       @buffers.push msg
       msg
     end
@@ -34,9 +34,9 @@ module Gamefic
     #
     # Unlike #tell, this method will not wrap the message in HTML paragraphs.
     #
-    # @param message [String]
+    # @param message [String, #to_s]
     def stream(message)
-      msg = @buffers.pop + message
+      msg = @buffers.pop + message.to_s
       @buffers.push msg
       msg
     end
