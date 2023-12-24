@@ -25,9 +25,9 @@ module Gamefic
     delegate ScriptMethods
 
     def ready
-      players.each(&:start_take)
       super
       subplots.each(&:ready)
+      players.each(&:start_take)
       subplots.delete_if(&:concluding?)
       players.select(&:concluding?).each { |plyr| rulebook.events.run_player_conclude_blocks plyr }
     end
