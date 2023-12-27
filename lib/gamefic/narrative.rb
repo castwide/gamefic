@@ -23,12 +23,10 @@ module Gamefic
       include Delegatable::Entities
       include Delegatable::Queries
       include Delegatable::Scenes
-      # include Delegatable::Sessions
     end
 
     include Logging
-    # @!parse include ScriptMethods
-    delegate ScriptMethods
+    include ScriptMethods
 
     def initialize
       run_seeds

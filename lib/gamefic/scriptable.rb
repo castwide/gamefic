@@ -54,44 +54,6 @@ module Gamefic
       scripts.push Block.new(:seed, block)
     end
 
-    # @return [Array<Module>]
-    def delegators(with_inherited: true)
-      (with_inherited && superclass <= Narrative ? superclass.delegators : []) + local_delegators
-    end
-
-    # @return [Array<Symbol>]
-    def delegated_methods(with_inherited: true)
-      delegators(with_inherited: with_inherited).flat_map(&:public_instance_methods)
-                                                .concat(inner_delegated_methods(with_inherited: with_inherited))
-                                                .uniq
-    end
-
-    # Assign a delegator module for scripts.
-    #
-    # Delegators provide scripts with access to methods that get forwarded to
-    # the narrative instance.
-    #
-    # @example
-    #   module MyDelegator
-    #     def entity_count
-    #       entities.count
-    #     end
-    #   end
-    #
-    #   Gamefic::Plot.delegate MyDelegator
-    #
-    #   Gamefic::Plot.script do
-    #     on_update do
-    #       puts "There are #{entity_count} entities."
-    #     end
-    #   end
-    #
-    # @param [Module]
-    def delegate delegator
-      include delegator
-      local_delegators.push delegator
-    end
-
     # Add a Scriptable module's scripts to the caller.
     #
     # @param mod [Scriptable]
@@ -111,22 +73,6 @@ module Gamefic
 
     def imported
       @imported ||= Set.new
-    end
-
-    # @return [Array<Module>]
-    def local_delegators
-      @local_delegators ||= []
-    end
-
-    def inner_delegated_methods(with_inherited: true)
-      (with_inherited && superclass <= Narrative ? superclass.local_delegated_methods : []) + local_delegated_methods
-    end
-
-    protected
-
-    # @return [Array<Symbol>]
-    def local_delegated_methods
-      @local_delegated_methods ||= []
     end
   end
 end

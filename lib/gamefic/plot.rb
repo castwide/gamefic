@@ -15,14 +15,7 @@ module Gamefic
       include Delegatable::Plots
     end
 
-    # @!parse include ScriptMethods
-    # @!method self.script &block
-    #   @see Gamefic::Scriptable#script
-    #   @yieldself [ScriptMethods]
-    # @!method self.seed &block
-    #   @see Gamefic::Scriptable#seed
-    #   @yieldself [ScriptMethods]
-    delegate ScriptMethods
+    include ScriptMethods
 
     def ready
       super
