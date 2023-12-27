@@ -92,15 +92,6 @@ describe Gamefic::Subplot do
     expect { plot.branch(Gamefic::Subplot) }.to raise_error(FrozenError)
   end
 
-  it 'delegates attributes to plots' do
-    Gamefic.seed { @foo = 'foo' }
-    Gamefic::Plot.attr_delegate :foo
-    Gamefic::Subplot.attr_host :foo
-    plot = Gamefic::Plot.new
-    subplot = plot.branch(Gamefic::Subplot)
-    expect(subplot.foo).to eq('foo')
-  end
-
   it 'runs player conclude blocks' do
     Gamefic::Subplot.script do
       on_player_conclude do |player|

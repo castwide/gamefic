@@ -63,25 +63,5 @@ module Gamefic
     def inspect
       "#<#{self.class}>"
     end
-
-    # Define a method that delegates an attribute reader to the host.
-    #
-    # @example
-    #   Gamefic::Plot.seed { @hello = 'Hello, world!' }
-    #   Gamefic::Plot.attr_delegate :hello
-    #
-    #   Gamefic::Subplot.attr_host :hello
-    #
-    #   plot = Gamefic::Plot.new
-    #   subplot = plot.branch Subplot
-    #
-    #   subplot.hello #=> 'Hello, world!'
-    #
-    def self.attr_host symbol
-      define_method symbol do
-        @plot.stage(symbol) { |sym| public_send(sym) }
-      end
-      delegate_method symbol
-    end
   end
 end

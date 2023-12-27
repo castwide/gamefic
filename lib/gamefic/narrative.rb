@@ -132,24 +132,6 @@ module Gamefic
       logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
     end
 
-    # Define a method that delegates an attribute reader to the stage.
-    #
-    # @example
-    #   class MyNarrative < Gamefic::Narrative
-    #     attr_delegate :npc
-    #     seed { @npc = make Gamefic::Entity, name: 'npc' }
-    #   end
-    #
-    #   narr = MyNarrative.new
-    #   narr.npc #=> #<Gamefic::Entity npc>
-    #
-    def self.attr_delegate symbol
-      define_method symbol do
-        stage(symbol) { |sym| instance_variable_get("@#{sym}") }
-      end
-      delegate_method symbol
-    end
-
     private
 
     def instance_metadata

@@ -92,10 +92,6 @@ module Gamefic
       local_delegators.push delegator
     end
 
-    def delegate_method symbol
-      local_delegated_methods.push symbol
-    end
-
     # Add a Scriptable module's scripts to the caller.
     #
     # @param mod [Scriptable]
