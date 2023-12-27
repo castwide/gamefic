@@ -43,10 +43,6 @@ module Gamefic
       @player_vault ||= Vault.new
     end
 
-    def theater
-      @theater ||= Theater.new
-    end
-
     # @return [Rulebook]
     def rulebook
       Rulebook::Registry.register self
@@ -54,7 +50,7 @@ module Gamefic
 
     # @param block [Proc]
     def stage *args, &block
-      theater.evaluate self, *args, block
+      instance_exec(*args, &block)
     end
 
     # Introduce an actor to the story.
@@ -115,7 +111,6 @@ module Gamefic
 
     def set_seeds
       entity_vault.lock
-      theater.freeze
       return if rulebook.empty?
 
       logger.warn "Rulebook was modified in seeds. Snapshots may not restore properly"
@@ -133,7 +128,8 @@ module Gamefic
     private
 
     def instance_metadata
-      [entities.inspect, theater.instance_metadata]
+      instance_variables.map { |var| [var, instance_variable_get(var).inspect] }
+                        .to_h
     end
   end
 end

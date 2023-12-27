@@ -25,7 +25,7 @@ module Gamefic
       Marshal.load(binary).tap do |plot|
         ([plot] + plot.subplots).each do |part|
           part.run_scripts
-          [part.theater, part.entity_vault.array, part.player_vault.array].each(&:freeze)
+          [part.entity_vault.array, part.player_vault.array].each(&:freeze)
         end
       end
     end
