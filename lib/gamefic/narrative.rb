@@ -106,7 +106,7 @@ module Gamefic
 
     # @return [void]
     def run_seeds
-      self.class.blocks.select(&:seed?).each { |blk| stage(&blk.proc) }
+      self.class.blocks.that_are(Block::Seed).each { |blk| blk.build(self) }
     end
 
     def set_seeds
@@ -119,7 +119,7 @@ module Gamefic
     # @return [void]
     def run_scripts
       before = instance_metadata
-      self.class.blocks.select(&:script?).each { |blk| stage(&blk.proc) }
+      self.class.blocks.that_are(Block::Script).each { |blk| blk.build(self) }
       return if before == instance_metadata
 
       logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"

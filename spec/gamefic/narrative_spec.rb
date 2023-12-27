@@ -4,16 +4,14 @@ describe Gamefic::Narrative do
       blk = proc {}
       Gamefic::Narrative.script &blk
       expect(Gamefic::Narrative.blocks).to be_one
-      expect(Gamefic::Narrative.blocks.first.type).to eq(:script)
-      expect(Gamefic::Narrative.blocks.first.proc).to be(blk)
+      expect(Gamefic::Narrative.blocks.first).to be_a(Gamefic::Block::Script)
     end
 
     it 'adds a seed' do
       blk = proc {}
       Gamefic::Narrative.seed &blk
       expect(Gamefic::Narrative.blocks).to be_one
-      expect(Gamefic::Narrative.blocks.first.type).to eq(:seed)
-      expect(Gamefic::Narrative.blocks.first.proc).to be(blk)
+      expect(Gamefic::Narrative.blocks.first).to be_a(Gamefic::Block::Seed)
     end
   end
 
@@ -21,8 +19,7 @@ describe Gamefic::Narrative do
     describe '#initialize' do
       it 'runs scripts' do
         executed = false
-        blk = proc { executed = true }
-        Gamefic::Narrative.script &blk
+        Gamefic::Narrative.script { executed = true }
         Gamefic::Narrative.new
         expect(executed).to be(true)
       end

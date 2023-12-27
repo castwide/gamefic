@@ -24,10 +24,10 @@ module Gamefic
   #
   module Scriptable
     # @return [Array<Block>]
-    def scripts
-      @scripts ||= []
+    def blocks
+      @blocks ||= []
     end
-    alias blocks scripts
+    alias scripts blocks
 
     # Add a block of code to be executed during initialization.
     #
@@ -38,7 +38,7 @@ module Gamefic
     # Dynamic entities should be created with #seed.
     #
     def script &block
-      scripts.push Block.new(:script, block)
+      blocks.push Block::Script.new(block)
     end
 
     # Add a block of code to generate content after initialization.
@@ -51,7 +51,7 @@ module Gamefic
     #   snapshot.
     #
     def seed &block
-      scripts.push Block.new(:seed, block)
+      blocks.push Block::Seed.new(block)
     end
 
     # Add a Scriptable module's scripts to the caller.
