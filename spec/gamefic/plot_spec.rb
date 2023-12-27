@@ -170,11 +170,11 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'warns of data changes during script setup' do
-    expect(Gamefic::Logging.logger).to receive(:warn).with(/data changed during script setup/)
+    # @todo Raise ScriptError from FrozenError
     Gamefic.script do
-      session[:test] = 'bad practice'
+      @wrong = 'wrong'
     end
-    Gamefic::Plot.new
+    expect { Gamefic::Plot.new }.to raise_error(FrozenError)
   end
 
   it 'exeunts players from plot and subplots' do

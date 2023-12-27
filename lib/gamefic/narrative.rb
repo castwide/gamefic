@@ -23,7 +23,7 @@ module Gamefic
       include Delegatable::Entities
       include Delegatable::Queries
       include Delegatable::Scenes
-      include Delegatable::Sessions
+      # include Delegatable::Sessions
     end
 
     include Logging
@@ -31,7 +31,6 @@ module Gamefic
     delegate ScriptMethods
 
     def initialize
-      @session = {}
       run_seeds
       set_seeds
       run_scripts
@@ -154,7 +153,7 @@ module Gamefic
     private
 
     def instance_metadata
-      [entities.inspect, session.inspect, theater.instance_metadata]
+      [entities.inspect, theater.instance_metadata]
     end
   end
 end

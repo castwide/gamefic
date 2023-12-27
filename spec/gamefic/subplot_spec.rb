@@ -84,12 +84,12 @@ describe Gamefic::Subplot do
   end
 
   it 'warns of data changes during script setup' do
-    expect(Gamefic::Logging.logger).to receive(:warn).with(/data changed during script setup/)
+    # @todo Raise ScriptError from FrozenError
     Gamefic::Subplot.script do
-      session[:test] = 'bad practice'
+      @wrong = 'wrong'
     end
     plot = Gamefic::Plot.new
-    subplot = plot.branch(Gamefic::Subplot)
+    expect { plot.branch(Gamefic::Subplot) }.to raise_error(FrozenError)
   end
 
   it 'delegates attributes to plots' do

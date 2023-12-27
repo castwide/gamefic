@@ -11,7 +11,6 @@ module Gamefic
     autoload :Queries,  'gamefic/delegatable/queries'
     autoload :Plots,    'gamefic/delegatable/plots'
     autoload :Scenes,   'gamefic/delegatable/scenes'
-    autoload :Sessions, 'gamefic/delegatable/sessions'
     autoload :Subplots, 'gamefic/delegatable/subplots'
   end
 end
