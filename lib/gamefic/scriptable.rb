@@ -9,7 +9,7 @@ module Gamefic
   # Modules can also be extended with Scriptable to make them importable into
   # other Scriptables.
   #
-  # @example Import a scriptable module into Plot
+  # @example Include a scriptable module in a plot
   #   module MyScript
   #     extend Scriptable
   #
@@ -20,7 +20,9 @@ module Gamefic
   #     end
   #   end
   #
-  #   Gamefic::Plot.import MyScript
+  #   class MyPlot < Gamefic::Plot
+  #     include MyScript
+  #   end
   #
   module Scriptable
     # @return [Array<Block>]
@@ -50,29 +52,21 @@ module Gamefic
     # @note Seeds do not get executed when a narrative is restored from a
     #   snapshot.
     #
+    # @example
+    #   class MyPlot < Gamefic::Plot
+    #     seed do
+    #       @thing = make Gamefic::Entity, name: 'a thing'
+    #     end
+    #   end
+    #
     def seed &block
       blocks.push Block::Seed.new(block)
     end
 
-    # Add a Scriptable module's scripts to the caller.
-    #
-    # @param mod [Scriptable]
-    def import mod
-      return false if imported.include?(mod)
-
-      scripts.concat mod.scripts
-      imported.add mod
-    end
-
-    def inherited subclass
-      super
-      subclass.import self
-    end
-
-    private
-
-    def imported
-      @imported ||= Set.new
+    def included_blocks
+      included_modules.that_are(Scriptable)
+                      .flat_map(&:blocks)
+                      .concat(blocks)
     end
   end
 end

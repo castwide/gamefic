@@ -1,12 +1,13 @@
 describe Gamefic::Scriptable do
-  it 'imports scripts' do
+  it 'includes blocks' do
     mod = Module.new
     mod.extend Gamefic::Scriptable
     mod.script do
       pause :extended_pause
     end
-    Gamefic::Plot.import mod
-    plot = Gamefic::Plot.new
-    expect(plot.scenes).to include(:extended_pause)
+    klass = Class.new(Gamefic::Narrative)
+    klass.include mod
+    narr = klass.new
+    expect(narr.scenes).to include(:extended_pause)
   end
 end
