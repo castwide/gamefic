@@ -26,7 +26,7 @@ module Gamefic
       binary = Base64.decode64(snapshot)
       Marshal.load(binary).tap do |plot|
         ([plot] + plot.subplots).each do |part|
-          part.run_scripts
+          part.hydrate
           [part.entity_vault.array, part.player_vault.array].each(&:freeze)
         end
       end

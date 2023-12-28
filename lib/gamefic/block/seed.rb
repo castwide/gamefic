@@ -21,7 +21,7 @@ module Gamefic
           val = container.instance_variable_get(var)
           next if val == narrative.instance_variable_get(var)
 
-          raise 'No!' if narrative.instance_variables.include?(var)
+          raise "#{code} attempted to overwrite #{var}" if narrative.instance_variables.include?(var)
 
           narrative.instance_variable_set(var, val)
         end

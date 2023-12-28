@@ -21,9 +21,8 @@ module Gamefic
     include Delegatable::Entities
 
     def initialize
-      rulebook
       self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.build self }
-      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.build self }
+      hydrate
     end
 
     def entity_vault
@@ -119,6 +118,12 @@ module Gamefic
 
     def attach cache
       @rulebook = cache
+    end
+
+    def hydrate
+      return unless rulebook.empty?
+
+      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.build self }
     end
   end
 end
