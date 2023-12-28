@@ -83,6 +83,8 @@ describe Gamefic::Subplot do
   end
 
   it 'warns of data changes during script setup' do
+    next if RUBY_ENGINE == 'opal'
+
     # @todo Raise ScriptError from FrozenError
     Gamefic::Subplot.script do
       @wrong = 'wrong'

@@ -104,5 +104,10 @@ module Gamefic
       instance_variables.map { |var| [var, instance_variable_get(var).inspect] }
                         .to_h
     end
+
+    def freeze?
+      freeze unless RUBY_ENGINE == 'opal'
+      self
+    end
   end
 end
