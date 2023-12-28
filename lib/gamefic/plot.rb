@@ -11,9 +11,10 @@ module Gamefic
     include Delegatable::Plots
 
     def initialize
+      @subplots = []
       super
-      rulebook.scenes.add Scene.new(:default_scene, method(:instance_exec), rig: Gamefic::Rig::Activity) unless scenes.include?(:default_scene)
-      rulebook.scenes.add Scene.new(:default_conclusion, method(:instance_exec), rig: Gamefic::Rig::Conclusion) unless scenes.include?(:default_conclusion)
+      rulebook.scenes.add Scene.new(:default_scene, rulebook.stage, rig: Gamefic::Rig::Activity) unless scenes.include?(:default_scene)
+      rulebook.scenes.add Scene.new(:default_conclusion, rulebook.stage, rig: Gamefic::Rig::Conclusion) unless scenes.include?(:default_conclusion)
     end
 
     def ready

@@ -46,7 +46,7 @@ module Gamefic
         @scene_map.values
       end
 
-      def introduction scene = nil
+      def introduction scene
         introductions.push scene
       end
 

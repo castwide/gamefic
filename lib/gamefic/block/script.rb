@@ -13,7 +13,7 @@ module Gamefic
       def contain(narrative)
         narrative.clone
                  .extend(ScriptMethods)
-        #         #  .freeze?
+                 .freeze
       end
     end
   end

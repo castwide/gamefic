@@ -15,6 +15,8 @@ module Gamefic
 
     attr_reader :scenes
 
+    attr_reader :narrative
+
     attr_reader :stage
 
     # @param narrative [Narrative]

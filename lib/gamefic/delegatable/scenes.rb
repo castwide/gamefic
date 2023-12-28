@@ -34,7 +34,7 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
-        rulebook.scenes.add Scene.new(name, method(:stage), rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
+        rulebook.scenes.add Scene.new(name, rulebook.stage, rig: rig, type: type, on_start: on_start, on_finish: on_finish, &block)
         name
       end
       alias scene block
@@ -55,7 +55,7 @@ module Gamefic
       # @return [Symbol]
       def introduction(rig: Gamefic::Rig::Activity, &start)
         rulebook.scenes.introduction Scene.new nil,
-                                         method(:stage),
+                                         rulebook.stage,
                                          rig: rig,
                                          on_start: proc { |actor, props|
                                            start&.call(actor, props)

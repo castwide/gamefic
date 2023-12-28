@@ -10,7 +10,7 @@ module Gamefic
       # @param config [Hash] Subplot configuration
       # @return [Gamefic::Subplot]
       def branch subplot_class = Gamefic::Subplot, introduce: nil, **config
-        subplot = subplot_class.new(self, introduce: introduce, **config)
+        subplot = subplot_class.new(rulebook.narrative, introduce: introduce, **config)
         subplots.push subplot
         subplot
       end
