@@ -29,10 +29,8 @@ module Gamefic
     include ScriptMethods
 
     def initialize
-      run_seeds
-      set_seeds
-      run_scripts
-      rulebook.freeze
+      self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.build self }
+      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.build self }
     end
 
     def entity_vault
@@ -45,7 +43,7 @@ module Gamefic
 
     # @return [Rulebook]
     def rulebook
-      Rulebook::Registry.register self
+      @rulebook ||= Rulebook.new(self)
     end
 
     # @param block [Proc]
@@ -103,29 +101,6 @@ module Gamefic
     def update
       rulebook.events.run_update_blocks
     end
-
-    # @return [void]
-    def run_seeds
-      self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.build(self) }
-    end
-
-    def set_seeds
-      entity_vault.lock
-      return if rulebook.empty?
-
-      logger.warn "Rulebook was modified in seeds. Snapshots may not restore properly"
-    end
-
-    # @return [void]
-    def run_scripts
-      before = instance_metadata
-      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.build(self) }
-      return if before == instance_metadata
-
-      logger.warn "#{self.class} data changed during script setup. Snapshots may not restore properly"
-    end
-
-    private
 
     def instance_metadata
       instance_variables.map { |var| [var, instance_variable_get(var).inspect] }

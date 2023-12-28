@@ -17,6 +17,12 @@ module Gamefic
 
     include ScriptMethods
 
+    def initialize
+      super
+      block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
+      block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+    end
+
     def ready
       super
       subplots.each(&:ready)
@@ -63,13 +69,13 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def run_scripts
-      super
-      stage do
-        block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
-        block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
-      end
-    end
+    # def run_scripts
+    #   super
+    #   stage do
+    #     block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
+    #     block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+    #   end
+    # end
 
     def self.restore data
       Snapshot.restore data

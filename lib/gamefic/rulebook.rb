@@ -16,7 +16,12 @@ module Gamefic
 
     attr_reader :scenes
 
-    def initialize(stage)
+    attr_reader :stage
+
+    # @param narrative [Narrative]
+    def initialize(narrative)
+      @narrative = narrative
+      @stage = @narrative.method(:instance_exec)
       @calls = Calls.new(stage)
       @events = Events.new(stage)
       @hooks = Hooks.new(stage)
