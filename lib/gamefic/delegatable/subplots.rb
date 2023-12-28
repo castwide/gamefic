@@ -1,20 +1,8 @@
 module Gamefic
   module Delegatable
     module Subplots
-      # The hash of data that was used to initialize the subplot.
-      #
-      # @return [Hash]
-      attr_reader :config
-
-      # The subplot's host.
-      #
-      # @return [Host]
-      def host
-        @host ||= Host.new(@plot)
-      end
-
       def persist klass, **args
-        host.make klass, *args
+        plot.make klass, *args
       end
 
       def conclude
@@ -37,7 +25,7 @@ module Gamefic
       # @param config [Hash] Subplot configuration
       # @return [Gamefic::Subplot]
       def branch subplot_class = Gamefic::Subplot, introduce: nil, **config
-        @plot.branch subplot_class, introduce: introduce, **config
+        plot.branch subplot_class, introduce: introduce, **config
       end
     end
   end

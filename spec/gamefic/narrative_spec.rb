@@ -48,19 +48,19 @@ describe Gamefic::Narrative do
       end
 
       it 'rejects scenes from seeds' do
-        expect(Gamefic::Logging.logger).to receive(:warn).with(/Rulebook was modified in seeds/)
+        # @todo Maybe raise ScriptError or SeedError
         Gamefic::Narrative.seed do
           pause(:scene) { |actor| actor.tell 'Pause' }
         end
-        Gamefic::Narrative.new
+        expect { Gamefic::Narrative.new }.to raise_error(NoMethodError)
       end
 
       it 'rejects actions from seeds' do
-        expect(Gamefic::Logging.logger).to receive(:warn).with(/Rulebook was modified in seeds/)
+        # @todo Maybe raise ScriptError or SeedError
         Gamefic::Narrative.seed do
           respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
         end
-        Gamefic::Narrative.new
+        expect { Gamefic::Narrative.new }.to raise_error(NoMethodError)
       end
     end
   end

@@ -8,19 +8,12 @@ module Gamefic
   #   @yieldself [ScriptMethods]
   #
   class Plot < Narrative
-    # A collection of methods that are delegated to plots from theaters.
-    #
-    module ScriptMethods
-      include Narrative::ScriptMethods
-      include Delegatable::Plots
-    end
-
-    include ScriptMethods
+    include Delegatable::Plots
 
     def initialize
       super
-      block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
-      block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
+      rulebook.scenes.add Scene.new(:default_scene, method(:instance_exec), rig: Gamefic::Rig::Activity) unless scenes.include?(:default_scene)
+      rulebook.scenes.add Scene.new(:default_conclusion, method(:instance_exec), rig: Gamefic::Rig::Conclusion) unless scenes.include?(:default_conclusion)
     end
 
     def ready

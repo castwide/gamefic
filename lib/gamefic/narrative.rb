@@ -16,17 +16,9 @@ module Gamefic
   class Narrative
     extend Scriptable
 
-    # A collection of methods that are delegated to narratives from theaters.
-    #
-    module ScriptMethods
-      include Delegatable::Actions
-      include Delegatable::Entities
-      include Delegatable::Queries
-      include Delegatable::Scenes
-    end
 
     include Logging
-    include ScriptMethods
+    include Delegatable::Entities
 
     def initialize
       rulebook
@@ -45,6 +37,10 @@ module Gamefic
     # @return [Rulebook]
     def rulebook
       @rulebook ||= Rulebook.new(self)
+    end
+
+    def scenes
+      rulebook.scenes.names
     end
 
     # @param block [Proc]

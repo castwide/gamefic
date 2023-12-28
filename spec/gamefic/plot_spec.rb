@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Gamefic::Plot do
-  it 'creates entities from scripts' do
-    Gamefic.script do
-      make Gamefic::Entity
-    end
-    plot = Gamefic::Plot.new
-    expect(plot.entities.length).to eq(1)
-  end
-
   it 'creates responses from scripts' do
     Gamefic.script do
       respond :command do |_actor|
@@ -17,11 +9,6 @@ RSpec.describe Gamefic::Plot do
     end
     plot = Gamefic::Plot.new
     expect(plot.rulebook.responses.length).to eq(1)
-  end
-
-  it 'raises an error on new responses after initialization' do
-    plot = Gamefic::Plot.new
-    expect { plot.respond(:mycommand) { |_| nil } }.to raise_error(FrozenError)
   end
 
   it 'creates scenes from scripts' do
@@ -39,11 +26,6 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     # There are 3 scenes because the plot created 2 defaults
     expect(plot.rulebook.scenes.all.length).to eq(3)
-  end
-
-  it 'raises an error on new responses after initialization' do
-    plot = Gamefic::Plot.new
-    expect { plot.block :scene }.to raise_error(FrozenError)
   end
 
   it 'cues the introduction' do
