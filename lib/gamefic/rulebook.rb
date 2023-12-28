@@ -4,7 +4,6 @@ require 'gamefic/rulebook/calls'
 require 'gamefic/rulebook/events'
 require 'gamefic/rulebook/hooks'
 require 'gamefic/rulebook/scenes'
-require 'gamefic/rulebook/registry'
 
 module Gamefic
   class Rulebook

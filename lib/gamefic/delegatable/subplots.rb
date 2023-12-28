@@ -12,7 +12,6 @@ module Gamefic
           exeunt plyr
         end
         entities.each { |ent| destroy ent }
-        Rulebook::Registry.unregister self
       end
 
       # Start a new subplot based on the provided class.

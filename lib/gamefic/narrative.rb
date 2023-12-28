@@ -109,5 +109,16 @@ module Gamefic
       freeze unless RUBY_ENGINE == 'opal'
       self
     end
+
+    # @return [Object]
+    def detach
+      cache = @rulebook
+      @rulebook = nil
+      cache
+    end
+
+    def attach cache
+      @rulebook = cache
+    end
   end
 end

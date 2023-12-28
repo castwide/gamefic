@@ -9,10 +9,11 @@ module Gamefic
 
       private
 
+      # @param narrative [Narrative]
       def contain(narrative)
-        narrative.dup
+        narrative.clone
                  .extend(ScriptMethods)
-                 .freeze?
+        #         #  .freeze?
       end
     end
   end

@@ -12,7 +12,9 @@ module Gamefic
     # @param plot [Plot]
     # @return [String]
     def self.save plot
+      cache = plot.detach
       binary = Marshal.dump(plot)
+      plot.attach cache
       Base64.encode64(binary)
     end
 

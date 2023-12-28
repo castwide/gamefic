@@ -74,6 +74,7 @@ describe Gamefic::Narrative do
     plyr = Gamefic::Actor.new
     narr.enter plyr
 
+    narr.detach
     dump = Marshal.dump(narr)
     rest = Marshal.load(dump)
     expect(rest).to be_a(Gamefic::Narrative)

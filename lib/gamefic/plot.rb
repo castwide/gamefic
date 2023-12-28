@@ -55,6 +55,18 @@ module Gamefic
       "#<#{self.class}>"
     end
 
+    def detach
+      cache = [@rulebook]
+      @rulebook = nil
+      cache.concat subplots.map(&:detach)
+      cache
+    end
+
+    def attach(cache)
+      super(cache.unshift)
+      subplots.each { |subplot| subplot.attach cache.unshift }
+    end
+
     def self.restore data
       Snapshot.restore data
     end
