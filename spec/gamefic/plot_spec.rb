@@ -56,8 +56,7 @@ RSpec.describe Gamefic::Plot do
     player = plot.introduce
     plot.ready
     subplot = plot.branch Gamefic::Subplot, introduce: player
-    expect(plot.subplots_featuring(player)).to eq([subplot])
-    expect(plot.in_subplot?(player)).to be(true)
+    expect(player.narratives.to_a).to eq([plot, subplot])
   end
 
   it 'deletes concluded subplots on ready' do

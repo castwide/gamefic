@@ -15,24 +15,6 @@ module Gamefic
         subplot
       end
 
-      # Get the player's current subplots.
-      #
-      # @return [Array<Subplot>]
-      def subplots_featuring player
-        result = []
-        subplots.each { |s|
-          result.push s if s.players.include?(player)
-        }
-        result
-      end
-
-      # Determine whether the player is involved in a subplot.
-      #
-      # @return [Boolean]
-      def in_subplot? player
-        !subplots_featuring(player).empty?
-      end
-
       def save
         Snapshot.save self
       end

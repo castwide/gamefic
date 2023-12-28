@@ -41,7 +41,7 @@ module Gamefic
     # @param actor [Actor]
     # @return [Actor]
     def exeunt actor
-      subplots_featuring(actor).each { |sp| sp.exeunt actor }
+      subplots.each { |sp| sp.exeunt actor }
       super
     end
 
