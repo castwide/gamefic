@@ -29,6 +29,7 @@ module Gamefic
     include ScriptMethods
 
     def initialize
+      rulebook
       self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.build self }
       self.class.included_blocks.that_are(Block::Script).each { |blk| blk.build self }
     end

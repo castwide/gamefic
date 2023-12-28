@@ -10,10 +10,9 @@ module Gamefic
       private
 
       def contain(narrative)
-        # narrative.clone
-        #          .extend(Scriptlet)
-        #         #  .freeze
-        narrative
+        narrative.clone
+                 .extend(Scriptlet)
+                 .freeze
       end
     end
   end
