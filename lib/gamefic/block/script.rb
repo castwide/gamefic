@@ -11,7 +11,7 @@ module Gamefic
 
       def contain(narrative)
         narrative.clone
-                 .extend(Scriptlet)
+                 .extend(ScriptMethods)
                  .freeze
       end
     end

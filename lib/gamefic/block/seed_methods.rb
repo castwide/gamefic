@@ -1,6 +1,6 @@
 module Gamefic
   module Block
-    module Scriptlet
+    module SeedMethods
     end
   end
 end
