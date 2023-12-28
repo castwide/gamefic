@@ -53,8 +53,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     expect(player.messages).to include('Hello, world!')
   end
 
@@ -65,16 +64,14 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     plot.ready
     expect(player.next_cue).to be_nil
   end
 
   it 'tracks player subplots' do
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     plot.ready
     subplot = plot.branch Gamefic::Subplot, introduce: player
     expect(plot.subplots_featuring(player)).to eq([subplot])
@@ -97,8 +94,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     player.cue :default_conclusion
     plot.ready
     expect(player[:concluded]).to be(true)
@@ -112,8 +108,6 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
     plot.ready
     expect(ran_on_ready).to be(true)
   end
@@ -125,8 +119,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     plot.ready
     expect(player[:ran_on_player_ready]).to be(true)
   end
@@ -139,8 +132,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     plot.ready
     plot.update
     expect(ran_on_update).to be(true)
@@ -153,8 +145,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     plot.ready
     plot.update
     expect(player[:ran_on_player_update]).to be(true)
@@ -162,10 +153,8 @@ RSpec.describe Gamefic::Plot do
 
   it 'supports multiple players' do
     plot = Gamefic::Plot.new
-    player1 = plot.make_player_character
-    plot.introduce player1
-    player2 = plot.make_player_character
-    plot.introduce player2
+    player1 = plot.introduce
+    player2 = plot.introduce
     expect(plot.players).to eq([player1, player2])
   end
 
@@ -179,8 +168,7 @@ RSpec.describe Gamefic::Plot do
 
   it 'exeunts players from plot and subplots' do
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     plot.branch Gamefic::Subplot, introduce: player
     plot.exeunt player
 

@@ -53,15 +53,16 @@ module Gamefic
 
     # Introduce an actor to the story.
     #
-    # @param [Gamefic::Actor]
-    # @return [void]
-    def introduce(player)
+    # @param player [Gamefic::Actor]
+    # @return [Gamefic::Actor]
+    def introduce(player = Gamefic::Actor.new)
       enter player
       rulebook.scenes.introductions.each do |scene|
         take = Take.new(player, scene)
         take.start
         player.stream take.output[:messages]
       end
+      player
     end
 
     # A narrative is considered to be concluding when all of its players are in

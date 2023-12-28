@@ -20,8 +20,7 @@ describe Gamefic::Subplot do
   it "adds its rulebook to introduced characters" do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
-    actor = plot.make_player_character
-    plot.introduce actor
+    actor = plot.introduce
     subplot.introduce actor
     expect(actor.narratives.length).to eq(2)
     expect(actor.narratives).to include(subplot)
@@ -55,7 +54,7 @@ describe Gamefic::Subplot do
       end
     end
     plot = Gamefic::Plot.new
-    actor = plot.make_player_character
+    actor = plot.introduce
     subplot = Gamefic::Subplot.new(plot, introduce: actor)
     subplot.ready
     expect(readied).to be(true)
@@ -69,8 +68,8 @@ describe Gamefic::Subplot do
       end
     end
     plot = Gamefic::Plot.new
-    actor = plot.make_player_character
-    subplot = Gamefic::Subplot.new(plot, introduce: actor)
+    actor = plot.introduce
+    subplot = plot.branch(Gamefic::Subplot, introduce: actor)
     subplot.ready
     subplot.update
     expect(updated).to be(true)
@@ -99,8 +98,7 @@ describe Gamefic::Subplot do
       end
     end
     plot = Gamefic::Plot.new
-    player = plot.make_player_character
-    plot.introduce player
+    player = plot.introduce
     subplot = plot.branch Gamefic::Subplot, introduce: player
     subplot.conclude
     expect(player[:concluded]).to be(true)

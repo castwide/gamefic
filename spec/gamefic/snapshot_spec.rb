@@ -23,8 +23,7 @@ describe Gamefic::Snapshot do
     end
 
     Gamefic::Plot.new.tap do |plot|
-      player = plot.make_player_character
-      plot.introduce player
+      plot.introduce
       plot.ready
     end
   end

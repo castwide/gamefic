@@ -37,13 +37,6 @@ module Gamefic
       subplots.each(&:update)
     end
 
-    # Make a character that a player will control on introduction.
-    #
-    # @return [Gamefic::Actor]
-    def make_player_character
-      Gamefic::Actor.new name: 'yourself', synonyms: 'yourself self myself you me', proper_named: true
-    end
-
     # Remove an actor from the game.
     #
     # Calling `exeunt` on the plot will also remove the actor from its
@@ -68,14 +61,6 @@ module Gamefic
     def inspect
       "#<#{self.class}>"
     end
-
-    # def run_scripts
-    #   super
-    #   stage do
-    #     block :default_scene, rig: Gamefic::Rig::Activity unless scenes.include?(:default_scene)
-    #     block :default_conclusion, rig: Gamefic::Rig::Conclusion unless scenes.include?(:default_conclusion)
-    #   end
-    # end
 
     def self.restore data
       Snapshot.restore data
