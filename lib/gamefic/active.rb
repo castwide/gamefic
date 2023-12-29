@@ -183,7 +183,9 @@ module Gamefic
                             .map { |rlbk| rlbk.scenes[next_cue.scene] }
                             .compact
       validate_scene_selection(available)
-      @props = new_take(available.last, **next_cue.context).start
+      @last_cue = @next_cue
+      @next_cue = nil
+      @props = Take.start(self, available.last, @last_cue.context)
     end
 
     def finish_take
@@ -192,7 +194,7 @@ module Gamefic
       available = narratives.map(&:rulebook)
                             .map { |rlbk| rlbk.scenes[@last_cue.scene] }
                             .compact
-      Take.new(self, available.last, @props, **@last_cue.context).finish
+      Take.finish(self, available.last, @last_cue.context, @props)
     end
 
     # Restart the scene from the most recent cue.
@@ -251,13 +253,6 @@ module Gamefic
       raise ArgumentError, "Scene named `#{next_cue}` does not exist" if scenes.empty?
 
       logger.warn "Found #{scenes.length} scenes named `#{next_cue}`" unless scenes.one?
-    end
-
-    def new_take scene, **context
-      take = Take.new(self, scene, **context)
-      @last_cue = @next_cue
-      @next_cue = nil
-      take
     end
   end
 end

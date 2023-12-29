@@ -12,6 +12,7 @@ module Gamefic
 
     # @param actor [Active]
     # @param scene [Scene]
+    # @param props [Props::Default]
     # @param context [Hash]
     def initialize actor, scene, props = nil, **context
       @actor = actor
@@ -19,6 +20,7 @@ module Gamefic
       @rig = scene.rig.new(scene, props, **context)
     end
 
+    # @return [Props::Default]
     def start
       buffer = @actor.buffer do
         @rig.start @actor
@@ -35,6 +37,7 @@ module Gamefic
       @rig.props
     end
 
+    # @return [void]
     def finish
       @actor.flush
       return if @rig.cancelled?
@@ -61,6 +64,21 @@ module Gamefic
 
     def conclusion?
       @rig.is_a?(Rig::Conclusion)
+    end
+
+    # @param actor [Active]
+    # @param scene [Scene]
+    # @param context [Hash]
+    def self.start actor, scene, context
+      Take.new(actor, scene, **context).start
+    end
+
+    # @param actor [Active]
+    # @param scene [Scene]
+    # @param context [Hash]
+    # @param props [Props::Default]
+    def self.finish actor, scene, context, props
+      Take.new(actor, scene, props, **context).finish
     end
   end
 end
