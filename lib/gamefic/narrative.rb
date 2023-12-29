@@ -108,7 +108,7 @@ module Gamefic
     end
 
     def hydrate
-      # [entity_vault.array, player_vault.array].each(&:freeze)
+      [entity_vault.array, player_vault.array].each(&:freeze)
       return unless rulebook.empty?
 
       self.class.included_blocks.select(&:script?).each { |blk| Stage.run(self, Delegatable::Scripting, &blk.code) }

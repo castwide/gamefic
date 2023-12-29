@@ -12,7 +12,7 @@ module Gamefic
       contain(narrative, extensions).tap do |container|
         container.instance_exec &code
         # container.stage &code
-        merge container, narrative
+        merge container, narrative, code
       end
     end
 
@@ -26,28 +26,28 @@ module Gamefic
       end
     end
 
-    # @param container [Narrative]
-    # @param narrative [Narrative]
-    def merge container, narrative
-      container.instance_variables.each do |var|
-        cval = container.instance_variable_get(var)
-        next if set_new_variable?(narrative, var, cval)
-
-        nval = narrative.instance_variable_get(var)
-        next if cval == nval
-
-        raise "#{code} attempted to overwrite #{var}" unless overwriteable?(cval, nval)
-
-        narrative.instance_variable_set(var, cval)
-      end
-    end
-
     OVERWRITEABLE_CLASSES = [String, Numeric, Symbol].freeze
 
     SWAPPABLE_VALUES = [true, false, nil].freeze
 
     class << self
       private
+
+      # @param container [Narrative]
+      # @param narrative [Narrative]
+      def merge container, narrative, code
+        container.instance_variables.each do |var|
+          cval = container.instance_variable_get(var)
+          next if set_new_variable?(narrative, var, cval)
+
+          nval = narrative.instance_variable_get(var)
+          next if cval == nval
+
+          raise "#{code} attempted to overwrite #{var}" unless overwriteable?(cval, nval)
+
+          narrative.instance_variable_set(var, cval)
+        end
+      end
 
       def set_new_variable? narrative, var, cval
         return false if narrative.instance_variables.include?(var)
@@ -63,7 +63,7 @@ module Gamefic
       end
 
       def swappable? val1, val2
-        SWAPPABLE_VALUES.include?(val1) && SWAPPABLE_VALUES.include?(val2)
+        [val1, val2].all? { |val| SWAPPABLE_VALUES.include?(val) }
       end
     end
   end

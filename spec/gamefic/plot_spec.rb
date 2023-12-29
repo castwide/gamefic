@@ -139,14 +139,14 @@ RSpec.describe Gamefic::Plot do
     expect(plot.players).to eq([player1, player2])
   end
 
-  it 'warns of data changes during script setup' do
+  it 'warns of overwrites during script setup' do
     next if RUBY_ENGINE == 'opal'
 
     # @todo Raise ScriptError from FrozenError
-    Gamefic.script do
-      @wrong = 'wrong'
-    end
-    expect { Gamefic::Plot.new }.to raise_error(FrozenError)
+    Gamefic.script { @here = Object.new }
+    Gamefic.script { @here = Object.new }
+
+    expect { Gamefic::Plot.new }.to raise_error(RuntimeError)
   end
 
   it 'exeunts players from plot and subplots' do

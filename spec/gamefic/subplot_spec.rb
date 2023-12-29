@@ -82,17 +82,6 @@ describe Gamefic::Subplot do
     expect(plot.subplots).to eq([subplot1, subplot2])
   end
 
-  it 'warns of data changes during script setup' do
-    next if RUBY_ENGINE == 'opal'
-
-    # @todo Raise ScriptError from FrozenError
-    Gamefic::Subplot.script do
-      @wrong = 'wrong'
-    end
-    plot = Gamefic::Plot.new
-    expect { plot.branch(Gamefic::Subplot) }.to raise_error(FrozenError)
-  end
-
   it 'runs player conclude blocks' do
     Gamefic::Subplot.script do
       on_player_conclude do |player|
