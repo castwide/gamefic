@@ -54,6 +54,7 @@ module Gamefic
     end
 
     # Send a message to the entity.
+    #
     # This method will automatically wrap the message in HTML paragraphs.
     # To send a message without paragraph formatting, use #stream instead.
     #
@@ -63,6 +64,7 @@ module Gamefic
     end
 
     # Send a message to the entity as raw text.
+    #
     # Unlike #tell, this method will not wrap the message in HTML paragraphs.
     #
     # @param message [String]
@@ -100,7 +102,7 @@ module Gamefic
 
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
-    # buffers the resulting output instead of sending it to the user.
+    # buffers the resulting output instead of sending it to messages.
     #
     # @param command [String]
     # @return [String] The output that resulted from performing the command.
@@ -113,10 +115,10 @@ module Gamefic
 
     # Perform an action.
     # This is functionally identical to the `perform` method, except the
-    # action must be declared as a verb with a list of parameters. Use
+    # action must be declared as a verb with a list of arguments. Use
     # `perform` if you need to parse a string as a command.
     #
-    # The command will be executed immediately regardless of the entity's
+    # The command will be executed immediately, regardless of the entity's
     # state.
     #
     # @example

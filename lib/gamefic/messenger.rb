@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'stringio'
-
 module Gamefic
+  # Message formatting and buffering.
+  #
   class Messenger
     def initialize
       @buffers = ['']
@@ -18,10 +18,10 @@ module Gamefic
       @buffers.pop
     end
 
-    # Send a message to the entity.
+    # Add a formatted message to the current buffer.
     #
     # This method will automatically wrap the message in HTML paragraphs.
-    # To send a message without paragraph formatting, use #stream instead.
+    # To send a message without formatting, use #stream instead.
     #
     # @param message [String, #to_s]
     def tell(message)
@@ -30,7 +30,7 @@ module Gamefic
       msg
     end
 
-    # Send a message to the Character as raw text.
+    # Add a raw text message to the current buffer.
     #
     # Unlike #tell, this method will not wrap the message in HTML paragraphs.
     #
@@ -41,7 +41,7 @@ module Gamefic
       msg
     end
 
-    # Get all the currently buffered messages consolidated in a single string.
+    # Get the currently buffered messages.
     #
     # @return [String]
     def messages
@@ -57,7 +57,7 @@ module Gamefic
       last
     end
 
-    def format message
+    def format(message)
       "<p>#{message.strip}</p>"
         .gsub(/[ \t\r]*\n[ \t\r]*\n[ \t\r]*/, "</p><p>")
         .gsub(/[ \t]*\n[ \t]*/, ' ')
