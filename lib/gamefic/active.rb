@@ -107,10 +107,7 @@ module Gamefic
     # @param command [String]
     # @return [String] The output that resulted from performing the command.
     def quietly(command)
-      dispatchers.push Dispatcher.dispatch(self, command)
-      result = messenger.buffer { dispatchers.last.execute }
-      dispatchers.pop
-      result
+      messenger.buffer { perform command }
     end
 
     # Perform an action.
