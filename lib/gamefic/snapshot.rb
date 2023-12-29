@@ -25,10 +25,7 @@ module Gamefic
     def self.restore snapshot
       binary = Base64.decode64(snapshot)
       Marshal.load(binary).tap do |plot|
-        ([plot] + plot.subplots).each do |part|
-          part.hydrate
-          [part.entity_vault.array, part.player_vault.array].each(&:freeze)
-        end
+        plot.hydrate
       end
     end
   end
