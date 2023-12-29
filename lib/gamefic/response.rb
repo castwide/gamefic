@@ -49,7 +49,7 @@ module Gamefic
     # @param command [Command]
     # @param with_hooks [Boolean]
     # @return [Action, nil]
-    def attempt actor, command, with_hooks = false
+    def attempt actor, command
       return nil if command.verb != verb
 
       tokens = command.arguments.clone

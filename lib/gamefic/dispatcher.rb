@@ -36,10 +36,9 @@ module Gamefic
     def proceed
       while (response = responses.shift)
         commands.each do |cmd|
-          action = response.attempt(actor, cmd, !@started)
+          action = response.attempt(actor, cmd)
           next unless action && arguments_match?(action.arguments)
 
-          @started = true
           @pattern ||= action.arguments
           return action
         end
