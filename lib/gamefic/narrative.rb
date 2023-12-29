@@ -11,9 +11,10 @@ module Gamefic
 
     include Logging
     include Delegatable::Entities
+    include Delegatable::Queries
 
     def initialize
-      self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.build self }
+      self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.execute self }
       hydrate
     end
 
@@ -113,9 +114,10 @@ module Gamefic
     end
 
     def hydrate
+      # [entity_vault.array, player_vault.array].each(&:freeze)
       return unless rulebook.empty?
 
-      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.build self }
+      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.execute self }
     end
   end
 end

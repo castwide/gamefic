@@ -12,7 +12,7 @@ module Gamefic
 
       # @abstract
       # @param narrative [Narrative]
-      def build(narrative); end
+      def execute(narrative); end
     end
   end
 end

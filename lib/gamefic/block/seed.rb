@@ -3,7 +3,7 @@
 module Gamefic
   module Block
     class Seed < Base
-      def build(narrative)
+      def execute(narrative)
         container = contain(narrative)
         container.stage &code
         merge container, narrative
