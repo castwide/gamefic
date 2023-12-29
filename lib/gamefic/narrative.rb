@@ -8,7 +8,6 @@ module Gamefic
   class Narrative
     extend Scriptable
 
-
     include Logging
     include Delegatable::Entities
     include Delegatable::Queries
@@ -97,11 +96,6 @@ module Gamefic
                         .to_h
     end
 
-    def freeze?
-      freeze unless RUBY_ENGINE == 'opal'
-      self
-    end
-
     # @return [Object]
     def detach
       cache = @rulebook
@@ -118,6 +112,22 @@ module Gamefic
       return unless rulebook.empty?
 
       self.class.included_blocks.that_are(Block::Script).each { |blk| blk.execute self }
+    end
+
+    def allow_mutation_in_scripts?
+      self.class.allow_mutation_in_scripts?
+    end
+
+    def self.restrict_mutation_in_scripts
+      @allow_mutation_in_scripts = false
+    end
+
+    def self.allow_unrestricted_mutation
+      @allow_mutation_in_scripts = true
+    end
+
+    def self.allow_mutation_in_scripts?
+      @allow_mutation_in_scripts ||= false
     end
   end
 end

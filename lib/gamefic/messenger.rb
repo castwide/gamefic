@@ -24,10 +24,10 @@ module Gamefic
     # To send a message without formatting, use #stream instead.
     #
     # @param message [String, #to_s]
+    # @return [String] The messages in the current buffer
     def tell(message)
-      msg = @buffers.pop + format(message.to_s)
-      @buffers.push msg
-      msg
+      @buffers.push(@buffers.pop + format(message.to_s))
+              .last
     end
 
     # Add a raw text message to the current buffer.
@@ -35,10 +35,10 @@ module Gamefic
     # Unlike #tell, this method will not wrap the message in HTML paragraphs.
     #
     # @param message [String, #to_s]
+    # @return [String] The messages in the current buffer
     def stream(message)
-      msg = @buffers.pop + message.to_s
-      @buffers.push msg
-      msg
+      @buffers.push(@buffers.pop + message.to_s)
+              .last
     end
 
     # Get the currently buffered messages.
@@ -52,9 +52,7 @@ module Gamefic
     #
     # @return [String] The flushed message
     def flush
-      last = @buffers.pop
-      @buffers.push ''
-      last
+      @buffers.pop.tap { @buffers.push '' }
     end
 
     def format(message)
