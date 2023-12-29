@@ -78,6 +78,6 @@ describe Gamefic::Narrative do
     dump = Marshal.dump(narr)
     rest = Marshal.load(dump)
     expect(rest).to be_a(Gamefic::Narrative)
-    expect(rest.players.first.narratives).to eq([rest].to_set)
+    expect(rest.players.first.epic.narratives).to eq([rest].to_set)
   end
 end

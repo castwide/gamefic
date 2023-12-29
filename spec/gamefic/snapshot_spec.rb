@@ -75,6 +75,6 @@ describe Gamefic::Snapshot do
   it 'retains player configuration after save' do
     plot.save
     expect(plot.players).to be_one
-    expect(plot.players.first.narratives.length).to eq(2)
+    expect(plot.players.first.epic.narratives.length).to eq(2)
   end
 end

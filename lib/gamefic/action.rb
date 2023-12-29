@@ -79,13 +79,13 @@ module Gamefic
     def run_before_actions
       return unless with_hooks? && !cancelled?
 
-      actor.narratives.map(&:rulebook).flat_map { |rlbk| rlbk.hooks.run_before_actions self }
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_before_actions self }
     end
 
     def run_after_actions
       return unless with_hooks? && !cancelled?
 
-      actor.narratives.map(&:rulebook).flat_map { |rlbk| rlbk.hooks.run_after_actions self }
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_after_actions self }
     end
   end
 end

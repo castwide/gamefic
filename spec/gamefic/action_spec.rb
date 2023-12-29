@@ -33,7 +33,7 @@ describe Gamefic::Action do
     rulebook = Gamefic::Rulebook.new(stage_func)
     executed = false
     rulebook.before_action { |_action| executed = true }
-    actor.narratives.add OpenStruct.new(rulebook: rulebook)
+    actor.epic.add OpenStruct.new(rulebook: rulebook)
     response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
     action = Gamefic::Action.new(actor, [], response, true)
     action.execute
@@ -44,7 +44,7 @@ describe Gamefic::Action do
     executed = false
     rulebook = Gamefic::Rulebook.new(stage_func)
     rulebook.after_action { |_action| executed = true }
-    actor.narratives.add OpenStruct.new(rulebook: rulebook)
+    actor.epic.add OpenStruct.new(rulebook: rulebook)
     response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
     action = Gamefic::Action.new(actor, [], response, true)
     action.execute

@@ -14,7 +14,7 @@ describe Gamefic::Subplot do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
     actor = subplot.cast Gamefic::Actor.new
-    expect(actor.narratives).to include(subplot)
+    expect(actor.epic.narratives).to include(subplot)
   end
 
   it "adds its rulebook to introduced characters" do
@@ -22,8 +22,8 @@ describe Gamefic::Subplot do
     subplot = Gamefic::Subplot.new(plot)
     actor = plot.introduce
     subplot.introduce actor
-    expect(actor.narratives.length).to eq(2)
-    expect(actor.narratives).to include(subplot)
+    expect(actor.epic.narratives.length).to eq(2)
+    expect(actor.epic.narratives).to include(subplot)
   end
 
   it "removes its rulebook from exited characters" do
@@ -32,8 +32,8 @@ describe Gamefic::Subplot do
     actor = plot.cast Gamefic::Actor.new
     subplot.introduce actor
     subplot.exeunt actor
-    expect(actor.narratives.length).to eq(1)
-    expect(actor.narratives).not_to include(subplot)
+    expect(actor.epic.narratives.length).to eq(1)
+    expect(actor.epic.narratives).not_to include(subplot)
   end
 
   it 'adds entities to the host plot' do

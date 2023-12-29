@@ -33,9 +33,9 @@ module Gamefic
 
     # The narratives in which the entity is participating.
     #
-    # @return [Set<Gamefic::Narrative]
-    def narratives
-      @narratives ||= Set.new
+    # @return [Epic]
+    def epic
+      @epic ||= Epic.new
     end
 
     # An array of commands waiting to be executed.
@@ -179,22 +179,17 @@ module Gamefic
 
     def start_take
       ensure_cue
-      available = narratives.map(&:rulebook)
-                            .map { |rlbk| rlbk.scenes[next_cue.scene] }
-                            .compact
-      validate_scene_selection(available)
       @last_cue = @next_cue
       @next_cue = nil
-      @props = Take.start(self, available.last, @last_cue.context)
+      scene = epic.select_scene(@last_cue.scene)
+      @props = Take.start(self, scene, @last_cue.context)
     end
 
     def finish_take
       return unless @last_cue
 
-      available = narratives.map(&:rulebook)
-                            .map { |rlbk| rlbk.scenes[@last_cue.scene] }
-                            .compact
-      Take.finish(self, available.last, @last_cue.context, @props)
+      scene = epic.select_scene(@last_cue.scene)
+      Take.finish(self, scene, @last_cue.context, @props)
     end
 
     # Restart the scene from the most recent cue.
@@ -211,11 +206,11 @@ module Gamefic
     #
     # @raise [ArgumentError] if the requested scene is not a conclusion
     #
-    # @param new_scene [Scene]
+    # @param new_scene [Symbol]
     # @oaram context [Hash] Additional scene data
     def conclude scene, **context
       cue scene, **context
-      available = narratives.map(&:rulebook).map { |rlbk| rlbk.scenes[scene] }.compact.last
+      available = epic.select_scene(scene)
       raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
 
       @next_cue
@@ -224,7 +219,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      narratives.empty? || narratives.map(&:rulebook).map { |rlbk| rlbk.scenes[@last_cue&.scene] }.compact.last&.conclusion?
+      epic.narratives.empty? || epic.rulebooks.map { |rlbk| rlbk.scenes[@last_cue&.scene] }.compact.last&.conclusion?
     end
 
     def accessible?
@@ -247,12 +242,6 @@ module Gamefic
 
       logger.debug "Using default scene for actor without cue"
       cue :default_scene
-    end
-
-    def validate_scene_selection scenes
-      raise ArgumentError, "Scene named `#{next_cue}` does not exist" if scenes.empty?
-
-      logger.warn "Found #{scenes.length} scenes named `#{next_cue}`" unless scenes.one?
     end
   end
 end

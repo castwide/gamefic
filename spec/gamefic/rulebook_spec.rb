@@ -5,7 +5,7 @@ describe Gamefic::Rulebook do
 
   let(:actor) do
     Gamefic::Actor.new do |actor|
-      actor.narratives.add OpenStruct.new(rulebook: rulebook)
+      actor.epic.add OpenStruct.new(rulebook: rulebook)
     end
   end
 
