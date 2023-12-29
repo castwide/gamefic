@@ -11,7 +11,6 @@ module Gamefic
     def run(narrative, *extensions, &code)
       contain(narrative, extensions).tap do |container|
         container.instance_exec &code
-        # container.stage &code
         merge container, narrative, code
       end
     end
@@ -43,8 +42,7 @@ module Gamefic
           nval = narrative.instance_variable_get(var)
           next if cval == nval
 
-          raise "#{code} attempted to overwrite #{var}" unless overwriteable?(cval, nval)
-
+          validate_overwriteable(cval, nval, "#{code} attempted to overwrite #{var}")
           narrative.instance_variable_set(var, cval)
         end
       end
@@ -56,14 +54,19 @@ module Gamefic
         true
       end
 
+      def validate_overwriteable cval, nval, error
+        raise error unless overwriteable?(cval, nval)
+      end
+
       def overwriteable? cval, nval
         return true if swappable?(cval, nval)
 
-        OVERWRITEABLE_CLASSES.include?(cval.class) && cval.instance_of?(nval.class)
+        allowed = OVERWRITEABLE_CLASSES.find { |klass| cval.is_a?(klass) }
+        allowed && cval.is_a?(allowed)
       end
 
-      def swappable? val1, val2
-        [val1, val2].all? { |val| SWAPPABLE_VALUES.include?(val) }
+      def swappable? *values
+        values.all? { |val| SWAPPABLE_VALUES.include?(val) }
       end
     end
   end
