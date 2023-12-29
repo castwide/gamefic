@@ -13,7 +13,7 @@ module Gamefic
     include Delegatable::Queries
 
     def initialize
-      self.class.included_blocks.that_are(Block::Seed).each { |blk| blk.execute self }
+      self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
       hydrate
     end
 
@@ -111,7 +111,7 @@ module Gamefic
       # [entity_vault.array, player_vault.array].each(&:freeze)
       return unless rulebook.empty?
 
-      self.class.included_blocks.that_are(Block::Script).each { |blk| blk.execute self }
+      self.class.included_blocks.select(&:script?).each { |blk| Stage.run(self, Delegatable::Scripting, &blk.code) }
     end
 
     def allow_mutation_in_scripts?

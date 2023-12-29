@@ -1,6 +1,6 @@
 module Gamefic
-  module Block
-    module ScriptMethods
+  module Delegatable
+    module Scripting
       include Logging
       include Delegatable::Actions
       include Delegatable::Queries

@@ -4,14 +4,14 @@ describe Gamefic::Narrative do
       blk = proc {}
       Gamefic::Narrative.script &blk
       expect(Gamefic::Narrative.blocks).to be_one
-      expect(Gamefic::Narrative.blocks.first).to be_a(Gamefic::Block::Script)
+      expect(Gamefic::Narrative.blocks.first).to be_script
     end
 
     it 'adds a seed' do
       blk = proc {}
       Gamefic::Narrative.seed &blk
       expect(Gamefic::Narrative.blocks).to be_one
-      expect(Gamefic::Narrative.blocks.first).to be_a(Gamefic::Block::Seed)
+      expect(Gamefic::Narrative.blocks.first).to be_seed
     end
   end
 

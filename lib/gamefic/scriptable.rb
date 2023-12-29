@@ -40,7 +40,7 @@ module Gamefic
     # Dynamic entities should be created with #seed.
     #
     def script &block
-      blocks.push Block::Script.new(block)
+      blocks.push Block.new(:script, block)
     end
 
     # Add a block of code to generate content after initialization.
@@ -60,7 +60,7 @@ module Gamefic
     #   end
     #
     def seed &block
-      blocks.push Block::Seed.new(block)
+      blocks.push Block.new(:seed, block)
     end
 
     def included_blocks
