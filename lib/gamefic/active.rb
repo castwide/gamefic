@@ -180,7 +180,7 @@ module Gamefic
     def start_take
       ensure_cue
       @last_cue = @next_cue
-      @next_cue = nil
+      cue :default_scene
       scene = epic.select_scene(@last_cue.scene)
       @props = Take.start(self, scene, @last_cue.context)
     end
@@ -219,7 +219,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      epic.narratives.empty? || epic.rulebooks.map { |rlbk| rlbk.scenes[@last_cue&.scene] }.compact.last&.conclusion?
+      epic.empty? || (@last_cue && epic.conclusion?(@last_cue.scene))
     end
 
     def accessible?

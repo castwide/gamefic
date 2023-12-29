@@ -48,7 +48,7 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.introduce
     plot.ready
-    expect(player.next_cue).to be_nil
+    expect(player.next_cue.scene).to be(:default_scene)
   end
 
   it 'tracks player subplots' do
