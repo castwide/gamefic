@@ -96,7 +96,7 @@ module Gamefic
     # @return [void]
     def perform(command)
       dispatchers.push Dispatcher.dispatch(self, command)
-      proceed
+      dispatchers.last.execute
       dispatchers.pop
     end
 
@@ -108,7 +108,7 @@ module Gamefic
     # @return [String] The output that resulted from performing the command.
     def quietly(command)
       dispatchers.push Dispatcher.dispatch(self, command)
-      result = messenger.buffer { proceed }
+      result = messenger.buffer { dispatchers.last.execute }
       dispatchers.pop
       result
     end

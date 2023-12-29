@@ -11,6 +11,23 @@ module Gamefic
       @actor = actor
       @commands = commands
       @responses = responses
+      @executed = false
+    end
+
+    # Run the dispatcher.
+    #
+    def execute
+      return if @executed
+
+      @executed = true
+      action = proceed
+      return unless action
+
+      run_before_action_hooks action
+      return if action.cancelled?
+
+      action.execute
+      run_after_action_hooks action
     end
 
     # Get the next executable action.
@@ -79,6 +96,14 @@ module Gamefic
       return true unless @pattern
 
       arguments == @pattern
+    end
+
+    def run_before_action_hooks action
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_before_actions action }
+    end
+
+    def run_after_action_hooks action
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_after_actions action }
     end
   end
 end

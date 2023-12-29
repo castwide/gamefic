@@ -22,25 +22,17 @@ module Gamefic
     # @param actor [Active]
     # @param arguments [Array]
     # @param response [Response]
-    # @param with_hooks [Boolean]
-    def initialize actor, arguments, response, with_hooks = false
+    def initialize actor, arguments, response
       @actor = actor
       @arguments = arguments
       @response = response
-      @with_hooks = with_hooks
     end
 
     def execute
       return if cancelled?
 
-      run_before_actions
-      return if cancelled?
-
-      # log_executing 'response', response.block.source_location
-      # response.block[actor, *arguments]
-      response.execute actor, *arguments
       @executed = true
-      run_after_actions
+      response.execute actor, *arguments
     end
 
     # True if the response has been executed. False typically means that the
@@ -68,24 +60,6 @@ module Gamefic
 
     def meta?
       response.meta?
-    end
-
-    def with_hooks?
-      @with_hooks
-    end
-
-    private
-
-    def run_before_actions
-      return unless with_hooks? && !cancelled?
-
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_before_actions self }
-    end
-
-    def run_after_actions
-      return unless with_hooks? && !cancelled?
-
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_after_actions self }
     end
   end
 end

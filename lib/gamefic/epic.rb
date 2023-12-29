@@ -30,10 +30,12 @@ module Gamefic
       narratives.empty?
     end
 
+    # @param name [Symbol]
     def conclusion? name
       select_scene(name).conclusion?
     end
 
+    # @param name [Symbol]
     # @return [Scene]
     def select_scene name
       scenes = narratives.map(&:rulebook)

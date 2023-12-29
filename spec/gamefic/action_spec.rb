@@ -28,26 +28,4 @@ describe Gamefic::Action do
     action.execute
     expect(action).not_to be_executed
   end
-
-  it 'runs before_action hooks' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    executed = false
-    rulebook.before_action { |_action| executed = true }
-    actor.epic.add OpenStruct.new(rulebook: rulebook)
-    response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
-    action = Gamefic::Action.new(actor, [], response, true)
-    action.execute
-    expect(executed).to be(true)
-  end
-
-  it 'runs after_action hooks' do
-    executed = false
-    rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.after_action { |_action| executed = true }
-    actor.epic.add OpenStruct.new(rulebook: rulebook)
-    response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
-    action = Gamefic::Action.new(actor, [], response, true)
-    action.execute
-    expect(executed).to be(true)
-  end
 end

@@ -71,7 +71,7 @@ module Gamefic
 
       return nil unless tokens.empty? && remainder.empty?
 
-      Action.new(actor, result, self, with_hooks)
+      Action.new(actor, result, self)
     end
 
     def execute *args
