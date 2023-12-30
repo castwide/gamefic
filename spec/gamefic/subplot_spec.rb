@@ -39,7 +39,7 @@ describe Gamefic::Subplot do
   it 'adds entities to the host plot' do
     plot = Gamefic::Plot.new
     subplot = Gamefic::Subplot.new(plot)
-    subplot.stage do
+    subplot.instance_exec do
       plot.make Gamefic::Entity, name: 'thing'
     end
     expect(subplot.entities).to be_empty

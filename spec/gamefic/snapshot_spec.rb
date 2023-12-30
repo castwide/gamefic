@@ -54,7 +54,7 @@ describe Gamefic::Snapshot do
   end
 
   it 'restores stage instance variables' do
-    thing = restored.stage { @thing }
+    thing = restored.instance_variable_get(:@thing)
     expect(thing.name).to eq('thing')
     picked = restored.pick('thing')
     expect(thing).to be(picked)
@@ -69,7 +69,7 @@ describe Gamefic::Snapshot do
   end
 
   it 'restores subplot config data' do
-    expect(restored.subplots.first.config[:configured]).to be(restored.stage { @thing })
+    expect(restored.subplots.first.config[:configured]).to be(restored.instance_exec { @thing })
   end
 
   it 'retains player configuration after save' do

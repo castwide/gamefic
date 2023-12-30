@@ -15,29 +15,30 @@ module Gamefic
     attr_reader :name
 
     def run_start_blocks actor, props
-      @start_blocks.each { |blk| @stage.call(actor, props, &blk) }
+      @start_blocks.each { |blk| Stage.run(@narrative) { blk.call(actor, props) } }
     end
 
     def run_finish_blocks actor, props
-      @finish_blocks.each { |blk| @stage.call(actor, props, &blk) }
+      @finish_blocks.each { |blk| Stage.run(@narrative) { blk.call(actor, props) } }
     end
 
     # @param name [Symbol]
+    # @param narrative [Narrative]
     # @param rig [Class<Rig::Default>]
     # @param type [String, nil]
     # @param on_start [Proc, nil]
     # @param on_finish [Proc, nil]
     # @yieldparam [self]
-    def initialize name, stage, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil, &block
+    def initialize name, narrative, rig: Rig::Default, type: nil, on_start: nil, on_finish: nil
       @name = name
-      @stage = stage
+      @narrative = narrative
       @rig = rig
       @type = type
       @start_blocks = []
       @finish_blocks = []
       @start_blocks.push on_start if on_start
       @finish_blocks.push on_finish if on_finish
-      stage.call self, &block if block
+      yield(self) if block_given?
     end
 
     # The type of rig that was used to build the scene.

@@ -1,5 +1,5 @@
 describe Gamefic::Scene do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Gamefic::Narrative.new }
 
   it 'executes start blocks from params' do
     executed = false

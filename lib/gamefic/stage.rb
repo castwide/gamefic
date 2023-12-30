@@ -9,10 +9,8 @@ module Gamefic
     # @param narrative [Narrative]
     # @param extensions [Array<Module>]
     def run(narrative, *extensions, &code)
-      contain(narrative, extensions).tap do |container|
-        container.instance_exec &code
-        merge container, narrative, code
-      end
+      container = contain(narrative, extensions)
+      container.instance_exec(&code).tap { merge container, narrative, code }
     end
 
     # @param narrative [Narrative]

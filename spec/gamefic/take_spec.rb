@@ -1,5 +1,5 @@
 describe Gamefic::Take do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Gamefic::Narrative.new }
 
   it 'runs start blocks' do
     actor = Gamefic::Actor.new

@@ -65,8 +65,8 @@ module Gamefic
 
     def hydrate
       super
-      rulebook.scenes.add Scene.new(:default_scene, rulebook.stage, rig: Gamefic::Rig::Activity) unless scenes.include?(:default_scene)
-      rulebook.scenes.add Scene.new(:default_conclusion, rulebook.stage, rig: Gamefic::Rig::Conclusion) unless scenes.include?(:default_conclusion)
+      rulebook.scenes.add Scene.new(:default_scene, rulebook.narrative, rig: Gamefic::Rig::Activity) unless scenes.include?(:default_scene)
+      rulebook.scenes.add Scene.new(:default_conclusion, rulebook.narrative, rig: Gamefic::Rig::Conclusion) unless scenes.include?(:default_conclusion)
 
       subplots.each(&:hydrate)
     end
