@@ -40,6 +40,10 @@ module Gamefic
       narratives.empty?
     end
 
+    def one?
+      narratives.one?
+    end
+
     # @param name [Symbol]
     def conclusion? name
       select_scene(name).conclusion?
