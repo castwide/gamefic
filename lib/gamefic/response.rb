@@ -15,7 +15,8 @@ module Gamefic
     # attr_reader :block
 
     # @param verb [Symbol]
-    # @param queryies [Array<Query::Base>]
+    # @param stage [Method]
+    # @param queries [Array<Query::Base>]
     # @param meta [Boolean]
     # @param block [Proc]
     def initialize verb, stage, *queries, meta: false, &block
@@ -75,7 +76,7 @@ module Gamefic
     end
 
     def execute *args
-      @stage.call *args, &@block
+      @stage.call(*args, &@block)
     end
 
     def precision
