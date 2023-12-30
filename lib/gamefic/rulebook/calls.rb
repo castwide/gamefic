@@ -6,8 +6,7 @@ module Gamefic
     # available to actors.
     #
     class Calls
-      def initialize stage
-        @stage = stage
+      def initialize
         @verb_response_map = {}
         @synonym_syntax_map = {}
       end

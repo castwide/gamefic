@@ -3,8 +3,8 @@ describe Gamefic::Dispatcher do
 
   it 'filters and orders actions' do
     rulebook = Gamefic::Rulebook.new(stage_func)
-    response1 = rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |_| nil }
-    response2 = rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |_| nil }
+    response1 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
+    response2 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
     actor = Gamefic::Actor.new
     actor.epic.add OpenStruct.new(rulebook: rulebook)
     dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')

@@ -84,11 +84,11 @@ module Gamefic
     alias exeunt uncast
 
     def ready
-      rulebook.events.run_ready_blocks
+      rulebook.run_ready_blocks
     end
 
     def update
-      rulebook.events.run_update_blocks
+      rulebook.run_update_blocks
     end
 
     def instance_metadata

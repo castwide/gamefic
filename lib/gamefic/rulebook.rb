@@ -23,10 +23,10 @@ module Gamefic
     def initialize(narrative)
       @narrative = narrative
       @stage = @narrative.method(:instance_exec)
-      @calls = Calls.new(stage)
-      @events = Events.new(stage)
-      @hooks = Hooks.new(stage)
-      @scenes = Scenes.new(stage)
+      @calls = Calls.new
+      @events = Events.new
+      @hooks = Hooks.new
+      @scenes = Scenes.new
     end
 
     def freeze
@@ -36,22 +36,6 @@ module Gamefic
       @hooks.freeze
       @scenes.freeze
       self
-    end
-
-    def respond_with response
-      @calls.add_response response
-    end
-
-    def interpret_with syntax
-      @calls.add_syntax syntax
-    end
-
-    def before_action verb = nil, &hook
-      hooks.before_actions.push Action::Hook.new(verb, hook)
-    end
-
-    def after_action verb = nil, &hook
-      hooks.after_actions.push Action::Hook.new(verb, hook)
     end
 
     # @return [Array<Response>]
@@ -106,8 +90,48 @@ module Gamefic
       @calls.syntaxes_for *synonyms
     end
 
+    def run_ready_blocks
+      events.ready_blocks.each { |blk| Stage.run narrative, &blk }
+    end
+
+    def run_update_blocks
+      events.update_blocks.each { |blk| Stage.run narrative, &blk }
+    end
+
+    def run_before_actions action
+      run_action_hooks action, hooks.before_actions
+    end
+
+    def run_after_actions action
+      run_action_hooks action, hooks.after_actions
+    end
+
+    def run_conclude_blocks
+      events.conclude_blocks.each { |blk| Stage.run narrative, &blk }
+    end
+
+    def run_player_conclude_blocks player
+      events.player_conclude_blocks.each { |blk| Stage.run(narrative) { blk.call(player) } }
+    end
+
+    def run_player_output_blocks player, output
+      events.player_output_blocks.each { |blk| Stage.run(narrative) { blk.call(player, output) } }
+    end
+
     def empty?
       calls.empty? && hooks.empty? && scenes.empty? && events.empty?
+    end
+
+    private
+
+    def run_action_hooks action, hooks
+      hooks.each do |hook|
+        break if action.cancelled?
+
+        next unless hook.verb.nil? || hook.verb == action.verb
+
+        Stage.run(narrative) { hook.block.call(action) }
+      end
     end
   end
 end

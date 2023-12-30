@@ -5,8 +5,7 @@ module Gamefic
     class Scenes
       attr_reader :introductions
 
-      def initialize stage
-        @stage = stage
+      def initialize
         @scene_map = {}
         @introductions = []
       end

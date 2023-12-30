@@ -6,9 +6,9 @@ module Gamefic
       end
 
       def conclude
-        rulebook.events.run_conclude_blocks
+        rulebook.run_conclude_blocks
         players.each do |plyr|
-          rulebook.events.run_player_conclude_blocks plyr
+          rulebook.run_player_conclude_blocks plyr
           exeunt plyr
         end
         entities.each { |ent| destroy ent }

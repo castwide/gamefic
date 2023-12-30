@@ -98,11 +98,11 @@ module Gamefic
     end
 
     def run_before_action_hooks action
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_before_actions action }
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
     end
 
     def run_after_action_hooks action
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.hooks.run_after_actions action }
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions action }
     end
   end
 end

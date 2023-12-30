@@ -9,8 +9,7 @@ module Gamefic
 
       attr_reader :after_actions
 
-      def initialize stage
-        @stage = stage
+      def initialize
         @before_actions = []
         @after_actions = []
       end
@@ -22,28 +21,16 @@ module Gamefic
         self
       end
 
-      def run_before_actions action
-        run_action_hooks action, before_actions
+      def before_action verb = nil, &hook
+        before_actions.push Action::Hook.new(verb, hook)
       end
 
-      def run_after_actions action
-        run_action_hooks action, after_actions
+      def after_action verb = nil, &hook
+        after_actions.push Action::Hook.new(verb, hook)
       end
 
       def empty?
         before_actions.empty? && after_actions.empty?
-      end
-
-      private
-
-      def run_action_hooks action, hooks
-        hooks.each do |hook|
-          break if action.cancelled?
-
-          next unless hook.verb.nil? || hook.verb == action.verb
-
-          @stage.call action, &hook.block
-        end
       end
     end
   end

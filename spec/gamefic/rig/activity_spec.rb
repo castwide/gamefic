@@ -5,7 +5,7 @@ describe Gamefic::Rig::Activity do
     type = Gamefic::Rig::Activity.new(nil)
     actor = Gamefic::Actor.new
     rulebook = Gamefic::Rulebook.new(stage_func)
-    rulebook.respond_with Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
+    rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     actor.epic.add OpenStruct.new(rulebook: rulebook)
     actor.queue.push 'command'
     type.finish(actor)

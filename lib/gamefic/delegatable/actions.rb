@@ -31,7 +31,7 @@ module Gamefic
       # @return [Symbol]
       def respond(verb, *queries, &proc)
         args = map_response_args(queries)
-        rulebook.respond_with Response.new(verb, rulebook.stage, *args, &proc)
+        rulebook.calls.add_response Response.new(verb, rulebook.stage, *args, &proc)
         verb
       end
 
@@ -52,7 +52,7 @@ module Gamefic
       # @return [Symbol]
       def meta(verb, *queries, &proc)
         args = map_response_args(queries)
-        rulebook.respond_with Response.new(verb, rulebook.stage, *args, meta: true, &proc)
+        rulebook.calls.add_response Response.new(verb, rulebook.stage, *args, meta: true, &proc)
         verb
       end
 
@@ -64,7 +64,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action verb = nil, &block
-        rulebook.before_action verb, &block
+        rulebook.hooks.before_action verb, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -75,7 +75,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action verb = nil, &block
-        rulebook.after_action verb, &block
+        rulebook.hooks.after_action verb, &block
       end
 
       # Create an alternate Syntax for a response.
@@ -93,7 +93,7 @@ module Gamefic
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
       def interpret command, translation
-        rulebook.interpret_with Syntax.new(command, translation)
+        rulebook.calls.add_syntax Syntax.new(command, translation)
       end
 
       # Verbs are the symbols that have responses defined in the rulebook.
