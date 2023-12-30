@@ -1,7 +1,7 @@
 # Frozen_string_literal: true
 
 RSpec.describe Gamefic::Response do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Object.new }
 
   describe '#meta?' do
     it 'is false by default' do

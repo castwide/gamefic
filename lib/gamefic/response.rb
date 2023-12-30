@@ -15,7 +15,7 @@ module Gamefic
     # attr_reader :block
 
     # @param verb [Symbol]
-    # @param stage [Method]
+    # @param stage [Object]
     # @param queries [Array<Query::Base>]
     # @param meta [Boolean]
     # @param block [Proc]
@@ -46,7 +46,7 @@ module Gamefic
 
     # Return an Action if the Response can accept the actor's command.
     #
-    # @param actor [Gamefic::Entity]
+    # @param actor [Entity]
     # @param command [Command]
     # @param with_hooks [Boolean]
     # @return [Action, nil]
@@ -76,7 +76,8 @@ module Gamefic
     end
 
     def execute *args
-      @stage.call(*args, &@block)
+      blk = proc { @block.call(*args) }
+      Stage.run(@stage) { blk.call }
     end
 
     def precision

@@ -1,5 +1,5 @@
 describe Gamefic::Dispatcher do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Object.new }
 
   it 'filters and orders actions' do
     rulebook = Gamefic::Rulebook.new(stage_func)

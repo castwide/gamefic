@@ -3,7 +3,7 @@
 describe Gamefic::Action do
   let(:actor) { Object.new.tap { |obj| obj.extend Gamefic::Active } }
 
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Object.new }
 
   it 'executes actions' do
     executed = false

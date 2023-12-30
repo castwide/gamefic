@@ -1,5 +1,5 @@
 describe Gamefic::Rulebook do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Object.new }
 
   let(:rulebook) { Gamefic::Rulebook.new(stage_func) }
 

@@ -31,7 +31,7 @@ module Gamefic
       # @return [Symbol]
       def respond(verb, *queries, &proc)
         args = map_response_args(queries)
-        rulebook.calls.add_response Response.new(verb, rulebook.stage, *args, &proc)
+        rulebook.calls.add_response Response.new(verb, rulebook.narrative, *args, &proc)
         verb
       end
 
@@ -52,7 +52,7 @@ module Gamefic
       # @return [Symbol]
       def meta(verb, *queries, &proc)
         args = map_response_args(queries)
-        rulebook.calls.add_response Response.new(verb, rulebook.stage, *args, meta: true, &proc)
+        rulebook.calls.add_response Response.new(verb, rulebook.narrative, *args, meta: true, &proc)
         verb
       end
 

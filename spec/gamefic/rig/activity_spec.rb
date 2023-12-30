@@ -1,5 +1,5 @@
 describe Gamefic::Rig::Activity do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
+  let(:stage_func) { Object.new }
 
   it 'performs a command' do
     type = Gamefic::Rig::Activity.new(nil)
