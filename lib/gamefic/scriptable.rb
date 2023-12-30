@@ -6,7 +6,7 @@ module Gamefic
   # A class module that enables scripting.
   #
   # Narratives extend Scriptable to enable definition of scripts and seeds.
-  # Modules can also be extended with Scriptable to make them importable into
+  # Modules can also be extended with Scriptable to make them includable to
   # other Scriptables.
   #
   # @example Include a scriptable module in a plot
@@ -34,8 +34,7 @@ module Gamefic
     # Add a block of code to be executed during initialization.
     #
     # These blocks are primarily used to define actions, scenes, and hooks in
-    # the narrative's rulebook. After they get executed, the rulebook will be
-    # frozen.
+    # the narrative's rulebook.
     #
     # Dynamic entities should be created with #seed.
     #

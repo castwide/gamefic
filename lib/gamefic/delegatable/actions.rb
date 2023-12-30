@@ -99,10 +99,12 @@ module Gamefic
       # Verbs are the symbols that have responses defined in the rulebook.
       #
       # @example
-      #   Gamefic.script do
-      #     respond :think { |actor| actor.tell 'You think.' }
+      #   class MyPlot < Gamefic::Plot
+      #     script do
+      #       respond :think { |actor| actor.tell 'You think.' }
       #
-      #     verbs #=> [:think]
+      #       verbs #=> [:think]
+      #     end
       #   end
       #
       # @return [Array<Symbol>]
@@ -114,12 +116,13 @@ module Gamefic
       # alternative variants defined in syntaxes.
       #
       # @example
-      #   Gamefic.script do
-      #     respond :think { |actor| actor.tell 'You think.' }
-      #     interpret 'ponder', 'think'
+      #   class MyPlot < Gamefic::Plot
+      #       respond :think { |actor| actor.tell 'You think.' }
+      #       interpret 'ponder', 'think'
       #
-      #     verbs #=> [:think]
-      #     synonyms #=> [:think, :ponder]
+      #       verbs #=> [:think]
+      #       synonyms #=> [:think, :ponder]
+      #     end
       #   end
       #
       # @return [Array<Symbol>]

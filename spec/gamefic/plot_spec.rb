@@ -2,7 +2,7 @@
 
 RSpec.describe Gamefic::Plot do
   it 'creates responses from scripts' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       respond :command do |_actor|
         nil
       end
@@ -12,7 +12,7 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'creates scenes from scripts' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       block :scene do |scene|
         scene.on_start do |actor, props|
           actor.tell "What's your name?"
@@ -29,7 +29,7 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'cues the introduction' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       introduction do |actor|
         actor.tell 'Hello, world!'
       end
@@ -40,7 +40,7 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'starts the default scene after the introduction' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       introduction do |actor|
         actor[:introduced] = true
       end
@@ -69,7 +69,7 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'runs on_player_conclude blocks' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       on_player_conclude do |player|
         player[:concluded] = true
       end
@@ -83,7 +83,7 @@ RSpec.describe Gamefic::Plot do
 
   it 'runs on_ready blocks' do
     ran_on_ready = false
-    Gamefic.script do
+    Gamefic::Plot.script do
       on_ready do
         ran_on_ready = true
       end
@@ -94,7 +94,7 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'runs on_player_ready blocks' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       on_player_ready do |player|
         player[:ran_on_player_ready] = true
       end
@@ -107,7 +107,7 @@ RSpec.describe Gamefic::Plot do
 
   it 'runs on_update blocks' do
     ran_on_update = false
-    Gamefic.script do
+    Gamefic::Plot.script do
       on_update do
         ran_on_update = true
       end
@@ -120,7 +120,7 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'runs on_player_update blocks' do
-    Gamefic.script do
+    Gamefic::Plot.script do
       on_player_update do |player|
         player[:ran_on_player_update] = true
       end
@@ -143,8 +143,8 @@ RSpec.describe Gamefic::Plot do
     next if RUBY_ENGINE == 'opal'
 
     # @todo Raise ScriptError from FrozenError
-    Gamefic.script { @here = Object.new }
-    Gamefic.script { @here = Object.new }
+    Gamefic::Plot.script { @here = Object.new }
+    Gamefic::Plot.script { @here = Object.new }
 
     expect { Gamefic::Plot.new }.to raise_error(RuntimeError)
   end

@@ -22,8 +22,8 @@ module Gamefic
       # Create an entity.
       #
       # @example
-      #   Gamefic.script do
-      #     make Gamefic::Entity, name: 'thing'
+      #   class MyPlot < Gamefic::Plot
+      #     seed { make Gamefic::Entity, name: 'thing' }
       #   end
       #
       # @param [Class<Gamefic::Entity>]

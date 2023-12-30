@@ -32,23 +32,3 @@ require 'gamefic/dispatcher'
 require 'gamefic/active'
 require 'gamefic/active/cue'
 require 'gamefic/actor'
-
-module Gamefic
-  # A shortcut to Gamefic::Plot.script.
-  #
-  # @see Gamefic::Plot.script
-  #
-  # @yieldself [Plot::ScriptMethods]
-  def self.script &block
-    Gamefic::Plot.script(&block)
-  end
-
-  # A shortcut to Gamefic::Plot.seed.
-  #
-  # @see Gamefic::Plot.seed
-  #
-  # @yieldself [Plot::ScriptMethods]
-  def self.seed &block
-    Gamefic::Plot.seed(&block)
-  end
-end
