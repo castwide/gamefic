@@ -6,7 +6,6 @@ describe Gamefic::Delegatable::Actions do
       include Gamefic::Delegatable::Actions
       include Gamefic::Delegatable::Queries
       attr_accessor :rulebook
-      define_method(:stage) { |*args, &block| block.call(*args) }
     end
 
     klass.new.tap do |obj|

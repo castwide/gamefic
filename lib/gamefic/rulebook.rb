@@ -22,7 +22,6 @@ module Gamefic
     # @param narrative [Narrative]
     def initialize(narrative)
       @narrative = narrative
-      @stage = @narrative.method(:instance_exec)
       @calls = Calls.new
       @events = Events.new
       @hooks = Hooks.new

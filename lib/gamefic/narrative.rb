@@ -34,11 +34,6 @@ module Gamefic
       rulebook.scenes.names
     end
 
-    # @param block [Proc]
-    def stage *args, &block
-      instance_exec(*args, &block)
-    end
-
     # Introduce an actor to the story.
     #
     # @param player [Gamefic::Actor]

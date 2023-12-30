@@ -8,7 +8,6 @@ describe Gamefic::Delegatable::Scenes do
       include Gamefic::Delegatable::Scenes
 
       attr_accessor :rulebook
-      define_method(:stage) { |*args, &block| block.call(*args) }
     end
 
     klass.new.tap do |obj|
