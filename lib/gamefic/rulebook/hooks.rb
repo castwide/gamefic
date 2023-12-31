@@ -32,6 +32,26 @@ module Gamefic
       def empty?
         before_actions.empty? && after_actions.empty?
       end
+
+      def run_before action, narrative
+        run_action_hooks action, narrative, before_actions
+      end
+
+      def run_after action, narrative
+        run_action_hooks action, narrative, after_actions
+      end
+
+      private
+
+      def run_action_hooks action, narrative, hooks
+        hooks.each do |hook|
+          break if action.cancelled?
+
+          next unless hook.match?(action.verb)
+
+          Stage.run(narrative) { hook.block.call(action) }
+        end
+      end
     end
   end
 end
