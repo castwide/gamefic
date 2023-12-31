@@ -49,6 +49,15 @@ module Gamefic
         introductions.push scene
       end
 
+      def with_defaults narrative
+        maybe_add :default_scene, Gamefic::Rig::Activity, narrative
+        maybe_add :default_conclusion, Gamefic::Rig::Conclusion, narrative
+      end
+
+      def maybe_add name, rig, narrative
+        add Scene.new(name, narrative, rig: rig) unless names.include?(name)
+      end
+
       def empty?
         @scene_map.empty? && introductions.empty?
       end

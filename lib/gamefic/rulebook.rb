@@ -6,15 +6,26 @@ require 'gamefic/rulebook/hooks'
 require 'gamefic/rulebook/scenes'
 
 module Gamefic
+  # A collection of rules that define the behavior of a narrative.
+  #
+  # Rulebooks provide a way to separate narrative data from code. This
+  # separation is necessary to ensure that the game state can be serialized in
+  # snapshots.
+  #
   class Rulebook
+    # @return [Calls]
     attr_reader :calls
 
+    # @return [Events]
     attr_reader :events
 
+    # @return [Hooks]
     attr_reader :hooks
 
+    # @return [Scenes]
     attr_reader :scenes
 
+    # @return [Narrative]
     attr_reader :narrative
 
     # @param narrative [Narrative]
@@ -122,8 +133,7 @@ module Gamefic
 
     def script_with_defaults
       script
-      scenes.add Scene.new(:default_scene, narrative, rig: Gamefic::Rig::Activity) unless scenes.names.include?(:default_scene)
-      scenes.add Scene.new(:default_conclusion, narrative, rig: Gamefic::Rig::Conclusion) unless scenes.names.include?(:default_conclusion)
+      scenes.with_defaults narrative
     end
   end
 end
