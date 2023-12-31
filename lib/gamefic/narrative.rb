@@ -103,27 +103,5 @@ module Gamefic
 
       self.class.included_blocks.select(&:script?).each { |blk| Stage.set(self, Delegatable::Scripting, &blk.code) }
     end
-
-    def allow_mutation_in_scripts?
-      self.class.allow_mutation_in_scripts?
-    end
-
-    def self.restrict_mutation_in_scripts
-      @allow_mutation_in_scripts = false
-    end
-
-    def self.allow_unrestricted_mutation
-      @allow_mutation_in_scripts = true
-    end
-
-    def self.allow_mutation_in_scripts?
-      @allow_mutation_in_scripts ||= false
-    end
-  end
-end
-
-class Object
-  def instance_metadata
-    instance_variables.map { |var| [var, instance_variable_get(var).__id__] }.to_h
   end
 end
