@@ -9,11 +9,15 @@ module Gamefic
     extend Scriptable
 
     include Logging
+    include Delegatable::Actions
     include Delegatable::Entities
     include Delegatable::Queries
+    include Delegatable::Scenes
+
+    attr_reader :rulebook
 
     def initialize
-      self.class.included_blocks.select(&:seed?).each { |blk| Stage.set self, &blk.code }
+      self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
       hydrate
     end
 
@@ -23,11 +27,6 @@ module Gamefic
 
     def player_vault
       @player_vault ||= Vault.new
-    end
-
-    # @return [Rulebook]
-    def rulebook
-      @rulebook ||= Rulebook.new(self)
     end
 
     def scenes
@@ -99,9 +98,10 @@ module Gamefic
 
     def hydrate
       [entity_vault.array, player_vault.array].each(&:freeze)
-      return unless rulebook.empty?
 
-      self.class.included_blocks.select(&:script?).each { |blk| Stage.set(self, Delegatable::Scripting, &blk.code) }
+      @rulebook = Rulebook.new(self)
+      @rulebook.script_with_defaults
+      @rulebook.freeze
     end
   end
 end

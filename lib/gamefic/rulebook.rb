@@ -30,10 +30,7 @@ module Gamefic
 
     def freeze
       super
-      @calls.freeze
-      @events.freeze
-      @hooks.freeze
-      @scenes.freeze
+      [@calls, @events, @hooks, @scenes].each(&:freeze)
       self
     end
 
@@ -121,13 +118,23 @@ module Gamefic
       calls.empty? && hooks.empty? && scenes.empty? && events.empty?
     end
 
+    def script
+      narrative.class.included_blocks.select(&:script?).each { |blk| Stage.run(narrative, &blk.code) }
+    end
+
+    def script_with_defaults
+      script
+      scenes.add Scene.new(:default_scene, narrative, rig: Gamefic::Rig::Activity) unless scenes.names.include?(:default_scene)
+      scenes.add Scene.new(:default_conclusion, narrative, rig: Gamefic::Rig::Conclusion) unless scenes.names.include?(:default_conclusion)
+    end
+
     private
 
     def run_action_hooks action, hooks
       hooks.each do |hook|
         break if action.cancelled?
 
-        next unless hook.verb.nil? || hook.verb == action.verb
+        next unless hook.match?(action.verb)
 
         Stage.run(narrative) { hook.block.call(action) }
       end

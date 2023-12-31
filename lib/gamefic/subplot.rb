@@ -58,5 +58,13 @@ module Gamefic
     def inspect
       "#<#{self.class}>"
     end
+
+    def hydrate
+      [entity_vault.array, player_vault.array].each(&:freeze)
+
+      @rulebook = Rulebook.new(self)
+      @rulebook.script
+      @rulebook.freeze
+    end
   end
 end

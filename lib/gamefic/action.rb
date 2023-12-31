@@ -8,7 +8,20 @@ module Gamefic
   class Action
     include Logging
 
-    Hook = Struct.new(:verb, :block)
+    class Hook
+      attr_reader :verb
+
+      attr_reader :block
+
+      def initialize verb, block
+        @verbs = verb
+        @block = block
+      end
+
+      def match?(other)
+        verb.nil? || verb == other
+      end
+    end
 
     # @return [Active]
     attr_reader :actor
