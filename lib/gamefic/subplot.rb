@@ -32,6 +32,15 @@ module Gamefic
       conclude if concluding?
     end
 
+    def conclude
+      rulebook.run_conclude_blocks
+      players.each do |plyr|
+        rulebook.run_player_conclude_blocks plyr
+        exeunt plyr
+      end
+      entities.each { |ent| destroy ent }
+    end
+
     # Remove an actor from the subplot with an optional cue
     #
     # @param actor [Gamefic::Actor]

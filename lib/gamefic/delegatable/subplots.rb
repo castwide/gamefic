@@ -5,15 +5,6 @@ module Gamefic
         plot.make klass, *args
       end
 
-      def conclude
-        rulebook.run_conclude_blocks
-        players.each do |plyr|
-          rulebook.run_player_conclude_blocks plyr
-          exeunt plyr
-        end
-        entities.each { |ent| destroy ent }
-      end
-
       # Start a new subplot based on the provided class.
       #
       # @note A subplot's host is always the base plot, regardless of whether

@@ -13,7 +13,7 @@ module Gamefic
     include Delegatable::Queries
 
     def initialize
-      self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+      self.class.included_blocks.select(&:seed?).each { |blk| Stage.set self, &blk.code }
       hydrate
     end
 
@@ -86,11 +86,6 @@ module Gamefic
       rulebook.run_update_blocks
     end
 
-    def instance_metadata
-      instance_variables.map { |var| [var, instance_variable_get(var).inspect] }
-                        .to_h
-    end
-
     # @return [Object]
     def detach
       cache = @rulebook
@@ -106,7 +101,7 @@ module Gamefic
       [entity_vault.array, player_vault.array].each(&:freeze)
       return unless rulebook.empty?
 
-      self.class.included_blocks.select(&:script?).each { |blk| Stage.run(self, Delegatable::Scripting, &blk.code) }
+      self.class.included_blocks.select(&:script?).each { |blk| Stage.set(self, Delegatable::Scripting, &blk.code) }
     end
 
     def allow_mutation_in_scripts?
@@ -124,5 +119,11 @@ module Gamefic
     def self.allow_mutation_in_scripts?
       @allow_mutation_in_scripts ||= false
     end
+  end
+end
+
+class Object
+  def instance_metadata
+    instance_variables.map { |var| [var, instance_variable_get(var).__id__] }.to_h
   end
 end

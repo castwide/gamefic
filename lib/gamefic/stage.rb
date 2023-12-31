@@ -8,9 +8,15 @@ module Gamefic
 
     # @param narrative [Narrative]
     # @param extensions [Array<Module>]
-    def run(narrative, *extensions, &code)
+    def set(narrative, *extensions, &code)
       container = contain(narrative, extensions)
       container.instance_exec(&code).tap { merge container, narrative, code }
+    end
+
+    # @param narrative [Narrative]
+    def run(narrative, &code)
+      container = narrative.clone
+      narrative.instance_exec(&code).tap { validate_changes narrative, container }
     end
 
     # @param narrative [Narrative]
@@ -56,6 +62,10 @@ module Gamefic
         raise error unless overwriteable?(cval, nval)
       end
 
+      def log_overwriteable cval, nval, error
+        Logging.logger.warn error unless overwriteable?(cval, nval)
+      end
+
       def overwriteable? cval, nval
         return true if swappable?(cval, nval)
 
@@ -65,6 +75,18 @@ module Gamefic
 
       def swappable? *values
         values.all? { |val| SWAPPABLE_VALUES.include?(val) }
+      end
+
+      def validate_changes narrative, container
+        container.instance_variables.each do |var|
+          cval = container.instance_variable_get(var)
+          next if set_new_variable?(narrative, var, cval)
+
+          nval = narrative.instance_variable_get(var)
+          next if cval == nval
+
+          log_overwriteable(cval, nval, "#{code} overwrote #{var} in #{narrative}. Snapshots may not restore properly")
+        end
       end
     end
   end
