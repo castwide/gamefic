@@ -17,8 +17,6 @@ module Gamefic
 
     attr_reader :narrative
 
-    attr_reader :stage
-
     # @param narrative [Narrative]
     def initialize(narrative)
       @narrative = narrative
@@ -95,11 +93,11 @@ module Gamefic
     end
 
     def run_before_actions action
-      run_action_hooks action, hooks.before_actions
+      hooks.run_before action, narrative
     end
 
     def run_after_actions action
-      run_action_hooks action, hooks.after_actions
+      hooks.run_after action, narrative
     end
 
     def run_conclude_blocks
@@ -126,18 +124,6 @@ module Gamefic
       script
       scenes.add Scene.new(:default_scene, narrative, rig: Gamefic::Rig::Activity) unless scenes.names.include?(:default_scene)
       scenes.add Scene.new(:default_conclusion, narrative, rig: Gamefic::Rig::Conclusion) unless scenes.names.include?(:default_conclusion)
-    end
-
-    private
-
-    def run_action_hooks action, hooks
-      hooks.each do |hook|
-        break if action.cancelled?
-
-        next unless hook.match?(action.verb)
-
-        Stage.run(narrative) { hook.block.call(action) }
-      end
     end
   end
 end
