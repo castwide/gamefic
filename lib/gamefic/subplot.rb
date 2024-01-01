@@ -7,8 +7,6 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Narrative
-    include Delegatable::Subplots
-
     # @return [Hash]
     attr_reader :config
 
@@ -48,6 +46,27 @@ module Gamefic
     def exeunt actor, next_cue = nil
       super(actor)
       actor.cue next_cue if next_cue
+    end
+
+    # Make an entity that persists in the subplot's parent plot.
+    #
+    # @see Plot#make
+    #
+    def persist klass, **args
+      plot.make klass, *args
+    end
+
+    # Start a new subplot based on the provided class.
+    #
+    # @note A subplot's host is always the base plot, regardless of whether
+    #   it was branched from another subplot.
+    #
+    # @param subplot_class [Class<Gamefic::Subplot>] The Subplot class
+    # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil] Players to introduce
+    # @param config [Hash] Subplot configuration
+    # @return [Gamefic::Subplot]
+    def branch subplot_class = Gamefic::Subplot, introduce: nil, **config
+      plot.branch subplot_class, introduce: introduce, **config
     end
 
     # Subclasses can override this method to handle additional configuration
