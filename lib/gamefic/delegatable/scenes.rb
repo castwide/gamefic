@@ -8,13 +8,13 @@ module Gamefic
       # Block a new scene.
       #
       # @example Prompt the player for a name
-      #   block :ask_for_name do |scene|
+      #   block :name_of_scene do |scene|
       #     # The scene's start occurs before the user gets prompted for input
       #     scene.on_start do |actor, props|
       #       props.prompt = 'What's your name?'
       #     end
       #
-      #     # The scene's finish is where you can process the input
+      #     # The scene's finish is where you can process the user's input
       #     scene.on_finish do |actor, props|
       #       if props.input.empty?
       #         # You can use recue to start the scene again
