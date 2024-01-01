@@ -11,14 +11,6 @@ describe Gamefic::Scriptable do
     expect(narr.scenes).to include(:extended_pause)
   end
 
-  it 'makes attribute seeds' do
-    scriptable.attr_seed(:foo) { make Gamefic::Entity, name: 'foo' }
-    klass = Class.new(Gamefic::Narrative)
-    klass.include scriptable
-    narr = klass.new
-    expect(narr.foo).to be_a(Gamefic::Entity)
-  end
-
   it 'includes module blocks once' do
     # This test is necessary because Opal can duplicate included modules
     scriptable.script { @foo = Object.new }

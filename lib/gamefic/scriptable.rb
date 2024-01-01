@@ -34,9 +34,21 @@ module Gamefic
     # Add a block of code to be executed during initialization.
     #
     # These blocks are primarily used to define actions, scenes, and hooks in
-    # the narrative's rulebook.
+    # the narrative's rulebook. Entities and game data should be initialized
+    # with `seed`.
     #
-    # Dynamic entities should be created with #seed.
+    # @example
+    #   class MyPlot < Gamefic::Plot
+    #     script do
+    #       introduction do |actor|
+    #         actor.tell 'Hello, world!'
+    #       end
+    #
+    #       respond :wait do |actor|
+    #         actor.tell 'Time passes.'
+    #       end
+    #     end
+    #   end
     #
     def script &block
       blocks.push Block.new(:script, block)
@@ -62,30 +74,13 @@ module Gamefic
       blocks.push Block.new(:seed, block)
     end
 
+    # @return [Array<Block>]
     def included_blocks
       included_modules.that_are(Scriptable)
                       .uniq
+                      .reverse
                       .flat_map(&:blocks)
                       .concat(blocks)
     end
-
-    # Add a seed that creates an associated attribute method. This is a
-    # shortcut for seeding an instance variable and creating an attr_reader.
-    #
-    # @example
-    #   class MyPlot < Gamefic::Plot
-    #     attr_seed(:thing) { make Gamefic::Entity, name: 'thing' }
-    #   end
-    #
-    #   plot = MyPlot.new
-    #   plot.thing #=> #<Gamefic::Entity thing>
-    #
-    # @param name [Symbol]
-    def attr_seed name, &block
-      define_method(name) do
-        instance_variable_get("@#{name}") || instance_variable_set("@#{name}", instance_exec(&block))
-      end
-    end
-    alias let attr_seed
   end
 end
