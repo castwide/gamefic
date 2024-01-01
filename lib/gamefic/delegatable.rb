@@ -8,10 +8,10 @@ module Gamefic
   module Delegatable
     autoload :Actions,   'gamefic/delegatable/actions'
     autoload :Entities,  'gamefic/delegatable/entities'
+    autoload :Events,    'gamefic/delegatable/events'
     autoload :Queries,   'gamefic/delegatable/queries'
     autoload :Plots,     'gamefic/delegatable/plots'
     autoload :Scenes,    'gamefic/delegatable/scenes'
-    autoload :Scripting, 'gamefic/delegatable/scripting'
     autoload :Subplots,  'gamefic/delegatable/subplots'
   end
 end

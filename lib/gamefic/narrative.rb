@@ -11,6 +11,7 @@ module Gamefic
     include Logging
     include Delegatable::Actions
     include Delegatable::Entities
+    include Delegatable::Events
     include Delegatable::Queries
     include Delegatable::Scenes
 
@@ -40,9 +41,8 @@ module Gamefic
     def introduce(player = Gamefic::Actor.new)
       enter player
       rulebook.scenes.introductions.each do |scene|
-        take = Take.new(player, scene)
-        take.start
-        player.stream take.output[:messages]
+        props = Take.start(player, scene, {})
+        player.stream props.output[:messages]
       end
       player
     end

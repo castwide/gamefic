@@ -54,9 +54,8 @@ module Gamefic
     # @param name [Symbol]
     # @return [Scene]
     def select_scene name
-      scenes = narratives.map(&:rulebook)
-                            .map { |rlbk| rlbk.scenes[name] }
-                            .compact
+      scenes = rulebooks.map { |rlbk| rlbk.scenes[name] }
+                        .compact
       raise ArgumentError, "Scene named `#{name}` does not exist" if scenes.empty?
 
       logger.warn "Found #{scenes.length} scenes named `#{name}`" unless scenes.one?
