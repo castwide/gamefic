@@ -126,7 +126,7 @@ module Gamefic
     # @return [Gamefic::Action]
     def execute(verb, *params)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
-      proceed
+      dispatchers.last.execute
       dispatchers.pop
     end
 

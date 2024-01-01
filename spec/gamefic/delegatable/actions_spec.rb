@@ -30,13 +30,18 @@ describe Gamefic::Delegatable::Actions do
   end
 
   it 'creates before actions' do
-    object.before_action { |_| nil }
-    expect(object.rulebook.hooks.before_actions.first).to be_a(Gamefic::Action::Hook)
+    object.before_action(:verb1, :verb2) { |_| nil }
+    hook = object.rulebook.hooks.before_actions.first
+    expect(hook.match?(:verb1)).to be(true)
+    expect(hook.match?(:verb3)).to be(false)
   end
 
   it 'creates after actions' do
-    object.after_action { |_| nil }
+    object.after_action(:verb1, :verb2) { |_| nil }
     expect(object.rulebook.hooks.after_actions.first).to be_a(Gamefic::Action::Hook)
+    hook = object.rulebook.hooks.after_actions.first
+    expect(hook.match?(:verb1)).to be(true)
+    expect(hook.match?(:verb3)).to be(false)
   end
 
   it 'raises errors for syntaxes without actions' do

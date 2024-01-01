@@ -21,12 +21,12 @@ module Gamefic
         self
       end
 
-      def before_action *verbs, &hook
-        before_actions.push Action::Hook.new(*verbs, &hook)
+      def before_action *verbs, &block
+        before_actions.push Action::Hook.new(*verbs, &block)
       end
 
-      def after_action *verbs, &hook
-        after_actions.push Action::Hook.new(*verbs, &hook)
+      def after_action *verbs, &block
+        after_actions.push Action::Hook.new(*verbs, &block)
       end
 
       def empty?

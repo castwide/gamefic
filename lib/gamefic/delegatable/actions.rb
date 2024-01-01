@@ -64,7 +64,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action *verbs, &block
-        rulebook.hooks.before_action verbs, &block
+        rulebook.hooks.before_action *verbs, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -75,7 +75,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action *verbs, &block
-        rulebook.hooks.after_action verbs, &block
+        rulebook.hooks.after_action *verbs, &block
       end
 
       # Create an alternate Syntax for a response.
