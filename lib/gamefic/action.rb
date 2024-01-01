@@ -9,17 +9,17 @@ module Gamefic
     include Logging
 
     class Hook
-      attr_reader :verb
+      attr_reader :verbs
 
       attr_reader :block
 
-      def initialize verb, block
-        @verbs = verb
+      def initialize *verbs, &block
+        @verbs = verbs
         @block = block
       end
 
-      def match?(other)
-        verb.nil? || verb == other
+      def match?(input)
+        verbs.empty? || verbs.include?(input)
       end
     end
 
