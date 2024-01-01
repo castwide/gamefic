@@ -49,7 +49,7 @@ module Gamefic
 
           next unless hook.match?(action.verb)
 
-          Stage.run(narrative) { hook.block.call(action) }
+          Stage.run(narrative) { instance_exec(action, &hook.block) }
         end
       end
     end

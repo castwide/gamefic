@@ -6,7 +6,7 @@ module Gamefic
   # functionality.
   #
   class Narrative
-    extend Scriptable
+    extend Scripting
 
     include Logging
     include Delegatable::Actions
@@ -105,6 +105,7 @@ module Gamefic
     end
 
     def self.inherited klass
+      super
       klass.blocks.concat blocks
     end
   end

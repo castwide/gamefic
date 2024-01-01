@@ -15,11 +15,11 @@ module Gamefic
     attr_reader :name
 
     def run_start_blocks actor, props
-      @start_blocks.each { |blk| Stage.run(@narrative) { blk.call(actor, props) } }
+      @start_blocks.each { |blk| Stage.run(@narrative) { instance_exec(actor, props, &blk) } }
     end
 
     def run_finish_blocks actor, props
-      @finish_blocks.each { |blk| Stage.run(@narrative) { blk.call(actor, props) } }
+      @finish_blocks.each { |blk| Stage.run(@narrative) { instance_exec(actor, props, &blk) } }
     end
 
     # @param name [Symbol]

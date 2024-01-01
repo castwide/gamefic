@@ -15,10 +15,10 @@ module Gamefic
       # matches all of the Response's criteria (i.e., verb and queries).
       #
       # @example A simple Response.
-      #   respond :salute do |actor|
-      #     actor.tell "Hello, sir!"
+      #   respond :wave do |actor|
+      #     actor.tell "Hello!"
       #   end
-      #   # The command "salute" will respond "Hello, sir!"
+      #   # The command "wave" will respond "Hello!"
       #
       # @example A Response that accepts a Character
       #   respond :salute, available(Character) do |actor, character|

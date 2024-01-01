@@ -55,11 +55,11 @@ module Gamefic
       # @return [Symbol]
       def introduction(rig: Gamefic::Rig::Activity, &start)
         rulebook.scenes.introduction Scene.new nil,
-                                         rulebook.narrative,
-                                         rig: rig,
-                                         on_start: proc { |actor, props|
-                                           start&.call(actor, props)
-                                         }
+                                               rulebook.narrative,
+                                               rig: rig,
+                                               on_start: proc { |actor, _props|
+                                                 instance_exec(actor, &start)
+                                               }
       end
 
       # Create a multiple-choice scene.
@@ -136,7 +136,7 @@ module Gamefic
               rig: Gamefic::Rig::Pause,
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
-                start&.call actor, props
+                instance_exec(actor, props, &start)
               }
       end
 
@@ -150,7 +150,7 @@ module Gamefic
       #   end
       #
       # @param name [Symbol]
-      # @yieldparam [Scene]
+      # @yieldparam [Actor]
       # @return [Symbol]
       def conclusion name, &start
         block name,
