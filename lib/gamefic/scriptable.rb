@@ -67,5 +67,24 @@ module Gamefic
                       .flat_map(&:blocks)
                       .concat(blocks)
     end
+
+    # Add a seed that creates an associated attribute method. This is a
+    # shortcut for seeding an instance variable and creating an attr_reader.
+    #
+    # @example
+    #   class MyPlot < Gamefic::Plot
+    #     attr_seed(:thing) { make Gamefic::Entity, name: 'thing' }
+    #   end
+    #
+    #   plot = MyPlot.new
+    #   plot.thing #=> #<Gamefic::Entity thing>
+    #
+    # @param name [Symbol]
+    def attr_seed name, &block
+      define_method(name) do
+        instance_variable_get("@#{name}") || instance_variable_set("@#{name}", instance_exec(&block))
+      end
+    end
+    alias let attr_seed
   end
 end
