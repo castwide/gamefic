@@ -103,5 +103,9 @@ module Gamefic
       @rulebook.script_with_defaults
       @rulebook.freeze
     end
+
+    def self.inherited klass
+      klass.blocks.concat blocks
+    end
   end
 end
