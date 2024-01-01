@@ -20,6 +20,8 @@ module Gamefic
       def query(subject, token)
         available = @scope.matches(subject)
                           .that_are(*@arguments)
+        return Result.new(token, nil) if available.include?(token)
+
         scan = Scanner.scan(available, token)
 
         return ambiguous_result(scan) if ambiguous?
