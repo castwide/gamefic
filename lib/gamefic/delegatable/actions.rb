@@ -57,10 +57,10 @@ module Gamefic
       end
 
       # Add a proc to be evaluated before a character executes an action.
-      # When a verb is specified, the proc will only be evaluated if the
-      # action's verb matches it.
+      # When verbs are specified, the proc will only be evaluated if the
+      # action's verb matches them.
       #
-      # @param verb [Symbol, nil]
+      # @param verbs [Array<Symbol>]
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action *verbs, &block
@@ -68,10 +68,10 @@ module Gamefic
       end
 
       # Add a proc to be evaluated after a character executes an action.
-      # When a verb is specified, the proc will only be evaluated if the
-      # action's verb matches it.
+      # When a verbs are specified, the proc will only be evaluated if the
+      # action's verb matches them.
       #
-      # @param verb [Symbol, nil]
+      # @param verbs [Array<Symbol>]
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action *verbs, &block

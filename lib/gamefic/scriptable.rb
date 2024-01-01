@@ -64,6 +64,7 @@ module Gamefic
 
     def included_blocks
       included_modules.that_are(Scriptable)
+                      .uniq
                       .flat_map(&:blocks)
                       .concat(blocks)
     end
