@@ -4,6 +4,8 @@ module Gamefic
   # A collection of narratives.
   #
   class Epic
+    include Logging
+
     # @return [Set<Narrative>]
     attr_reader :narratives
 

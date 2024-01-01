@@ -59,8 +59,8 @@ module Gamefic
     end
 
     def attach(cache)
-      super(cache.unshift)
-      subplots.each { |subplot| subplot.attach cache.unshift }
+      super(cache.shift)
+      subplots.each { |subplot| subplot.attach cache.shift }
     end
 
     def hydrate
