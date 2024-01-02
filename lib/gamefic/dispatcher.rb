@@ -19,10 +19,10 @@ module Gamefic
     def execute
       return if @executed
 
-      @executed = true
       action = proceed
       return unless action
 
+      @executed = action.arguments
       run_before_action_hooks action
       return if action.cancelled?
 
@@ -39,7 +39,6 @@ module Gamefic
           action = response.attempt(actor, cmd)
           next unless action && arguments_match?(action.arguments)
 
-          @pattern ||= action.arguments
           return action
         end
       end
@@ -92,9 +91,7 @@ module Gamefic
     # same arguments.
     #
     def arguments_match? arguments
-      return true unless @pattern
-
-      arguments == @pattern
+      !@executed || arguments == @executed
     end
 
     def run_before_action_hooks action
