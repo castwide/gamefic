@@ -11,9 +11,9 @@ module Gamefic
 
     def fetch narrative
       if string.start_with?('@')
-        Stage.run(narrative, symbol) { |sym| instance_variable_get(sym) }
+        narrative.instance_variable_get(symbol)
       else
-        Stage.run(narrative, symbol) { |sym| send(sym) }
+        narrative.send(symbol)
       end
     end
   end

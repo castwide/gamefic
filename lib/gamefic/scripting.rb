@@ -3,11 +3,23 @@
 module Gamefic
   module Scripting
     include Scriptable
-    include Delegatable::Queries
     # @!parse
     #   include Delegatable::Actions
     #   include Delegatable::Events
+    #   include Delegatable::Queries
     #   include Delegatable::Scenes
+
+    def attr_seed name, klass, **opts
+      seed do
+        instance_variable_set("@#{name}", make(klass, **opts))
+        self.class.define_method(name) { instance_variable_get("@#{name}") }
+      end
+      name
+    end
+
+    def proxy symbol
+      Proxy.new(symbol)
+    end
 
     if RUBY_ENGINE == 'opal'
       # :nocov:

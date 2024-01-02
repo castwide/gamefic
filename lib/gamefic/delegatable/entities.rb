@@ -30,7 +30,8 @@ module Gamefic
       # @param args [Hash]
       # @return [Gamefic::Entity]
       def make klass, **opts
-        entity_vault.add klass.new(**opts)
+        unproxied = opts.transform_values { |val| unproxy(val) }
+        entity_vault.add klass.new(**unproxied)
       end
 
       def destroy entity
@@ -60,6 +61,14 @@ module Gamefic
         raise "multiple entities matching '#{description}': #{ary.join_and}" unless ary.one?
 
         ary.first
+      end
+
+      def unproxy_list objects
+        objects.map { |obj| unproxy obj }
+      end
+
+      def unproxy object
+        object.is_a?(Proxy) ? object.fetch(self) : object
       end
     end
   end
