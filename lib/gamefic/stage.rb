@@ -7,9 +7,9 @@ module Gamefic
     module_function
 
     # @param narrative [Narrative]
-    def run(narrative, &code)
+    def run(narrative, *args, &code)
       container = narrative.clone
-      narrative.instance_exec(&code).tap { validate_changes narrative, container, code }
+      narrative.instance_exec(*args, &code).tap { validate_changes narrative, container, code }
     end
 
     OVERWRITEABLE_CLASSES = [String, Numeric, Symbol].freeze
