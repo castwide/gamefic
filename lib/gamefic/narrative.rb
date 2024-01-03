@@ -20,6 +20,7 @@ module Gamefic
 
     def initialize
       self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+      @rulebook = nil
       hydrate
     end
 
