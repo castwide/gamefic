@@ -107,7 +107,6 @@ module Gamefic
       end
       name
     end
-    alias attr_seed attr_make
 
     if RUBY_ENGINE == 'opal'
       # :nocov:
