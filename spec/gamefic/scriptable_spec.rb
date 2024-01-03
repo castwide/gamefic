@@ -156,15 +156,4 @@ describe Gamefic::Scriptable do
     plot.ready
     expect(player[:executed]).to be(true)
   end
-
-  it 'seeds entity attributes with proxies' do
-    klass = Class.new(Gamefic::Plot) do
-      attr_seed :room, Gamefic::Entity, name: 'room'
-      attr_seed :thing, Gamefic::Entity, name: 'thing', parent: proxy(:room)
-    end
-
-    plot = klass.new
-    expect(plot.thing.name).to eq('thing')
-    expect(plot.thing.parent).to be(plot.room)
-  end
 end

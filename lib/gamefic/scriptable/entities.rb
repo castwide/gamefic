@@ -9,6 +9,8 @@ module Gamefic
     #   #make and #destroy instead.
     #
     module Entities
+      include Proxy
+
       # @return [Array<Gamefic::Entity>]
       def entities
         entity_vault.array

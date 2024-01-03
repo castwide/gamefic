@@ -6,6 +6,7 @@ module Gamefic
     #
     module Queries
       include Entities
+      include Proxy
 
       # Define a query that searches the entire plot's entities.
       #

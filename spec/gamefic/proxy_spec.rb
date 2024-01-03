@@ -9,14 +9,14 @@ describe Gamefic::Scriptable::Proxy do
   end
 
   it 'fetches from instance methods' do
-    proxy = Gamefic::Proxy.new(:foo)
-    object = proxy.fetch(plot)
+    agent = plot.proxy(:foo)
+    object = plot.unproxy(agent)
     expect(object).to be(plot.foo)
   end
 
   it 'fetches from instance variables' do
-    proxy = Gamefic::Proxy.new(:@foo)
-    object = proxy.fetch(plot)
+    agent = plot.proxy(:@foo)
+    object = plot.unproxy(agent)
     expect(object).to be(plot.foo)
   end
 end
