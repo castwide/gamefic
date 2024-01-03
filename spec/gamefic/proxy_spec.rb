@@ -1,4 +1,4 @@
-describe Gamefic::Proxy do
+describe Gamefic::Scriptable::Proxy do
   let(:plot) do
     klass = Class.new(Gamefic::Narrative) do
       attr_reader :foo

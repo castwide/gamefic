@@ -5,7 +5,7 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
-    include Delegatable::Plots
+    include Scriptable::Plots
 
     def initialize
       @subplots = []

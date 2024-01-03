@@ -9,11 +9,12 @@ module Gamefic
     extend Scriptable
 
     include Logging
-    include Delegatable::Actions
-    include Delegatable::Entities
-    include Delegatable::Events
-    include Delegatable::Queries
-    include Delegatable::Scenes
+    include Scriptable::Actions
+    include Scriptable::Entities
+    include Scriptable::Events
+    include Scriptable::Proxy
+    include Scriptable::Queries
+    include Scriptable::Scenes
 
     attr_reader :rulebook
 

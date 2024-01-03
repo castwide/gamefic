@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Delegatable
+  module Scriptable
     module Plots
       # Start a new subplot based on the provided class.
       #

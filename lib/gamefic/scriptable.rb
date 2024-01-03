@@ -25,11 +25,20 @@ module Gamefic
   #   end
   #
   module Scriptable
+    autoload :Actions,   'gamefic/scriptable/actions'
+    autoload :Entities,  'gamefic/scriptable/entities'
+    autoload :Events,    'gamefic/scriptable/events'
+    autoload :Queries,   'gamefic/scriptable/queries'
+    autoload :Plots,     'gamefic/scriptable/plots'
+    autoload :Proxy,     'gamefic/scriptable/proxy'
+    autoload :Scenes,    'gamefic/scriptable/scenes'
+    autoload :Subplots,  'gamefic/scriptable/subplots'
+
     # @!parse
-    #   include Delegatable::Actions
-    #   include Delegatable::Events
-    #   include Delegatable::Queries
-    #   include Delegatable::Scenes
+    #   include Scriptable::Actions
+    #   include Scriptable::Events
+    #   include Scriptable::Queries
+    #   include Scriptable::Scenes
 
     # @return [Array<Block>]
     def blocks
@@ -98,10 +107,6 @@ module Gamefic
     end
     alias attr_make attr_seed
 
-    def proxy symbol
-      Proxy.new(symbol)
-    end
-
     if RUBY_ENGINE == 'opal'
       # :nocov:
       def method_missing method, *args, &block
@@ -119,7 +124,7 @@ module Gamefic
     end
 
     def respond_to_missing?(method, _with_private = false)
-      [Delegatable::Actions, Delegatable::Events, Delegatable::Scenes].flat_map(&:public_instance_methods)
+      [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
                                                                       .include?(method)
     end
   end

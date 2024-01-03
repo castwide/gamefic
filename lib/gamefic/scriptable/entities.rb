@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Delegatable
+  module Scriptable
     # Scriptable methods related to managing entities.
     #
     # @note The public versions of the entity and player arrays are frozen.
@@ -60,19 +60,6 @@ module Gamefic
         raise "multiple entities matching '#{description}': #{ary.join_and}" unless ary.one?
 
         ary.first
-      end
-
-      def unproxy object
-        case object
-        when Proxy
-          object.fetch self
-        when Array
-          object.map { |obj| unproxy obj }
-        when Hash
-          object.transform_values { |val| unproxy val }
-        else
-          object
-        end
       end
     end
   end

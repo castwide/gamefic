@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-describe Gamefic::Delegatable::Scenes do
+describe Gamefic::Scriptable::Scenes do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   let(:object) do
     klass = Class.new do
-      include Gamefic::Delegatable::Scenes
+      include Gamefic::Scriptable::Scenes
 
       attr_accessor :rulebook
     end

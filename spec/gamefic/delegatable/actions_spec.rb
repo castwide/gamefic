@@ -1,10 +1,10 @@
-describe Gamefic::Delegatable::Actions do
+describe Gamefic::Scriptable::Actions do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   let(:object) {
     klass = Class.new do
-      include Gamefic::Delegatable::Actions
-      include Gamefic::Delegatable::Queries
+      include Gamefic::Scriptable::Actions
+      include Gamefic::Scriptable::Queries
       attr_accessor :rulebook
     end
 
