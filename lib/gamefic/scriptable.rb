@@ -101,12 +101,19 @@ module Gamefic
                       .concat(blocks)
     end
 
-    def attr_make name, klass, **opts
+    def make_seed klass, **opts
+      @count ||= 0
+      seed { make(klass, **opts) }
+      @count.tap { @count += 1 }
+    end
+
+    def attr_seed name, klass, **opts
+      @count ||= 0
       seed do
         instance_variable_set("@#{name}", make(klass, **opts))
         self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
-      proxy(name)
+      @count.tap { @count += 1 }
     end
 
     if RUBY_ENGINE == 'opal'

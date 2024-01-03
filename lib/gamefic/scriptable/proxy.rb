@@ -4,16 +4,18 @@ module Gamefic
       class Agent
         attr_reader :symbol
 
-        # @param symbol [Symbol, #to_sym]
+        # @param symbol [Symbol, Integer]
         def initialize symbol
-          @symbol = symbol.to_sym
+          @symbol = symbol
         end
 
         def fetch container
-          if symbol.to_s.start_with?('@')
-            container.instance_variable_get(symbol)
+          if symbol.to_s =~ /^\d+$/
+            Stage.run(container, symbol) { |sym| entities[sym] }
+          elsif symbol.to_s.start_with?('@')
+            Stage.run(container, symbol) { |sym| instance_variable_get(sym) }
           else
-            container.send(symbol)
+            Stage.run(container, symbol) { |sym| send(sym) }
           end
         end
       end
