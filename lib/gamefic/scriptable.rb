@@ -36,6 +36,7 @@ module Gamefic
 
 
     include Proxy
+    include Queries
     # @!parse
     #   include Scriptable::Actions
     #   include Scriptable::Events
@@ -105,7 +106,7 @@ module Gamefic
         instance_variable_set("@#{name}", make(klass, **opts))
         self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
-      name
+      proxy(name)
     end
 
     if RUBY_ENGINE == 'opal'
