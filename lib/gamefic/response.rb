@@ -76,8 +76,7 @@ module Gamefic
     end
 
     def execute *args
-      blk = proc { @block.call(*args) }
-      Stage.run(@stage) { blk.call }
+      Stage.run(@stage, *args, &@block)
     end
 
     def precision
