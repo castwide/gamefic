@@ -24,14 +24,6 @@ module Gamefic
       hydrate
     end
 
-    def entity_vault
-      @entity_vault ||= Vault.new
-    end
-
-    def player_vault
-      @player_vault ||= Vault.new
-    end
-
     def scenes
       rulebook.scenes.names
     end
@@ -64,6 +56,7 @@ module Gamefic
     def cast active
       active.epic.add self
       player_vault.add active
+      # entity_vault.add active
       active
     end
     alias enter cast
@@ -75,6 +68,7 @@ module Gamefic
     def uncast active
       active.epic.delete self
       player_vault.delete active
+      # entity_vault.delete active
       active
     end
     alias exeunt uncast

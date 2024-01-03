@@ -4,10 +4,6 @@ describe Gamefic::Scriptable::Entities do
   let(:object) {
     Class.new do
       include Gamefic::Scriptable::Entities
-
-      def entity_vault
-        @entity_vault ||= Gamefic::Vault.new
-      end
     end
     .new
   }

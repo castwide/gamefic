@@ -11,9 +11,17 @@ module Gamefic
     module Entities
       include Proxy
 
+      def entity_vault
+        @entity_vault ||= Vault.new
+      end
+
+      def player_vault
+        @player_vault ||= Vault.new
+      end
+
       # @return [Array<Gamefic::Entity>]
       def entities
-        entity_vault.array
+        (entity_vault.array + players)
       end
 
       # @return [Array<Gamefic::Actor, Gamefic::Active>]
