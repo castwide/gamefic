@@ -6,7 +6,7 @@ module Gamefic
   # functionality.
   #
   class Narrative
-    extend Scripting
+    extend Scriptable
 
     include Logging
     include Delegatable::Actions

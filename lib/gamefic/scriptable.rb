@@ -9,9 +9,9 @@ module Gamefic
   # Modules can also be extended with Scriptable to make them includable to
   # other Scriptables.
   #
-  # @example Include a scriptable module in a plot
+  # @example Include a scripting module in a plot
   #   module MyScript
-  #     extend Scriptable
+  #     extend Gamefic::Scriptable
   #
   #     script do
   #       respond :myscript do |actor|
@@ -25,6 +25,12 @@ module Gamefic
   #   end
   #
   module Scriptable
+    # @!parse
+    #   include Delegatable::Actions
+    #   include Delegatable::Events
+    #   include Delegatable::Queries
+    #   include Delegatable::Scenes
+
     # @return [Array<Block>]
     def blocks
       @blocks ||= []
@@ -82,5 +88,41 @@ module Gamefic
                       .flat_map(&:blocks)
                       .concat(blocks)
     end
+
+    def attr_seed name, klass, **opts
+      seed do
+        instance_variable_set("@#{name}", make(klass, **opts))
+        self.class.define_method(name) { instance_variable_get("@#{name}") }
+      end
+      name
+    end
+    alias attr_make attr_seed
+
+    def proxy symbol
+      Proxy.new(symbol)
+    end
+
+    if RUBY_ENGINE == 'opal'
+      # :nocov:
+      def method_missing method, *args, &block
+        return super unless respond_to_missing?(method)
+
+        script { send(method, *args, &block) }
+      end
+      # :nocov:
+    else
+      def method_missing method, *args, **kwargs, &block
+        return super unless respond_to_missing?(method)
+
+        script { send(method, *args, **kwargs, &block) }
+      end
+    end
+
+    def respond_to_missing?(method, _with_private = false)
+      [Delegatable::Actions, Delegatable::Events, Delegatable::Scenes].flat_map(&:public_instance_methods)
+                                                                      .include?(method)
+    end
   end
+
+  Scripting = Scriptable
 end
