@@ -101,12 +101,29 @@ module Gamefic
                       .concat(blocks)
     end
 
+    # Seed an entity.
+    #
+    # @example
+    #   make_seed Gamefic::Entity, name: 'thing'
+    #
+    # @param klass [Class<Gamefic::Entity>]
     def make_seed klass, **opts
       @count ||= 0
       seed { make(klass, **opts) }
       @count.tap { @count += 1 }
     end
 
+    # Seed an entity with an attribute method.
+    #
+    # @example
+    #   class Plot < Gamefic::Plot
+    #     attr_seed :thing, Gamefic::Entity, name: 'thing'
+    #   end
+    #
+    #   plot = Plot.new
+    #   plot.thing #=> #<Gamefic::Entity a thing>
+    #
+    # @param klass [Class<Gamefic::Entity>]
     def attr_seed name, klass, **opts
       @count ||= 0
       seed do
@@ -134,7 +151,7 @@ module Gamefic
 
     def respond_to_missing?(method, _with_private = false)
       [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
-                                                                                      .include?(method)
+                                                                   .include?(method)
     end
   end
 
