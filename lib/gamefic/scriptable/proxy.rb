@@ -18,10 +18,19 @@ module Gamefic
         end
       end
 
+      # Proxy a method or instance variable.
+      #
+      # @example
+      #   proxy(:method_name)
+      #   proxy(:@instance_variable_name)
+      #
+      # @param symbol [Symbol]
       def proxy symbol
         Agent.new(symbol)
       end
 
+      # @param object [Object]
+      # @return [Object]
       def unproxy object
         case object
         when Agent

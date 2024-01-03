@@ -34,6 +34,8 @@ module Gamefic
     autoload :Scenes,    'gamefic/scriptable/scenes'
     autoload :Subplots,  'gamefic/scriptable/subplots'
 
+
+    include Proxy
     # @!parse
     #   include Scriptable::Actions
     #   include Scriptable::Events
@@ -98,14 +100,14 @@ module Gamefic
                       .concat(blocks)
     end
 
-    def attr_seed name, klass, **opts
+    def attr_make name, klass, **opts
       seed do
         instance_variable_set("@#{name}", make(klass, **opts))
         self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
       name
     end
-    alias attr_make attr_seed
+    alias attr_seed attr_make
 
     if RUBY_ENGINE == 'opal'
       # :nocov:
@@ -125,7 +127,7 @@ module Gamefic
 
     def respond_to_missing?(method, _with_private = false)
       [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
-                                                                      .include?(method)
+                                                                                      .include?(method)
     end
   end
 
