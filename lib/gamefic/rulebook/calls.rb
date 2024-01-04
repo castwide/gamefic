@@ -7,8 +7,8 @@ module Gamefic
     #
     class Calls
       def initialize
-        @verb_response_map = {}
-        @synonym_syntax_map = {}
+        @verb_response_map = Hash.new { |hash, key| hash[key] = [] }
+        @synonym_syntax_map = Hash.new { |hash, key| hash[key] = [] }
       end
 
       def freeze
@@ -45,7 +45,6 @@ module Gamefic
       end
 
       def add_response response
-        verb_response_map[response.verb] ||= []
         verb_response_map[response.verb].unshift response
         sort_responses_for response.verb
         add_syntax response.syntax unless response.verb.to_s.start_with?('_')
@@ -57,7 +56,6 @@ module Gamefic
       def add_syntax syntax
         raise "No responses exist for \"#{syntax.verb}\"" unless verb_response_map.key?(syntax.verb)
 
-        synonym_syntax_map[syntax.synonym] ||= []
         return if synonym_syntax_map[syntax.synonym].include?(syntax)
 
         synonym_syntax_map[syntax.synonym].unshift syntax
