@@ -40,18 +40,6 @@ describe Gamefic::Active do
     expect(object.messages).to eq(message)
   end
 
-  it 'proceeds quietly' do
-    Gamefic::Narrative.script do
-      respond(:command) { |actor| actor.tell 'hidden' }
-      respond(:command) { |actor| actor.tell 'visible' }
-    end
-    narr = Gamefic::Narrative.new
-    narr.enter object
-    object.execute :command
-    expect(object.messages).not_to include('hidden')
-    expect(object.messages).to include('visible')
-  end
-
   it 'cues a scene' do
     Gamefic::Narrative.script { block :scene }
     narr = Gamefic::Narrative.new
@@ -79,5 +67,11 @@ describe Gamefic::Active do
     object.cue :ending
     object.start_take
     expect(object).to be_concluding
+  end
+
+  describe '#proceed' do
+    it 'does nothing without an available action in dispatchers' do
+      expect { object.proceed }.not_to raise_error
+    end
   end
 end

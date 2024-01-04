@@ -2,6 +2,7 @@
 
 require 'set'
 require 'gamefic/active/cue'
+require 'gamefic/active/messaging'
 require 'json'
 
 module Gamefic
@@ -11,6 +12,7 @@ module Gamefic
   #
   module Active
     include Logging
+    include Messaging
 
     # The cue that will be used to create a scene at the beginning of the next
     # turn.
@@ -51,37 +53,6 @@ module Gamefic
     # @return [Hash]
     def output
       @output ||= {}
-    end
-
-    # Send a message to the entity.
-    #
-    # This method will automatically wrap the message in HTML paragraphs.
-    # To send a message without paragraph formatting, use #stream instead.
-    #
-    # @param message [String]
-    def tell(message)
-      messenger.tell message
-    end
-
-    # Send a message to the entity as raw text.
-    #
-    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
-    #
-    # @param message [String]
-    def stream(message)
-      messenger.stream message
-    end
-
-    def messages
-      messenger.messages
-    end
-
-    def buffer &block
-      messenger.buffer(&block)
-    end
-
-    def flush
-      messenger.flush
     end
 
     # Perform a command.
@@ -155,7 +126,7 @@ module Gamefic
     #
     # @return [void]
     def proceed
-      dispatchers&.last&.proceed&.execute
+      dispatchers.last&.proceed&.execute
     end
 
     # Cue a scene to start in the next turn.
@@ -221,10 +192,6 @@ module Gamefic
 
     def accessible?
       false
-    end
-
-    def messenger
-      @messenger ||= Messenger.new
     end
 
     private
