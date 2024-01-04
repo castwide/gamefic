@@ -21,7 +21,7 @@ module Gamefic
 
       # @return [Array<Gamefic::Entity>]
       def entities
-        (entity_vault.array + players)
+        entity_vault.array
       end
 
       # @return [Array<Gamefic::Actor, Gamefic::Active>]

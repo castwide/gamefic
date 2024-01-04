@@ -4,27 +4,28 @@ module Gamefic
   # vault can be "locked" to prevent existing elements from being deleted.
   #
   class Vault
-    # @return [Array]
-    attr_reader :array
-
     def initialize
-      @array = [].freeze
+      @set = Set.new
+      @array = []
+    end
+
+    # @return [Array]
+    def array
+      @array.freeze
     end
 
     # @param object [Object]
     def add object
-      return object if @array.include?(object)
-
-      @array = (@array.clone + [object]).freeze
+      @array = @set.add(object).to_a
       object
     end
 
     # @param object [Object]
     # @return [Boolean] True if object was deleted
     def delete object
-      return false unless deletable?(object)
+      return false unless deletable?(object) && @set.delete?(object)
 
-      @array = (@array.dup - [object]).freeze
+      @array = @set.to_a.freeze
       true
     end
 
