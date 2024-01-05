@@ -28,7 +28,7 @@ module Gamefic
           nval = narrative.instance_variable_get(var)
           next if cval == nval
 
-          validate_overwriteable(cval, nval, "Illegal reassignment of #{var} in #{code}")
+          validate_overwriteable(cval, nval, "Unsafe reassignment of #{var} in #{code}")
         end
       end
 
