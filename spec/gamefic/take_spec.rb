@@ -32,7 +32,7 @@ describe Gamefic::Take do
     end
     actor = Gamefic::Actor.new
     narr = Gamefic::Narrative.new
-    narr.enter actor
+    narr.cast actor
     take = Gamefic::Take.new(actor, narr.rulebook.scenes[:scene])
     take.start
     actor.queue.push 'command'

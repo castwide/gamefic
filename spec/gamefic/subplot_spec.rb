@@ -31,7 +31,7 @@ describe Gamefic::Subplot do
     subplot = Gamefic::Subplot.new(plot)
     actor = plot.cast Gamefic::Actor.new
     subplot.introduce actor
-    subplot.exeunt actor
+    subplot.uncast actor
     expect(actor.epic.narratives.length).to eq(1)
     expect(actor.epic.narratives).not_to include(subplot)
   end

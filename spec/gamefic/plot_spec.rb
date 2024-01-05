@@ -149,11 +149,11 @@ RSpec.describe Gamefic::Plot do
     expect { Gamefic::Plot.new }.to raise_error(RuntimeError)
   end
 
-  it 'exeunts players from plot and subplots' do
+  it 'uncasts players from plot and subplots' do
     plot = Gamefic::Plot.new
     player = plot.introduce
     plot.branch Gamefic::Subplot, introduce: player
-    plot.exeunt player
+    plot.uncast player
 
     expect(plot.players).to be_empty
     expect(plot.subplots.first.players).to be_empty

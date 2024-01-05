@@ -8,7 +8,7 @@ describe Gamefic::Active do
       respond(:command) { |actor| actor[:executed] = true }
     end
     narrative = Gamefic::Narrative.new
-    narrative.enter object
+    narrative.cast object
     object.perform 'command'
     expect(object[:executed]).to be(true)
   end
@@ -28,7 +28,7 @@ describe Gamefic::Active do
       respond(:command) { |actor| actor.tell 'Keep this quiet' }
     end
     narr = Gamefic::Narrative.new
-    narr.enter object
+    narr.cast object
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')
     expect(object.messages).to be_empty
@@ -43,27 +43,27 @@ describe Gamefic::Active do
   it 'cues a scene' do
     Gamefic::Narrative.script { block :scene }
     narr = Gamefic::Narrative.new
-    narr.enter object
+    narr.cast object
     expect { object.cue :scene }.not_to raise_error
   end
 
   it 'raises an error for non-conclusions' do
     Gamefic::Narrative.script { block :scene }
     narr = Gamefic::Narrative.new
-    narr.enter object
+    narr.cast object
     expect { object.conclude :scene }.to raise_error(ArgumentError)
   end
 
   it 'is not concluding by default' do
     narr = Gamefic::Narrative.new
-    narr.enter object
+    narr.cast object
     expect(object).not_to be_concluding
   end
 
   it 'is concluding when starting a conclusion' do
     Gamefic::Narrative.script { conclusion :ending }
     narr = Gamefic::Narrative.new
-    narr.enter object
+    narr.cast object
     object.cue :ending
     object.start_take
     expect(object).to be_concluding

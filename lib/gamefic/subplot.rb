@@ -34,18 +34,9 @@ module Gamefic
       rulebook.run_conclude_blocks
       players.each do |plyr|
         rulebook.run_player_conclude_blocks plyr
-        exeunt plyr
+        uncast plyr
       end
       entities.each { |ent| destroy ent }
-    end
-
-    # Remove an actor from the subplot with an optional cue
-    #
-    # @param actor [Gamefic::Actor]
-    # @next_cue [Symbol, nil]
-    def exeunt actor, next_cue = nil
-      super(actor)
-      actor.cue next_cue if next_cue
     end
 
     # Make an entity that persists in the subplot's parent plot.

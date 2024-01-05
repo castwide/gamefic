@@ -33,7 +33,7 @@ module Gamefic
     # @param player [Gamefic::Actor]
     # @return [Gamefic::Actor]
     def introduce(player = Gamefic::Actor.new)
-      enter player
+      cast player
       rulebook.scenes.introductions.each do |scene|
         props = Take.start(player, scene, {})
         player.stream props.output[:messages]
@@ -59,7 +59,6 @@ module Gamefic
       entity_vault.add active
       active
     end
-    alias enter cast
 
     # Remove an active entity from the narrative.
     #
@@ -71,7 +70,6 @@ module Gamefic
       entity_vault.delete active
       active
     end
-    alias exeunt uncast
 
     def ready
       rulebook.run_ready_blocks

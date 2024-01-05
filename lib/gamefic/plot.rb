@@ -28,15 +28,13 @@ module Gamefic
 
     # Remove an actor from the game.
     #
-    # Calling `exeunt` on the plot will also remove the actor from its
+    # Calling `uncast` on the plot will also remove the actor from its
     # subplots.
-    #
-    # @todo This is a first implementation, subject to change.
     #
     # @param actor [Actor]
     # @return [Actor]
-    def exeunt actor
-      subplots.each { |sp| sp.exeunt actor }
+    def uncast actor
+      subplots.each { |sp| sp.uncast actor }
       super
     end
 

@@ -72,7 +72,7 @@ describe Gamefic::Narrative do
     narr = Gamefic::Narrative.new
 
     plyr = Gamefic::Actor.new
-    narr.enter plyr
+    narr.cast plyr
 
     narr.detach
     dump = Marshal.dump(narr)
