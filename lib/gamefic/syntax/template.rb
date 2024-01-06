@@ -16,11 +16,6 @@ module Gamefic
         @params = @text.keywords.select { |word| word.start_with?(':') }
       end
 
-      # @return [self]
-      def to_template
-        self
-      end
-
       def keywords
         text.keywords
       end
@@ -43,6 +38,14 @@ module Gamefic
         else
           other.keywords.length <=> keywords.length
         end
+      end
+
+      # @param tmpl_or_str [Template, String]
+      # @return [Template]
+      def self.to_template tmpl_or_str
+        return tmpl_or_str if tmpl_or_str.is_a?(Template)
+
+        Template.new(tmpl_or_str)
       end
 
       private

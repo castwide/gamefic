@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 describe Gamefic::Syntax::Template do
-  describe '#to_template' do
-    it 'returns self' do
-      template = Gamefic::Syntax::Template.new('test')
-      expect(template.to_template).to be(template)
-    end
-  end
-
   describe '#to_s' do
     it 'returns the text' do
       template = Gamefic::Syntax::Template.new('test')

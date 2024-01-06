@@ -21,9 +21,4 @@ class String
   def normalize
     keywords.join(' ')
   end
-
-  # @return [Gamefic::Syntax::Template]
-  def to_template
-    Gamefic::Syntax::Template.new(self)
-  end
 end

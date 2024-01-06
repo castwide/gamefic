@@ -42,7 +42,7 @@ module Gamefic
     # @param template [Template, String]
     # @param command [String]
     def initialize template, command
-      @template = template.to_template
+      @template = Template.to_template(template)
       @command = command.normalize
       @verb = Syntax.literal_or_nil(@command.keywords[0])
       @replace = parse_replace
