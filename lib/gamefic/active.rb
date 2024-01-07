@@ -148,6 +148,7 @@ module Gamefic
     def start_take
       ensure_cue
       @last_cue = @next_cue
+      @next_cue = nil
       cue :default_scene
       scene = epic.select_scene(@last_cue.scene)
       @props = Take.start(self, scene, @last_cue.context)
