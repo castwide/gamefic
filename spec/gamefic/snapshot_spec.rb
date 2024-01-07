@@ -67,4 +67,12 @@ describe Gamefic::Snapshot do
     expect(plot.players).to be_one
     expect(plot.players.first.epic.narratives.length).to eq(2)
   end
+
+  it 'warns when scripts change restored plots' do
+    expect(Gamefic::Logging.logger).to receive(:warn).with(/Scripts modified/i)
+    Gamefic::Plot.script { @foo = 'foo' }
+    plot = Gamefic::Plot.new
+    plot.instance_exec { @foo = 'bar' }
+    Gamefic::Plot.restore plot.save
+  end
 end
