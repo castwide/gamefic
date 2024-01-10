@@ -29,11 +29,8 @@ module Gamefic
     autoload :Entities,  'gamefic/scriptable/entities'
     autoload :Events,    'gamefic/scriptable/events'
     autoload :Queries,   'gamefic/scriptable/queries'
-    autoload :Plots,     'gamefic/scriptable/plots'
     autoload :Proxy,     'gamefic/scriptable/proxy'
     autoload :Scenes,    'gamefic/scriptable/scenes'
-    autoload :Subplots,  'gamefic/scriptable/subplots'
-
 
     include Proxy
     include Queries
