@@ -153,6 +153,43 @@ module Gamefic
       [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
                                                                    .include?(method)
     end
+
+    # Create an anonymous module that includes the features of a Scriptable
+    # module but does not include its scripts.
+    #
+    # This can be useful when you need access to the Scriptable's constants and
+    # instance methods, but you don't want to duplicate its rules.
+    #
+    # @example
+    #   # Plot and Subplot will both include the `Shared#link_url`` method, but
+    #   # only Plot will implement the `think` action.
+    #
+    #   module Shared
+    #     extend Gamefic::Scriptable
+    #
+    #     def link url
+    #       "<a href=\"#{url}\">url</a>
+    #     end
+    #
+    #     script do
+    #       respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
+    #     end
+    #   end
+    #
+    #   class Plot < Gamefic::Plot
+    #     include Shared
+    #   end
+    #
+    #   class Subplot < Gamefic::Subplot
+    #     include Shared.no_scripts
+    #   end
+    #
+    # @return [Module]
+    def no_scripts
+      Module.new.tap do |mod|
+        append_features(mod)
+      end
+    end
   end
 
   Scripting = Scriptable
