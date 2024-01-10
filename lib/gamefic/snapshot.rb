@@ -26,7 +26,8 @@ module Gamefic
       binary = Base64.decode64(snapshot)
       Marshal.load(binary).tap do |plot|
         plot.hydrate
-        next if Snapshot.save(plot) == snapshot
+        # @todo Opal marshal dumps are not idempotent
+        next if RUBY_ENGINE == 'opal' || Snapshot.save(plot) == snapshot
 
         Logging.logger.warn "Scripts modified #{plot.class} data. Snapshot may not have restored properly"
       end

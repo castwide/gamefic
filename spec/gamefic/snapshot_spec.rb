@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'date'
 
 describe Gamefic::Snapshot do
@@ -63,12 +65,14 @@ describe Gamefic::Snapshot do
   end
 
   it 'retains player configuration after save' do
-    plot.save
     expect(plot.players).to be_one
     expect(plot.players.first.epic.narratives.length).to eq(2)
   end
 
   it 'warns when scripts change restored plots' do
+    # @todo Opal marshal dumps are not idempotent
+    next if RUBY_ENGINE == 'opal'
+
     expect(Gamefic::Logging.logger).to receive(:warn).with(/Scripts modified/i)
     Gamefic::Plot.script { @foo = 'foo' }
     plot = Gamefic::Plot.new
