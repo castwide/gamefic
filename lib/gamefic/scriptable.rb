@@ -9,14 +9,12 @@ module Gamefic
   # Modules can also be extended with Scriptable to make them includable to
   # other Scriptables.
   #
-  # @example Include a scripting module in a plot
+  # @example Include a scriptable module in a plot
   #   module MyScript
   #     extend Gamefic::Scriptable
   #
-  #     script do
-  #       respond :myscript do |actor|
-  #         actor.tell "This command was added by MyScript"
-  #       end
+  #     respond :myscript do |actor|
+  #       actor.tell "This command was added by MyScript"
   #     end
   #   end
   #
@@ -37,7 +35,6 @@ module Gamefic
     # @!parse
     #   include Scriptable::Actions
     #   include Scriptable::Events
-    #   include Scriptable::Queries
     #   include Scriptable::Scenes
 
     # @return [Array<Block>]
@@ -158,18 +155,18 @@ module Gamefic
     # instance methods, but you don't want to duplicate its rules.
     #
     # @example
-    #   # Plot and Subplot will both include the `Shared#link_url`` method, but
+    #   # Plot and Subplot will both include the `info` method, but
     #   # only Plot will implement the `think` action.
     #
     #   module Shared
     #     extend Gamefic::Scriptable
     #
-    #     def link url
-    #       "<a href=\"#{url}\">url</a>
+    #     def info
+    #       "This method was added by the Shared module."
     #     end
     #
-    #     script do
-    #       respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
+    #     respond :think do |actor|
+    #       actor.tell 'You ponder your predicament.'
     #     end
     #   end
     #
@@ -188,6 +185,4 @@ module Gamefic
       end
     end
   end
-
-  Scripting = Scriptable
 end

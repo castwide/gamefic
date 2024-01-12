@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # Add a variety of text properties for naming, describing, and referencing
+  # A variety of text properties for naming, describing, and referencing
   # objects.
+  #
   module Describable
     # The object's name.
     # Names are usually presented without articles (e.g., "object" instead
@@ -71,8 +72,8 @@ module Gamefic
     #
     # @param bool [Boolean]
     def proper_named=(bool)
-      if bool == true && !@definite_article.nil?
-        @name = "#{@definite_article} #{@name}"
+      if bool && @definite_article
+        @name = "#{@definite_article} #{@name}".strip
         @definite_article = nil
       end
       @proper_named = bool

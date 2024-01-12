@@ -5,6 +5,8 @@ module Gamefic
     # Template data for syntaxes.
     #
     class Template
+      PARAM_REGEXP = /^:[a-z0-9_]+$/i.freeze
+
       # @return [String]
       attr_reader :text
 

@@ -18,8 +18,6 @@ module Gamefic
   #     Syntax.new('search :container for :thing', 'look :thing :container')
   #
   class Syntax
-    PARAM_REGEXP = /^:[a-z0-9_]+$/i.freeze
-
     # The pattern that matching input is expected to follow.
     #
     # @return [Template]
@@ -87,9 +85,7 @@ module Gamefic
     end
 
     def ==(other)
-      return false unless other.is_a?(Syntax)
-
-      signature == other.signature
+      signature == other&.signature
     end
 
     # Tokenize an array of commands from the specified text. The resulting

@@ -7,6 +7,7 @@ module Gamefic
     def initialize
       @set = Set.new
       @array = []
+      @lock_index = nil
     end
 
     # @return [Array]
