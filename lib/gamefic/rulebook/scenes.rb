@@ -50,12 +50,12 @@ module Gamefic
       end
 
       def with_defaults narrative
-        maybe_add :default_scene, Gamefic::Rig::Activity, narrative
-        maybe_add :default_conclusion, Gamefic::Rig::Conclusion, narrative
+        maybe_add :default_scene, Scene::Activity, narrative
+        maybe_add :default_conclusion, Scene::Conclusion, narrative
       end
 
-      def maybe_add name, rig, narrative
-        add Scene.new(name, narrative, rig: rig) unless names.include?(name)
+      def maybe_add name, klass, narrative
+        add klass.new(name, narrative) unless names.include?(name)
       end
 
       def empty?

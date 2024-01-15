@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Rig
+  module Scene
     class Conclusion < Default
     end
   end

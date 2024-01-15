@@ -26,7 +26,7 @@ module Gamefic
       def index
         return nil unless input
 
-        index_by_number || index_by_text
+        @index ||= index_by_number || index_by_text
       end
 
       # The one-based index of the selected option.
