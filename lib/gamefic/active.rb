@@ -151,14 +151,16 @@ module Gamefic
       @next_cue = nil
       cue :default_scene
       scene = epic.select_scene(@last_cue.scene)
-      @props = Take.start(self, scene, @last_cue.context)
+      output[:scene] = {
+        name: scene.name,
+        type: scene.type
+      }
+      @take = Take.start(self, scene, **@last_cue.context)
     end
 
     def finish_take
-      return unless @last_cue
-
-      scene = epic.select_scene(@last_cue.scene)
-      Take.finish(self, scene, @last_cue.context, @props)
+      @take&.finish
+      @take = nil
     end
 
     # Restart the scene from the most recent cue.

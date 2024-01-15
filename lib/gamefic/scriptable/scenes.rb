@@ -53,11 +53,10 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Symbol]
       def introduction(&start)
-        rulebook.scenes.introduction Scene.new nil,
-                                               rulebook.narrative,
-                                               on_start: proc { |actor, _props|
-                                                 instance_exec(actor, &start)
-                                               }
+        rulebook.scenes
+                .introduction Scene::Default.new nil,
+                                                 rulebook.narrative,
+                                                 on_start: proc { |actor, _props| instance_exec(actor, &start) }
       end
 
       # Create a multiple-choice scene.

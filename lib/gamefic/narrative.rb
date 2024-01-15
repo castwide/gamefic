@@ -36,8 +36,7 @@ module Gamefic
     def introduce(player = Gamefic::Actor.new)
       cast player
       rulebook.scenes.introductions.each do |scene|
-        props = Take.start(player, scene, {})
-        player.stream props.output[:messages]
+        Take.start(player, scene)
       end
       player
     end
