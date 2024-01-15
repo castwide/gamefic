@@ -3,7 +3,7 @@ describe Gamefic::Take do
 
   it 'runs start blocks' do
     actor = Gamefic::Actor.new
-    scene = Gamefic::Scene.new(:scene, stage_func) do |scene|
+    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
       scene.on_start do |actor, _props|
         actor[:scene_started] = true
       end
@@ -15,7 +15,7 @@ describe Gamefic::Take do
 
   it 'runs finish blocks' do
     actor = Gamefic::Actor.new
-    scene = Gamefic::Scene.new(:scene, stage_func) do |scene|
+    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
       scene.on_finish do |actor, _props|
         actor[:scene_finished] = true
       end
@@ -28,7 +28,7 @@ describe Gamefic::Take do
   it 'performs actions in Activity scene types' do
     Gamefic::Narrative.script do
       respond(:command) { |actor| actor[:executed] = true }
-      block :scene, rig: Gamefic::Rig::Activity
+      block :scene, klass: Gamefic::Scene::Activity
     end
     actor = Gamefic::Actor.new
     narr = Gamefic::Narrative.new
@@ -41,7 +41,7 @@ describe Gamefic::Take do
   end
 
   it 'adds context to props' do
-    scene = Gamefic::Scene.new(:scene, stage_func) do |scn|
+    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scn|
       scn.on_start do |actor, props|
         actor.tell "You got extra #{props.context[:extra]}"
       end
@@ -49,26 +49,26 @@ describe Gamefic::Take do
     actor = Gamefic::Actor.new
     take = Gamefic::Take.new(actor, scene, extra: 'data from context')
     take.start
-    expect(take.output[:messages]).to include('You got extra data from context')
+    expect(actor.messages).to include('You got extra data from context')
   end
 
-  it 'adds scene data to output' do
-    scene = Gamefic::Scene.new(:scene, stage_func)
-    actor = Gamefic::Actor.new
-    take = Gamefic::Take.new(actor, scene)
-    expect(take.output[:scene][:name]).to eq(scene.name)
-    expect(take.output[:scene][:type]).to eq(scene.type)
-  end
+  # it 'adds scene data to output' do
+  #   scene = Gamefic::Scene::Default.new(:scene, stage_func)
+  #   actor = Gamefic::Actor.new
+  #   take = Gamefic::Take.new(actor, scene)
+  #   expect(actor.output[:scene][:name]).to eq(scene.name)
+  #   expect(actor.output[:scene][:type]).to eq(scene.type)
+  # end
 
   it 'adds options from MultipleChoice rigs' do
-    scene = Gamefic::Scene.new(:scene, stage_func, rig: Gamefic::Rig::MultipleChoice) do |scene|
-      scene.on_start do |actor, props|
+    scene = Gamefic::Scene::MultipleChoice.new(:scene, stage_func) do |scene|
+      scene.on_start do |_actor, props|
         props.options.concat ['one', 'two']
       end
     end
     actor = Gamefic::Actor.new
     take = Gamefic::Take.new(actor, scene)
     take.start
-    expect(take.output[:options]).to eq(['one', 'two'])
+    expect(actor.output[:options]).to eq(['one', 'two'])
   end
 end

@@ -1,16 +1,17 @@
-describe Gamefic::Rig::Activity do
+describe Gamefic::Scene::Activity do
   let(:stage_func) { Object.new }
 
   it 'performs a command' do
-    type = Gamefic::Rig::Activity.new(nil)
+    type = Gamefic::Scene::Activity.new(nil, nil)
     actor = Gamefic::Actor.new
     rulebook = Gamefic::Rulebook.new(stage_func)
     rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     actor.epic.add OpenStruct.new(rulebook: rulebook)
     actor.queue.push 'command'
-    type.finish(actor)
+    props = type.new_props
+    type.finish?(actor, props)
     expect(actor.queue).to be_empty
-    expect(type.props.input).to eq('command')
+    expect(props.input).to eq('command')
     expect(actor[:executed]).to be(true)
   end
 end

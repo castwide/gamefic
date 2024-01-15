@@ -19,7 +19,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'creates a multiple choice scene' do
       object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      expect(scene.rig).to be(Gamefic::Rig::MultipleChoice)
+      expect(scene).to be_a(Gamefic::Scene::MultipleChoice)
     end
 
     it 'sets choices' do
@@ -35,7 +35,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'creates a yes-or-no scene' do
       object.yes_or_no(:scene) { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      expect(scene.rig).to be(Gamefic::Rig::YesOrNo)
+      expect(scene).to be_a(Gamefic::Scene::YesOrNo)
     end
 
     it 'sets a prompt' do
@@ -51,7 +51,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'creates a pause scene' do
       object.pause(:scene) { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      expect(scene.rig).to be(Gamefic::Rig::Pause)
+      expect(scene).to be_a(Gamefic::Scene::Pause)
     end
 
     it 'sets a prompt' do
@@ -67,7 +67,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'creates a conclusion' do
       object.conclusion(:scene) { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      expect(scene.rig).to be(Gamefic::Rig::Conclusion)
+      expect(scene).to be_a(Gamefic::Scene::Conclusion)
     end
   end
 end

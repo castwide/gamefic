@@ -11,7 +11,7 @@ module Gamefic
     def initialize actor, scene, **context
       @actor = actor
       @scene = scene
-      @props = @scene.new_props(context)
+      @props = @scene.new_props(**context)
     end
 
     # @return [self]

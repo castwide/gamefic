@@ -26,7 +26,7 @@ module Gamefic
         @type ||= self.class.to_s.sub(/^Gamefic::Scene::/, '')
       end
 
-      def new_props(context)
+      def new_props(**context)
         self.class.props_class.new(name, type, **context)
       end
 
@@ -62,6 +62,10 @@ module Gamefic
 
       def self.props_class
         @props_class ||= Props::Default
+      end
+
+      def conclusion?
+        is_a?(Conclusion)
       end
 
       class << self
