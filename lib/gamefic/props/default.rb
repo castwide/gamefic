@@ -2,12 +2,12 @@
 
 module Gamefic
   module Props
-    # A collection of data related to a scene. Rigs define which Props class
-    # a scene will use. Props can be accessed in a scene's on_start and
-    # on_finish callbacks.
+    # A collection of data related to a scene. Scenes define which Props class
+    # they use. Props can be accessed in a scene's on_start and on_finish
+    # callbacks.
     #
     # Props::Default includes the most common attributes that a scene requires.
-    # Rigs are able but not required to subclass it. Some rigs, like
+    # Scenes are able but not required to subclass it. Some scenes, like
     # MultipleChoice, use specialized Props subclasses, but in many cases,
     # Props::Default is sufficient.
     #

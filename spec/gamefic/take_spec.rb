@@ -52,15 +52,7 @@ describe Gamefic::Take do
     expect(actor.messages).to include('You got extra data from context')
   end
 
-  # it 'adds scene data to output' do
-  #   scene = Gamefic::Scene::Default.new(:scene, stage_func)
-  #   actor = Gamefic::Actor.new
-  #   take = Gamefic::Take.new(actor, scene)
-  #   expect(actor.output[:scene][:name]).to eq(scene.name)
-  #   expect(actor.output[:scene][:type]).to eq(scene.type)
-  # end
-
-  it 'adds options from MultipleChoice rigs' do
+  it 'adds options from MultipleChoice scenes' do
     scene = Gamefic::Scene::MultipleChoice.new(:scene, stage_func) do |scene|
       scene.on_start do |_actor, props|
         props.options.concat ['one', 'two']
