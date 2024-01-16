@@ -2,6 +2,9 @@
 
 module Gamefic
   class Rulebook
+    # Blocks of code to be executed for various narrative events, such as
+    # on_ready and on_update.
+    #
     class Events
       attr_reader :player_output_blocks
 

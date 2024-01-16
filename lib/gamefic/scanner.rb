@@ -47,8 +47,6 @@ module Gamefic
       #   methods:
       #     *  #keywords => [Array<String>]
       #     *  #children => [Array<#keywords, #children>]
-      #   The #children method is optional, but if it's implemented, each
-      #   element of the #children array should also implement #children.
 
       words = token.keywords
       available = objects.clone
@@ -72,11 +70,11 @@ module Gamefic
       private
 
       def select_strict available, word
-        available.select { |o| o.keywords.include?(word) }
+        available.select { |obj| obj.keywords.include?(word) }
       end
 
       def select_fuzzy available, word
-        available.select { |o| o.keywords.any? { |w| w.start_with?(word) } }
+        available.select { |obj| obj.keywords.any? { |wrd| wrd.start_with?(word) } }
       end
 
       def nested?(token)

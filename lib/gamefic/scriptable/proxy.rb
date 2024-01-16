@@ -1,6 +1,11 @@
 module Gamefic
   module Scriptable
+    # Functions that provide proxies for referencing a narrative's entities
+    # from class-level scripts.
+    #
     module Proxy
+      # The object that fetches a proxied entity.
+      #
       class Agent
         attr_reader :symbol
 

@@ -5,6 +5,8 @@ module Gamefic
   # a circular reference, e.g., A -> A or A -> B -> A
   class NodeError < RuntimeError; end
 
+  # Parent/child relationships for objects.
+  #
   module Node
     # An array of the object's children.
     #

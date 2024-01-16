@@ -8,6 +8,10 @@ module Gamefic
   class Action
     include Logging
 
+    # Hooks are blocks of code that get executed before or after an actor
+    # performs an action. A before action hook is capable of cancelling the
+    # action's performance.
+    #
     class Hook
       attr_reader :verbs
 

@@ -2,10 +2,10 @@
 
 module Gamefic
   module Scope
+    # A query scope that matches the entity's siblings, i.e., the other
+    # entities that share its parent.
+    #
     class Siblings < Base
-      # The Siblings scope returns the entity's siblings, i.e., all other
-      # entities that share its parent.
-      #
       def matches
         context.parent.children - [context]
       end

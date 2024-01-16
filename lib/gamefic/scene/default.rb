@@ -2,6 +2,9 @@
 
 module Gamefic
   module Scene
+    # The base class for scenes. Authors can instantiate this class directly
+    # and customize it with on_start and on_finish blocks.
+    #
     class Default
       # @return [Symbol]
       attr_reader :name

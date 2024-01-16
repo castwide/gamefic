@@ -2,6 +2,8 @@
 
 module Gamefic
   module Query
+    # The result of a query.
+    #
     class Result
       # @return [Entity, Array<Entity>, String, nil]
       attr_reader :match

@@ -3,6 +3,8 @@
 require 'logger'
 
 module Gamefic
+  # A simple logger.
+  #
   module Logging
     module_function
 

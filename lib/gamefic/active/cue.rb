@@ -2,6 +2,8 @@
 
 module Gamefic
   module Active
+    # The data that actors use to configure a Take.
+    #
     class Cue
       # @return [Symbol]
       attr_reader :scene

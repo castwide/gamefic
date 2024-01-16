@@ -2,9 +2,9 @@
 
 module Gamefic
   module Query
+    # A special query that handles text instead of entities.
+    #
     class Text
-      # A special query that handles text instead of entities.
-      #
       # @param argument [String, Regexp, nil]
       def initialize argument = nil
         @argument = argument

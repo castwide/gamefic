@@ -2,9 +2,9 @@
 
 module Gamefic
   module Scope
+    # A query scope that can only match the entity's parent.
+    #
     class Parent < Base
-      # The Parent scope returns the entity's parent.
-      #
       def matches
         [context.parent].compact
       end

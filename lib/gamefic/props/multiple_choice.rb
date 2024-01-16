@@ -2,6 +2,8 @@
 
 module Gamefic
   module Props
+    # Props for MultipleChoice scenes.
+    #
     class MultipleChoice < Default
       # A message to send the player for an invalid choice. A formatting
       # token named %<input>s can be used to inject the user input.

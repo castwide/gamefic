@@ -2,6 +2,8 @@
 
 module Gamefic
   class Rulebook
+    # The scene manager for rulebooks.
+    #
     class Scenes
       attr_reader :introductions
 

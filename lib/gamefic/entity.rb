@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module Gamefic
+  # Entities are the people, places, and things that exist in a Gamefic
+  # narrative. Authors are encouraged to define Entity subclasses to create
+  # entity types that have additional features or need special handling in
+  # actions.
+  #
   class Entity
     include Describable
     include Node
