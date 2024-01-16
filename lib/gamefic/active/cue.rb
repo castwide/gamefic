@@ -10,8 +10,7 @@ module Gamefic
       attr_reader :context
 
       # @param scene [Symbol]
-      # @param context [Hash]
-      def initialize scene, context
+      def initialize scene, **context
         @scene = scene
         @context = context
       end

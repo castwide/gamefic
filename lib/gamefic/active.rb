@@ -141,26 +141,21 @@ module Gamefic
 
       logger.debug "Overwriting existing cue `#{@next_cue.scene}` with `#{scene}`" if @next_cue
 
-      @next_cue = Cue.new(scene, context)
+      @next_cue = Cue.new(scene, **context)
     end
     alias prepare cue
 
     def start_take
       ensure_cue
       @last_cue = @next_cue
-      @next_cue = nil
       cue :default_scene
-      scene = epic.select_scene(@last_cue.scene)
-      output[:scene] = {
-        name: scene.name,
-        type: scene.type
-      }
-      @take = Take.start(self, scene, **@last_cue.context)
+      @props = Take.start(self, @last_cue)
     end
 
     def finish_take
-      @take&.finish
-      @take = nil
+      return unless @last_cue
+
+      Take.finish(self, @last_cue, @props)
     end
 
     # Restart the scene from the most recent cue.

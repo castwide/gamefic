@@ -68,6 +68,10 @@ module Gamefic
         is_a?(Conclusion)
       end
 
+      def to_hash
+        { name: name, type: type }
+      end
+
       class << self
         protected
 

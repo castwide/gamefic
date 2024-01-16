@@ -5,19 +5,20 @@ module Gamefic
   #
   class Take
     # @param actor [Active]
-    # @param scene [Scene]
-    # @param context [Hash]
-    def initialize actor, scene, **context
+    # @param cue [Active::Cue]
+    # @param props [Props::Default]
+    def initialize actor, cue, props = nil
       @actor = actor
-      @scene = scene
-      @props = @scene.new_props(**context)
+      @scene = actor.epic.select_scene(cue.scene)
+      @props = props || @scene.new_props(**cue.context)
     end
 
-    # @return [self]
+    # @return [Props::Default]
     def start
+      @actor.output[:scene] = @scene.to_hash
       @scene.run_start_blocks @actor, @props
       @scene.start @actor, @props
-      self
+      @props
     end
 
     # @return [void]
@@ -29,11 +30,17 @@ module Gamefic
     end
 
     # @param actor [Active]
-    # @param scene [Scene]
-    # @param context [Hash]
-    # @return [self]
-    def self.start actor, scene, **context
-      Take.new(actor, scene, **context).start
+    # @param cue [Active::Cue]
+    # @return [Props::Default]
+    def self.start actor, cue
+      Take.new(actor, cue).start
+    end
+
+    # @param actor [Active]
+    # @param cue [Active::Cue]
+    # @return [void]
+    def self.finish actor, cue, props
+      Take.new(actor, cue, props).finish
     end
   end
 end

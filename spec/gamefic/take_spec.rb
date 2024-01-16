@@ -2,25 +2,33 @@ describe Gamefic::Take do
   let(:stage_func) { Gamefic::Narrative.new }
 
   it 'runs start blocks' do
-    actor = Gamefic::Actor.new
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
-      scene.on_start do |actor, _props|
-        actor[:scene_started] = true
+    Gamefic::Plot.script do
+      scene :scene, Gamefic::Scene::Default do |scene|
+        scene.on_start do |actor, _props|
+          actor[:scene_started] = true
+        end
       end
     end
-    take = Gamefic::Take.new(actor, scene)
+    plot = Gamefic::Plot.new
+    actor = plot.introduce
+    cue = Gamefic::Active::Cue.new(:scene)
+    take = Gamefic::Take.new(actor, cue)
     take.start
     expect(actor[:scene_started]).to be(true)
   end
 
   it 'runs finish blocks' do
-    actor = Gamefic::Actor.new
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
-      scene.on_finish do |actor, _props|
-        actor[:scene_finished] = true
+    Gamefic::Plot.script do
+      scene :scene, Gamefic::Scene::Default do |scene|
+        scene.on_finish do |actor, _props|
+          actor[:scene_finished] = true
+        end
       end
     end
-    take = Gamefic::Take.new(actor, scene)
+    plot = Gamefic::Plot.new
+    actor = plot.introduce
+    cue = Gamefic::Active::Cue.new(:scene)
+    take = Gamefic::Take.new(actor, cue)
     take.finish
     expect(actor[:scene_finished]).to be(true)
   end
@@ -33,7 +41,8 @@ describe Gamefic::Take do
     actor = Gamefic::Actor.new
     narr = Gamefic::Narrative.new
     narr.cast actor
-    take = Gamefic::Take.new(actor, narr.rulebook.scenes[:scene])
+    cue = Gamefic::Active::Cue.new(:scene)
+    take = Gamefic::Take.new(actor, cue)
     take.start
     actor.queue.push 'command'
     take.finish
@@ -41,25 +50,33 @@ describe Gamefic::Take do
   end
 
   it 'adds context to props' do
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scn|
-      scn.on_start do |actor, props|
-        actor.tell "You got extra #{props.context[:extra]}"
+    Gamefic::Plot.script do
+      block :scene, Gamefic::Scene::Default do |scn|
+        scn.on_start do |actor, props|
+          actor.tell "You got extra #{props.context[:extra]}"
+        end
       end
     end
-    actor = Gamefic::Actor.new
-    take = Gamefic::Take.new(actor, scene, extra: 'data from context')
+    plot = Gamefic::Plot.new
+    actor = plot.introduce
+    cue = Gamefic::Active::Cue.new(:scene, extra: 'data from context')
+    take = Gamefic::Take.new(actor, cue)
     take.start
     expect(actor.messages).to include('You got extra data from context')
   end
 
   it 'adds options from MultipleChoice scenes' do
-    scene = Gamefic::Scene::MultipleChoice.new(:scene, stage_func) do |scene|
-      scene.on_start do |_actor, props|
-        props.options.concat ['one', 'two']
+    Gamefic::Plot.script do
+      block :scene, Gamefic::Scene::MultipleChoice do |scene|
+        scene.on_start do |_actor, props|
+          props.options.concat ['one', 'two']
+        end
       end
     end
-    actor = Gamefic::Actor.new
-    take = Gamefic::Take.new(actor, scene)
+    plot = Gamefic::Plot.new
+    actor = plot.introduce
+    cue = Gamefic::Active::Cue.new(:scene)
+    take = Gamefic::Take.new(actor, cue)
     take.start
     expect(actor.output[:options]).to eq(['one', 'two'])
   end
