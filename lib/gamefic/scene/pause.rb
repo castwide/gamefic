@@ -7,10 +7,7 @@ module Gamefic
     # default.
     #
     class Pause < Default
-      def start _actor, props
-        super
-        props.prompt = 'Press enter to continue...'
-      end
+      use_props_class Props::Pause
     end
   end
 end
