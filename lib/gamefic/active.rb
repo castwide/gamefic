@@ -2,6 +2,7 @@
 
 require 'set'
 require 'gamefic/active/cue'
+require 'gamefic/active/epic'
 require 'gamefic/active/messaging'
 require 'json'
 
