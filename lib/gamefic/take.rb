@@ -6,7 +6,6 @@ module Gamefic
   class Take
     # @param actor [Active]
     # @param scene [Scene]
-    # @param props [Props::Default]
     # @param context [Hash]
     def initialize actor, scene, **context
       @actor = actor

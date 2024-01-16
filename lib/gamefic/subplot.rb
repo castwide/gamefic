@@ -16,13 +16,13 @@ module Gamefic
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
     # @param config [Hash]
-    def initialize plot, introduce: nil, **config
+    def initialize plot, introduce: [], **config
       @plot = plot
       @config = config
       configure
       @config.freeze
       super()
-      [introduce].compact.flatten.each { |pl| self.introduce pl }
+      [introduce].flatten.each { |pl| self.introduce pl }
     end
 
     def ready
@@ -56,7 +56,7 @@ module Gamefic
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil] Players to introduce
     # @param config [Hash] Subplot configuration
     # @return [Gamefic::Subplot]
-    def branch subplot_class = Gamefic::Subplot, introduce: nil, **config
+    def branch subplot_class = Gamefic::Subplot, introduce: [], **config
       plot.branch subplot_class, introduce: introduce, **config
     end
 
