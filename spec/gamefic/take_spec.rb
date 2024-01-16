@@ -28,7 +28,7 @@ describe Gamefic::Take do
   it 'performs actions in Activity scene types' do
     Gamefic::Narrative.script do
       respond(:command) { |actor| actor[:executed] = true }
-      block :scene, klass: Gamefic::Scene::Activity
+      block :scene, Gamefic::Scene::Activity
     end
     actor = Gamefic::Actor.new
     narr = Gamefic::Narrative.new

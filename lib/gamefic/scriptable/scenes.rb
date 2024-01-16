@@ -27,13 +27,12 @@ module Gamefic
       #
       # @param name [Symbol]
       # @param klass [Class<Scene::Default>]
-      # @param type [String, nil]
       # @param on_start [Proc, nil]
       # @param on_finish [Proc, nil]
       # @param block [Proc]
       # @yieldparam [Scene]
       # @return [Symbol]
-      def block name, klass: Scene::Default, on_start: nil, on_finish: nil, &block
+      def block name, klass = Scene::Default, on_start: nil, on_finish: nil, &block
         rulebook.scenes.add klass.new(name, rulebook.narrative, on_start: on_start, on_finish: on_finish, &block)
         name
       end
@@ -80,7 +79,7 @@ module Gamefic
       # @return [Symbol]
       def multiple_choice name, choices = [], prompt = 'What is your choice?', &block
         block name,
-              klass: Scene::MultipleChoice,
+              Scene::MultipleChoice,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
                 props.options.concat choices
@@ -108,7 +107,7 @@ module Gamefic
       # @return [Symbol]
       def yes_or_no name, prompt = 'Answer:', &block
         block name,
-              klass: Scene::YesOrNo,
+              Scene::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
               },
@@ -130,7 +129,7 @@ module Gamefic
       # @return [Symbol]
       def pause name, prompt: 'Press enter to continue...', &start
         block name,
-              klass: Scene::Pause,
+              Scene::Pause,
               on_start: proc { |actor, props|
                 props.prompt = prompt if prompt
                 instance_exec(actor, props, &start)
@@ -151,7 +150,7 @@ module Gamefic
       # @return [Symbol]
       def conclusion name, &start
         block name,
-              klass: Scene::Conclusion,
+              Scene::Conclusion,
               on_start: start
       end
 
