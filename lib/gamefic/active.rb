@@ -4,7 +4,7 @@ require 'set'
 require 'gamefic/active/cue'
 require 'gamefic/active/epic'
 require 'gamefic/active/messaging'
-require 'json'
+require 'gamefic/active/take'
 
 module Gamefic
   # The Active module gives entities the ability to perform actions and

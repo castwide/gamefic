@@ -1,4 +1,4 @@
-describe Gamefic::Take do
+describe Gamefic::Active::Take do
   let(:stage_func) { Gamefic::Narrative.new }
 
   it 'runs start blocks' do
@@ -12,7 +12,7 @@ describe Gamefic::Take do
     plot = Gamefic::Plot.new
     actor = plot.introduce
     cue = Gamefic::Active::Cue.new(:scene)
-    take = Gamefic::Take.new(actor, cue)
+    take = Gamefic::Active::Take.new(actor, cue)
     take.start
     expect(actor[:scene_started]).to be(true)
   end
@@ -28,7 +28,7 @@ describe Gamefic::Take do
     plot = Gamefic::Plot.new
     actor = plot.introduce
     cue = Gamefic::Active::Cue.new(:scene)
-    take = Gamefic::Take.new(actor, cue)
+    take = Gamefic::Active::Take.new(actor, cue)
     take.finish
     expect(actor[:scene_finished]).to be(true)
   end
@@ -42,7 +42,7 @@ describe Gamefic::Take do
     narr = Gamefic::Narrative.new
     narr.cast actor
     cue = Gamefic::Active::Cue.new(:scene)
-    take = Gamefic::Take.new(actor, cue)
+    take = Gamefic::Active::Take.new(actor, cue)
     take.start
     actor.queue.push 'command'
     take.finish
@@ -60,7 +60,7 @@ describe Gamefic::Take do
     plot = Gamefic::Plot.new
     actor = plot.introduce
     cue = Gamefic::Active::Cue.new(:scene, extra: 'data from context')
-    take = Gamefic::Take.new(actor, cue)
+    take = Gamefic::Active::Take.new(actor, cue)
     take.start
     expect(actor.messages).to include('You got extra data from context')
   end
@@ -76,7 +76,7 @@ describe Gamefic::Take do
     plot = Gamefic::Plot.new
     actor = plot.introduce
     cue = Gamefic::Active::Cue.new(:scene)
-    take = Gamefic::Take.new(actor, cue)
+    take = Gamefic::Active::Take.new(actor, cue)
     take.start
     expect(actor.output[:options]).to eq(['one', 'two'])
   end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # A collection of narratives.
-  #
   module Active
+    # A collection of narratives.
+    #
     class Epic
       include Logging
 
