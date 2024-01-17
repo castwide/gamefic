@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json'
 require 'gamefic/version'
 require 'gamefic/logging'
 require 'gamefic/core_ext/array'
