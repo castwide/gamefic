@@ -36,17 +36,6 @@ module Gamefic
       def prompt
         @prompt ||= '>'
       end
-
-      def output
-        @output ||= {
-          scene: {
-            name: @scene_name,
-            type: @scene_type
-          },
-          messages: '',
-          prompt: prompt
-        }
-      end
     end
   end
 end

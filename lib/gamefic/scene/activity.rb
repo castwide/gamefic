@@ -5,10 +5,9 @@ module Gamefic
     # A scene that accepts player commands for actors to perform.
     #
     class Activity < Default
-      def finish? actor, props
+      def finish actor, props
         super
         actor.perform props.input
-        true
       end
     end
   end

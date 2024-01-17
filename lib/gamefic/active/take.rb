@@ -14,9 +14,6 @@ module Gamefic
       # @return [Scene::Default]
       attr_reader :scene
 
-      # @return [Props::Default]
-      attr_reader :props
-
       # @param actor [Active]
       # @param cue [Active::Cue]
       # @param props [Props::Default]
@@ -24,7 +21,12 @@ module Gamefic
         @actor = actor
         @cue = cue
         @scene = actor.epic.select_scene(cue.scene)
-        @props = props || @scene.new_props(**cue.context)
+        @props = props
+      end
+
+      # @return [Props::Default]
+      def props
+        @props ||= @scene.new_props(**cue.context)
       end
 
       # @return [Props::Default]
@@ -32,14 +34,20 @@ module Gamefic
         actor.output[:scene] = scene.to_hash
         scene.run_start_blocks actor, props
         scene.start actor, props
+        # @todo See if this can be handled better
+        actor.epic.rulebooks.each { |rlbk| rlbk.run_player_output_blocks actor, actor.output }
+        actor.output.merge!({
+                              messages: actor.messages,
+                              queue: actor.queue
+                            })
         props
       end
 
       # @return [void]
       def finish
         actor.flush
-        return unless scene.finish?(actor, props)
-
+        scene.finish(actor, props)
+        actor.output.replace(last_prompt: props.prompt, last_input: props.input)
         scene.run_finish_blocks actor, props
       end
 

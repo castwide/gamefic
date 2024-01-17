@@ -9,16 +9,16 @@ module Gamefic
       use_props_class Props::MultipleChoice
 
       def start actor, props
+        super
         actor.output[:options] = props.options
       end
 
-      def finish? actor, props
+      def finish actor, props
         super
-        return true if props.index
+        return if props.index
 
         actor.tell format(props.invalid_message, input: props.input)
         actor.recue
-        false
       end
     end
   end

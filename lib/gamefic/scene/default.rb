@@ -45,14 +45,15 @@ module Gamefic
       # @param props [Props::Default]
       # @return [void]
       def start actor, props
+        actor.output[:scene] = to_hash
+        actor.output[:prompt] = props.prompt
       end
 
       # @param actor [Gamefic::Actor]
       # @param props [Props::Default]
-      # @return [Boolean]
-      def finish? actor, props
+      # @return [void]
+      def finish actor, props
         props.input = actor.queue.shift
-        true
       end
 
       def run_start_blocks actor, props

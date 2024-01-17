@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scene::YesOrNo do
-  let(:yes_or_no) { Gamefic::Scene::YesOrNo.new(nil, nil) }
+  let(:yes_or_no) { Gamefic::Scene::YesOrNo.new(:yes_or_no, nil) }
 
   it 'initializes YesOrNo props' do
     expect(yes_or_no.new_props).to be_a(Gamefic::Props::YesOrNo)
@@ -13,8 +15,7 @@ describe Gamefic::Scene::YesOrNo do
     actor = Gamefic::Actor.new
     actor.queue.push 'yes'
     props = yes_or_no.new_props
-    response = yes_or_no.finish?(actor, props)
-    expect(response).to be(true)
+    yes_or_no.finish(actor, props)
     expect(actor.queue).to be_empty
     expect(props.input).to eq('yes')
     expect(props.selection).to eq('Yes')
@@ -27,8 +28,7 @@ describe Gamefic::Scene::YesOrNo do
     actor = Gamefic::Actor.new
     actor.queue.push 'no'
     props = yes_or_no.new_props
-    response = yes_or_no.finish?(actor, props)
-    expect(response).to be(true)
+    yes_or_no.finish(actor, props)
     expect(actor.queue).to be_empty
     expect(props.input).to eq('no')
     expect(props.selection).to eq('No')
@@ -41,8 +41,8 @@ describe Gamefic::Scene::YesOrNo do
     actor = Gamefic::Actor.new
     actor.queue.push 'maybe'
     props = yes_or_no.new_props
-    response = yes_or_no.finish?(actor, props)
-    expect(response).to be(false)
+    yes_or_no.finish(actor, props)
     expect(actor.queue).to be_empty
+    expect(actor.messages).to include('not a valid choice')
   end
 end

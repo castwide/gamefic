@@ -10,7 +10,7 @@ describe Gamefic::Scene::MultipleChoice do
     props.options.concat ['one', 'two', 'three']
     actor = Gamefic::Actor.new
     actor.queue.push 'one'
-    multiple_choice.finish? actor, props
+    multiple_choice.finish actor, props
     expect(actor.queue).to be_empty
     expect(props.input).to eq('one')
     expect(props.selection).to eq('one')
@@ -23,7 +23,7 @@ describe Gamefic::Scene::MultipleChoice do
     props.options.concat ['one', 'two', 'three']
     actor = Gamefic::Actor.new
     actor.queue.push 'four'
-    multiple_choice.finish? actor, props
+    multiple_choice.finish actor, props
     expect(actor.queue).to be_empty
     expect(actor.messages).to include('"four" is not a valid choice.')
   end
