@@ -17,7 +17,7 @@ describe Gamefic::Node do
     y.parent = x
     y.parent = nil
     expect(y.parent).not_to eq(x)
-    expect(x.children.include? y).to eq(false)  
+    expect(x.children.include?(y)).to eq(false)
   end
 
   it "flattens a tree of children" do
@@ -47,14 +47,14 @@ describe Gamefic::Node do
     y = Object.new
     y.extend Gamefic::Node
     x.parent = y
-    y.parent = x
-    expect(y.children.include? x).to eq(false)
-    expect(x.children.include? y).to eq(true)
+    expect {
+      y.parent = x
+    }.to raise_error(Gamefic::NodeError)
     z = Object.new
     z.extend Gamefic::Node
+    x.parent = y
+    y.parent = z
     expect {
-      x.parent = y
-      y.parent = z
       z.parent = x
     }.to raise_error Gamefic::NodeError
   end
