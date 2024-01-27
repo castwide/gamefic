@@ -1,4 +1,4 @@
-## 3.0.0
+## 3.0.0 - January 27, 2024
 - Instantiate subplots from snapshots
 - Split Action into Response and Action
 - Logging
