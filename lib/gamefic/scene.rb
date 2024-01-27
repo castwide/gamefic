@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 module Gamefic
+  # Narratives use scenes to process game turns. The start of a scene defines
+  # the output to be sent to the player. The finish processes player input.
+  #
   module Scene
-    autoload :Base, 'gamefic/scene/base'
-    autoload :Activity, 'gamefic/scene/activity'
-    autoload :Pause, 'gamefic/scene/pause'
-    autoload :Conclusion, 'gamefic/scene/conclusion'
-    autoload :MultipleChoice, 'gamefic/scene/multiple_choice'
-    autoload :MultipleScene, 'gamefic/scene/multiple_scene'
-    autoload :YesOrNo, 'gamefic/scene/yes_or_no'
+    require 'gamefic/scene/default'
+    require 'gamefic/scene/activity'
+    require 'gamefic/scene/multiple_choice'
+    require 'gamefic/scene/pause'
+    require 'gamefic/scene/yes_or_no'
+    require 'gamefic/scene/conclusion'
   end
 end

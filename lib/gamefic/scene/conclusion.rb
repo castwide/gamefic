@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module Gamefic
-  # A Conclusion ends the Plot (or the character's participation in it).
-  #
-  class Scene::Conclusion < Scene::Base
-    def type
-      @type ||= 'Conclusion'
+  module Scene
+    # A scene that ends an actor's participation in a narrative.
+    #
+    class Conclusion < Default
     end
   end
 end

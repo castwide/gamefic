@@ -1,19 +1,20 @@
-module Gamefic
-  # Add a variety of text properties for naming, describing, and referencing
-  # objects.
-  module Describable
-    include Keywords
+# frozen_string_literal: true
 
-    # Get the name of the object.
-    # The name is usually presented without articles (e.g., "object" instead
-    # of "an object" or "the object" unless the article is part of a proper
+module Gamefic
+  # A variety of text properties for naming, describing, and referencing
+  # objects.
+  #
+  module Describable
+    # The object's name.
+    # Names are usually presented without articles (e.g., "object" instead
+    # of "an object" or "the object") unless the article is part of a proper
     # name (e.g., "The Ohio State University").
     #
     # @return [String]
     attr_reader :name
 
-    # Alternate words that can be used to describe the object. Synonyms are
-    # used in conjunction with the object's name when generating keywords.
+    # Alternate words that can reference the object. Synonyms are used in
+    # conjunction with the object's name when scanning tokens.
     #
     # @return [String]
     attr_reader :synonyms
@@ -21,60 +22,40 @@ module Gamefic
     # The object's indefinite article (usually "a" or "an").
     #
     # @return [String]
-    attr_reader :indefinite_article
+    attr_accessor :indefinite_article
 
     # The object's definite article (usually "the").
     #
     # @return [String]
-    attr_reader :definite_article
+    attr_writer :definite_article
 
-    # Get a set of keywords associated with the object.
-    # Keywords are typically the words in the object's name plus its synonyms.
-    #
-    # @return [Array<String>]
     def keywords
-      @keywords ||= "#{definite_article} #{indefinite_article} #{name} #{synonyms}".downcase.split(Keywords::SPLIT_REGEXP).uniq
+      "#{name} #{synonyms}".keywords
     end
 
-    # Get the name of the object with an indefinite article.
+    # The name of the object with an indefinite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
     #
     # @return [String]
     def indefinitely
-      ((proper_named? or indefinite_article == '') ? '' : "#{indefinite_article} ") + name.to_s
+      (proper_named? || indefinite_article == '' ? '' : "#{indefinite_article} ") + name.to_s
     end
 
-    # Get the name of the object with a definite article.
+    # The name of the object with a definite article.
     # Note: proper-named objects never append an article, though an article
     # may be included in its proper name.
     #
     # @return [String]
     def definitely
-      ((proper_named? or definite_article == '') ? '' : "#{definite_article} ") + name.to_s
+      (proper_named? || definite_article == '' ? '' : "#{definite_article} ") + name.to_s
     end
 
-    # Get the definite article for this object (usually "the").
+    # Tefinite article for this object (usually "the").
     #
     # @return [String]
     def definite_article
       @definite_article || "the"
-    end
-
-    # Set the definite article.
-    #
-    # @param [String] article
-    def definite_article= article
-      @keywords = nil
-      @definite_article = article
-    end
-
-    # Set the indefinite article.
-    #
-    # @param [String] article
-    def indefinite_article= article
-      @keywords = nil
-      @indefinite_article = article
     end
 
     # Is the object proper-named?
@@ -84,18 +65,16 @@ module Gamefic
     #
     # @return [Boolean]
     def proper_named?
-      (@proper_named == true)
+      @proper_named == true
     end
 
     # Set whether the object has a proper name.
     #
     # @param bool [Boolean]
     def proper_named=(bool)
-      if bool == true
-        if @definite_article != nil
-          @name = "#{@definite_article} #{@name}"
-          @definite_article = nil
-        end
+      if bool && @definite_article
+        @name = "#{@definite_article} #{@name}".strip
+        @definite_article = nil
       end
       @proper_named = bool
     end
@@ -106,27 +85,26 @@ module Gamefic
     #
     # @param value [String]
     def name=(value)
-      @keywords = nil
-      words = value.split_words
-      if ['a','an'].include?(words[0].downcase)
+      words = value.split
+      if %w[a an].include?(words[0].downcase)
         @indefinite_article = words[0].downcase
         @definite_article = 'the'
-        value = value[words[0].length+1..-1].strip
+        value = value[words[0].length + 1..].strip
       else
         if words[0].downcase == 'the'
           if proper_named?
             @definite_article = nil
           else
             @definite_article = 'the'
-            value = value[4..-1].strip
+            value = value[4..].strip
           end
         end
         # Try to guess the indefinite article
-        if ['a','e','i','o','u'].include?(value[0,1].downcase)
-          @indefinite_article = 'an'
-        else
-          @indefinite_article = 'a'
-        end
+        @indefinite_article = if %w[a e i o u].include?(value[0, 1].downcase)
+                                'an'
+                              else
+                                'a'
+                              end
       end
       @name = value
     end
@@ -134,30 +112,26 @@ module Gamefic
     # Does the object have a description?
     #
     # @return [Boolean]
-    def has_description?
-      (@description.to_s != '')
+    def description?
+      @description.to_s != ''
     end
+    alias has_description? description?
 
     # Get the object's description.
     #
     # @return [String]
     def description
-      @description || (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
+      @description || format(Describable.default_description, name: definitely, Name: definitely.capitalize_first)
     end
 
     # Set the object's description.
     #
     # @param text [String]
     def description=(text)
-      if text != (Describable.default_description % { :name => self.definitely, :Name => self.definitely.capitalize_first })
-        @description = text
-      else
-        @description = nil
-      end
+      @description = (text if text != (format(Describable.default_description, name: definitely, Name: definitely.capitalize_first)))
     end
 
     def synonyms= text
-      @keywords = nil
       @synonyms = text
     end
 
@@ -175,12 +149,12 @@ module Gamefic
     #
     # @return [String]
     def self.default_description
-      @default_description || "There's nothing special about %{name}."
+      @default_description || "There's nothing special about %<name>s."
     end
 
-    # Get a String representation of the object. By default, this is the
-    # object's name with an indefinite article, e.g., "a person" or "a red
-    # dog."
+    # Get a String representation of the object. By default, this is either
+    # the object's name with an indefinite article, e.g., "a person" or "a red
+    # dog"; or its proper name, e.g., "Mr. Smith".
     #
     # @return [String]
     def to_s

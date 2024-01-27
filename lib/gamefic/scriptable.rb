@@ -1,94 +1,188 @@
+# frozen_string_literal: true
+
+require 'set'
+
 module Gamefic
-  # The Scriptable module provides a clean room (aka "theater") for scripts.
+  # A class module that enables scripting.
   #
-  # @!method stage(*args, &block)
-  #   Execute a block of code in a subset of the owner's scope.
+  # Narratives extend Scriptable to enable definition of scripts and seeds.
+  # Modules can also be extended with Scriptable to make them includable to
+  # other Scriptables.
   #
-  #   The provided code is evaluated inside a clean room object that has its
-  #   own instance variables and access to the owner's public methods. The proc
-  #   can accept the method call's arguments.
+  # @example Include a scriptable module in a plot
+  #   module MyScript
+  #     extend Gamefic::Scriptable
   #
-  #   @example Execute a block of code
-  #     stage {
-  #       puts 'Hello'
-  #     }
+  #     respond :myscript do |actor|
+  #       actor.tell "This command was added by MyScript"
+  #     end
+  #   end
   #
-  #   @example Execute a block of code with arguments
-  #     stage 'hello' { |message|
-  #       puts message # <- prints 'hello'
-  #     }
+  #   class MyPlot < Gamefic::Plot
+  #     include MyScript
+  #   end
   #
-  #   @example Use an instance variable
-  #     stage { @message = 'hello'" }
-  #     stage { puts @message } # <- prints 'hello'
-  #
-  #   @yieldpublic [Gamefic::Plot]
-  #   @return [Object] The value returned by the executed code
-  #
-  # @!method theater
-  #   The object that acts as an isolated namespace for staged code.
-  #   @return [Object]
-  #
-  # @!parse alias cleanroom theater
   module Scriptable
-    module ClassMethods
-      # An array of blocks that were added by the `script` class method.
-      #
-      # @return [Array<Proc>]
-      def blocks
-        @blocks ||= []
-      end
+    autoload :Actions,   'gamefic/scriptable/actions'
+    autoload :Entities,  'gamefic/scriptable/entities'
+    autoload :Events,    'gamefic/scriptable/events'
+    autoload :Queries,   'gamefic/scriptable/queries'
+    autoload :Proxy,     'gamefic/scriptable/proxy'
+    autoload :Scenes,    'gamefic/scriptable/scenes'
 
-      # Add a block to be executed by the instance's `stage` method.
-      #
-      # Note that `script` does not execute the block instantly, but stores
-      # it in the `blocks` array to be executed later.
-      #
-      # @yieldpublic [Gamefic::Plot]
-      def script &block
-        blocks.push block
-      end
+    include Proxy
+    include Queries
+    # @!parse
+    #   include Scriptable::Actions
+    #   include Scriptable::Events
+    #   include Scriptable::Scenes
+
+    # @return [Array<Block>]
+    def blocks
+      @blocks ||= []
     end
+    alias scripts blocks
 
-    def self.included klass
-      klass.extend ClassMethods
-    end
-
-    private
-
-    # Execute all the scripts that were added by the `script` class method.
+    # Add a block of code to be executed during initialization.
     #
-    def run_scripts
-      self.class.blocks.each { |blk| stage &blk }
+    # These blocks are primarily used to define actions, scenes, and hooks in
+    # the narrative's rulebook. Entities and game data should be initialized
+    # with `seed`.
+    #
+    # @example
+    #   class MyPlot < Gamefic::Plot
+    #     script do
+    #       introduction do |actor|
+    #         actor.tell 'Hello, world!'
+    #       end
+    #
+    #       respond :wait do |actor|
+    #         actor.tell 'Time passes.'
+    #       end
+    #     end
+    #   end
+    #
+    def script &block
+      blocks.push Block.new(:script, block)
     end
-  end
-end
 
-# @note #stage and #theater are implemented this way so the clean room object
-#   defines its classes and modules in the root namespace.
-Gamefic::Scriptable.module_exec do
-  define_method :stage do |*args, &block|
-    theater.instance_exec *args, &block
-  end
+    # Add a block of code to generate content after initialization.
+    #
+    # Seeds run after the initial scripts have been executed. Their primary
+    # use is to add entities and other data components, especially randomized
+    # or procedurally generated content that can vary between instances.
+    #
+    # @note Seeds do not get executed when a narrative is restored from a
+    #   snapshot.
+    #
+    # @example
+    #   class MyPlot < Gamefic::Plot
+    #     seed do
+    #       @thing = make Gamefic::Entity, name: 'a thing'
+    #     end
+    #   end
+    #
+    def seed &block
+      blocks.push Block.new(:seed, block)
+    end
 
-  define_method :theater do
-    @theater ||= begin
-      instance = self
-      theater ||= Object.new
-      theater.instance_exec do
-        if RUBY_ENGINE == 'opal' || RUBY_VERSION =~ /^2\.[456]\./
-          define_singleton_method :method_missing do |symbol, *args, &block|
-            instance.public_send :public_send, symbol, *args, &block
-          end
-        else
-          define_singleton_method :method_missing do |symbol, *args, **splat, &block|
-            instance.public_send :public_send, symbol, *args, **splat, &block
-          end
-        end
+    # @return [Array<Block>]
+    def included_blocks
+      included_modules.that_are(Scriptable)
+                      .uniq
+                      .reverse
+                      .flat_map(&:blocks)
+                      .concat(blocks)
+    end
+
+    # Seed an entity.
+    #
+    # @example
+    #   make_seed Gamefic::Entity, name: 'thing'
+    #
+    # @param klass [Class<Gamefic::Entity>]
+    def make_seed klass, **opts
+      @count ||= 0
+      seed { make(klass, **opts) }
+      @count.tap { @count += 1 }
+    end
+
+    # Seed an entity with an attribute method.
+    #
+    # @example
+    #   class Plot < Gamefic::Plot
+    #     attr_seed :thing, Gamefic::Entity, name: 'thing'
+    #   end
+    #
+    #   plot = Plot.new
+    #   plot.thing #=> #<Gamefic::Entity a thing>
+    #
+    # @param klass [Class<Gamefic::Entity>]
+    def attr_seed name, klass, **opts
+      @count ||= 0
+      seed do
+        instance_variable_set("@#{name}", make(klass, **opts))
+        self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
-      theater.extend Gamefic::Serialize
-      theater
+      @count.tap { @count += 1 }
+    end
+
+    if RUBY_ENGINE == 'opal'
+      # :nocov:
+      def method_missing method, *args, &block
+        return super unless respond_to_missing?(method)
+
+        script { send(method, *args, &block) }
+      end
+      # :nocov:
+    else
+      def method_missing method, *args, **kwargs, &block
+        return super unless respond_to_missing?(method)
+
+        script { send(method, *args, **kwargs, &block) }
+      end
+    end
+
+    def respond_to_missing?(method, _with_private = false)
+      [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
+                                                                   .include?(method)
+    end
+
+    # Create an anonymous module that includes the features of a Scriptable
+    # module but does not include its scripts.
+    #
+    # This can be useful when you need access to the Scriptable's constants and
+    # instance methods, but you don't want to duplicate its rules.
+    #
+    # @example
+    #   # Plot and Subplot will both include the `info` method, but
+    #   # only Plot will implement the `think` action.
+    #
+    #   module Shared
+    #     extend Gamefic::Scriptable
+    #
+    #     def info
+    #       "This method was added by the Shared module."
+    #     end
+    #
+    #     respond :think do |actor|
+    #       actor.tell 'You ponder your predicament.'
+    #     end
+    #   end
+    #
+    #   class Plot < Gamefic::Plot
+    #     include Shared
+    #   end
+    #
+    #   class Subplot < Gamefic::Subplot
+    #     include Shared.no_scripts
+    #   end
+    #
+    # @return [Module]
+    def no_scripts
+      Module.new.tap do |mod|
+        append_features(mod)
+      end
     end
   end
-  alias cleanroom theater
 end

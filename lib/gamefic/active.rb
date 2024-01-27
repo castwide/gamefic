@@ -1,137 +1,93 @@
 # frozen_string_literal: true
 
 require 'set'
+require 'gamefic/active/cue'
+require 'gamefic/active/epic'
+require 'gamefic/active/messaging'
+require 'gamefic/active/take'
 
 module Gamefic
-  class NotConclusionError < RuntimeError; end
-
   # The Active module gives entities the ability to perform actions and
   # participate in scenes. The Actor class, for example, is an Entity
   # subclass that includes this module.
   #
   module Active
-    # The scene in which the entity is currently participating.
-    #
-    # @return [Gamefic::Scene::Base]
-    attr_reader :scene
+    include Logging
+    include Messaging
 
-    # The scene class that will be cued for this entity on the next turn.
-    # Usually set with the #prepare method.
+    # The cue that will be used to create a scene at the beginning of the next
+    # turn.
     #
-    # @return [Class<Gamefic::Scene::Base>]
-    attr_reader :next_scene
+    # @return [Active::Cue, nil]
+    attr_reader :next_cue
 
-    attr_reader :next_options
-
-    # The prompt for the previous scene.
-    #
-    # @return [String]
-    attr_accessor :last_prompt
-
-    # The input for the previous scene.
-    #
-    # @return [String]
-    attr_accessor :last_input
-
-    # The playbooks that will be used to perform commands.
-    #
-    # @return [Array<Gamefic::World::Playbook>]
-    def playbooks
-      @playbooks ||= []
+    # @return [Symbol, nil]
+    def next_scene
+      next_cue&.scene
     end
 
-    def syntaxes
-      playbooks.flat_map(&:syntaxes)
+    # The rulebooks that will be used to perform commands. Every plot and
+    # subplot has its own rulebook.
+    #
+    # @return [Set<Gamefic::World::Rulebook>]
+    # def rulebooks
+    #   @rulebooks ||= Set.new
+    # end
+
+    # The narratives in which the entity is participating.
+    #
+    # @return [Epic]
+    def epic
+      @epic ||= Epic.new
     end
 
-    # An array of actions waiting to be performed.
+    # An array of commands waiting to be executed.
     #
     # @return [Array<String>]
     def queue
       @queue ||= []
     end
 
-    # A hash of values representing the state of a performing entity.
+    # A hash of data that will be sent to the user. The output is typically
+    # sent after a scene has started and before the user is prompted for input.
     #
-    # @return [Hash{Symbol => Object}]
-    def state
-      @state ||= {}
-    end
-
+    # @return [Hash]
     def output
       @output ||= {}
     end
 
-    # Send a message to the entity.
-    # This method will automatically wrap the message in HTML paragraphs.
-    # To send a message without paragraph formatting, use #stream instead.
-    #
-    # @param message [String]
-    def tell(message)
-      if buffer_stack > 0
-        append_buffer format(message)
-      else
-        super
-      end
-    end
-
-    # Send a message to the Character as raw text.
-    # Unlike #tell, this method will not wrap the message in HTML paragraphs.
-    #
-    # @param message [String]
-    def stream(message)
-      if buffer_stack > 0
-        append_buffer message
-      else
-        super
-      end
-    end
-
     # Perform a command.
     #
-    # The command's action will be executed immediately regardless of the
+    # The command's action will be executed immediately, regardless of the
     # entity's state.
     #
     # @example Send a command as a string
     #   character.perform "take the key"
     #
-    # @param command [String, Symbol]
-    # @return [Gamefic::Action]
-    def perform(*command)
-      if command.length > 1
-        STDERR.puts "[WARN] #{caller[0]}: Passing a verb and arguments to #perform is deprecated. Use #execute instead."
-        execute command.first, *command[1..-1]
-      else
-        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
-        proceed
-        dispatchers.pop
-      end
+    # @param command [String]
+    # @return [void]
+    def perform(command)
+      dispatchers.push Dispatcher.dispatch(self, command)
+      dispatchers.last.execute
+      dispatchers.pop
     end
 
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
-    # buffers the resulting output instead of sending it to the user.
+    # buffers the resulting output instead of sending it to messages.
     #
-    # @param command [String, Symbol]
+    # @param command [String]
     # @return [String] The output that resulted from performing the command.
-    def quietly(*command)
-      if command.length > 1
-        STDERR.puts "#{caller[0]}: Passing a verb and arguments to #quietly is deprecated. Use #execute instead"
-        execute command.first, *command[1..-1], quietly: true
-      else
-        dispatchers.push Dispatcher.dispatch(self, command.first.to_s)
-        result = proceed quietly: true
-        dispatchers.pop
-        result
-      end
+    def quietly(command)
+      messenger.buffer { perform command }
     end
 
     # Perform an action.
     # This is functionally identical to the `perform` method, except the
-    # action must be declared as a verb with a list of parameters. Use
+    # action must be declared as a verb with a list of arguments. Use
     # `perform` if you need to parse a string as a command.
     #
-    # The command will be executed immediately regardless of the entity's
+    # The command will be executed immediately, regardless of the entity's
     # state.
     #
     # @example
@@ -139,11 +95,10 @@ module Gamefic
     #
     # @param verb [Symbol]
     # @param params [Array]
-    # @params quietly [Boolean]
     # @return [Gamefic::Action]
-    def execute(verb, *params, quietly: false)
+    def execute(verb, *params)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
-      proceed quietly: quietly
+      dispatchers.last.execute
       dispatchers.pop
     end
 
@@ -170,138 +125,86 @@ module Gamefic
     #     end
     #   end
     #
-    # @param quietly [Boolean] If true, return the action's output instead of appending it to #messages
-    # @return [String, nil]
-    def proceed quietly: false
-      return if dispatchers.empty?
-      a = dispatchers.last.next
-      return if a.nil?
-      prepare_buffer quietly
-      a.execute
-      flush_buffer quietly
+    # @return [void]
+    def proceed
+      dispatchers.last&.proceed&.execute
     end
 
-    # Immediately start a new scene for the character.
-    # Use #prepare if you want to declare a scene to be started at the
-    # beginning of the next turn.
+    # Cue a scene to start in the next turn.
     #
-    # @param new_scene [Class<Scene::Base>]
-    # @param data [Hash] Additional scene data
-    def cue new_scene, **data
-      @next_scene = nil
-      if new_scene.nil?
-        @scene = nil
-      else
-        @scene = new_scene.new(self, **data)
-        @scene.start
-      end
+    # @raise [ArgumentError] if the scene is not valid
+    #
+    # @param scene [Symbol]
+    # @param context [Hash] Extra data to pass to the scene's props
+    # @return [Cue]
+    def cue scene, **context
+      return @next_cue if @next_cue&.scene == scene && @next_cue&.context == context
+
+      logger.debug "Overwriting existing cue `#{@next_cue.scene}` with `#{scene}`" if @next_cue
+
+      @next_cue = Cue.new(scene, **context)
+    end
+    alias prepare cue
+
+    def start_take
+      ensure_cue
+      @last_cue = @next_cue
+      cue :default_scene
+      @props = Take.start(self, @last_cue)
     end
 
-    # Prepare a scene to be started for this character at the beginning of the
-    # next turn. As opposed to #cue, a prepared scene will not start until the
-    # current scene finishes.
-    #
-    # @param new_scene [Class<Scene::Base>]
-    # @oaram data [Hash] Additional scene data
-    def prepare new_scene, **data
-      @next_scene = new_scene
-      @next_options = data
+    def finish_take
+      return unless @last_cue
+
+      Take.finish(self, @last_cue, @props)
     end
 
-    # Return true if the character is expected to be in the specified scene on
-    # the next turn.
+    # Restart the scene from the most recent cue.
     #
-    # @return [Boolean]
-    def will_cue? scene
-      (@scene.class == scene and @next_scene.nil?) || @next_scene == scene
+    # @return [Cue, nil]
+    def recue
+      logger.warn "No scene to recue" unless @last_cue
+
+      @next_cue = @last_cue
     end
 
-    # Cue a conclusion. This method works like #cue, except it will raise a
-    # NotConclusionError if the scene is not a Scene::Conclusion.
+    # Cue a conclusion. This method works like #cue, except it will raise an
+    # error if the scene is not a conclusion.
     #
-    # @param new_scene [Class<Scene::Base>]
-    # @oaram data [Hash] Additional scene data
-    def conclude new_scene, **data
-      raise NotConclusionError unless new_scene <= Scene::Conclusion
-      cue new_scene, **data
+    # @raise [ArgumentError] if the requested scene is not a conclusion
+    #
+    # @param new_scene [Symbol]
+    # @oaram context [Hash] Additional scene data
+    def conclude scene, **context
+      cue scene, **context
+      available = epic.select_scene(scene)
+      raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
+
+      @next_cue
     end
 
-    # True if the character is in a conclusion.
+    # True if the actor is ready to leave the game.
     #
-    # @return [Boolean]
-    def concluded?
-      !scene.nil? && scene.kind_of?(Scene::Conclusion)
+    def concluding?
+      epic.empty? || (@last_cue && epic.conclusion?(@last_cue.scene))
     end
 
     def accessible?
       false
     end
 
-    def inspect
-      to_s
-    end
-
-    # Track the entity's performance of a scene.
-    #
-    def entered scene
-      klass = (scene.is_a?(Gamefic::Scene::Base) ? scene.class : scene)
-      entered_scenes.add klass
-    end
-
-    # Determine whether the entity has performed the specified scene.
-    #
-    # @return [Boolean]
-    def entered? scene
-      klass = (scene.kind_of?(Gamefic::Scene::Base) ? scene.class : scene)
-      entered_scenes.include?(klass)
-    end
-
     private
 
-    def prepare_buffer quietly
-      if quietly
-        if buffer_stack == 0
-          @buffer = ""
-        end
-        set_buffer_stack(buffer_stack + 1)
-      end
-    end
-
-    def flush_buffer quietly
-      if quietly
-        set_buffer_stack(buffer_stack - 1)
-        @buffer
-      end
-    end
-
-    # @return [Set<Gamefic::Scene::Base>]
-    def entered_scenes
-      @entered_scenes ||= Set.new
-    end
-
-    def buffer_stack
-      @buffer_stack ||= 0
-    end
-
-    def set_buffer_stack num
-      @buffer_stack = num
-    end
-
-    # @return [String]
-    def buffer
-      @buffer ||= ''
-    end
-
-    def append_buffer str
-      @buffer += str
-    end
-
-    def clear_buffer
-      @buffer = ''
-    end
-
+    # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
+    end
+
+    def ensure_cue
+      return if next_cue
+
+      logger.debug "Using default scene for actor without cue"
+      cue :default_scene
     end
   end
 end

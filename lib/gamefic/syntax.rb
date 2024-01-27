@@ -1,72 +1,72 @@
-module Gamefic
-  class Syntax
-    attr_reader :token_count, :first_word, :verb, :template, :command
+# frozen_string_literal: true
 
+require 'gamefic/syntax/template'
+
+module Gamefic
+  # Syntaxes provide rules for matching input patterns to existing responses.
+  # Common uses are to provide synonyms for response verbs and allow for
+  # variations in sentence structure.
+  #
+  # The template and command patterns use words beginning with a colon (e.g.,
+  # `:thing`) to identify phrases that should be tokenized into arguments.
+  #
+  # @example All of these syntaxes will translate input into a command of the
+  #   form "look thing container"
+  #
+  #     Syntax.new('examine :thing in :container', 'look :thing :container')
+  #     Syntax.new('look at :thing inside :container', 'look :thing :container')
+  #     Syntax.new('search :container for :thing', 'look :thing :container')
+  #
+  class Syntax
+    # The pattern that matching input is expected to follow.
+    #
+    # @return [Template]
+    attr_reader :template
+
+    # The pattern that will be used to tokenize the input into a command.
+    #
+    # @return [String]
+    attr_reader :command
+
+    # The response verb to which the command will be translated.
+    #
+    # @example
+    #   syntax = Syntax.new('examine :thing', 'look :thing')
+    #   syntax.verb #=> :look
+    #
+    # @return [Symbol]
+    attr_reader :verb
+
+    # @param template [Template, String]
+    # @param command [String]
     def initialize template, command
-      words = template.split_words
-      @token_count = words.length
-      command_words = command.split_words
-      @verb = nil
-      if words[0][0] == ':'
-        @token_count -= 1
-        @first_word = ''
-      else
-        @first_word = words[0].to_s
-        @verb = command_words[0].to_sym
-      end
-      @command = command_words.join(' ')
-      @template = words.join(' ')
-      tokens = []
-      variable_tokens = []
-      last_token_is_reg = false
-      words.each { |w|
-        if w.match(/^:[a-z0-9_]+$/i)
-          variable_tokens.push w
-          if last_token_is_reg
-            next
-          else
-            tokens.push '([\w\W\s\S]*?)'
-            last_token_is_reg = true
-          end
-        else
-          tokens.push w
-          last_token_is_reg = false
-        end
-      }
-      subs = []
-      index = 0
-      command_words.each { |t|
-        if t[0] == ':'
-          index = variable_tokens.index(t) + 1
-          subs.push "{$#{index}}"
-        else
-          subs.push t
-        end
-      }
-      @replace = subs.join(' ')
-      @regexp = Regexp.new("^#{tokens.join(' ')}$", Regexp::IGNORECASE)
+      @template = Template.to_template(template)
+      @command = command.normalize
+      @verb = Syntax.literal_or_nil(@command.keywords[0])
+      @replace = parse_replace
+    end
+
+    # A symbol for the first word in the template. Used by rulebooks to
+    # classify groups of related syntaxes.
+    #
+    # @example
+    #   syntax = Syntax.new('examine :thing', 'look :thing')
+    #   syntax.synonym #=> :examine
+    #
+    # @return [Symbol]
+    def synonym
+      template.verb
     end
 
     # Convert a String into a Command.
     #
     # @param text [String]
-    # @return [Gamefic::Command]
+    # @return [Command, nil]
     def tokenize text
-      m = text.match(@regexp)
-      return nil if m.nil?
-      arguments = []
-      b = @verb.nil? ? 0 : 1
-      xverb = @verb
-      @replace.to_s.split_words[b..-1].each { |r|
-        if r.match(/^\{\$[0-9]+\}$/)
-          arguments.push m[r[2..-2].to_i]
-        elsif arguments.empty? && xverb.nil?
-          xverb = r.to_sym
-        else
-          arguments.push r
-        end
-      }
-      Command.new xverb, arguments
+      match = text&.match(template.regexp)
+      return nil unless match
+
+      Command.new(verb, match_to_args(match))
     end
 
     # Determine if the specified text matches the syntax's expected pattern.
@@ -74,47 +74,66 @@ module Gamefic
     # @param text [String]
     # @return [Boolean]
     def accept? text
-      !text.match(@regexp).nil?
+      !!text.match(template.regexp)
     end
 
     # Get a signature that identifies the form of the Syntax.
     # Signatures are used to compare Syntaxes to each other.
     #
     def signature
-      [@regexp, @replace]
+      [template.regexp, replace]
     end
 
     def ==(other)
-      return false unless other.is_a?(Syntax)
-      signature == other.signature
+      signature == other&.signature
     end
 
-    def eql?(other)
-      self == other
-    end
-
-    def hash
-      signature.hash
-    end
-
-    # Tokenize an Array of Commands from the specified text. The resulting
-    # array is in descending order of specificity, i.e., most to least matched
+    # Tokenize an array of commands from the specified text. The resulting
+    # array is in descending order of precision, i.e., most to least matched
     # tokens.
     #
     # @param text [String] The text to tokenize.
-    # @param syntaxes [Array<Gamefic::Syntax>] The Syntaxes to use.
-    # @return [Array<Gamefic::Command>] The tokenized commands.
+    # @param syntaxes [Array<Syntax>] The syntaxes to use.
+    # @return [Array<Command>] The tokenized commands.
     def self.tokenize text, syntaxes
       syntaxes
         .map { |syn| syn.tokenize(text) }
-        .reject(&:nil?)
-        .sort do |a, b|
-          if a.arguments.length == b.arguments.length
-            b.verb.to_s <=> a.verb.to_s
-          else
-            b.arguments.length <=> a.arguments.length
-          end
-        end
+        .compact
+        .sort { |syn, other_syn| syn.compare other_syn }
+    end
+
+    # Compare two syntaxes for the purpose of ordering them in rulebooks.
+    #
+    def compare other
+      template.compare other.template
+    end
+
+    # @param string [String]
+    # @return [String, nil]
+    def self.literal_or_nil string
+      string.start_with?(':') ? nil : string.to_sym
+    end
+
+    private
+
+    # @return [String]
+    attr_reader :replace
+
+    def parse_replace
+      command.keywords.map do |word|
+        next word unless word.start_with?(':')
+
+        index = template.params.index(word) ||
+                raise(ArgumentError, "syntax command references undefined parameter `#{word}`")
+        "{$#{index + 1}}"
+      end.join(' ')
+    end
+
+    def match_to_args match
+      start = replace.start_with?('{') ? 0 : 1
+      replace.keywords[start..].map do |str|
+        str.match?(/^\{\$[0-9]+\}$/) ? match[str[2..-2].to_i] : str
+      end
     end
   end
 end

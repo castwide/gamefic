@@ -1,21 +1,13 @@
+# frozen_string_literal: true
+
 module Gamefic
-  # Active Scenes handle the default command prompt, where input is parsed
-  # into an Action performed by the Character. This is the default scene in
-  # a Plot.
-  #
-  class Scene::Activity < Scene::Base
-    def post_initialize
-      self.type = 'Activity'
-    end
-
-    def finish
-      super
-      actor.perform input.strip unless input.to_s.strip.empty?
-    end
-
-    class << self
-      def type
-        'Activity'
+  module Scene
+    # A scene that accepts player commands for actors to perform.
+    #
+    class Activity < Default
+      def finish actor, props
+        super
+        actor.perform props.input
       end
     end
   end

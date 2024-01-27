@@ -1,58 +1,45 @@
-# Exception raised when setting a node's parent would cause
-# a circular reference, e.g., A -> A or A -> B -> A
-class CircularNodeReferenceError < RuntimeError; end
+# frozen_string_literal: true
+
+require 'set'
 
 module Gamefic
+  # Exception raised when setting a node's parent to an invalid object.
+  #
+  class NodeError < RuntimeError; end
+
+  # Parent/child relationships for objects.
+  #
   module Node
+    # The object's parent.
+    #
+    # @return [Node, nil]
+    attr_reader :parent
+
     # An array of the object's children.
     #
-    # @return [Array]
+    # @return [Array<Node>]
     def children
-      @children ||= []
-      @children.clone
+      child_set.to_a.freeze
     end
 
     # Get a flat array of all descendants.
     #
-    # @return [Array]
+    # @return [Array<Node>]
     def flatten
-      array = Array.new
-      children.each { |child|
-        array = array + recurse_flatten(child)
-      }
-      array
-    end
-
-    # The object's parent.
-    #
-    # @return [Object]
-    def parent
-      @parent
+      children.flat_map { |child| [child] + child.flatten }
     end
 
     # Set the object's parent.
     #
+    # @param node [Node, nil]
     def parent=(node)
-      return if node == @parent 
-      if node == self
-        raise CircularNodeReferenceError.new("Node cannot be its own parent")
-      end
-      # Do not permit circular references
-      if node != nil and node.parent == self
-        node.parent = nil
-      end
-      if node != nil and flatten.include?(node)
-        raise CircularNodeReferenceError.new("Node cannot be a child of a descendant")
-      end
-      if @parent != node
-        if @parent != nil
-          @parent.send(:rem_child, self)
-        end
-        @parent = node
-        if @parent != nil
-          @parent.send(:add_child, self)
-        end
-      end
+      return if node == parent
+
+      validate_parent node
+
+      parent&.rem_child self
+      @parent = node
+      parent&.add_child self
     end
 
     # Determine if external objects can interact with this object's children.
@@ -64,31 +51,35 @@ module Gamefic
       true
     end
 
+    # True if this node is the other's parent.
+    #
+    # @param other [Node]
+    def has?(other)
+      other.parent == self
+    end
+
     protected
 
     def add_child(node)
-      children
-      @children.push(node)
+      child_set.add node
     end
 
     def rem_child(node)
-      children
-      @children.delete(node)
-    end
-
-    def concat_children(children)
-      children.concat(children)
+      child_set.delete node
     end
 
     private
 
-    def recurse_flatten(node)
-      array = Array.new
-      array.push(node)
-      node.children.each { |child|
-        array = array + recurse_flatten(child)
-      }
-      return array
+    def child_set
+      @child_set ||= Set.new
+    end
+
+    def validate_parent(node)
+      raise NodeError, 'Parent must be a Node' unless node.is_a?(Node) || node.nil?
+
+      raise NodeError, "Node cannot be its own parent" if node == self
+
+      raise NodeError, 'Node cannot be a child of a descendant' if flatten.include?(node)
     end
   end
 end

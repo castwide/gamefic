@@ -1,15 +1,7 @@
-module Gamefic
-  module Query
-    autoload :Base, 'gamefic/query/base'
-    autoload :Children, 'gamefic/query/children'
-    autoload :Descendants, 'gamefic/query/descendants'
-    autoload :External, 'gamefic/query/external'
-    autoload :Family, 'gamefic/query/family'
-    autoload :Tree, 'gamefic/query/tree'
-    autoload :Itself, 'gamefic/query/itself'
-    autoload :Matches, 'gamefic/query/matches'
-    autoload :Parent, 'gamefic/query/parent'
-    autoload :Siblings, 'gamefic/query/siblings'
-    autoload :Text, 'gamefic/query/text'
-  end
-end
+# frozen_string_literal: true
+
+require 'gamefic/query/base'
+require 'gamefic/query/general'
+require 'gamefic/query/scoped'
+require 'gamefic/query/text'
+require 'gamefic/query/result'

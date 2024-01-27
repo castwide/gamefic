@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description   = "An adventure game and interactive fiction framework"
   s.authors       = ["Fred Snyder"]
   s.email         = 'fsnyder@gamefic.com'
-  s.homepage      = 'http://gamefic.com'
+  s.homepage      = 'https://gamefic.com'
   s.license       = 'MIT'
 
   s.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
@@ -19,8 +19,11 @@ Gem::Specification.new do |s|
   end
   s.require_paths = ['lib']
 
-  s.required_ruby_version = '>= 2.3.0'
+  s.required_ruby_version = '>= 2.7.0'
 
+  s.add_development_dependency 'opal', '~> 1.7'
+  s.add_development_dependency 'opal-rspec', '~> 1.0'
+  s.add_development_dependency 'opal-sprockets', '~> 1.0'
   s.add_development_dependency 'rake', '~> 12.3', '>= 12.3'
   s.add_development_dependency 'rspec', '~> 3.5', '>= 3.5.0'
   s.add_development_dependency 'simplecov', '~> 0.14'

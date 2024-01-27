@@ -1,106 +1,78 @@
+# frozen_string_literal: true
+
 require 'gamefic/plot'
 
 module Gamefic
   # Subplots are disposable plots that run inside a parent plot. They can be
-  # started and concluded at any time during the parent plot's execution.
+  # started and concluded at any time during the parent plot's runtime.
   #
-  class Subplot
-    include World
-    include Scriptable
-    include Gamefic::Serialize
-    # @!parse extend Scriptable::ClassMethods
+  class Subplot < Narrative
+    # @return [Hash]
+    attr_reader :config
 
-    # @return [Gamefic::Plot]
+    # @return [Plot]
     attr_reader :plot
 
     # @param plot [Gamefic::Plot]
-    # @param introduce [Gamefic::Actor, nil]
-    # @param next_cue [Class<Gamefic::Scene::Base>, nil]
-    # @param more [Hash]
-    def initialize plot, introduce: nil, next_cue: nil, **more
+    # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
+    # @param config [Hash]
+    def initialize plot, introduce: [], **config
       @plot = plot
-      @next_cue = next_cue
-      @concluded = false
-      @more = more
-      configure **more
-      run_scripts
-      playbook.freeze
-      self.introduce introduce unless introduce.nil?
-      @static = [self] + scene_classes + entities
-    end
-
-    def static
-      plot.static
-    end
-
-    def players
-      @players ||= []
-    end
-
-    def subplot
-      self
-    end
-
-    def default_scene
-      plot.default_scene
-    end
-
-    def default_conclusion
-      plot.default_conclusion
-    end
-
-    def playbook
-      @playbook ||= Gamefic::Plot::Playbook.new
-    end
-
-    def cast cls, args = {}, &block
-      ent = super
-      ent.playbooks.push plot.playbook unless ent.playbooks.include?(plot.playbook)
-      ent
-    end
-
-    def exeunt player
-      player_conclude_procs.each { |block| block.call player }
-      player.playbooks.delete playbook
-      player.cue (@next_cue || default_scene)
-      players.delete player
-    end
-
-    def conclude
-      @concluded = true
-      # Players needed to exit first in case any player_conclude procs need to
-      # interact with the subplot's entities.
-      players.each { |p| exeunt p }
-      # @todo I'm not sure why rejecting nils is necessary here. It's only an
-      #   issue in Opal.
-      entities.reject(&:nil?).each { |e| destroy e }
-      # plot.static.remove(scene_classes + entities)
-    end
-
-    def concluded?
-      @concluded
+      @config = config
+      configure
+      @config.freeze
+      super()
+      [introduce].flatten.each { |pl| self.introduce pl }
     end
 
     def ready
-      # @todo We might not want to conclude subplots without players. There
-      #   might be cases where a subplot gets created with the intention of
-      #   introducing players in a later turn.
-      conclude if players.empty?
-      return if concluded?
-      playbook.freeze
-      call_ready
-      call_player_ready
+      super
+      conclude if concluding?
     end
 
-    def update
-      call_player_update
-      call_update
+    def conclude
+      rulebook.run_conclude_blocks
+      players.each do |plyr|
+        rulebook.run_player_conclude_blocks plyr
+        uncast plyr
+      end
+      entities.each { |ent| destroy ent }
+    end
+
+    # Make an entity that persists in the subplot's parent plot.
+    #
+    # @see Plot#make
+    #
+    def persist klass, **args
+      plot.make klass, *args
+    end
+
+    # Start a new subplot based on the provided class.
+    #
+    # @note A subplot's host is always the base plot, regardless of whether
+    #   it was branched from another subplot.
+    #
+    # @param subplot_class [Class<Gamefic::Subplot>] The Subplot class
+    # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil] Players to introduce
+    # @param config [Hash] Subplot configuration
+    # @return [Gamefic::Subplot]
+    def branch subplot_class = Gamefic::Subplot, introduce: [], **config
+      plot.branch subplot_class, introduce: introduce, **config
     end
 
     # Subclasses can override this method to handle additional configuration
     # options.
     #
-    def configure **more
+    def configure; end
+
+    def inspect
+      "#<#{self.class}>"
+    end
+
+    def hydrate
+      @rulebook = Rulebook.new(self)
+      @rulebook.script
+      @rulebook.freeze
     end
   end
 end

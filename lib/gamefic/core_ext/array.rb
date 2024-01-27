@@ -14,7 +14,7 @@ class Array
   #
   # @return [Array]
   def that_are(*cls)
-    result = clone
+    result = dup
     cls.each do |c|
       _keep result, c, true
     end
@@ -26,7 +26,7 @@ class Array
   #
   # @return [Array]
   def that_are_not(*cls)
-    result = clone
+    result = dup
     cls.each do |c|
       _keep result, c, false
     end
@@ -72,8 +72,8 @@ class Array
     case cls
     when Class, Module
       arr.keep_if { |i| i.is_a?(cls) == bool }
-    when Symbol
-      arr.keep_if { |i| i.send(cls) == bool }
+    when Proc
+      arr.keep_if { |i| !!cls.call(i) == bool }
     else
       arr.keep_if { |i| (i == cls) == bool }
     end

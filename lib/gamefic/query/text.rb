@@ -1,46 +1,45 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Query
-    class Text < Base
-      def initialize *arguments
-        arguments.each do |a|
-          if (a.kind_of?(Symbol) || a.kind_of?(String)) && !a.to_s.end_with?('?')
-            raise ArgumentError.new("Text query arguments can only be boolean method names (:method?) or regular expressions")
-          end
-        end
-        super
+    # A special query that handles text instead of entities.
+    #
+    class Text
+      # @param argument [String, Regexp, nil]
+      def initialize argument = nil
+        @argument = argument
+        validate
       end
 
-      def resolve _subject, token, continued: false
-        return Matches.new([], '', token) unless accept?(token)
-        parts = token.split(Keywords::SPLIT_REGEXP)
-        cursor = []
-        matches = []
-        i = 0
-        parts.each { |w|
-          cursor.push w
-          matches = cursor if accept?(cursor.join(' '))
-          i += 1
-        }
-        if continued
-          Matches.new([matches.join(' ')], matches.join(' '), parts[i..-1].join(' '))
-        elsif matches.length == parts.length
-          Matches.new([matches.join(' ')], matches.join(' '), '')
+      def query _subject, token
+        if match? token
+          Result.new(token, '')
         else
-          Matches.new([], '', parts.join(' '))
+          Result.new(nil, token)
         end
-      end
-
-      def include? _subject, token
-        accept?(token)
-      end
-
-      def accept? entity
-        return false unless entity.kind_of?(String) and !entity.empty?
-        super
       end
 
       def precision
         0
+      end
+
+      private
+
+      def match? token
+        return true if @argument.nil?
+
+        case @argument
+        when Regexp
+          token =~ @argument
+        else
+          token == @argument
+        end
+      end
+
+      def validate
+        return if @argument.nil? || @argument.is_a?(String) || @argument.is_a?(Regexp)
+
+        raise ArgumentError, 'Invalid text query argument'
       end
     end
   end

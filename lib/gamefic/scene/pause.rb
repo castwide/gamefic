@@ -1,17 +1,13 @@
-module Gamefic
-  # Pause for user input.
-  #
-  class Scene::Pause < Scene::Base
-    def post_initialize
-      self.type = 'Pause'
-      self.prompt = 'Press enter to continue...'
-    end
+# frozen_string_literal: true
 
-    class << self
-      def tracked?
-        @tracked = true if @tracked.nil?
-        @tracked
-      end
+module Gamefic
+  module Scene
+    # Pause a scene. This rig simply runs on_start and waits for user input
+    # before proceeding to on_finish. The user input itself is ignored by
+    # default.
+    #
+    class Pause < Default
+      use_props_class Props::Pause
     end
   end
 end

@@ -1,114 +1,81 @@
-require 'gamefic/query'
+# frozen_string_literal: true
 
 module Gamefic
-  # A plot controls the game narrative and manages the world model.
-  # Authors typically build plots through scripts that are executed in a
-  # special container called a stage. All of the elements that compose the
-  # narrative (characters, locations, scenes, etc.) reside in the stage's
-  # scope. Game engines use the plot to receive game data and process user
-  # input.
+  # The plot is the central narrative. It provides a script interface with
+  # methods for creating entities, actions, scenes, and hooks.
   #
-  class Plot
-    autoload :Snapshot,  'gamefic/plot/snapshot'
-    autoload :Darkroom,  'gamefic/plot/darkroom'
-    autoload :Host,      'gamefic/plot/host'
-
-    # @return [Hash]
-    attr_reader :metadata
-
-    attr_reader :static
-
-    include World
-    include Scriptable
-    # @!parse extend Scriptable::ClassMethods
-    include Snapshot
-    include Host
-    include Serialize
-
-    exclude_from_serial [:@static]
-
-    # @param metadata [Hash]
-    def initialize metadata: {}
-      @metadata = metadata
-      run_scripts
-      @static = [self] + scene_classes + entities
-    end
-
-    def plot
-      self
-    end
-
-    # Get an Array of the Plot's current Syntaxes.
-    #
-    # @return [Array<Syntax>]
-    def syntaxes
-      playbook.syntaxes
-    end
-
-    # Prepare the Plot for the next turn of gameplay.
-    # This method is typically called by the Engine that manages game
-    # execution.
-    #
+  class Plot < Narrative
     def ready
-      playbook.freeze
-      call_ready
-      call_player_ready
-      subplots.each { |s| s.ready }
-      players.each do |p|
-        p.state.replace(
-          p.scene.state
-          .merge({
-            messages: p.messages,
-            last_prompt: p.last_prompt,
-            last_input: p.last_input,
-            queue: p.queue
-          })
-          .merge(p.state)
-        )
-        p.output.replace(p.state)
-        p.state.clear
-      end
+      super
+      subplots.each(&:ready)
+      players.each(&:start_take)
+      subplots.delete_if(&:concluding?)
+      players.select(&:concluding?).each { |plyr| rulebook.run_player_conclude_blocks plyr }
     end
 
-    # Update the Plot's current turn of gameplay.
-    # This method is typically called by the Engine that manages game
-    # execution.
-    #
     def update
-      entities.each { |e| e.flush }
-      call_before_player_update
-      players.each do |p|
-        next unless p.scene
-        p.last_input = p.queue.last
-        p.last_prompt = p.scene.prompt
-        p.scene.update
-        if p.scene.is_a?(Scene::Conclusion)
-          player_conclude_procs.each do |proc|
-            proc.call p
-          end
-        end
-      end
-      call_player_update
-      call_update
-      subplots.delete_if(&:concluded?)
+      players.each(&:finish_take)
+      super
       subplots.each(&:update)
     end
 
-    # Send a message to a group of entities.
+    # Remove an actor from the game.
     #
-    # @param entities [Array<Entity>]
-    # @param message [String]
-    def tell entities, message
-      entities.each { |entity|
-        entity.tell message
-      }
+    # Calling `uncast` on the plot will also remove the actor from its
+    # subplots.
+    #
+    # @param actor [Actor]
+    # @return [Actor]
+    def uncast actor
+      subplots.each { |sp| sp.uncast actor }
+      super
     end
-  end
-end
 
-module Gamefic
-  # @yieldself [Gamefic::Plot]
-  def self.script &block
-    Gamefic::Plot.script &block
+    # Get an array of all the current subplots.
+    #
+    # @return [Array<Subplot>]
+    def subplots
+      @subplots ||= []
+    end
+
+    # Start a new subplot based on the provided class.
+    #
+    # @param subplot_class [Class<Gamefic::Subplot>] The Subplot class
+    # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>] Players to introduce
+    # @param config [Hash] Subplot configuration
+    # @return [Gamefic::Subplot]
+    def branch subplot_class = Gamefic::Subplot, introduce: [], **config
+      subplot_class.new(self, introduce: introduce, **config)
+                   .tap { |sub| subplots.push sub }
+    end
+
+    def save
+      Snapshot.save self
+    end
+
+    def inspect
+      "#<#{self.class}>"
+    end
+
+    def detach
+      cache = [@rulebook]
+      @rulebook = nil
+      cache.concat subplots.map(&:detach)
+      cache
+    end
+
+    def attach(cache)
+      super(cache.shift)
+      subplots.each { |subplot| subplot.attach cache.shift }
+    end
+
+    def hydrate
+      super
+      subplots.each(&:hydrate)
+    end
+
+    def self.restore data
+      Snapshot.restore data
+    end
   end
 end

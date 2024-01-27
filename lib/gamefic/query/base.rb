@@ -1,160 +1,79 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Query
+    # A base class for entity-based queries that can be applied to responses.
+    # Each query represents an attempt to match an argument in a command to a
+    # game entity.
+    #
     class Base
-      NEST_REGEXP = / in | on | of | from | inside | from inside /
-
+      # @return [Array<Object>]
       attr_reader :arguments
 
-      def initialize *args
-        @arguments = args
-      end
-
-      # Determine whether the query allows ambiguous entity references.
-      # If false, actions that use this query will only be valid if the token
-      # passed into it resolves to a single entity. If true, actions will
-      # accept an array of matching entities instead.
-      # Queries are not ambiguous by default (ambiguous? == false).
-      #
       # @return [Boolean]
-      def ambiguous?
-        false
+      attr_reader :ambiguous
+
+      # @raise [ArgumentError] if any of the arguments are nil
+      #
+      # @param arguments [Array<Object>]
+      # @param ambiguous [Boolean]
+      def initialize *arguments, ambiguous: false
+        raise ArgumentError, "nil argument in query" if arguments.any?(&:nil?)
+
+        @arguments = arguments
+        @ambiguous = ambiguous
       end
 
-      # Subclasses should override this method with the logic required to collect
-      # all entities that exist in the query's context.
-      #
-      # @return [Array<Object>]
-      def context_from(subject)
-        []
-      end
-
-      # Get a collection of objects that exist in the subject's context and
-      # match the provided token. The result is provided as a Matches object.
-      #
-      # @param subject [Entity]
+      # @param subject [Gamefic::Entity]
       # @param token [String]
-      # @param continued [Boolean]
-      # @return [Gamefic::Query::Matches]
-      def resolve(subject, token, continued: false)
-        available = context_from(subject)
-        return Matches.new([], '', token) if available.empty?
-        if continued
-          return Matches.execute(available, token, continued: continued)
-        elsif nested?(token)
-          drill = denest(available, token).select { |e| accept?(e) }
-          return Matches.new(drill, token, '') unless drill.length != 1
-          return Matches.new([], '', token)
-        end
-        result = available.select { |e| e.specified?(token) }
-        result = available.select { |e| e.specified?(token, fuzzy: true) } if result.empty?
-        result.keep_if { |e| accept? e }
-        Matches.new(result, (result.empty? ? '' : token), (result.empty? ? token : ''))
+      # @return [Result]
+      def query(subject, token)
+        raise "#query not implemented for #{self.class}"
       end
 
-      def include?(subject, object)
-        return false unless accept?(object)
-        result = context_from(subject)
-        result.include?(object)
-      end
-
-      # A ranking of how precise the query's arguments are.
-      #
-      # Query precision is a factor in calculating Action#rank.
-      #
       # @return [Integer]
       def precision
-        if @precision.nil?
-          @precision = 1
-          arguments.each { |a|
-            if a.is_a?(Class)
-              @precision += 100
-            elsif a.is_a?(Gamefic::Entity)
-              @precision += 1000
-            end
-          }
-          @precision
-        end
-        @precision
-      end
-      alias rank precision
-
-      def signature
-        "#{self.class.to_s.split('::').last.downcase}(#{simplify_arguments.join(', ')})"
+        @precision ||= calculate_precision
       end
 
-      # Determine whether the specified entity passes the query's arguments.
-      #
-      # @param [Entity]
-      # @return [Boolean]
-      def accept?(entity)
-        result = true
-        arguments.each do |a|
-          result = if a.is_a?(Symbol)
-            (entity.send(a) != false)
-          elsif a.is_a?(Regexp)
-            !entity.to_s.match(a).nil?
-          elsif a.is_a?(Module) || a.is_a?(Class)
-            entity.is_a?(a)
-          else
-            (entity == a)
-          end
-          break if result == false
-        end
-        result
-      end
-
-      protected
-
-      # Return an array of the entity's children. If the child is accessible,
-      # recursively append its children.
-      # The result will NOT include the original entity itself.
-      #
-      # @param [Entity]
-      # @return [Array<Object>]
-      def subquery_accessible entity
-        return [] if entity.nil?
-        result = []
-        if entity.accessible?
-          entity.children.each do |c|
-            result.push c
-            result.concat subquery_accessible(c)
-          end
-        end
-        result
+      def ambiguous?
+        @ambiguous
       end
 
       private
 
-      def simplify_arguments
-        arguments.map do |a|
-          if a.is_a?(Class) || a.is_a?(Object)
-            a.to_s.split('::').last.downcase
+      def calculate_precision
+        @arguments.sum(@ambiguous ? -1000 : 0) do |arg|
+          case arg
+          when Entity, Scriptable::Proxy::Agent
+            1000
+          when Class, Module
+            class_depth(arg) * 100
           else
-            a.to_s.downcase
+            1
           end
         end
       end
 
-      def nested?(token)
-        !token.match(NEST_REGEXP).nil?
+      def class_depth klass
+        return 1 unless klass.is_a?(Class)
+
+        depth = 1
+        sup = klass
+        depth += 1 while (sup = sup.superclass)
+        depth
       end
 
-      def denest(objects, token)
-        parts = token.split(NEST_REGEXP)
-        current = parts.pop
-        last_result = objects.select { |e| e.specified?(current) }
-        last_result = objects.select { |e| e.specified?(current, fuzzy: true) } if last_result.empty?
-        until parts.empty?
-          current = "#{parts.last} #{current}"
-          result = last_result.select { |e| e.specified?(current) }
-          result = last_result.select { |e| e.specified?(current, fuzzy: true) } if result.empty?
-          break if result.empty?
-          parts.pop
-          last_result = result
-        end
-        return [] if last_result.empty? or last_result.length > 1
-        return last_result if parts.empty?
-        denest(last_result[0].children, parts.join(' '))
+      def ambiguous_result scan
+        return Result.new(nil, scan.token) if scan.matched.empty?
+
+        Result.new(scan.matched, scan.remainder)
+      end
+
+      def unambiguous_result scan
+        return Result.new(nil, scan.token) unless scan.matched.one?
+
+        Result.new(scan.matched.first, scan.remainder)
       end
     end
   end

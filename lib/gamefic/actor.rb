@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # An entity that is capable of performing actions and participating in
   # scenes.
