@@ -12,6 +12,7 @@ module Gamefic
       @commands = commands
       @responses = responses
       @executed = false
+      @match = Matcher.match(actor, commands, responses)
     end
 
     # Run the dispatcher.
@@ -19,10 +20,10 @@ module Gamefic
     def execute
       return if @executed
 
+      @executed = true
       action = proceed
       return unless action
 
-      @executed = action.arguments
       run_before_action_hooks action
       return if action.cancelled?
 
@@ -37,7 +38,7 @@ module Gamefic
       while (response = responses.shift)
         commands.each do |cmd|
           action = response.attempt(actor, cmd)
-          next unless action && arguments_match?(action.arguments)
+          next unless action && arguments_match?(action)
 
           return action
         end
@@ -87,11 +88,8 @@ module Gamefic
 
     private
 
-    # After the first action gets selected, subsequent actions need to use the
-    # same arguments.
-    #
-    def arguments_match? arguments
-      !@executed || arguments == @executed
+    def arguments_match? action
+      action.arguments == @match || action.arguments.all? { |arg| arg.is_a?(String) }
     end
 
     def run_before_action_hooks action

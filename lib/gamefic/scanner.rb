@@ -43,11 +43,11 @@ module Gamefic
     # @param token [String]
     # @return [Result]
     def self.scan objects, token
-      # @note Theoretically, scanned objects only have to implement two
-      #   methods:
-      #     *  #keywords => [Array<String>]
-      #     *  #children => [Array<#keywords, #children>]
+      strict_result = strict(objects, token)
+      strict_result.matched.empty? ? fuzzy(objects, token) : strict_result
+    end
 
+    def self.strict objects, token
       words = token.keywords
       available = objects.clone
       filtered = []
@@ -56,7 +56,24 @@ module Gamefic
       else
         words.each_with_index do |word, idx|
           tested = select_strict(available, word)
-          tested = select_fuzzy(available, word) if tested.empty?
+          return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?
+
+          filtered = tested
+          available = filtered
+        end
+        Result.new(objects, token, filtered, '')
+      end
+    end
+
+    def self.fuzzy objects, token
+      words = token.keywords
+      available = objects.clone
+      filtered = []
+      if nested?(token) && objects.all?(&:children)
+        denest(objects, token)
+      else
+        words.each_with_index do |word, idx|
+          tested = select_fuzzy(available, word)
           return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?
 
           filtered = tested

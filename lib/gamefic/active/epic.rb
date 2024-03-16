@@ -52,6 +52,10 @@ module Gamefic
         select_scene(name).conclusion?
       end
 
+      def syntaxes
+        rulebooks.flat_map(&:syntaxes)
+      end
+
       # @param name [Symbol]
       # @return [Scene]
       def select_scene name

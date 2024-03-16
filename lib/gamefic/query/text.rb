@@ -11,6 +11,10 @@ module Gamefic
         validate
       end
 
+      def select(_subject)
+        [@argument]
+      end
+
       def query _subject, token
         if match? token
           Result.new(token, '')

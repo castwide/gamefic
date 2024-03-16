@@ -16,6 +16,11 @@ module Gamefic
         @scope = scope
       end
 
+      def select(subject)
+        @scope.matches(subject)
+              .that_are(*@arguments)
+      end
+
       # @return [Result]
       def query(subject, token)
         available = @scope.matches(subject)

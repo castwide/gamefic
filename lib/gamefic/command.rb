@@ -11,6 +11,7 @@ module Gamefic
 
     # @return [Array<String>]
     attr_reader :arguments
+    alias tokens arguments
 
     def initialize verb, arguments
       @verb = verb
