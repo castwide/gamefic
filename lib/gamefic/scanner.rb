@@ -48,43 +48,33 @@ module Gamefic
     end
 
     def self.strict objects, token
-      words = token.keywords
-      available = objects.clone
-      filtered = []
-      if nested?(token) && objects.all?(&:children)
-        denest(objects, token)
-      else
-        words.each_with_index do |word, idx|
-          tested = select_strict(available, word)
-          return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?
-
-          filtered = tested
-          available = filtered
-        end
-        Result.new(objects, token, filtered, '')
-      end
+      scan_strict_or_fuzzy(objects, token, :select_strict)
     end
 
     def self.fuzzy objects, token
-      words = token.keywords
-      available = objects.clone
-      filtered = []
-      if nested?(token) && objects.all?(&:children)
-        denest(objects, token)
-      else
-        words.each_with_index do |word, idx|
-          tested = select_fuzzy(available, word)
-          return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?
-
-          filtered = tested
-          available = filtered
-        end
-        Result.new(objects, token, filtered, '')
-      end
+      scan_strict_or_fuzzy(objects, token, :select_fuzzy)
     end
 
     class << self
       private
+
+      def scan_strict_or_fuzzy objects, token, method
+        words = token.keywords
+        available = objects.clone
+        filtered = []
+        if nested?(token) && objects.all?(&:children)
+          denest(objects, token)
+        else
+          words.each_with_index do |word, idx|
+            tested = send(method, available, word)
+            return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?
+
+            filtered = tested
+            available = filtered
+          end
+          Result.new(objects, token, filtered, '')
+        end
+      end
 
       def select_strict available, word
         available.select { |obj| obj.keywords.include?(word) }
