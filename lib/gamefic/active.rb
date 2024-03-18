@@ -21,6 +21,9 @@ module Gamefic
     # @return [Active::Cue, nil]
     attr_reader :next_cue
 
+    # @return [String, nil]
+    attr_reader :last_input
+
     # @return [Symbol, nil]
     def next_scene
       next_cue&.scene
@@ -146,6 +149,7 @@ module Gamefic
     end
     alias prepare cue
 
+    # @return [Props]
     def start_take
       ensure_cue
       @last_cue = @next_cue
@@ -153,10 +157,12 @@ module Gamefic
       @props = Take.start(self, @last_cue)
     end
 
+    # @return [void]
     def finish_take
       return unless @last_cue
 
       Take.finish(self, @last_cue, @props)
+      @last_input = @props.input
     end
 
     # Restart the scene from the most recent cue.
