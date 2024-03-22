@@ -1,5 +1,9 @@
 module Gamefic
+  # A function module for creating commands from expressions.
+  #
   module Matcher
+    # Create a command from the first expression that matches a response.
+    #
     # @param actor [Actor]
     # @param expressions [Array<expression>]
     # @return [Command]
@@ -25,30 +29,20 @@ module Gamefic
           remainder = response.verb ? '' : expression.verb.to_s
           arguments = []
           response.queries.each_with_index do |query, idx|
-            if query.is_a?(Query::Text)
-              break if method == :strict
+            result = Scanner.send(method, query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip)
+            break if result.matched.empty?
 
-              result = query.query(actor, "#{remainder} #{expression.tokens[idx]}".strip)
-              break unless result.match
+            break if result.matched.length > 1 && !query.ambiguous?
 
-              arguments.push result.match
-              remainder = result.remainder
+            if query.ambiguous?
+              arguments.push result.matched
             else
-              result = Scanner.send(method, query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip)
-              break if result.matched.empty?
-
-              break if result.matched.length > 1 && !query.ambiguous?
-
-              if query.ambiguous?
-                arguments.push result.matched
-              else
-                arguments.push result.matched.first
-              end
-              remainder = result.remainder
+              arguments.push result.matched.first
             end
+            remainder = result.remainder
           end
 
-          next if arguments.length != response.queries.length
+          next if arguments.length != response.queries.length || remainder != ''
 
           return Command.new(response.verb, arguments)
         end
