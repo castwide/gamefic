@@ -16,7 +16,7 @@ module Gamefic
 
       # @param actor [Active]
       # @param cue [Active::Cue]
-      # @param props [Props::Default]
+      # @param props [Props::Default, nil]
       def initialize actor, cue, props = nil
         @actor = actor
         @cue = cue

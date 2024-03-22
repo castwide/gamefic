@@ -32,8 +32,8 @@ module Gamefic
       # @param block [Proc]
       # @yieldparam [Scene]
       # @return [Symbol]
-      def block name, klass = Scene::Default, on_start: nil, on_finish: nil, &block
-        rulebook.scenes.add klass.new(name, rulebook.narrative, on_start: on_start, on_finish: on_finish, &block)
+      def block name, klass = Scene::Default, on_start: nil, on_finish: nil, &blk
+        rulebook.scenes.add klass.new(name, rulebook.narrative, on_start: on_start, on_finish: on_finish, &blk)
         name
       end
       alias scene block
@@ -77,14 +77,14 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::MultipleChoice]
       # @return [Symbol]
-      def multiple_choice name, choices = [], prompt = 'What is your choice?', &block
+      def multiple_choice name, choices = [], prompt = 'What is your choice?', &blk
         block name,
               Scene::MultipleChoice,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
                 props.options.concat choices
               },
-              on_finish: block
+              on_finish: blk
       end
 
       # Create a yes-or-no scene.
@@ -105,13 +105,13 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::YesOrNo]
       # @return [Symbol]
-      def yes_or_no name, prompt = 'Answer:', &block
+      def yes_or_no name, prompt = 'Answer:', &blk
         block name,
               Scene::YesOrNo,
               on_start: proc { |_actor, props|
                 props.prompt = prompt
               },
-              on_finish: block
+              on_finish: blk
       end
 
       # Create a scene that pauses the game.

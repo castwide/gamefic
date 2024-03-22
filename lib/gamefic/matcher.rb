@@ -2,7 +2,7 @@ module Gamefic
   module Matcher
     # @param actor [Actor]
     # @param expressions [Array<expression>]
-    # @return [Command, nil]
+    # @return [Command]
     def self.match actor, expressions
       verbs = expressions.map(&:verb).uniq
       responses = actor.epic.responses_for(*verbs)

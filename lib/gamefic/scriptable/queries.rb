@@ -63,9 +63,9 @@ module Gamefic
       # any text it finds in the command. A successful query returns the
       # corresponding text instead of an entity.
       #
-      # @param arg [String, Regrxp] The string or regular expression to match
+      # @param arg [String, Regexp] The string or regular expression to match
       # @return [Query::Text]
-      def plaintext arg = nil
+      def plaintext arg = /.*/
         Query::Text.new arg
       end
     end

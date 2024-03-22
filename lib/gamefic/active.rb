@@ -98,7 +98,7 @@ module Gamefic
     #
     # @param verb [Symbol]
     # @param params [Array]
-    # @return [Gamefic::Action]
+    # @return [void]
     def execute(verb, *params)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
       dispatchers.last.execute
@@ -149,7 +149,7 @@ module Gamefic
     end
     alias prepare cue
 
-    # @return [Props]
+    # @return [Props::Default]
     def start_take
       ensure_cue
       @last_cue = @next_cue

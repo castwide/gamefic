@@ -109,7 +109,7 @@ module Gamefic
     end
 
     # @param string [String]
-    # @return [String, nil]
+    # @return [Symbol, nil]
     def self.literal_or_nil string
       string.start_with?(':') ? nil : string.to_sym
     end

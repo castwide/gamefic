@@ -34,13 +34,13 @@ module Gamefic
         self
       end
 
-      # @return [Proc]
+      # @return [void]
       def on_ready &block
         @ready_blocks.push block
       end
 
       # @yieldparam [Actor]
-      # @return [Proc]
+      # @return [void]
       def on_player_ready &block
         @ready_blocks.push(proc do
           players.each { |plyr| block.call plyr }
@@ -57,20 +57,20 @@ module Gamefic
         end)
       end
 
-      # @return [Proc]
+      # @return [void]
       def on_conclude &block
         @conclude_blocks.push block
       end
 
       # @yieldparam [Actor]
-      # @return [Proc]
+      # @return [void]
       def on_player_conclude &block
         @player_conclude_blocks.push block
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
-      # @return [Proc]
+      # @return [void]
       def on_player_output &block
         @player_output_blocks.push block
       end

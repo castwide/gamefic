@@ -5,14 +5,15 @@ module Gamefic
     # A special query that handles text instead of entities.
     #
     class Text
-      # @param argument [String, Regexp, nil]
-      def initialize argument = nil
+      # @param argument [String, Regexp]
+      def initialize argument = /.*/
         @argument = argument
         validate
       end
 
+      # @return [String, Regexp]
       def select(_subject)
-        [@argument]
+        @argument
       end
 
       def query _subject, token
@@ -34,8 +35,6 @@ module Gamefic
       private
 
       def match? token
-        return true if @argument.nil?
-
         case @argument
         when Regexp
           token =~ @argument
@@ -45,7 +44,7 @@ module Gamefic
       end
 
       def validate
-        return if @argument.nil? || @argument.is_a?(String) || @argument.is_a?(Regexp)
+        return if @argument.is_a?(String) || @argument.is_a?(Regexp)
 
         raise ArgumentError, 'Invalid text query argument'
       end

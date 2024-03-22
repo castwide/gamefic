@@ -59,12 +59,12 @@ module Gamefic
       private
 
       def scan_strict_or_fuzzy objects, token, method
-        words = token.keywords
-        available = objects.clone
-        filtered = []
         if nested?(token) && objects.all?(&:children)
           denest(objects, token)
         else
+          words = token.keywords
+          available = objects.clone
+          filtered = []
           words.each_with_index do |word, idx|
             tested = send(method, available, word)
             return Result.new(objects, token, filtered, words[idx..].join(' ')) if tested.empty?

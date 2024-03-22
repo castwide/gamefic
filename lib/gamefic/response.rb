@@ -75,6 +75,8 @@ module Gamefic
       Action.new(actor, result, self)
     end
 
+    # @param actor [Active]
+    # @param command [Command]
     def accept? actor, command
       return false if command.verb != verb
 

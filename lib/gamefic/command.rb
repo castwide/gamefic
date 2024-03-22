@@ -16,16 +16,5 @@ module Gamefic
       @verb = verb
       @arguments = arguments
     end
-
-    # Compare two syntaxes for the purpose of ordering them by relevance while
-    # dispatching.
-    #
-    def compare other
-      if verb == other.verb
-        other.arguments.compact.length <=> arguments.compact.length
-      else
-        (other.verb ? 1 : 0) <=> (verb ? 1 : 0)
-      end
-    end
   end
 end
