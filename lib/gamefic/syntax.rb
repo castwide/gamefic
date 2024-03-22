@@ -61,12 +61,12 @@ module Gamefic
     # Convert a String into a Command.
     #
     # @param text [String]
-    # @return [Command, nil]
+    # @return [Expression, nil]
     def tokenize text
       match = text&.match(template.regexp)
       return nil unless match
 
-      Command.new(verb, match_to_args(match))
+      Expression.new(verb, match_to_args(match))
     end
 
     # Determine if the specified text matches the syntax's expected pattern.
@@ -94,7 +94,7 @@ module Gamefic
     #
     # @param text [String] The text to tokenize.
     # @param syntaxes [Array<Syntax>] The syntaxes to use.
-    # @return [Array<Command>] The tokenized commands.
+    # @return [Array<Expression>] The tokenized expressions.
     def self.tokenize text, syntaxes
       syntaxes
         .map { |syn| syn.tokenize(text) }

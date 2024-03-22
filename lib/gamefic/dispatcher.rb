@@ -5,14 +5,18 @@ module Gamefic
   #
   class Dispatcher
     # @param actor [Actor]
-    # @param commands [Array<Command>]
+    # @param expressions [Array<Expression>]
     # @param responses [Array<Response>]
-    def initialize actor, commands = [], responses = []
+    def initialize actor, expressions = [], responses = []
       @actor = actor
-      @commands = commands
+      @expressions = expressions
       @responses = responses
       @executed = false
-      @match = Matcher.match(actor, commands, responses)
+      if expressions.first.is_a?(Command)
+        @match = expressions.first
+      else
+        @match = Matcher.match(actor, expressions, responses)
+      end
     end
 
     # Run the dispatcher.
@@ -36,14 +40,11 @@ module Gamefic
     # @return [Action, nil]
     def proceed
       while (response = responses.shift)
-        commands.each do |cmd|
-          action = response.attempt(actor, cmd)
-          next unless action && arguments_match?(action)
+        next if response.queries.length < @match.arguments.length
 
-          return action
-        end
+        return Action.new(actor, @match.arguments, response) if response.accept?(actor, @match)
       end
-      nil # Without this, return value in Opal is undefined
+      nil
     end
 
     # @param actor [Active]

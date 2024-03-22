@@ -31,6 +31,19 @@ module Gamefic
         raise "#query not implemented for #{self.class}"
       end
 
+      def select subject
+        raise "#select not implemented for #{self.class}"
+      end
+
+      def accept?(subject, object)
+        available = select(subject)
+        if ambiguous?
+          object & available == object
+        else
+          available.include?(object)
+        end
+      end
+
       # @return [Integer]
       def precision
         @precision ||= calculate_precision

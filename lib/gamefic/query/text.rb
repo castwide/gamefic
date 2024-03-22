@@ -27,6 +27,10 @@ module Gamefic
         0
       end
 
+      def accept? _subject, argument
+        match? argument
+      end
+
       private
 
       def match? token

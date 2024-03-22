@@ -1,12 +1,14 @@
 module Gamefic
   module Matcher
     # @param actor [Actor]
-    # @param command [Command]
-    # @return [Array<Object>]
-    def self.match actor, commands, responses
-      commands.each do |command|
-        result = strict_match_response_arguments(actor, command, responses) || fuzzy_match_response_arguments(actor, command, responses)
-        return result if result
+    # @param expressions [Array<expression>]
+    # @return [Command, nil]
+    def self.match actor, expressions, responses
+      %i[strict fuzzy].each do |method|
+        expressions.each do |expression|
+          result = match_response_arguments(actor, expression, responses, method)
+          return result if result
+        end
       end
       nil
     end
@@ -14,30 +16,23 @@ module Gamefic
     class << self
       private
 
-      def strict_match_response_arguments actor, command, responses
-        match_response_arguments actor, command, responses, :strict
-      end
-
-      def fuzzy_match_response_arguments actor, command, responses
-        match_response_arguments actor, command, responses, :fuzzy
-      end
-
-      def match_response_arguments actor, command, responses, method
+      def match_response_arguments actor, expression, responses, method
         responses.each do |response|
-          next unless response.queries.length >= command.tokens.length
+          next unless response.queries.length >= expression.tokens.length
 
-          remainder = ''
+          remainder = response.verb ? '' : expression.verb.to_s
           arguments = []
           response.queries.each_with_index do |query, idx|
             if query.is_a?(Query::Text)
               break if method == :strict
-              result = query.query(actor, command.tokens[idx])
+
+              result = query.query(actor, "#{remainder} #{expression.tokens[idx]}".strip)
               break unless result.match
 
-              arguments.push command.tokens[idx]
+              arguments.push result.match
               remainder = result.remainder
             else
-              result = Scanner.send(method, query.select(actor), "#{remainder} #{command.tokens[idx]}".strip)
+              result = Scanner.send(method, query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip)
               break if result.matched.empty?
 
               break if result.matched.length > 1 && !query.ambiguous?
@@ -53,7 +48,7 @@ module Gamefic
 
           next if arguments.length != response.queries.length
 
-          return arguments
+          return Command.new(response.verb, arguments)
         end
 
         nil

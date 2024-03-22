@@ -30,8 +30,8 @@ describe Gamefic::Dispatcher do
     player = plot.introduce
     player.parent = plot.pick('room')
 
-    command = Gamefic::Command.new(:look, ['books'])
-    dispatcher = Gamefic::Dispatcher.new(player, [command], plot.rulebook.responses)
+    expression = Gamefic::Expression.new(:look, ['books'])
+    dispatcher = Gamefic::Dispatcher.new(player, [expression], plot.rulebook.responses)
     action = dispatcher.proceed
     # Dispatcher should find an exact match for the @books response, even
     # though @bookshelf gets tested first

@@ -75,6 +75,16 @@ module Gamefic
       Action.new(actor, result, self)
     end
 
+    def accept? actor, command
+      return false if command.verb != verb
+
+      queries.each_with_index do |query, idx|
+        return false unless query.accept?(actor, command.arguments[idx])
+      end
+
+      true
+    end
+
     def execute *args
       Stage.run(@stage, *args, &@block)
     end
