@@ -51,13 +51,12 @@ describe Gamefic::Scriptable::Actions do
   describe '#respond' do
     it 'handles plaintext arguments' do
       response = nil
-      object.respond :say, 'hello' do |actor, hello|
+      object.respond :say, 'hello' do |_actor, hello|
         response = "Just #{hello}"
       end
-      command = Gamefic::Command.new(:say, ['hello'])
       actor = Gamefic::Actor.new
-      dispatcher = Gamefic::Dispatcher.new(actor, [command], object.rulebook.responses)
-      dispatcher.proceed.execute
+      action = Gamefic::Action.new(actor, 'hello', object.rulebook.responses.first)
+      action.execute
       expect(response).to eq('Just hello')
     end
 

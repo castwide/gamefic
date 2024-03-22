@@ -56,6 +56,12 @@ module Gamefic
         rulebooks.flat_map(&:syntaxes)
       end
 
+      def responses_for(*verbs)
+        rulebooks.to_a
+                 .reverse
+                 .flat_map { |rb| rb.responses_for(*verbs) }
+      end
+
       # @param name [Symbol]
       # @return [Scene]
       def select_scene name

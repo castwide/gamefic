@@ -5,18 +5,11 @@ module Gamefic
   #
   class Dispatcher
     # @param actor [Actor]
-    # @param expressions [Array<Expression>]
-    # @param responses [Array<Response>]
-    def initialize actor, expressions = [], responses = []
+    # @param command [Command]
+    def initialize actor, command
       @actor = actor
-      @expressions = expressions
-      @responses = responses
+      @command = command
       @executed = false
-      if expressions.first.is_a?(Command)
-        @match = expressions.first
-      else
-        @match = Matcher.match(actor, expressions, responses)
-      end
     end
 
     # Run the dispatcher.
@@ -40,9 +33,9 @@ module Gamefic
     # @return [Action, nil]
     def proceed
       while (response = responses.shift)
-        next if response.queries.length < @match.arguments.length
+        next if response.queries.length < @command.arguments.length
 
-        return Action.new(actor, @match.arguments, response) if response.accept?(actor, @match)
+        return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
       end
       nil
     end
@@ -51,15 +44,9 @@ module Gamefic
     # @param input [String]
     # @return [Dispatcher]
     def self.dispatch actor, input
-      commands = Syntax.tokenize(input, actor.epic.rulebooks.flat_map(&:syntaxes))
-      verbs = commands.map(&:verb).uniq
-      responses = actor.epic
-                       .rulebooks
-                       .to_a
-                       .reverse
-                       .flat_map { |pb| pb.responses_for(*verbs) }
-                       .reject(&:hidden?)
-      new(actor, commands, responses)
+      expressions = Syntax.tokenize(input, actor.epic.syntaxes)
+      command = Matcher.match(actor, expressions)
+      new(actor, command)
     end
 
     # @param actor [Active]
@@ -68,12 +55,7 @@ module Gamefic
     # @return [Dispatcher]
     def self.dispatch_from_params actor, verb, params
       command = Command.new(verb, params)
-      responses = actor.epic
-                       .rulebooks
-                       .to_a
-                       .reverse
-                       .flat_map { |pb| pb.responses_for(verb) }
-      new(actor, [command], responses)
+      new(actor, command)
     end
 
     protected
@@ -81,17 +63,15 @@ module Gamefic
     # @return [Actor]
     attr_reader :actor
 
-    # @return [Array<Command>]
-    attr_reader :commands
+    # @return [Command]
+    attr_reader :command
 
     # @return [Array<Response>]
-    attr_reader :responses
+    def responses
+      @responses ||= actor.epic.responses_for(command.verb)
+    end
 
     private
-
-    def arguments_match? action
-      action.arguments == @match || action.arguments.all? { |arg| arg.is_a?(String) }
-    end
 
     def run_before_action_hooks action
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }

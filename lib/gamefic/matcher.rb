@@ -3,14 +3,16 @@ module Gamefic
     # @param actor [Actor]
     # @param expressions [Array<expression>]
     # @return [Command, nil]
-    def self.match actor, expressions, responses
+    def self.match actor, expressions
+      verbs = expressions.map(&:verb).uniq
+      responses = actor.epic.responses_for(*verbs)
       %i[strict fuzzy].each do |method|
         expressions.each do |expression|
           result = match_response_arguments(actor, expression, responses, method)
           return result if result
         end
       end
-      nil
+      Command.new(nil, [])
     end
 
     class << self
