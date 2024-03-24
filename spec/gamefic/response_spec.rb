@@ -49,7 +49,7 @@ RSpec.describe Gamefic::Response do
       actor = Gamefic::Actor.new(parent: room)
       thing = Gamefic::Entity.new(parent: room, name: 'thing')
 
-      command = Gamefic::Command.new(:verb, ['thing'])
+      command = Gamefic::Command.new(:verb, [thing])
       action = response.attempt(actor, command)
       expect(action).to be_a(Gamefic::Action)
       expect(action.arguments.first).to be(thing)
@@ -91,7 +91,7 @@ RSpec.describe Gamefic::Response do
       thing1 = Gamefic::Entity.new(parent: room, name: 'red thing')
       thing2 = Gamefic::Entity.new(parent: room, name: 'blue thing')
 
-      command = Gamefic::Command.new(:verb, ['thing'])
+      command = Gamefic::Command.new(:verb, [[thing1, thing2]])
       action = response.attempt(actor, command)
       expect(action).to be_a(Gamefic::Action)
       expect(action.arguments).to eq([[thing1, thing2]])

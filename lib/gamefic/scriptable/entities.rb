@@ -55,7 +55,10 @@ module Gamefic
       # @param description [String]
       # @return [Gamefic::Entity, nil]
       def pick description
-        Gamefic::Query::General.new(entities).query(nil, description).match
+        result = Scanner.scan(entities, description)
+        return nil unless result.matched.one?
+
+        result.matched.first
       end
 
       # Same as #pick, but raise an error if a unique match could not be found.
@@ -63,13 +66,13 @@ module Gamefic
       # @param description [String]
       # @return [Gamefic::Entity, nil]
       def pick! description
-        ary = Gamefic::Query::General.new(entities, ambiguous: true).query(nil, description).match
+        result = Scanner.scan(entities, description)
 
-        raise "no entity matching '#{description}'" if ary.nil?
+        raise "no entity matching '#{description}'" if result.matched.empty?
 
-        raise "multiple entities matching '#{description}': #{ary.join_and}" unless ary.one?
+        raise "multiple entities matching '#{description}': #{result.matched.join_and}" unless result.matched.one?
 
-        ary.first
+        result.matched.first
       end
     end
   end

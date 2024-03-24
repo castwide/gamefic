@@ -48,37 +48,19 @@ module Gamefic
     #
     # @param actor [Entity]
     # @param command [Command]
-    # @param with_hooks [Boolean]
     # @return [Action, nil]
     def attempt actor, command
-      return nil if command.verb != verb
+      return nil unless accept?(actor, command)
 
-      tokens = command.arguments.clone
-      result = []
-      remainder = ''
-
-      queries.each do |qd|
-        token = tokens.shift
-        txt = "#{remainder} #{token}".strip
-        return nil if txt.empty?
-
-        response = qd.query(actor, txt)
-        return nil if response.match.nil?
-
-        result.push response.match
-
-        remainder = response.remainder
-      end
-
-      return nil unless tokens.empty? && remainder.empty?
-
-      Action.new(actor, result, self)
+      Action.new(actor, command.arguments, self)
     end
 
+    # True if the Response can be executed for the given actor and command.
+    #
     # @param actor [Active]
     # @param command [Command]
     def accept? actor, command
-      return false if command.verb != verb
+      return false if command.verb != verb || command.arguments.length != queries.length
 
       queries.each_with_index do |query, idx|
         return false unless query.accept?(actor, command.arguments[idx])
