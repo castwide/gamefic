@@ -13,6 +13,20 @@ describe Gamefic::Active do
     expect(object[:executed]).to be(true)
   end
 
+  it 'executes a command' do
+    Gamefic::Narrative.script do
+      room = make Gamefic::Entity, name: 'room'
+      item = make Gamefic::Entity, name: 'item', parent: room
+      respond(:command, item) { |actor| item[:commanded] = true }
+    end
+    narrative = Gamefic::Narrative.new
+    narrative.cast object
+    object.parent = narrative.pick('room')
+    item = narrative.pick('item')
+    object.execute :command, item
+    expect(item[:commanded]).to be(true)
+  end
+
   it "formats #tell messages into HTML paragraphs" do
     object.tell "This is one paragraph."
     expect(object.messages).to eq("<p>This is one paragraph.</p>")
