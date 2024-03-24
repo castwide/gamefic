@@ -19,4 +19,15 @@ describe Gamefic::Scriptable::Proxy do
     object = plot.unproxy(agent)
     expect(object).to be(plot.foo)
   end
+
+  it 'fetches from indexes' do
+    agent = plot.proxy(0)
+    object = plot.unproxy(agent)
+    expect(object).to be(plot.foo)
+  end
+
+  it 'raises on invalid agent symbols' do
+    agent = plot.proxy(:error)
+    expect { plot.unproxy(agent) }.to raise_error(ArgumentError)
+  end
 end

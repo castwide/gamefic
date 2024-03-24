@@ -15,6 +15,15 @@ module Gamefic
         end
 
         def fetch container
+          result = safe_fetch(container)
+          raise ArgumentError, "Unable to fetch entity from proxy agent symbol `#{symbol}`" unless result
+
+          result
+        end
+
+        private
+
+        def safe_fetch container
           if symbol.to_s =~ /^\d+$/
             Stage.run(container, symbol) { |sym| entities[sym] }
           elsif symbol.to_s.start_with?('@')
@@ -22,6 +31,8 @@ module Gamefic
           else
             Stage.run(container, symbol) { |sym| send(sym) }
           end
+        rescue NoMethodError
+          nil
         end
       end
 
