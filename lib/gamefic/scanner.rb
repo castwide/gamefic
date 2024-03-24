@@ -11,7 +11,7 @@ module Gamefic
     class Result
       # The scanned objects
       #
-      # @return [Array<Object>]
+      # @return [Array<Entity>, String, Regexp]
       attr_reader :scanned
 
       # The scanned token
@@ -21,7 +21,7 @@ module Gamefic
 
       # The matched objects
       #
-      # @return [Array<Object>]
+      # @return [Array<Entity>, String]
       attr_reader :matched
 
       # The remaining (unmatched) portion of the token
@@ -39,20 +39,30 @@ module Gamefic
 
     # Scan entities against a token.
     #
-    # @param objects [Array<Gamefic::Entity>]
+    # @param selection [Array<Entity>, String, Regexp]
     # @param token [String]
     # @return [Result]
-    def self.scan objects, token
-      strict_result = strict(objects, token)
-      strict_result.matched.empty? ? fuzzy(objects, token) : strict_result
+    def self.scan selection, token
+      strict_result = strict(selection, token)
+      strict_result.matched.empty? ? fuzzy(selection, token) : strict_result
     end
 
-    def self.strict objects, token
-      scan_strict_or_fuzzy(objects, token, :select_strict)
+    # @param selection [Array<Entity>, String, Regexp]
+    # @param token [String]
+    # @return [Result]
+    def self.strict selection, token
+      return Result.new(selection, token, '', token) unless selection.is_a?(Array)
+
+      scan_strict_or_fuzzy(selection, token, :select_strict)
     end
 
-    def self.fuzzy objects, token
-      scan_strict_or_fuzzy(objects, token, :select_fuzzy)
+    # @param selection [Array<Entity>, String, Regexp]
+    # @param token [String]
+    # @return [Result]
+    def self.fuzzy selection, token
+      return scan_text(selection, token) unless selection.is_a?(Array)
+
+      scan_strict_or_fuzzy(selection, token, :select_fuzzy)
     end
 
     class << self
@@ -86,6 +96,16 @@ module Gamefic
 
       def nested?(token)
         token.match(NEST_REGEXP)
+      end
+
+      def scan_text selection, token
+        case selection
+        when Regexp
+          return Result.new(selection, token, token, '') if token =~ selection
+        else
+          return Result.new(selection, token, selection, token[selection.length..]) if token.start_with?(selection)
+        end
+        Result.new(selection, token, '', token)
       end
 
       def denest(objects, token)

@@ -32,6 +32,10 @@ module Gamefic
         match? argument
       end
 
+      def ambiguous?
+        true
+      end
+
       private
 
       def match? token
