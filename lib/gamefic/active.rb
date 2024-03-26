@@ -181,6 +181,7 @@ module Gamefic
     #
     # @param new_scene [Symbol]
     # @oaram context [Hash] Additional scene data
+    # @return [Cue]
     def conclude scene, **context
       cue scene, **context
       available = epic.select_scene(scene)
@@ -192,7 +193,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      epic.empty? || (@last_cue && epic.conclusion?(@last_cue.scene))
+      epic.empty? || @props&.scene&.type == 'Conclusion'
     end
 
     def accessible?

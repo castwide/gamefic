@@ -25,7 +25,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'sets choices' do
       object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      props = Gamefic::Props::MultipleChoice.new(:scene, 'MultipleChoice')
+      props = Gamefic::Props::MultipleChoice.new(scene)
       scene.run_start_blocks(nil, props)
       expect(props.options).to eq(%w[one two])
     end
@@ -41,7 +41,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'sets a prompt' do
       object.yes_or_no(:scene, 'What?') { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      props = Gamefic::Props::MultipleChoice.new(:scene, 'YesOrNo')
+      props = Gamefic::Props::MultipleChoice.new(scene)
       scene.run_start_blocks(nil, props)
       expect(props.prompt).to eq('What?')
     end
@@ -57,7 +57,7 @@ describe Gamefic::Scriptable::Scenes do
     it 'sets a prompt' do
       object.pause(:scene, prompt: 'Pause!') { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene]
-      props = Gamefic::Props::MultipleChoice.new(:scene, 'Pause')
+      props = Gamefic::Props::MultipleChoice.new(scene)
       scene.run_start_blocks(nil, props)
       expect(props.prompt).to eq('Pause!')
     end

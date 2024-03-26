@@ -2,6 +2,7 @@
 - Dispatcher prioritizes strict token matches
 - Tokenize expressions and execute commands
 - Delete concluded subplots last in Plot#ready
+- Fix plot conclusion check after subplots conclude
 
 ## 3.0.0 - January 27, 2024
 - Instantiate subplots from snapshots

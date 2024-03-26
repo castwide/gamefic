@@ -47,11 +47,6 @@ module Gamefic
         narratives.one?
       end
 
-      # @param name [Symbol]
-      def conclusion? name
-        select_scene(name).conclusion?
-      end
-
       def syntaxes
         rulebooks.flat_map(&:syntaxes)
       end

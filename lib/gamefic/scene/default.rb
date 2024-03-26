@@ -30,7 +30,7 @@ module Gamefic
       end
 
       def new_props(**context)
-        self.class.props_class.new(name, type, **context)
+        self.class.props_class.new(self, **context)
       end
 
       def on_start &block
