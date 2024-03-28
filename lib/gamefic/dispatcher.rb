@@ -10,6 +10,7 @@ module Gamefic
       @actor = actor
       @command = command
       @executed = false
+      @finalized = false
     end
 
     # Run the dispatcher.
@@ -37,7 +38,7 @@ module Gamefic
 
         return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
       end
-      nil
+      finalize
     end
 
     # @param actor [Active]
@@ -73,12 +74,28 @@ module Gamefic
 
     private
 
+    # @return [void]
     def run_before_action_hooks action
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
     end
 
+    # @return [void]
     def run_after_action_hooks action
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions action }
+    end
+
+    # If the dispatcher proceeds through all possible responses, it can fall
+    # back to a nil response as a catchall for commands that could not be
+    # completed.
+    #
+    # @return [void]
+    def finalize
+      return nil if @finalized
+
+      @finalized = true
+      @command = Command.new(nil, ["#{command.verb.to_s} #{command.arguments.join(' ').strip}"])
+      @responses = actor.epic.responses_for(nil)
+      proceed
     end
   end
 end
