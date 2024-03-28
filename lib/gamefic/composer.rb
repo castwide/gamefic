@@ -1,13 +1,13 @@
 module Gamefic
   # A function module for creating commands from expressions.
   #
-  module Matcher
+  module Composer
     # Create a command from the first expression that matches a response.
     #
     # @param actor [Actor]
     # @param expressions [Array<Expression>]
     # @return [Command]
-    def self.match actor, expressions
+    def self.compose actor, expressions
       %i[strict fuzzy].each do |method|
         result = match_expressions_to_response actor, expressions, method
         return result if result

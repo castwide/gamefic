@@ -24,6 +24,12 @@ module Gamefic
         @ambiguous = ambiguous
       end
 
+      # @deprecated Queries should only be used to select entities that are
+      #   eligible to be response arguments. After a text command is tokenized
+      #   into an array of expressions, the composer builds the command that
+      #   the dispatcher uses to execute actions. The #accept? method verifies
+      #   that the command's arguments match the response's queries.
+      #
       # @param subject [Gamefic::Entity]
       # @param token [String]
       # @return [Result]
@@ -31,6 +37,11 @@ module Gamefic
         raise "#query not implemented for #{self.class}"
       end
 
+      # Get an array of entities that match the query from the context of the
+      # subject.
+      #
+      # @param subject [Entity]
+      # @return [Array<Entity>]
       def select subject
         raise "#select not implemented for #{self.class}"
       end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # The action selector for character commands.
+  # The action executor for character commands.
   #
   class Dispatcher
     # @param actor [Actor]
@@ -47,7 +47,7 @@ module Gamefic
     # @return [Dispatcher]
     def self.dispatch actor, input
       expressions = Syntax.tokenize(input, actor.epic.syntaxes)
-      command = Matcher.match(actor, expressions)
+      command = Composer.compose(actor, expressions)
       new(actor, command)
     end
 
