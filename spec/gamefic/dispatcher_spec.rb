@@ -8,7 +8,7 @@ describe Gamefic::Dispatcher do
     actor = Gamefic::Actor.new
     actor.epic.add OpenStruct.new(rulebook: rulebook)
     dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')
-    expect(dispatcher.proceed.response).to be(response2)
+    expect(dispatcher.execute.response).to be(response2)
     expect(dispatcher.proceed.response).to be(response1)
     expect(dispatcher.proceed).to be_nil
   end
@@ -31,7 +31,7 @@ describe Gamefic::Dispatcher do
     player.parent = plot.pick('room')
 
     dispatcher = Gamefic::Dispatcher.dispatch(player, 'look books')
-    action = dispatcher.proceed
+    action = dispatcher.execute
     # Dispatcher should find an exact match for the @books response, even
     # though @bookshelf gets tested first
     expect(action.arguments.first.name).to eq('books')

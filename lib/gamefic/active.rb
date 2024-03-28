@@ -98,11 +98,10 @@ module Gamefic
     #
     # @param verb [Symbol]
     # @param params [Array]
-    # @return [void]
+    # @return [Action, nil]
     def execute(verb, *params)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
-      dispatchers.last.execute
-      dispatchers.pop
+      dispatchers.last.execute.tap { dispatchers.pop }
     end
 
     # Proceed to the next Action in the current stack.
@@ -128,9 +127,9 @@ module Gamefic
     #     end
     #   end
     #
-    # @return [void]
+    # @return [Action, nil]
     def proceed
-      dispatchers.last&.proceed&.execute
+      dispatchers.last&.proceed
     end
 
     # Cue a scene to start in the next turn.

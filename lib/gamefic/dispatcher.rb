@@ -15,11 +15,12 @@ module Gamefic
 
     # Run the dispatcher.
     #
+    # @return [Action, nil]
     def execute
       return if @executed
 
       @executed = true
-      action = proceed
+      action = next_action
       return unless action
 
       run_before_action_hooks action
@@ -27,18 +28,18 @@ module Gamefic
 
       action.execute
       run_after_action_hooks action
+      action
     end
 
-    # Get the next executable action.
+    # Execute the next available action.
+    #
+    # Actors should run #execute first.
     #
     # @return [Action, nil]
     def proceed
-      while (response = responses.shift)
-        next if response.queries.length < @command.arguments.length
+      return unless @executed
 
-        return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
-      end
-      finalize
+      next_action&.execute
     end
 
     # @param actor [Active]
@@ -74,6 +75,16 @@ module Gamefic
 
     private
 
+    # @return [Action, nil]
+    def next_action
+      while (response = responses.shift)
+        next if response.queries.length < @command.arguments.length
+
+        return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
+      end
+      finalize
+    end
+
     # @return [void]
     def run_before_action_hooks action
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
@@ -88,14 +99,14 @@ module Gamefic
     # back to a nil response as a catchall for commands that could not be
     # completed.
     #
-    # @return [void]
+    # @return [Action, nil]
     def finalize
       return nil if @finalized
 
       @finalized = true
       @command = Command.new(nil, ["#{command.verb.to_s} #{command.arguments.join(' ').strip}"])
       @responses = actor.epic.responses_for(nil)
-      proceed
+      next_action
     end
   end
 end

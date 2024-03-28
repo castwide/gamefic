@@ -45,11 +45,13 @@ module Gamefic
       @response = response
     end
 
+    # @return [self]
     def execute
-      return if cancelled?
+      return self if cancelled? || executed?
 
       @executed = true
       response.execute actor, *arguments
+      self
     end
 
     # True if the response has been executed. False typically means that the
