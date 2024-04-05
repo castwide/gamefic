@@ -40,6 +40,10 @@ module Gamefic
       def prompt
         @prompt ||= '>'
       end
+
+      def output
+        @output ||= Props::Output.new
+      end
     end
   end
 end

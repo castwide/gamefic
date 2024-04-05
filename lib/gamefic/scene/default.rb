@@ -45,8 +45,8 @@ module Gamefic
       # @param props [Props::Default]
       # @return [void]
       def start actor, props
-        actor.output[:scene] = to_hash
-        actor.output[:prompt] = props.prompt
+        props.output[:scene] = to_hash
+        props.output[:prompt] = props.prompt
       end
 
       # @param actor [Gamefic::Actor]

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Active
+  module Props
     # A container for output sent to players with a hash interface for custom
     # data.
     #

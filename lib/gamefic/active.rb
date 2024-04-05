@@ -4,7 +4,6 @@ require 'set'
 require 'gamefic/active/cue'
 require 'gamefic/active/epic'
 require 'gamefic/active/messaging'
-require 'gamefic/active/output'
 require 'gamefic/active/take'
 
 module Gamefic
@@ -57,7 +56,11 @@ module Gamefic
     #
     # @return [Output]
     def output
-      @output ||= Output.new
+      @output ||= Output.new.freeze
+    end
+
+    def broadcast output
+      @output = output.dup.freeze
     end
 
     # Perform a command.

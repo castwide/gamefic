@@ -11,8 +11,8 @@ describe Gamefic::Scene::Default do
       actor.queue.push 'command'
       props = base.new_props
       base.start(actor, props)
-      expect(actor.output[:scene]).to eq(base.to_hash)
-      expect(actor.output[:prompt]).to eq(props.prompt)
+      expect(props.output[:scene]).to eq(base.to_hash)
+      expect(props.output[:prompt]).to eq(props.prompt)
     end
   end
 

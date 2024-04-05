@@ -31,15 +31,16 @@ module Gamefic
 
       # @return [Props::Default]
       def start
-        actor.output[:scene] = scene.to_hash
+        props.output[:scene] = scene.to_hash
         scene.run_start_blocks actor, props
         scene.start actor, props
         # @todo See if this can be handled better
-        actor.epic.rulebooks.each { |rlbk| rlbk.run_player_output_blocks actor, actor.output }
-        actor.output.merge!({
+        actor.epic.rulebooks.each { |rlbk| rlbk.run_player_output_blocks actor, props.output }
+        props.output.merge!({
                               messages: actor.messages,
                               queue: actor.queue
                             })
+        actor.broadcast props.output
         props
       end
 
@@ -47,7 +48,7 @@ module Gamefic
       def finish
         actor.flush
         scene.finish(actor, props)
-        actor.output.replace(last_prompt: props.prompt, last_input: props.input)
+        props.output.replace(last_prompt: props.prompt, last_input: props.input)
         scene.run_finish_blocks actor, props
       end
 

@@ -6,5 +6,6 @@ module Gamefic
     require 'gamefic/props/multiple_choice'
     require 'gamefic/props/pause'
     require 'gamefic/props/yes_or_no'
+    require 'gamefic/props/output'
   end
 end

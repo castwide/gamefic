@@ -78,6 +78,6 @@ describe Gamefic::Active::Take do
     cue = Gamefic::Active::Cue.new(:scene)
     take = Gamefic::Active::Take.new(actor, cue)
     take.start
-    expect(actor.output[:options]).to eq(['one', 'two'])
+    expect(take.props.output[:options]).to eq(['one', 'two'])
   end
 end

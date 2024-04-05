@@ -27,10 +27,18 @@ module Gamefic
       Marshal.load(binary).tap do |plot|
         plot.hydrate
         # @todo Opal marshal dumps are not idempotent
-        next if RUBY_ENGINE == 'opal' || Snapshot.save(plot) == snapshot
+        next if RUBY_ENGINE == 'opal' || match?(plot, snapshot)
 
         Logging.logger.warn "Scripts modified #{plot.class} data. Snapshot may not have restored properly"
       end
+    end
+
+    # True if the plot's state matches the snapshot.
+    #
+    # @param plot [Plot]
+    # @param snapshot [String]
+    def self.match?(plot, snapshot)
+      save(plot) == snapshot
     end
   end
 end

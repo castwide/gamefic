@@ -10,7 +10,7 @@ module Gamefic
 
       def start actor, props
         super
-        actor.output[:options] = props.options
+        props.output[:options] = props.options
       end
 
       def finish actor, props
