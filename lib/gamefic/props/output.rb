@@ -13,33 +13,40 @@ module Gamefic
       attr_reader :last_prompt
 
       def initialize **data
+        @raw_data = {
+          messages: '',
+          options: [],
+          queue: [],
+          scene: {},
+          prompt: ''
+        }
         merge! data
       end
 
       # @return [String]
       def messages
-        raw_data[:messages] ||= ''
+        raw_data[:messages]
       end
 
       # @return [Array<String>]
       def options
-        raw_data[:options] ||= []
+        raw_data[:options]
       end
 
       # @return [Array<String>]
       def queue
-        raw_data[:queue] ||= []
+        raw_data[:queue]
       end
 
       # @todo Should this be a concrete class?
       # @return [Hash]
       def scene
-        raw_data[:scene] ||= {}
+        raw_data[:scene]
       end
 
       # @return [String]
       def prompt
-        raw_data[:prompt] ||= ''
+        raw_data[:prompt]
       end
 
       def [] key
@@ -69,9 +76,7 @@ module Gamefic
 
       private
 
-      def raw_data
-        @raw_data ||= {}
-      end
+      attr_reader :raw_data
     end
   end
 end

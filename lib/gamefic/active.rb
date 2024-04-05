@@ -21,9 +21,6 @@ module Gamefic
     # @return [Active::Cue, nil]
     attr_reader :next_cue
 
-    # @return [String, nil]
-    attr_reader :last_input
-
     # @return [Symbol, nil]
     def next_scene
       next_cue&.scene
@@ -54,12 +51,30 @@ module Gamefic
     # Data that will be sent to the user. The output is typically sent after a
     # scene has started and before the user is prompted for input.
     #
-    # @return [Output]
+    # The output object attached to the actor is always frozen. Authors should
+    # use on_player_output blocks to modify output to be sent to the user.
+    #
+    # @return [Props::Output]
     def output
-      @output ||= Output.new.freeze
+      @output ||= Props::Output.new.freeze
     end
 
+    # The output from the previous turn.
+    #
+    # @return [Props::Output]
+    def last_output
+      @last_output ||= output
+    end
+
+    # @return [String, nil]
+    def last_input
+      last_output.last_input
+    end
+
+    # @param output [Props::Output]
+    # @return [void]
     def broadcast output
+      @last_output = self.output
       @output = output.dup.freeze
     end
 
@@ -165,7 +180,6 @@ module Gamefic
       return unless @last_cue
 
       Take.finish(self, @last_cue, @props)
-      @last_input = @props.input
     end
 
     # Restart the scene from the most recent cue.
