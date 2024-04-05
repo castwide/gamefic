@@ -4,6 +4,7 @@ require 'set'
 require 'gamefic/active/cue'
 require 'gamefic/active/epic'
 require 'gamefic/active/messaging'
+require 'gamefic/active/output'
 require 'gamefic/active/take'
 
 module Gamefic
@@ -51,12 +52,12 @@ module Gamefic
       @queue ||= []
     end
 
-    # A hash of data that will be sent to the user. The output is typically
-    # sent after a scene has started and before the user is prompted for input.
+    # Data that will be sent to the user. The output is typically sent after a
+    # scene has started and before the user is prompted for input.
     #
-    # @return [Hash]
+    # @return [Output]
     def output
-      @output ||= {}
+      @output ||= Output.new
     end
 
     # Perform a command.
