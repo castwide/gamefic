@@ -88,4 +88,24 @@ describe Gamefic::Active do
       expect { object.proceed }.not_to raise_error
     end
   end
+
+  describe '#output' do
+    it 'is frozen' do
+      expect(object.output).to be_frozen
+    end
+  end
+
+  describe '#broadcast' do
+    let(:new_output) { Gamefic::Props::Output.new(messages: 'new output') }
+
+    it 'updates output' do
+      object.broadcast new_output
+      expect(object.output.messages).to eq(new_output.messages)
+    end
+
+    it 'freezes new output' do
+      object.broadcast new_output
+      expect(object.output).to be_frozen
+    end
+  end
 end
