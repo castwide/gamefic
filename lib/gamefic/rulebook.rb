@@ -116,11 +116,11 @@ module Gamefic
     end
 
     def run_player_conclude_blocks player
-      events.player_conclude_blocks.each { |blk| Stage.run(narrative) { blk.call(player) } }
+      events.player_conclude_blocks.each { |blk| Stage.run(narrative, player, &blk) }
     end
 
     def run_player_output_blocks player, output
-      events.player_output_blocks.each { |blk| Stage.run(narrative) { blk.call(player, output) } }
+      events.player_output_blocks.each { |blk| Stage.run(narrative, player, output, &blk) }
     end
 
     def empty?
