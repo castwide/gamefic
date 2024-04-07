@@ -69,13 +69,6 @@ module Gamefic
       @last_output ||= output
     end
 
-    # @param output [Props::Output]
-    # @return [void]
-    def broadcast output
-      @last_output = self.output
-      @output = output.dup.freeze
-    end
-
     # Perform a command.
     #
     # The command's action will be executed immediately, regardless of the
@@ -171,6 +164,8 @@ module Gamefic
       @last_cue = @next_cue
       cue :default_scene
       @props = Take.start(self, @last_cue)
+      @last_output = self.output
+      @output = @props.output.dup.freeze
     end
 
     # @return [void]

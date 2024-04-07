@@ -40,7 +40,6 @@ module Gamefic
                               messages: actor.messages,
                               queue: actor.queue
                             })
-        actor.broadcast props.output
         props
       end
 

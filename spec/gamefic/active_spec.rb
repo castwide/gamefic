@@ -95,17 +95,18 @@ describe Gamefic::Active do
     end
   end
 
-  describe '#broadcast' do
-    let(:new_output) { Gamefic::Props::Output.new(messages: 'new output') }
-
-    it 'updates output' do
-      object.broadcast new_output
-      expect(object.output.messages).to eq(new_output.messages)
-    end
-
-    it 'freezes new output' do
-      object.broadcast new_output
+  describe '#start_take' do
+    it 'updates the output' do
+      klass = Class.new(Gamefic::Narrative) do
+        pause (:pause) {|actor| actor.tell 'pause message' }
+      end
+      narr = klass.new
+      narr.cast object
+      object.cue :pause
+      object.start_take
       expect(object.output).to be_frozen
+      expect(object.messages).to include('pause message')
+      expect(object.output.scene[:name]).to be(:pause)
     end
   end
 end
