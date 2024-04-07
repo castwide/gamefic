@@ -43,7 +43,7 @@ module Gamefic
       # @return [void]
       def on_player_ready &block
         @ready_blocks.push(proc do
-          players.each { |plyr| block.call plyr }
+          players.each { |plyr| instance_exec plyr, &block }
         end)
       end
 
@@ -53,7 +53,7 @@ module Gamefic
 
       def on_player_update &block
         @update_blocks.push(proc do
-          players.each { |plyr| block.call plyr }
+          players.each { |plyr| instance_exec plyr, &block }
         end)
       end
 
