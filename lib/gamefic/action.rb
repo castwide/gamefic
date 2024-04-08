@@ -13,8 +13,10 @@ module Gamefic
     # action's performance.
     #
     class Hook
+      # @param [Array<Symbol>]
       attr_reader :verbs
 
+      # @param [Proc]
       attr_reader :block
 
       def initialize *verbs, &block

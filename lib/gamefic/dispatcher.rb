@@ -104,7 +104,7 @@ module Gamefic
       return nil if @finalized
 
       @finalized = true
-      @command = Command.new(nil, ["#{command.verb.to_s} #{command.arguments.join(' ').strip}"])
+      @command = Command.new(nil, ["#{command.verb} #{command.arguments.join(' ').strip}"])
       @responses = actor.epic.responses_for(nil)
       next_action
     end

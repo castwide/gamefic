@@ -1,4 +1,4 @@
-# frozen_literal_string: true
+# frozen_string_literal: true
 
 module Gamefic
   # A proc to be executed in response to a command that matches its verb and
