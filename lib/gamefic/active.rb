@@ -157,7 +157,7 @@ module Gamefic
     end
     alias prepare cue
 
-    # @return [Props::Default]
+    # @return [void]
     def start_take
       ensure_cue
       @last_cue = @next_cue
