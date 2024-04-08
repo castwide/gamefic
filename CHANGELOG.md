@@ -1,8 +1,11 @@
-## 3.1.0
+## 3.1.0 - April 8, 2024
 - Dispatcher prioritizes strict token matches
+- Scanner builds commands
 - Tokenize expressions and execute commands
 - Delete concluded subplots last in Plot#ready
 - Fix plot conclusion check after subplots conclude
+- Correct contexts for conclude and output blocks
+- Reinstate Active#last_input
 
 ## 3.0.0 - January 27, 2024
 - Instantiate subplots from snapshots
