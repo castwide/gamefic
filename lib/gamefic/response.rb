@@ -11,17 +11,17 @@ module Gamefic
     # @return [Array<Query::Base>]
     attr_reader :queries
 
-    # @return [Proc]
-    # attr_reader :block
+    # @return [Narrative]
+    attr_reader :narrative
 
     # @param verb [Symbol]
-    # @param stage [Object]
+    # @param narrative [Narrative]
     # @param queries [Array<Query::Base>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, stage, *queries, meta: false, &block
+    def initialize verb, narrative, *queries, meta: false, &block
       @verb = verb
-      @stage = stage
+      @narrative = narrative
       @queries = map_queryable_objects(queries)
       @meta = meta
       @block = block
@@ -70,7 +70,7 @@ module Gamefic
     end
 
     def execute *args
-      Stage.run(@stage, *args, &@block)
+      Stage.run(narrative, *args, &@block)
     end
 
     def precision

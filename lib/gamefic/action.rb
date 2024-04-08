@@ -77,6 +77,10 @@ module Gamefic
       response.verb
     end
 
+    def narrative
+      response.narrative
+    end
+
     def meta?
       response.meta?
     end
