@@ -78,11 +78,10 @@ module Gamefic
     #   character.perform "take the key"
     #
     # @param command [String]
-    # @return [void]
+    # @return [Action, nil]
     def perform(command)
       dispatchers.push Dispatcher.dispatch(self, command)
-      dispatchers.last.execute
-      dispatchers.pop
+      dispatchers.last.execute.tap { dispatchers.pop }
     end
 
     # Quietly perform a command.
