@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Syntax do
   it "acceps a valid syntax" do
     syn = Gamefic::Syntax.new "command", "command"

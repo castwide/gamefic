@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Scriptable
     # Functions that provide proxies for referencing a narrative's entities

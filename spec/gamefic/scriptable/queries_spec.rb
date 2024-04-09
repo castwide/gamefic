@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scriptable::Queries do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 

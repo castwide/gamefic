@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Vault do
   it 'adds elements' do
     vault = Gamefic::Vault.new

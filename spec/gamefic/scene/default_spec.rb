@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scene::Default do
   let(:base) { Gamefic::Scene::Default.new(nil, nil) }
 

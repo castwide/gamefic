@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # A function module for creating commands from expressions.
   #

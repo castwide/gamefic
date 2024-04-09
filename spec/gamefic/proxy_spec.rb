@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scriptable::Proxy do
   let(:plot) do
     klass = Class.new(Gamefic::Narrative) do

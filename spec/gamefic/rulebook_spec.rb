@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Rulebook do
   let(:stage_func) { Object.new }
 

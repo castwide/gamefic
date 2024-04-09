@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Stage do
   let(:object) { Object.new }
 

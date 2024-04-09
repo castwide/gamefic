@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Narrative do
   describe 'class' do
     it 'adds a script' do

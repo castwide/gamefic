@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Query::Scoped do
   it 'returns match in scope' do
     scoped = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)

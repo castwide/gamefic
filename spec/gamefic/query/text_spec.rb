@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Query::Text do
   it 'matches without arguments' do
     querydef = Gamefic::Query::Text.new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Active::Epic do
   let(:klass) do
     Class.new(Gamefic::Narrative) do

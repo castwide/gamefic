@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scene do
   let(:stage_func) { Gamefic::Narrative.new }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scene::Pause do
   let(:base) { Gamefic::Scene::Pause.new(nil, nil) }
 

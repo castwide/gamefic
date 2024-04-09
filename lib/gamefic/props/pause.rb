@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Props
     # Props for Pause scenes.

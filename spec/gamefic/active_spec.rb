@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Active do
   let(:object) { Gamefic::Entity.new.tap { |obj| obj.extend Gamefic::Active } }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scriptable do
   let(:scriptable) { Module.new.extend(Gamefic::Scriptable) }
 

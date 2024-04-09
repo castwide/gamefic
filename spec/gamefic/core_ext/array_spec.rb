@@ -1,4 +1,4 @@
-require "gamefic"
+# frozen_string_literal: true
 
 describe Array do
   describe '#that_are' do

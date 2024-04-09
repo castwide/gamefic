@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # A module for matching objects to tokens.
   #

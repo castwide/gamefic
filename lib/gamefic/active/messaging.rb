@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Active
     # A module for active entities that provides a default Messenger with

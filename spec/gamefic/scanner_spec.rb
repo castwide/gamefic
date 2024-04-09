@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Gamefic::Scanner do
   it 'returns matching objects' do
     one = Gamefic::Entity.new name: 'one'

@@ -1,4 +1,4 @@
-require "gamefic"
+# frozen_string_literal: true
 
 describe String do
   it "capitalizes the first letter without changing the rest" do

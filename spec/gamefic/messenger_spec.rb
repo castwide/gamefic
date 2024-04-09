@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Messenger do
   let(:messenger) { Gamefic::Messenger.new }
 

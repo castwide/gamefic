@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Node do
   it "adds a node to a parent" do
     x = Object.new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scene::Activity do
   let(:stage_func) { Object.new }
 

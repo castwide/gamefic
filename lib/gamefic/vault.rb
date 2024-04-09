@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   # An array wrapper that exposes a protected interface. The array is always
   # returned frozen. It can only be modified through #add and #delete. The

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Props::Output do
   it 'freezes the data hash' do
     output = Gamefic::Props::Output.new.freeze

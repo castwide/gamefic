@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Scene::MultipleChoice do
   let(:multiple_choice) { Gamefic::Scene::MultipleChoice.new(nil, nil) }
 

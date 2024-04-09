@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Gamefic::Query::General do
   describe '#query' do
     it 'returns match from array' do
