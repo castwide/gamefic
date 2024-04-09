@@ -17,44 +17,61 @@ module Gamefic
         merge! data
       end
 
+      # A text message to be displayed at the start of a scene.
+      #
       # @return [String]
       def messages
         raw_data[:messages]
       end
 
+      # An array of options to be presented to the player, e.g., in a
+      # MultipleChoice scene.
+      #
       # @return [Array<String>]
       def options
         raw_data[:options]
       end
 
+      # An array of commands waiting to be executed.
+      #
       # @return [Array<String>]
       def queue
         raw_data[:queue]
       end
 
-      # @todo Should this be a concrete class?
+      # A hash containing the scene's :name and :type.
+      #
       # @return [Hash]
       def scene
         raw_data[:scene]
       end
 
+      # The input prompt to be displayed to the player.
+      #
       # @return [String]
       def prompt
         raw_data[:prompt]
       end
 
+      # The input received from the player in the previous scene.
+      #
       def last_input
         raw_data[:last_input]
       end
 
+      # The input prompt from the previous scene.
+      #
       def last_prompt
         raw_data[:last_prompt]
       end
 
+      # @param key [Symbol]
       def [] key
         raw_data[key]
       end
 
+      # @param key [Symbol]
+      # @param value [Object]
       def []= key, value
         raw_data[key] = value
       end
