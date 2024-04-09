@@ -164,6 +164,8 @@ module Gamefic
       cue :default_scene
       @props = Take.start(self, @last_cue)
       @last_output = self.output
+      @props.output[:last_prompt] = @last_output.prompt
+      @props.output[:last_input] = @last_input
       @output = @props.output.dup.freeze
     end
 
