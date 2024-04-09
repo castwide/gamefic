@@ -183,8 +183,12 @@ describe Gamefic::Scriptable do
       extend Gamefic::Scriptable
 
       def foo; end
+
+      script {}
     end
     no_scripts = original.no_scripts
     expect(no_scripts.public_instance_methods).to eq(original.public_instance_methods)
+    expect(original.blocks).to be_one
+    expect(no_scripts.methods).not_to include(:blocks)
   end
 end
