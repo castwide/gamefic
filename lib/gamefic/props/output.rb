@@ -6,6 +6,7 @@ module Gamefic
     # data.
     #
     class Output
+      READER_METHODS = %i[messages options queue scene prompt last_prompt last_input].freeze
       WRITER_METHODS = %i[messages= prompt= last_prompt= last_input=].freeze
 
       attr_reader :raw_data
@@ -21,53 +22,41 @@ module Gamefic
         merge! data
       end
 
-      # A text message to be displayed at the start of a scene.
+      # @!attribute [rw] messages
+      #   A text message to be displayed at the start of a scene.
       #
-      # @return [String]
-      def messages
-        raw_data[:messages]
-      end
+      #   @return [String]
 
-      # An array of options to be presented to the player, e.g., in a
-      # MultipleChoice scene.
+      # @!attribute [rw] options
+      #   An array of options to be presented to the player, e.g., in a
+      #   MultipleChoice scene.
       #
-      # @return [Array<String>]
-      def options
-        raw_data[:options]
-      end
+      #   @return [Array<String>]
 
-      # An array of commands waiting to be executed.
+      # @!attribute [rw] queue
+      #   An array of commands waiting to be executed.
       #
-      # @return [Array<String>]
-      def queue
-        raw_data[:queue]
-      end
+      #   @return [Array<String>]
 
-      # A hash containing the scene's :name and :type.
+      # @!attribute [rw] scene
+      #   A hash containing the scene's :name and :type.
       #
-      # @return [Hash]
-      def scene
-        raw_data[:scene]
-      end
+      #   @return [Hash]
 
-      # The input prompt to be displayed to the player.
+      # @!attribute [rw] [prompt]
+      #   The input prompt to be displayed to the player.
       #
-      # @return [String]
-      def prompt
-        raw_data[:prompt]
-      end
+      #   @return [String]
 
-      # The input received from the player in the previous scene.
+      # @!attribute [rw] last_input
+      #   The input received from the player in the previous scene.
       #
-      def last_input
-        raw_data[:last_input]
-      end
+      #   @return [String, nil]
 
-      # The input prompt from the previous scene.
+      # @!attribute [rw] last_prompt
+      #   The input prompt from the previous scene.
       #
-      def last_prompt
-        raw_data[:last_prompt]
-      end
+      #   @return [String, nil]
 
       # @param key [Symbol]
       def [] key
@@ -102,10 +91,16 @@ module Gamefic
         super
       end
 
-      def method_missing sym, arg
-        return raw_data[sym.to_s[0..-2].to_sym] = arg if WRITER_METHODS.include?(sym)
+      def method_missing method, *args
+        return raw_data[method] if READER_METHODS.include?(method)
+
+        return raw_data[method.to_s[0..-2].to_sym] = args.first if WRITER_METHODS.include?(method)
 
         super
+      end
+
+      def respond_to_missing?(method, _with_private = false)
+        READER_METHODS.include?(method) || WRITER_METHODS.include?(method)
       end
     end
   end
