@@ -6,12 +6,6 @@ module Gamefic
     # data.
     #
     class Output
-      # @return [String, nil]
-      attr_reader :last_input
-
-      # @return [String, nil]
-      attr_reader :last_prompt
-
       def initialize **data
         @raw_data = {
           messages: '',
@@ -47,6 +41,14 @@ module Gamefic
       # @return [String]
       def prompt
         raw_data[:prompt]
+      end
+
+      def last_input
+        raw_data[:last_input]
+      end
+
+      def last_prompt
+        raw_data[:last_prompt]
       end
 
       def [] key

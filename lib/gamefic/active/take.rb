@@ -37,7 +37,9 @@ module Gamefic
         actor.epic.rulebooks.each { |rlbk| rlbk.run_player_output_blocks actor, props.output }
         props.output.merge!({
                               messages: actor.messages,
-                              queue: actor.queue
+                              queue: actor.queue,
+                              last_input: actor.last_input,
+                              last_prompt: actor.last_output[:prompt]
                             })
         props
       end
@@ -46,7 +48,6 @@ module Gamefic
       def finish
         actor.flush
         scene.finish(actor, props)
-        props.output.replace(last_prompt: props.prompt, last_input: props.input)
         scene.run_finish_blocks actor, props
       end
 
