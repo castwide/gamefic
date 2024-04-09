@@ -8,6 +8,8 @@ module Gamefic
     class Output
       WRITER_METHODS = %i[messages= prompt= last_prompt= last_input=].freeze
 
+      attr_reader :raw_data
+
       def initialize **data
         @raw_data = {
           messages: '',
@@ -105,10 +107,6 @@ module Gamefic
 
         super
       end
-
-      private
-
-      attr_reader :raw_data
     end
   end
 end
