@@ -6,6 +6,8 @@ module Gamefic
     # data.
     #
     class Output
+      WRITER_METHODS = %i[messages= prompt= last_prompt= last_input=].freeze
+
       def initialize **data
         @raw_data = {
           messages: '',
@@ -95,6 +97,12 @@ module Gamefic
 
       def freeze
         raw_data.freeze
+        super
+      end
+
+      def method_missing sym, arg
+        return raw_data[sym.to_s[0..-2].to_sym] = arg if WRITER_METHODS.include?(sym)
+
         super
       end
 
