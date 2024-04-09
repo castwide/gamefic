@@ -93,6 +93,11 @@ module Gamefic
         raw_data.replace data
       end
 
+      def freeze
+        raw_data.freeze
+        super
+      end
+
       private
 
       attr_reader :raw_data
