@@ -203,7 +203,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      epic.empty? || @props&.scene&.type == 'Conclusion'
+      epic.empty? || @props&.scene&.fetch(:type) == 'Conclusion'
     end
 
     def accessible?

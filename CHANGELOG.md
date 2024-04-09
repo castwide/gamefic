@@ -1,3 +1,6 @@
+## 3.2.0
+- Bug fix for marshal of structs in Opal
+
 ## 3.1.0 - April 8, 2024
 - Dispatcher prioritizes strict token matches
 - Scanner builds commands

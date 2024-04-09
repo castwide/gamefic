@@ -31,7 +31,6 @@ module Gamefic
 
       # @return [Props::Default]
       def start
-        props.output[:scene] = scene.to_hash
         scene.run_start_blocks actor, props
         scene.start actor, props
         # @todo See if this can be handled better

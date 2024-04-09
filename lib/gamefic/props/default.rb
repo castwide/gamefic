@@ -2,8 +2,6 @@
 
 module Gamefic
   module Props
-    SceneData = Struct.new(:name, :type)
-
     # A collection of data related to a scene. Scenes define which Props class
     # they use. Props can be accessed in a scene's on_start and on_finish
     # callbacks.
@@ -27,13 +25,13 @@ module Gamefic
       attr_reader :context
       alias data context
 
-      # @return [SceneData]
+      # @return [Hash]
       attr_reader :scene
 
       # @param scene [Scene]
       # @param context [Hash]
       def initialize scene, **context
-        @scene = SceneData.new(scene.name, scene.type)
+        @scene = { name: scene.name, type: scene.type }
         @context = context
       end
 
