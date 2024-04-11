@@ -22,6 +22,10 @@ describe Gamefic::Snapshot do
       respond :look, @thing do |actor, thing|
         actor.tell "You see #{thing}"
       end
+
+      respond :take, @thing do |actor, thing|
+        thing.parent = actor
+      end
     end
 
     Gamefic::Plot.new.tap do |plot|
@@ -30,53 +34,82 @@ describe Gamefic::Snapshot do
     end
   end
 
-  let(:restored) { Gamefic::Plot.restore plot.save }
+  context 'after the introduction' do
+    let(:restored) { Gamefic::Plot.restore plot.save }
 
-  it 'restores players' do
-    player = restored.players.first
-    expect(player.epic.narratives).to eq([restored, restored.subplots.first].to_set)
+    it 'restores players' do
+      player = restored.players.first
+      expect(player.epic.narratives).to eq([restored, restored.subplots.first].to_set)
+    end
+
+    it 'handles restored introduction cues' do
+      restored.ready
+    end
+
+    it 'restores subplots' do
+      expect(restored.subplots).to be_one
+    end
+
+    it 'restores stage instance variables' do
+      thing = restored.instance_variable_get(:@thing)
+      expect(thing.name).to eq('thing')
+      picked = restored.pick('thing')
+      expect(thing).to be(picked)
+    end
+
+    it 'restores references in actions' do
+      player = restored.players.first
+      player.cue :default_scene
+      restored.ready
+      player.perform 'look thing'
+      expect(player.messages).to include('thing')
+    end
+
+    it 'restores subplot config data' do
+      expect(restored.subplots.first.config[:configured]).to be(restored.instance_exec { @thing })
+    end
+
+    it 'retains player configuration after save' do
+      expect(plot.players).to be_one
+      expect(plot.players.first.epic.narratives.length).to eq(2)
+    end
+
+    it 'warns when scripts change restored plots' do
+      # @todo Opal marshal dumps are not idempotent
+      next if RUBY_ENGINE == 'opal'
+
+      expect(Gamefic::Logging.logger).to receive(:warn).with(/Scripts modified/i)
+      Gamefic::Plot.script { @foo = 'foo' }
+      plot = Gamefic::Plot.new
+      plot.instance_exec { @foo = 'bar' }
+      Gamefic::Plot.restore plot.save
+    end
   end
 
-  it 'handles restored introduction cues' do
-    restored.ready
-  end
+  context 'after a game turn' do
+    it 'restores output' do
+      player = plot.players.first
+      player.queue.push 'look thing'
+      plot.update
+      plot.ready
 
-  it 'restores subplots' do
-    expect(restored.subplots).to be_one
-  end
+      snapshot = plot.save
+      restored_plot = Gamefic::Snapshot.restore snapshot
+      restored_player = restored_plot.players.first
+      expect(restored_player.output.to_hash).to eq(player.output.to_hash)
+      expect(restored_player.output.to_hash).to eq(player.output.to_hash)
+    end
 
-  it 'restores stage instance variables' do
-    thing = restored.instance_variable_get(:@thing)
-    expect(thing.name).to eq('thing')
-    picked = restored.pick('thing')
-    expect(thing).to be(picked)
-  end
+    it 'restores entity changes' do
+      player = plot.players.first
+      player.queue.push 'take thing'
+      plot.update
+      plot.ready
 
-  it 'restores references in actions' do
-    player = restored.players.first
-    player.cue :default_scene
-    restored.ready
-    player.perform 'look thing'
-    expect(player.messages).to include('thing')
-  end
-
-  it 'restores subplot config data' do
-    expect(restored.subplots.first.config[:configured]).to be(restored.instance_exec { @thing })
-  end
-
-  it 'retains player configuration after save' do
-    expect(plot.players).to be_one
-    expect(plot.players.first.epic.narratives.length).to eq(2)
-  end
-
-  it 'warns when scripts change restored plots' do
-    # @todo Opal marshal dumps are not idempotent
-    next if RUBY_ENGINE == 'opal'
-
-    expect(Gamefic::Logging.logger).to receive(:warn).with(/Scripts modified/i)
-    Gamefic::Plot.script { @foo = 'foo' }
-    plot = Gamefic::Plot.new
-    plot.instance_exec { @foo = 'bar' }
-    Gamefic::Plot.restore plot.save
+      snapshot = plot.save
+      restored_plot = Gamefic::Snapshot.restore snapshot
+      restored_player = restored_plot.players.first
+      expect(restored_plot.pick('thing').parent).to be(restored_player)
+    end
   end
 end
