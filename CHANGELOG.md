@@ -1,3 +1,6 @@
+## 3.2.1
+- MultipleChoice accepts shortened text
+
 ## 3.2.0 - April 9, 2024
 - Bug fix for marshal of structs in Opal
 - Add last_input and last_prompt at start of take

@@ -53,7 +53,7 @@ module Gamefic
       # @param props [Props::Default]
       # @return [void]
       def finish actor, props
-        props.input = actor.queue.shift
+        props.input = actor.queue.shift&.strip
       end
 
       def run_start_blocks actor, props
