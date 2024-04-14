@@ -104,7 +104,7 @@ module Gamefic
     def make_seed klass, **opts
       @count ||= 0
       seed { make(klass, **opts) }
-      @count.tap { @count += 1 }
+      Proxy::Agent.new(@count.tap { @count += 1 })
     end
 
     # Seed an entity with an attribute method.
@@ -124,7 +124,7 @@ module Gamefic
         instance_variable_set("@#{name}", make(klass, **opts))
         self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
-      @count.tap { @count += 1 }
+      Proxy::Agent.new(@count.tap { @count += 1 })
     end
 
     if RUBY_ENGINE == 'opal'
