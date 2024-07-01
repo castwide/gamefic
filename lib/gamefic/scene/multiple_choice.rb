@@ -20,6 +20,12 @@ module Gamefic
         actor.tell format(props.invalid_message, input: props.input)
         actor.recue
       end
+
+      def run_finish_blocks actor, props
+        return unless props.index
+
+        super
+      end
     end
   end
 end

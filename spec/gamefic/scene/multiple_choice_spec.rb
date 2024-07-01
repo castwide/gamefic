@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::MultipleChoice do
-  let(:multiple_choice) { Gamefic::Scene::MultipleChoice.new(nil, nil) }
+  let(:multiple_choice) { Gamefic::Scene::MultipleChoice.new(nil, nil, on_finish: ->(_, props) { raise unless props.index } ) }
 
   it 'initializes MultipleChoice props' do
     expect(multiple_choice.new_props).to be_a(Gamefic::Props::MultipleChoice)
@@ -18,6 +18,9 @@ describe Gamefic::Scene::MultipleChoice do
     expect(props.selection).to eq('one')
     expect(props.index).to eq(0)
     expect(props.number).to eq(1)
+    expect {
+      multiple_choice.run_finish_blocks(actor, props)
+    }.not_to raise_error
   end
 
   it 'cancels on invalid input' do
@@ -28,5 +31,8 @@ describe Gamefic::Scene::MultipleChoice do
     multiple_choice.finish actor, props
     expect(actor.queue).to be_empty
     expect(actor.messages).to include('"four" is not a valid choice.')
+    expect {
+      multiple_choice.run_finish_blocks(actor, props)
+    }.not_to raise_error
   end
 end

@@ -1,6 +1,7 @@
-## 3.2.1
+## 3.2.1 - July 1, 2024
 - MultipleChoice accepts shortened text
 - Return Proxy::Agent from attr_seed and make_seed
+- MultipleChoice skips finish blocks for invalid input
 
 ## 3.2.0 - April 9, 2024
 - Bug fix for marshal of structs in Opal
