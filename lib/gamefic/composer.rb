@@ -43,7 +43,7 @@ module Gamefic
         arguments = []
         response.queries.each_with_index do |query, idx|
           result = Scanner.send(method, query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip)
-          break unless validate_result_from_query(result, query)
+          break unless valid_result_from_query?(result, query)
 
           if query.ambiguous?
             arguments.push result.matched
@@ -60,7 +60,7 @@ module Gamefic
 
       # @param result [Scanner::Result]
       # @param query [Query::Base]
-      def validate_result_from_query result, query
+      def valid_result_from_query? result, query
         return false if result.matched.empty?
 
         result.matched.length == 1 || query.ambiguous?
