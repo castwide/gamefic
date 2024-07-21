@@ -112,10 +112,11 @@ module Gamefic
     # Does the object have a description?
     #
     # @return [Boolean]
-    def description?
+    def described?
       @description.to_s != ''
     end
-    alias has_description? description?
+    alias description? described?
+    alias has_description? described?
 
     # Get the object's description.
     #

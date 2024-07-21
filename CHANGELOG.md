@@ -1,3 +1,6 @@
+## 3.2.2 - July 21, 2024
+- Describable#described?
+
 ## 3.2.1 - July 1, 2024
 - MultipleChoice accepts shortened text
 - Return Proxy::Agent from attr_seed and make_seed
