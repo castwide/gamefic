@@ -33,7 +33,7 @@ module Gamefic
       # @param subject [Gamefic::Entity]
       # @param token [String]
       # @return [Result]
-      def query(subject, token)
+      def query(_subject, _token)
         raise "#query not implemented for #{self.class}"
       end
 
@@ -42,7 +42,7 @@ module Gamefic
       #
       # @param subject [Entity]
       # @return [Array<Entity>]
-      def select subject
+      def select _subject
         raise "#select not implemented for #{self.class}"
       end
 
@@ -88,12 +88,14 @@ module Gamefic
         depth
       end
 
+      # @param scan [Scanner::Result]
       def ambiguous_result scan
         return Result.new(nil, scan.token) if scan.matched.empty?
 
         Result.new(scan.matched, scan.remainder)
       end
 
+      # @param scan [Scanner::Result]
       def unambiguous_result scan
         return Result.new(nil, scan.token) unless scan.matched.one?
 

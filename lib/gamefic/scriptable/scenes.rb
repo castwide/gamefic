@@ -55,7 +55,7 @@ module Gamefic
         rulebook.scenes
                 .introduction Scene::Default.new nil,
                                                  rulebook.narrative,
-                                                 on_start: proc { |actor, _props| instance_exec(actor, &start) }
+                                                 on_start: proc { |actor, _props| Stage.run(self, actor, &start) }
       end
 
       # Create a multiple-choice scene.

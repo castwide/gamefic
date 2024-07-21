@@ -45,6 +45,7 @@ module Gamefic
       #   proxy(:@instance_variable_name)
       #
       # @param symbol [Symbol]
+      # @return [Agent]
       def proxy symbol
         Agent.new(symbol)
       end
