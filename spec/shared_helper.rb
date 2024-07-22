@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'gamefic'
 require 'ostruct'
+require 'gamefic'
 
 RSpec.configure do |config|
   # Run specs in random order to surface order dependencies. If you find an
