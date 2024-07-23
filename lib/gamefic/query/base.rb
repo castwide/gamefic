@@ -24,11 +24,19 @@ module Gamefic
         @ambiguous = ambiguous
       end
 
-      # @deprecated Queries should only be used to select entities that are
-      #   eligible to be response arguments. After a text command is tokenized
-      #   into an array of expressions, the composer builds the command that
-      #   the dispatcher uses to execute actions. The #accept? method verifies
-      #   that the command's arguments match the response's queries.
+      # Get a query result for a given subject and token.
+      #
+      # @note This method is retained as a convenience for authors. Narratives
+      #   should use Composer to build commands, as it provides more precise
+      #   matching of tokens to valid response arguments. Authors can use
+      #   #query to find entities that match a token regardless of whether the
+      #   result matches an available response.
+      #
+      # @example
+      #   respond :reds do |actor|
+      #     reds = available(ambiguous: true).query(actor, 'red').match
+      #     actor.tell "The red things you can see here are #{reds.join_and}."
+      #   end
       #
       # @param subject [Gamefic::Entity]
       # @param token [String]

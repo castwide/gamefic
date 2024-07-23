@@ -6,7 +6,6 @@ module Gamefic
     # relationship to the entity performing the query. For example,
     # Scope::Children would filter from an array of the entity's descendants.
     #
-    # @return [Class<Gamefic::Scope::Base>]
     class Scoped < Base
       attr_reader :scope
 

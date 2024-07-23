@@ -6,6 +6,7 @@ module Gamefic
     # a few shortcuts.
     #
     module Messaging
+      # @return [Messenger]
       def messenger
         @messenger ||= Messenger.new
       end
