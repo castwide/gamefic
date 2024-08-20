@@ -42,6 +42,15 @@ module Gamefic
       parent&.add_child self
     end
 
+    # Add children to the node. Return all the node's children.
+    #
+    # @param children [Array<Node>]
+    # @return [Array<Node>]
+    def take *children
+      children.flatten.each { |child| child.parent = self }
+      children
+    end
+
     # Determine if external objects can interact with this object's children.
     # For example, a game can designate that the contents of a bowl are
     # accessible, while the contents of a locked safe are not.
