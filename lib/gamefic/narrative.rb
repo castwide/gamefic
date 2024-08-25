@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module Gamefic
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional
@@ -20,9 +22,16 @@ module Gamefic
 
     def initialize
       self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+      self.class.appended_chapters.each do |klass|
+        chapters.push klass.new(self)
+      end
       entity_vault.lock
       @rulebook = nil
       hydrate
+    end
+
+    def chapters
+      @chapters ||= []
     end
 
     def scenes
@@ -99,6 +108,14 @@ module Gamefic
     def self.inherited klass
       super
       klass.blocks.concat blocks
+    end
+
+    def self.append chapter
+      appended_chapters.add chapter
+    end
+
+    def self.appended_chapters
+      @appended_chapters ||= Set.new
     end
   end
 end
