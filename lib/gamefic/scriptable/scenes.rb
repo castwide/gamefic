@@ -38,6 +38,12 @@ module Gamefic
       end
       alias scene block
 
+      def preface name, klass = Scene::Activity, &start
+        rulebook.scenes.add klass.new(name, rulebook.narrative, on_start: start)
+        name
+      end
+      alias precursor preface
+
       # Add a block to be executed when a player is added to the game.
       # Each Plot should only have one introduction.
       #
