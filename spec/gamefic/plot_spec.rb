@@ -167,4 +167,14 @@ RSpec.describe Gamefic::Plot do
     expect(plot.rulebook).to be_a(Gamefic::Rulebook)
     expect(subplot.rulebook).to be_a(Gamefic::Rulebook)
   end
+
+  it 'concludes its subplots' do
+    plot = Gamefic::Plot.new
+    actor = plot.introduce
+    plot.branch Gamefic::Subplot, introduce: actor
+    actor.cue :default_conclusion
+    plot.ready
+    expect(plot.subplots).to be_empty
+    expect(actor.epic).to be_one
+  end
 end
