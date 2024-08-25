@@ -44,7 +44,7 @@ module Gamefic
 
     # Add children to the node. Return all the node's children.
     #
-    # @param children [Array<Node>]
+    # @param children [Array<Node, Array<Node>>]
     # @return [Array<Node>]
     def take *children
       children.flatten.each { |child| child.parent = self }
@@ -63,8 +63,13 @@ module Gamefic
     # True if this node is the other's parent.
     #
     # @param other [Node]
-    def has?(other)
+    def include?(other)
       other.parent == self
+    end
+    alias has? include?
+
+    def adjacent?(other)
+      other.parent == parent
     end
 
     protected
