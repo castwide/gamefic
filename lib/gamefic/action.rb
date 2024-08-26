@@ -16,12 +16,12 @@ module Gamefic
       # @param [Array<Symbol>]
       attr_reader :verbs
 
-      # @param [Proc]
-      attr_reader :block
+      # @param [Callback]
+      attr_reader :callback
 
-      def initialize *verbs, &block
+      def initialize verbs, callback
         @verbs = verbs
-        @block = block
+        @callback = callback
       end
 
       def match?(input)

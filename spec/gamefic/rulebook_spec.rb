@@ -3,7 +3,7 @@
 describe Gamefic::Rulebook do
   let(:stage_func) { Object.new }
 
-  let(:rulebook) { Gamefic::Rulebook.new(stage_func) }
+  let(:rulebook) { Gamefic::Rulebook.new }
 
   let(:actor) do
     Gamefic::Actor.new do |actor|
@@ -54,14 +54,14 @@ describe Gamefic::Rulebook do
   it 'freezes before actions' do
     rulebook.freeze
     expect {
-      rulebook.hooks.before_action { |_| nil }
+      rulebook.hooks.before_action(stage_func) { |_| nil }
     }.to raise_error(FrozenError)
   end
 
   it 'freezes after actions' do
     rulebook.freeze
     expect {
-      rulebook.hooks.after_action { |_| nil }
+      rulebook.hooks.after_action(stage_func) { |_| nil }
     }.to raise_error(FrozenError)
   end
 
@@ -85,7 +85,7 @@ describe Gamefic::Rulebook do
   end
 
   it 'runs before_action hooks' do
-    rulebook.hooks.before_action do |action|
+    rulebook.hooks.before_action stage_func do |action|
       action.actor[:executed] = true
     end
 
@@ -98,7 +98,7 @@ describe Gamefic::Rulebook do
   it 'cancels actions from before_action hooks' do
     actor[:executed] = false
 
-    rulebook.hooks.before_action do |action|
+    rulebook.hooks.before_action stage_func do |action|
       action.cancel
     end
 
@@ -111,7 +111,7 @@ describe Gamefic::Rulebook do
   end
 
   it 'runs after_action hooks' do
-    rulebook.hooks.after_action do |action|
+    rulebook.hooks.after_action stage_func do |action|
       action.actor[:executed] = true
     end
 

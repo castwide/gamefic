@@ -70,8 +70,8 @@ module Gamefic
     end
 
     def hydrate
-      @rulebook = Rulebook.new(self)
-      @rulebook.script
+      @rulebook = Rulebook.new
+      @rulebook.script self
       @rulebook.freeze
     end
   end

@@ -21,35 +21,35 @@ module Gamefic
         self
       end
 
-      def before_action *verbs, &block
-        before_actions.push Action::Hook.new(*verbs, &block)
+      def before_action narrative, *verbs, &block
+        before_actions.push Action::Hook.new(verbs, Callback.new(narrative, block))
       end
 
-      def after_action *verbs, &block
-        after_actions.push Action::Hook.new(*verbs, &block)
+      def after_action narrative, *verbs, &block
+        after_actions.push Action::Hook.new(verbs, Callback.new(narrative, block))
       end
 
       def empty?
         before_actions.empty? && after_actions.empty?
       end
 
-      def run_before action, narrative
-        run_action_hooks action, narrative, before_actions
+      def run_before action
+        run_action_hooks action, before_actions
       end
 
-      def run_after action, narrative
-        run_action_hooks action, narrative, after_actions
+      def run_after action
+        run_action_hooks action, after_actions
       end
 
       private
 
-      def run_action_hooks action, narrative, hooks
+      def run_action_hooks action, hooks
         hooks.each do |hook|
           break if action.cancelled?
 
           next unless hook.match?(action.verb)
 
-          Stage.run(narrative) { instance_exec(action, &hook.block) }
+          hook.callback.run action
         end
       end
     end

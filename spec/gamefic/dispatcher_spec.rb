@@ -4,7 +4,7 @@ describe Gamefic::Dispatcher do
   let(:stage_func) { Object.new }
 
   it 'filters and orders actions' do
-    rulebook = Gamefic::Rulebook.new(stage_func)
+    rulebook = Gamefic::Rulebook.new
     response1 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
     response2 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
     actor = Gamefic::Actor.new

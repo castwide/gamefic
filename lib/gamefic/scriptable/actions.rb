@@ -31,7 +31,7 @@ module Gamefic
       # @return [Symbol]
       def respond(verb, *queries, &proc)
         args = map_response_args(queries)
-        rulebook.calls.add_response Response.new(verb, rulebook.narrative, *args, &proc)
+        rulebook.calls.add_response Response.new(verb, self, *args, &proc)
         verb
       end
 
@@ -52,7 +52,7 @@ module Gamefic
       # @return [Symbol]
       def meta(verb, *queries, &proc)
         args = map_response_args(queries)
-        rulebook.calls.add_response Response.new(verb, rulebook.narrative, *args, meta: true, &proc)
+        rulebook.calls.add_response Response.new(verb, self, *args, meta: true, &proc)
         verb
       end
 
@@ -64,7 +64,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action *verbs, &block
-        rulebook.hooks.before_action *verbs, &block
+        rulebook.hooks.before_action self, *verbs, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -75,7 +75,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action *verbs, &block
-        rulebook.hooks.after_action *verbs, &block
+        rulebook.hooks.after_action self, *verbs, &block
       end
 
       # Create an alternate Syntax for a response.

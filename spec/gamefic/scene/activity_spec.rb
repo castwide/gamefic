@@ -6,7 +6,7 @@ describe Gamefic::Scene::Activity do
   it 'performs a command' do
     type = Gamefic::Scene::Activity.new(nil, nil)
     actor = Gamefic::Actor.new
-    rulebook = Gamefic::Rulebook.new(stage_func)
+    rulebook = Gamefic::Rulebook.new
     rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
     actor.epic.add OpenStruct.new(rulebook: rulebook)
     actor.queue.push 'command'

@@ -35,44 +35,30 @@ module Gamefic
       end
 
       # @return [void]
-      def on_ready &block
-        @ready_blocks.push block
+      def on_ready callback
+        @ready_blocks.push callback
+      end
+
+      def on_update callback
+        @update_blocks.push callback
+      end
+
+      # @return [void]
+      def on_conclude callback
+        @conclude_blocks.push callback
       end
 
       # @yieldparam [Actor]
       # @return [void]
-      def on_player_ready &block
-        @ready_blocks.push(proc do
-          players.each { |plyr| instance_exec plyr, &block }
-        end)
-      end
-
-      def on_update &block
-        @update_blocks.push block
-      end
-
-      def on_player_update &block
-        @update_blocks.push(proc do
-          players.each { |plyr| instance_exec plyr, &block }
-        end)
-      end
-
-      # @return [void]
-      def on_conclude &block
-        @conclude_blocks.push block
-      end
-
-      # @yieldparam [Actor]
-      # @return [void]
-      def on_player_conclude &block
-        @player_conclude_blocks.push block
+      def on_player_conclude callback
+        @player_conclude_blocks.push callback
       end
 
       # @yieldparam [Actor]
       # @yieldparam [Hash]
       # @return [void]
-      def on_player_output &block
-        @player_output_blocks.push block
+      def on_player_output callback
+        @player_output_blocks.push callback
       end
     end
   end

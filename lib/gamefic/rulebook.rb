@@ -25,12 +25,7 @@ module Gamefic
     # @return [Scenes]
     attr_reader :scenes
 
-    # @return [Narrative]
-    attr_reader :narrative
-
-    # @param narrative [Narrative]
-    def initialize(narrative)
-      @narrative = narrative
+    def initialize
       @calls = Calls.new
       @events = Events.new
       @hooks = Hooks.new
@@ -96,43 +91,43 @@ module Gamefic
     end
 
     def run_ready_blocks
-      events.ready_blocks.each { |blk| Stage.run narrative, &blk }
+      events.ready_blocks.each(&:run)
     end
 
     def run_update_blocks
-      events.update_blocks.each { |blk| Stage.run narrative, &blk }
+      events.update_blocks.each(&:run)
     end
 
     def run_before_actions action
-      hooks.run_before action, narrative
+      hooks.run_before action
     end
 
     def run_after_actions action
-      hooks.run_after action, narrative
+      hooks.run_after action
     end
 
     def run_conclude_blocks
-      events.conclude_blocks.each { |blk| Stage.run narrative, &blk }
+      events.conclude_blocks.each(&:run)
     end
 
     def run_player_conclude_blocks player
-      events.player_conclude_blocks.each { |blk| Stage.run(narrative, player, &blk) }
+      events.player_conclude_blocks.each { |blk| blk.run(player) }
     end
 
     def run_player_output_blocks player, output
-      events.player_output_blocks.each { |blk| Stage.run(narrative, player, output, &blk) }
+      events.player_output_blocks.each { |blk| blk.run(player, output) }
     end
 
     def empty?
       calls.empty? && hooks.empty? && scenes.empty? && events.empty?
     end
 
-    def script
+    def script narrative
       narrative.class.included_blocks.select(&:script?).each { |blk| Stage.run(narrative, &blk.code) }
     end
 
-    def script_with_defaults
-      script
+    def script_with_defaults narrative
+      script narrative
       scenes.with_defaults narrative
     end
   end

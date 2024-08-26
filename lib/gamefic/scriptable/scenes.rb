@@ -33,13 +33,13 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, klass = Scene::Default, on_start: nil, on_finish: nil, &blk
-        rulebook.scenes.add klass.new(name, rulebook.narrative, on_start: on_start, on_finish: on_finish, &blk)
+        rulebook.scenes.add klass.new(name, self, on_start: on_start, on_finish: on_finish, &blk)
         name
       end
       alias scene block
 
       def preface name, klass = Scene::Activity, &start
-        rulebook.scenes.add klass.new(name, rulebook.narrative, on_start: start)
+        rulebook.scenes.add klass.new(name, self, on_start: start)
         name
       end
       alias precursor preface
@@ -60,7 +60,7 @@ module Gamefic
       def introduction(&start)
         rulebook.scenes
                 .introduction Scene::Default.new nil,
-                                                 rulebook.narrative,
+                                                 self,
                                                  on_start: proc { |actor, _props| Stage.run(self, actor, &start) }
       end
 

@@ -11,7 +11,7 @@ describe Gamefic::Scriptable::Scenes do
     end
 
     klass.new.tap do |obj|
-      obj.rulebook = Gamefic::Rulebook.new(stage_func)
+      obj.rulebook = Gamefic::Rulebook.new
     end
   end
 
