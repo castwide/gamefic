@@ -1,6 +1,7 @@
 ## 3.3.0
 - Extendable script module delegation
 - Node#take
+- Chapters
 
 ## 3.2.2 - July 21, 2024
 - Describable#described?

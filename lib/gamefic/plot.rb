@@ -10,7 +10,6 @@ module Gamefic
       subplots.each(&:ready)
       players.each(&:start_take)
       subplots.each(&:conclude) if concluding?
-
       players.select(&:concluding?).each { |plyr| rulebook.run_player_conclude_blocks plyr }
       subplots.delete_if(&:concluding?)
     end

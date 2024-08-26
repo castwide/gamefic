@@ -72,6 +72,7 @@ module Gamefic
     def hydrate
       @rulebook = Rulebook.new
       @rulebook.script self
+      chapters.each(&:hydrate)
       @rulebook.freeze
     end
   end
