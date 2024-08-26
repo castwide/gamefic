@@ -29,7 +29,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       def on_player_ready &block
         wrapper = proc do
-          players.each { |player| block[player] }
+          players.each { |player| Stage.run(self, player, &block) }
         end
         on_ready &wrapper
       end
@@ -45,7 +45,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       def on_player_update &block
         wrapper = proc do
-          players.each { |player| block[player] }
+          players.each { |player| Stage.run(self, player, &block) }
         end
         on_update &wrapper
       end
