@@ -22,16 +22,12 @@ module Gamefic
 
     def initialize
       self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
-      self.class.appended_chapters.each do |klass|
-        chapters.push klass.new(self)
-      end
-      entity_vault.lock
-      @rulebook = nil
-      hydrate
+      post_initialize
     end
 
-    def chapters
-      @chapters ||= []
+    def post_initialize
+      entity_vault.lock
+      hydrate
     end
 
     def scenes
@@ -102,21 +98,12 @@ module Gamefic
     def hydrate
       @rulebook = Rulebook.new
       @rulebook.script_with_defaults self
-      chapters.each(&:hydrate)
       @rulebook.freeze
     end
 
     def self.inherited klass
       super
       klass.blocks.concat blocks
-    end
-
-    def self.append chapter
-      appended_chapters.add chapter
-    end
-
-    def self.appended_chapters
-      @appended_chapters ||= Set.new
     end
   end
 end
