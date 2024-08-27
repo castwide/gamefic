@@ -11,9 +11,6 @@ module Gamefic
     # @return [Array<Query::Base>]
     attr_reader :queries
 
-    # @return [Narrative]
-    attr_reader :narrative
-
     # @param verb [Symbol]
     # @param narrative [Narrative]
     # @param queries [Array<Query::Base>]
@@ -21,10 +18,10 @@ module Gamefic
     # @param block [Proc]
     def initialize verb, narrative, *queries, meta: false, &block
       @verb = verb
-      @narrative = narrative
       @queries = map_queryable_objects(queries)
       @meta = meta
       @block = block
+      @callback = Callback.new(narrative, block)
     end
 
     # The `meta?` flag is just a way for authors to identify responses that
@@ -70,7 +67,7 @@ module Gamefic
     end
 
     def execute *args
-      Stage.run(narrative, *args, &@block)
+      @callback.run *args
     end
 
     def precision
