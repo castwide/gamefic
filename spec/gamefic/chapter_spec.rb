@@ -58,4 +58,43 @@ describe Gamefic::Chapter do
     player.perform 'target'
     expect(target).to eq('chap_klass')
   end
+
+  it 'makes entities in the plot' do
+    chap_klass = Class.new(Gamefic::Chapter) do
+      seed do
+        make Gamefic::Entity, name: 'second'
+      end
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chap_klass
+
+      seed do
+        make Gamefic::Entity, name: 'first'
+      end
+    end
+
+    plot = plot_klass.new
+    expect(plot.entities).to be(plot.chapters.first.entities)
+    expect(plot.entities.map(&:name)).to eq(['first', 'second'])
+    expect(plot.pick('second')).to be
+    expect(plot.chapters.first.pick('first')).to be
+  end
+
+  it 'adds event callbacks to plots' do
+    chap_klass = Class.new(Gamefic::Chapter) do
+      on_player_ready do |actor|
+        actor[:ready] = true
+      end
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chap_klass
+    end
+
+    plot = plot_klass.new
+    player = plot.introduce
+    plot.ready
+    expect(player[:ready]).to be(true)
+  end
 end
