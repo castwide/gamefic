@@ -37,6 +37,12 @@ describe Gamefic::Query::Text do
     expect(result.match).to be_nil
   end
 
+  it 'rejects non-string tokens' do
+    querydef = Gamefic::Query::Text.new
+    entity = Gamefic::Entity.new
+    expect(querydef.accept?(nil, entity)).to be(false)
+  end
+
   it 'raises errors for invalid arguments' do
     expect { Gamefic::Query::Text.new({ bad: :arg }) }.to raise_error(ArgumentError)
   end

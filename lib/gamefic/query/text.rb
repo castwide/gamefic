@@ -39,6 +39,8 @@ module Gamefic
       private
 
       def match? token
+        return false unless token.is_a?(String)
+
         case @argument
         when Regexp
           token =~ @argument
