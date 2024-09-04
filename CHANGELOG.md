@@ -1,7 +1,10 @@
-## 3.3.0
-- Extendable script module delegation
-- Node#take
+## 3.4.0
 - Chapters
+
+## 3.3.0 - September 1, 2024
+- Node#take
+- Node#include?
+- Reject non-string tokens in Text queries
 
 ## 3.2.2 - July 21, 2024
 - Describable#described?

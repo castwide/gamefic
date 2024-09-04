@@ -66,7 +66,6 @@ module Gamefic
     def include?(other)
       other.parent == self
     end
-    alias has? include?
 
     def adjacent?(other)
       other.parent == parent
