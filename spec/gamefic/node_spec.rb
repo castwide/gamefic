@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 describe Gamefic::Node do
+  let(:klass) do
+    Class.new do
+      include Gamefic::Node
+    end
+  end
+
   it "adds a node to a parent" do
     x = Object.new
     x.extend Gamefic::Node
@@ -59,5 +65,31 @@ describe Gamefic::Node do
     expect {
       z.parent = x
     }.to raise_error Gamefic::NodeError
+  end
+
+  it 'adds children with #take' do
+    x = klass.new
+    y = klass.new
+    z = klass.new
+    x.take y, z
+    expect(x.children).to eq([y, z])
+    expect(y.parent).to be(x)
+    expect(z.parent).to be(x)
+  end
+
+  it 'checks children with #include?' do
+    x = klass.new
+    y = klass.new
+    y.parent = x
+    expect(x).to include(y)
+  end
+
+  it 'checks siblings with #adjacent?' do
+    top = klass.new
+    x = klass.new
+    y = klass.new
+    x.parent = top
+    y.parent = top
+    expect(x).to be_adjacent(y)
   end
 end
