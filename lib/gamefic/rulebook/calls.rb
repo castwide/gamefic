@@ -67,10 +67,6 @@ module Gamefic
         verb_response_map.empty? && synonym_syntax_map.empty?
       end
 
-      def self.new_array_map
-        Hash.new { |hash, key| hash[key] = [] }
-      end
-
       private
 
       attr_reader :verb_response_map
