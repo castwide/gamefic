@@ -11,6 +11,10 @@ describe Gamefic::Rulebook do
     end
   end
 
+  it 'starts empty' do
+    expect(rulebook).to be_empty
+  end
+
   it "creates an action" do
     rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) {}
     expect(rulebook.responses.length).to eq(1)
