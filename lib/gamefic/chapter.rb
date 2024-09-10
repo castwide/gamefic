@@ -1,6 +1,33 @@
 # frozen_string_literal: true
 
 module Gamefic
+  # Chapters are plot extensions that manage their own namespaces. Authors can
+  # use them to encapsulate related content in a separate object instead of
+  # adding the required instance variables, methods, and attributes to the
+  # plot.
+  #
+  # Chapters are similar to subplots with a few important exceptions:
+  # * Chapters persist for the duration of the plot.
+  # * Players do not need to be introduced to a chapter.
+  # * Scripts in chapters apply to the parent plot's rulebook.
+  # * Using `make` to create an entity in a chapter adds it to the parent
+  #   plot's entity list.
+  #
+  # @example
+  #   class MyChapter < Gamefic::Chapter
+  #     seed do
+  #       @thing = make Gamefic::Entity, name: 'chapter thing'
+  #     end
+  #   end
+  #
+  #   class MyPlot < Gamefic::Plot
+  #     append MyChapter
+  #   end
+  #
+  #   plot = MyPlot.new
+  #   plot.entities                 #=> [<#Gamefic::Entity a chapter thing>]
+  #   plot.instance_exec { @thing } #=> nil
+  #
   class Chapter
     extend Scriptable
 
