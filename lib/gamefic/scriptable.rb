@@ -117,6 +117,7 @@ module Gamefic
     #   plot = Plot.new
     #   plot.thing #=> #<Gamefic::Entity a thing>
     #
+    # @param name [Symbol] The attribute name
     # @param klass [Class<Gamefic::Entity>]
     def attr_seed name, klass, **opts
       @count ||= 0
