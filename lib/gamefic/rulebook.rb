@@ -121,14 +121,5 @@ module Gamefic
     def empty?
       calls.empty? && hooks.empty? && scenes.empty? && events.empty?
     end
-
-    def script narrative
-      narrative.class.included_blocks.select(&:script?).each { |blk| Stage.run(narrative, &blk.code) }
-    end
-
-    def script_with_defaults narrative
-      script narrative
-      scenes.with_defaults narrative
-    end
   end
 end
