@@ -1,4 +1,4 @@
-## 3.4.0
+## 3.4.0 - September 10, 2024
 - Chapters
 - Subplots and chapters do not repeat plot scripts
 - Scriptable.no_scripts is deprecated
