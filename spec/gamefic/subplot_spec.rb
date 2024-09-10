@@ -94,4 +94,25 @@ describe Gamefic::Subplot do
     subplot.conclude
     expect(player[:concluded]).to be(true)
   end
+
+  it 'does not repeat scripts included in the plot' do
+    scriptable = Module.new do
+      extend Gamefic::Scriptable
+      make_seed Gamefic::Entity, name: 'thing'
+      respond(:foo) {}
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      include scriptable
+    end
+
+    subplot_klass = Class.new(Gamefic::Subplot) do
+      include scriptable
+    end
+
+    plot = plot_klass.new
+    subplot = plot.branch(subplot_klass)
+    expect(subplot.rulebook.responses).to be_empty
+    expect(subplot.entities).to be_empty
+  end
 end

@@ -97,4 +97,26 @@ describe Gamefic::Chapter do
     plot.ready
     expect(player[:ready]).to be(true)
   end
+
+  it 'does not repeat scripts included in the plot' do
+    scriptable = Module.new do
+      extend Gamefic::Scriptable
+      make_seed Gamefic::Entity, name: 'thing'
+      respond(:foo) {}
+    end
+
+    chap_klass = Class.new(Gamefic::Chapter) do
+      include scriptable
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      include scriptable
+      append chap_klass
+    end
+
+    plot = plot_klass.new
+    expect(plot.rulebook.responses).to be_one
+    expect(plot.rulebook.verbs).to eq([:foo])
+    expect(plot.entities).to be_one
+  end
 end
