@@ -25,6 +25,15 @@ module Gamefic
       [introduce].flatten.each { |pl| self.introduce pl }
     end
 
+    def script
+      @rulebook = Rulebook.new
+      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
+    end
+
+    def included_blocks
+      super - plot.included_blocks
+    end
+
     def ready
       super
       conclude if concluding?
@@ -67,12 +76,6 @@ module Gamefic
 
     def inspect
       "#<#{self.class}>"
-    end
-
-    def hydrate
-      @rulebook = Rulebook.new
-      @rulebook.script self
-      @rulebook.freeze
     end
   end
 end

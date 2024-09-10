@@ -21,13 +21,28 @@ module Gamefic
     attr_reader :rulebook
 
     def initialize
-      self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+      seed
+      script
       post_initialize
+    end
+
+    def seed
+      included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+    end
+
+    def script
+      @rulebook = Rulebook.new
+      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
+      @rulebook.scenes.with_defaults self
+    end
+
+    def included_blocks
+      self.class.included_blocks
     end
 
     def post_initialize
       entity_vault.lock
-      hydrate
+      rulebook.freeze
     end
 
     def scenes
@@ -96,9 +111,8 @@ module Gamefic
     end
 
     def hydrate
-      @rulebook = Rulebook.new
-      @rulebook.script_with_defaults self
-      @rulebook.freeze
+      script
+      post_initialize
     end
 
     def self.inherited klass

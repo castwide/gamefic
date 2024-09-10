@@ -5,15 +5,18 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
-    def post_initialize
-      self.class.appended_chapters.each do |klass|
-        chapters.push klass.new(self)
-      end
+    def seed
       super
+      chapters.each(&:seed)
+    end
+
+    def script
+      super
+      chapters.each(&:script)
     end
 
     def chapters
-      @chapters ||= []
+      @chapters ||= self.class.appended_chapters.map { |klass| klass.new(self) }
     end
 
     def ready
@@ -82,10 +85,8 @@ module Gamefic
     end
 
     def hydrate
-      @rulebook = Rulebook.new
-      @rulebook.script_with_defaults self
-      chapters.each(&:hydrate)
-      @rulebook.freeze
+      script
+      post_initialize
       subplots.each(&:hydrate)
     end
 

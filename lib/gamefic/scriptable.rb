@@ -154,35 +154,13 @@ module Gamefic
     # This can be useful when you need access to the Scriptable's constants and
     # instance methods, but you don't want to duplicate its rules.
     #
-    # @example
-    #   # Plot and Subplot will both include the `info` method, but
-    #   # only Plot will implement the `think` action.
+    # @deprecated Removing script blocks is no longer necessary. This method
+    #   will simply return self until it's removed.
     #
-    #   module Shared
-    #     extend Gamefic::Scriptable
-    #
-    #     def info
-    #       "This method was added by the Shared module."
-    #     end
-    #
-    #     respond :think do |actor|
-    #       actor.tell 'You ponder your predicament.'
-    #     end
-    #   end
-    #
-    #   class Plot < Gamefic::Plot
-    #     include Shared
-    #   end
-    #
-    #   class Subplot < Gamefic::Subplot
-    #     include Shared.no_scripts
-    #   end
-    #
-    # @return [Module]
+    # @return [Module<self>]
     def no_scripts
-      Module.new.tap do |mod|
-        append_features(mod)
-      end
+      Logging.logger.warn 'Calling `no_scripts` on Scriptable modules is no longer necessary.'
+      self
     end
   end
 end

@@ -16,7 +16,18 @@ module Gamefic
     # @param plot [Plot]
     def initialize plot
       @plot = plot
-      self.class.included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+    end
+
+    def included_blocks
+      self.class.included_blocks - plot.included_blocks
+    end
+
+    def seed
+      included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
+    end
+
+    def script
+      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
     end
 
     def rulebook
@@ -25,10 +36,6 @@ module Gamefic
 
     def make klass, **opts
       plot.make klass, **opts
-    end
-
-    def hydrate
-      rulebook.script self
     end
 
     def entities

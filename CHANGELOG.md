@@ -1,5 +1,7 @@
 ## 3.4.0
 - Chapters
+- Subplots and chapters do not repeat plot scripts
+- Scriptable.no_scripts is deprecated
 
 ## 3.3.0 - September 1, 2024
 - Node#take
