@@ -31,7 +31,7 @@ describe Gamefic::Narrative do
           pause(:scene) { |actor| actor.tell 'Pause' }
         end
         narr = Gamefic::Narrative.new
-        expect(narr.rulebook.scenes.names).to eq(%i[scene default_scene default_conclusion])
+        expect(narr.rulebook.scenes.names).to eq(%i[scene])
       end
 
       it 'adds actions from scripts' do

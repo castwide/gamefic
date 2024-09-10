@@ -33,7 +33,6 @@ module Gamefic
     def script
       @rulebook = Rulebook.new
       included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
-      @rulebook.scenes.with_defaults self
     end
 
     def included_blocks

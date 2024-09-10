@@ -13,6 +13,7 @@ module Gamefic
     def script
       super
       chapters.each(&:script)
+      rulebook.scenes.with_defaults self
     end
 
     def chapters
@@ -85,8 +86,7 @@ module Gamefic
     end
 
     def hydrate
-      script
-      post_initialize
+      super
       subplots.each(&:hydrate)
     end
 

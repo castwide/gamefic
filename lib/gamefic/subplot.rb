@@ -25,11 +25,6 @@ module Gamefic
       [introduce].flatten.each { |pl| self.introduce pl }
     end
 
-    def script
-      @rulebook = Rulebook.new
-      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
-    end
-
     def included_blocks
       super - plot.included_blocks
     end
