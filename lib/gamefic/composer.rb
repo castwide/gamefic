@@ -42,7 +42,9 @@ module Gamefic
         remainder = response.verb ? '' : expression.verb.to_s
         arguments = []
         response.queries.each_with_index do |query, idx|
-          result = Scanner.send(method, query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip)
+          # @todo Instead of calling the scanner directly from here, maybe the
+          #   query should be responsible for it.
+          result = Scanner::Default.new(query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip).send(method)
           break unless valid_result_from_query?(result, query)
 
           if query.ambiguous?
