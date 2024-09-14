@@ -6,7 +6,7 @@ module Gamefic
       NEST_REGEXP = / in | on | of | from | inside | inside of | from inside | off /
 
       def scan
-        return Result.new(selection, token, [], token) unless token =~ NEST_REGEXP
+        return Result.unmatched(selection, token) unless token =~ NEST_REGEXP
 
         denest selection, token
       end
@@ -25,7 +25,7 @@ module Gamefic
           parts.pop
           last_result = result
         end
-        return Result.new(selection, token, [], '') if last_result.matched.empty? || last_result.matched.length > 1
+        return Result.unmatched(selection, token) if last_result.matched.empty? || last_result.matched.length > 1
         return last_result if parts.empty?
 
         denest(last_result.matched.first.children, parts.join(' '))

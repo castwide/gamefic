@@ -18,7 +18,7 @@ module Gamefic
 
       # @return [Result]
       def scan
-        strict_result = scan_strict #(selection, token)
+        strict_result = scan_strict
         strict_result.matched.empty? ? scan_fuzzy : strict_result
       end
 

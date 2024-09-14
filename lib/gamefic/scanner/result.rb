@@ -33,6 +33,10 @@ module Gamefic
         @matched = matched
         @remainder = remainder
       end
+
+      def self.unmatched scanned, token
+        new(scanned, token, [], token)
+      end
     end
   end
 end
