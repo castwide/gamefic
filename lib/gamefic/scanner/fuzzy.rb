@@ -2,7 +2,7 @@
 
 module Gamefic
   module Scanner
-    class Fuzzy < Default
+    class Fuzzy < Strict
       def match_word available, word
         available.select { |obj| obj.keywords.any? { |wrd| wrd.start_with?(word) } }
       end

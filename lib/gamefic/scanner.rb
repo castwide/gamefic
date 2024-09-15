@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'gamefic/scanner/result'
-require 'gamefic/scanner/default'
+require 'gamefic/scanner/base'
+require 'gamefic/scanner/strict'
 require 'gamefic/scanner/fuzzy'
 require 'gamefic/scanner/nesting'
 
@@ -27,8 +28,9 @@ module Gamefic
       processors.replace klasses
     end
 
+    # @return [Array<Class<Default>>]
     def self.processors
-      @processors ||= [Nesting, Default, Fuzzy]
+      @processors ||= [Nesting, Strict, Fuzzy]
     end
   end
 end
