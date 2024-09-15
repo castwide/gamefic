@@ -2,13 +2,13 @@
 
 require 'gamefic/scanner/result'
 require 'gamefic/scanner/default'
+require 'gamefic/scanner/fuzzy'
 require 'gamefic/scanner/nesting'
 
 module Gamefic
   # A module for matching objects to tokens.
   #
   module Scanner
-
     # Scan entities against a token.
     #
     # @param selection [Array<Entity>, String, Regexp]
@@ -28,7 +28,7 @@ module Gamefic
     end
 
     def self.processors
-      @processors ||= [Nesting, Default]
+      @processors ||= [Nesting, Default, Fuzzy]
     end
   end
 end

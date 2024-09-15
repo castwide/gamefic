@@ -36,6 +36,14 @@ module Gamefic
         true
       end
 
+      def scan _subject, token, _processors = []
+        if match? token
+          Scanner::Result.new(@argument, token, token, '')
+        else
+          Scanner::Result.new(@argument, token, '', token)
+        end
+      end
+
       private
 
       def match? token

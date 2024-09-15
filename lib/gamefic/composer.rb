@@ -10,8 +10,8 @@ module Gamefic
     # @param expressions [Array<Expression>]
     # @return [Command]
     def self.compose actor, expressions
-      %i[strict fuzzy].each do |method|
-        result = match_expressions_to_response actor, expressions, method
+      Scanner.processors.each do |processor|
+        result = match_expressions_to_response actor, expressions, processor
         return result if result
       end
       Command.new(nil, [])
@@ -20,31 +20,29 @@ module Gamefic
     class << self
       private
 
-      def match_expressions_to_response actor, expressions, method
+      def match_expressions_to_response actor, expressions, processor
         expressions.each do |expression|
-          result = match_response_arguments actor, expression, method
+          result = match_response_arguments actor, expression, processor
           return result if result
         end
         nil
       end
 
-      def match_response_arguments actor, expression, method
+      def match_response_arguments actor, expression, processor
         actor.epic.responses_for(expression.verb).each do |response|
           next unless response.queries.length >= expression.tokens.length
 
-          result = match_query_arguments(actor, expression, response, method)
+          result = match_query_arguments(actor, expression, response, processor)
           return result if result
         end
         nil
       end
 
-      def match_query_arguments actor, expression, response, method
+      def match_query_arguments actor, expression, response, processor
         remainder = response.verb ? '' : expression.verb.to_s
         arguments = []
         response.queries.each_with_index do |query, idx|
-          # @todo Instead of calling the scanner directly from here, maybe the
-          #   query should be responsible for it.
-          result = Scanner::Default.new(query.select(actor), "#{remainder} #{expression.tokens[idx]}".strip).send(method)
+          result = query.scan(actor, "#{remainder} #{expression.tokens[idx]}".strip, [processor])
           break unless valid_result_from_query?(result, query)
 
           if query.ambiguous?

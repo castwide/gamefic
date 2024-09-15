@@ -18,8 +18,7 @@ module Gamefic
 
       # @return [Result]
       def scan
-        strict_result = scan_strict
-        strict_result.matched.empty? ? scan_fuzzy : strict_result
+        scan_strict
       end
 
       def strict
@@ -29,6 +28,8 @@ module Gamefic
       def fuzzy
         scan_fuzzy
       end
+
+      private
 
       def scan_strict_or_fuzzy method
         words = token.keywords
@@ -44,19 +45,13 @@ module Gamefic
         Result.new(selection, token, filtered, '')
       end
 
-      private
-
       # @return [Result]
       def scan_strict
-        return Result.new(selection, token, '', token) unless selection.is_a?(Array)
-
         scan_strict_or_fuzzy(:select_strict)
       end
 
       # @return [Result]
       def scan_fuzzy
-        return scan_text unless selection.is_a?(Array)
-
         scan_strict_or_fuzzy(:select_fuzzy)
       end
 

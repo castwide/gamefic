@@ -3,7 +3,7 @@
 module Gamefic
   module Scanner
     class Nesting < Default
-      NEST_REGEXP = / in | on | of | from | inside | inside of | from inside | off /
+      NEST_REGEXP = / in | on | of | from | inside | inside of | from inside | off /.freeze
 
       def scan
         return Result.unmatched(selection, token) unless token =~ NEST_REGEXP

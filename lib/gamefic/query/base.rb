@@ -54,6 +54,15 @@ module Gamefic
         raise "#select not implemented for #{self.class}"
       end
 
+      def scan subject, token, processors = Scanner.processors
+        available = select(subject)
+        processors.each do |processor|
+          result = processor.new(available, token).scan
+          return result unless result.matched.empty?
+        end
+        Scanner::Result.unmatched(subject, token)
+      end
+
       def accept?(subject, object)
         available = select(subject)
         if ambiguous?
