@@ -1,3 +1,7 @@
+## 3.5.0
+- Configurable scanners
+- Refactored scanners and queries
+
 ## 3.4.0 - September 10, 2024
 - Chapters
 - Subplots and chapters do not repeat plot scripts
