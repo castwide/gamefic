@@ -3,13 +3,13 @@
 module Gamefic
   module Scanner
     class Default
-      # @return [Array<Entity>, String, Regexp]
+      # @return [Array<Entity>]
       attr_reader :selection
 
       # @return [String]
       attr_reader :token
 
-      # @param selection [Array<Entity>, String, Regexp]
+      # @param selection [Array<Entity>]
       # @param token [String]
       def initialize selection, token
         @selection = selection

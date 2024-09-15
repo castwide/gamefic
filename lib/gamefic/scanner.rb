@@ -11,7 +11,7 @@ module Gamefic
   module Scanner
     # Scan entities against a token.
     #
-    # @param selection [Array<Entity>, String, Regexp]
+    # @param selection [Array<Entity>]
     # @param token [String]
     # @return [Result]
     def self.scan selection, token
