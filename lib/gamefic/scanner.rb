@@ -5,6 +5,7 @@ require 'gamefic/scanner/base'
 require 'gamefic/scanner/strict'
 require 'gamefic/scanner/fuzzy'
 require 'gamefic/scanner/nesting'
+require 'gamefic/scanner/fuzzy_nesting'
 
 module Gamefic
   # A module for matching objects to tokens.
@@ -30,7 +31,7 @@ module Gamefic
 
     # @return [Array<Class<Base>>]
     def self.processors
-      @processors ||= [Nesting, Strict, Fuzzy]
+      @processors ||= [Nesting, Strict, FuzzyNesting, Fuzzy]
     end
   end
 end

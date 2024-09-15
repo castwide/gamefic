@@ -3,6 +3,11 @@
 module Gamefic
   module Scanner
     class Nesting < Base
+
+      def subprocessor
+        Strict
+      end
+
       NEST_REGEXP = / in | on | of | from | inside | inside of | from inside | off | out | out of /.freeze
 
       def scan
@@ -16,10 +21,10 @@ module Gamefic
       def denest objects, token
         parts = token.split(NEST_REGEXP)
         current = parts.pop
-        last_result = Strict.scan(objects, current)
+        last_result = subprocessor.scan(objects, current)
         until parts.empty?
           current = "#{parts.last} #{current}"
-          result = Strict.scan(last_result.matched, current)
+          result = subprocessor.scan(last_result.matched, current)
           break if result.matched.empty?
 
           parts.pop
