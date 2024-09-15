@@ -20,6 +20,13 @@ module Gamefic
       def scan
         Result.unmatched(selection, token)
       end
+
+      # @param selection [Array<Entity>]
+      # @param token [String]
+      # @return [Result]
+      def self.scan selection, token
+        new(selection, token).scan
+      end
     end
   end
 end

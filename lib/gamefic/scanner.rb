@@ -18,7 +18,7 @@ module Gamefic
     def self.scan selection, token
       result = nil
       processors.each do |processor|
-        result = processor.new(selection, token).scan
+        result = processor.scan(selection, token)
         break unless result.matched.empty?
       end
       result
@@ -28,7 +28,7 @@ module Gamefic
       processors.replace klasses
     end
 
-    # @return [Array<Class<Default>>]
+    # @return [Array<Class<Base>>]
     def self.processors
       @processors ||= [Nesting, Strict, Fuzzy]
     end

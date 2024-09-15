@@ -57,7 +57,7 @@ module Gamefic
       def scan subject, token, processors = Scanner.processors
         available = select(subject)
         processors.each do |processor|
-          result = processor.new(available, token).scan
+          result = processor.scan(available, token)
           return result unless result.matched.empty?
         end
         Scanner::Result.unmatched(subject, token)

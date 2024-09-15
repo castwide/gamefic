@@ -16,10 +16,10 @@ module Gamefic
       def denest objects, token
         parts = token.split(NEST_REGEXP)
         current = parts.pop
-        last_result = Strict.new(objects, current).scan
+        last_result = Strict.scan(objects, current)
         until parts.empty?
           current = "#{parts.last} #{current}"
-          result = Strict.new(last_result.matched, current).scan
+          result = Strict.scan(last_result.matched, current)
           break if result.matched.empty?
 
           parts.pop
