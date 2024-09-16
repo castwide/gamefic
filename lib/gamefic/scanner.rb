@@ -11,6 +11,8 @@ module Gamefic
   # A module for matching objects to tokens.
   #
   module Scanner
+    DEFAULT_PROCESSORS = [Nesting, Strict, FuzzyNesting, Fuzzy].freeze
+
     # Scan entities against a token.
     #
     # @param selection [Array<Entity>]
@@ -25,13 +27,20 @@ module Gamefic
       result
     end
 
+    # Select the scanner processors to use in entity queries. Each processor
+    # will be used in order until one of them returns matches. The default
+    # processor list is `DEFAULT_PROCESSORS`.
+    #
+    # @param klasses [Array<Class<Base>>]
     def self.use *klasses
-      processors.replace klasses
+      processors.replace klasses.flatten
     end
 
     # @return [Array<Class<Base>>]
     def self.processors
-      @processors ||= [Nesting, Strict, FuzzyNesting, Fuzzy]
+      @processors ||= []
     end
+
+    use DEFAULT_PROCESSORS
   end
 end
