@@ -41,8 +41,9 @@ module Gamefic
       # @param subject [Gamefic::Entity]
       # @param token [String]
       # @return [Result]
-      def query(_subject, _token)
-        raise "#query not implemented for #{self.class}"
+      def query(subject, token)
+        scan = scan(subject, token)
+        ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
       end
 
       # Get an array of entities that match the query from the context of the
@@ -51,7 +52,7 @@ module Gamefic
       # @param subject [Entity]
       # @return [Array<Entity>]
       def select _subject
-        raise "#select not implemented for #{self.class}"
+        []
       end
 
       def scan subject, token, processors = Scanner.processors
@@ -63,6 +64,11 @@ module Gamefic
         Scanner::Result.unmatched(subject, token)
       end
 
+      # True if the object is selectable by the subject.
+      #
+      # @param subject [Entity]
+      # @param object [Array<Entity>, Entity]
+      # @return [Boolean]
       def accept?(subject, object)
         available = select(subject)
         if ambiguous?

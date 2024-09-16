@@ -23,15 +23,6 @@ module Gamefic
         available_entities(subject).that_are(*@arguments)
       end
 
-      def query subject, token
-        filtered = available_entities(subject).that_are(*@arguments)
-        return Result.new(token, nil) if filtered.include?(token)
-
-        scan = Scanner.scan(filtered, token)
-
-        ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
-      end
-
       private
 
       def available_entities(subject)

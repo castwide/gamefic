@@ -20,25 +20,8 @@ module Gamefic
               .that_are(*@arguments)
       end
 
-      # @return [Result]
-      def query(subject, token)
-        available = @scope.matches(subject)
-                          .that_are(*@arguments)
-        return Result.new(token, nil) if available.include?(token)
-
-        scan = Scanner.scan(available, token)
-
-        return ambiguous_result(scan) if ambiguous?
-
-        unambiguous_result(scan)
-      end
-
       def precision
         @precision ||= @scope.precision + calculate_precision
-      end
-
-      def ambiguous?
-        @ambiguous
       end
     end
   end
