@@ -2,13 +2,14 @@
 
 module Gamefic
   module Scanner
+    # Strict scanning for entities inside of other entities, e.g., `sock inside drawer`.
+    #
     class Nesting < Base
+      NEST_REGEXP = / in | on | of | from | inside | inside of | from inside | off | out | out of /.freeze
 
       def subprocessor
         Strict
       end
-
-      NEST_REGEXP = / in | on | of | from | inside | inside of | from inside | off | out | out of /.freeze
 
       def scan
         return Result.unmatched(selection, token) unless token =~ NEST_REGEXP

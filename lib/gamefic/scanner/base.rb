@@ -2,6 +2,8 @@
 
 module Gamefic
   module Scanner
+    # A base class for scanners that match tokens to entities.
+    #
     class Base
       # @return [Array<Entity>]
       attr_reader :selection

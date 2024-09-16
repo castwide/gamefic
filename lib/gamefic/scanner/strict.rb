@@ -2,6 +2,11 @@
 
 module Gamefic
   module Scanner
+    # Strict token matching.
+    #
+    # An entity will only match a word in a strict scan if the entire word
+    # matches one of the entity's keywords.
+    #
     class Strict < Base
       # @return [Result]
       def scan
