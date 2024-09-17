@@ -15,12 +15,12 @@ module Gamefic
         filtered = []
         words.each_with_index do |word, idx|
           tested = match_word(available, word)
-          return Result.new(selection, token, filtered, words[idx..].join(' ')) if tested.empty?
+          return Result.new(selection, token, filtered, words[idx..].join(' '), self.class) if tested.empty?
 
           filtered = tested
           available = filtered
         end
-        Result.new(selection, token, filtered, '')
+        Result.new(selection, token, filtered, '', self.class)
       end
 
       def match_word available, word

@@ -31,7 +31,10 @@ module Gamefic
     # will be used in order until one of them returns matches. The default
     # processor list is `DEFAULT_PROCESSORS`.
     #
+    # Processor classes should be in order from most to least exacting.
+    #
     # @param klasses [Array<Class<Base>>]
+    # @return [Array<Class<Base>>]
     def self.use *klasses
       processors.replace klasses.flatten
     end

@@ -61,7 +61,7 @@ module Gamefic
           result = processor.scan(available, token)
           return result unless result.matched.empty?
         end
-        Scanner::Result.unmatched(subject, token)
+        Scanner::Result.unmatched(subject, token, nil)
       end
 
       # True if the object is selectable by the subject.
