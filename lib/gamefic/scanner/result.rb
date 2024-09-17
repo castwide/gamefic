@@ -36,7 +36,7 @@ module Gamefic
       end
 
       def level
-        @level ||= Scanner.processors.find_index(processor) || Scanner.processors.length
+        @level ||= Scanner.processors.length - (Scanner.processors.find_index(processor) || Scanner.processors.length)
       end
 
       def self.unmatched scanned, token, processor
