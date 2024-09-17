@@ -6,14 +6,17 @@ describe Gamefic::Composer do
       seed do
         @room = make Gamefic::Entity, name: 'room'
         @thing = make Gamefic::Entity, name: 'thing', parent: @room
+        @thingamabob = make Gamefic::Entity, name: 'thingamabob', parent: @room
         @hidden = make Gamefic::Entity, name: 'hidden'
       end
 
       script do
-        respond(:look, available) { |_, _| }
-        respond(:use, @thing) { |_, _| }
-        respond(:say, plaintext) { |_, _| }
-        respond(:look, 'around') { |_, _| }
+        respond(:look, available) {}
+        respond(:use, @thingamabob) {}
+        respond(:use, @thing) {}
+        respond(:say, plaintext) {}
+        respond(:look, 'around') {}
+        respond(:use, plaintext) {}
 
         introduction do |actor|
           actor.parent = @room
@@ -35,10 +38,10 @@ describe Gamefic::Composer do
   end
 
   it 'matches fuzzy available entities' do
-    expressions = Gamefic::Syntax.tokenize('look thi', plot.rulebook.syntaxes)
+    expressions = Gamefic::Syntax.tokenize('look thinga', plot.rulebook.syntaxes)
     command = Gamefic::Composer.compose(actor, expressions)
     expect(command.verb).to be(:look)
-    expect(command.arguments).to eq([plot.pick('thing')])
+    expect(command.arguments).to eq([plot.pick('thingamabob')])
   end
 
   it 'does not match unavailable entities' do
@@ -67,5 +70,12 @@ describe Gamefic::Composer do
     command = Gamefic::Composer.compose(actor, expressions)
     expect(command.verb).to be(:say)
     expect(command.arguments).to eq(['hello world'])
+  end
+
+  it 'prioritizes precision with fuzzy matches' do
+    expressions = Gamefic::Syntax.tokenize('use thinga', plot.rulebook.syntaxes)
+    command = Gamefic::Composer.compose(actor, expressions)
+    expect(command.verb).to be(:use)
+    expect(command.arguments).to eq([plot.pick!('thingamabob')])
   end
 end

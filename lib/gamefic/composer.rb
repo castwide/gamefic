@@ -4,17 +4,29 @@ module Gamefic
   # A function module for creating commands from expressions.
   #
   module Composer
+    class Result
+      attr_reader :command, :level, :precision
+
+      def initialize command, level, precision
+        @command = command
+        @level = level
+        @precision = precision
+      end
+    end
+
     # Create a command from the first expression that matches a response.
     #
     # @param actor [Actor]
     # @param expressions [Array<Expression>]
     # @return [Command]
     def self.compose actor, expressions
-      Scanner.processors.each do |processor|
-        result = match_expressions_to_response actor, expressions, processor
-        return result if result
+      results = Scanner.processors.flat_map do |processor|
+        match_expressions_to_response actor, expressions, processor
       end
-      Command.new(nil, [])
+      .compact
+      .sort_by.with_index { |result, idx| [-result.precision, result.level, idx] }
+
+      results.first&.command || Command.new(nil, [])
     end
 
     class << self
@@ -55,7 +67,7 @@ module Gamefic
 
         return nil if arguments.length != response.queries.length || remainder != ''
 
-        Command.new(response.verb, arguments)
+        Result.new(Command.new(response.verb, arguments), Scanner.processors.find_index(processor), response.precision)
       end
 
       # @param result [Scanner::Result]
