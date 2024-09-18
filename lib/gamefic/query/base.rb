@@ -26,12 +26,6 @@ module Gamefic
 
       # Get a query result for a given subject and token.
       #
-      # @note This method is retained as a convenience for authors. Narratives
-      #   should use Composer to build commands, as it provides more precise
-      #   matching of tokens to valid response arguments. Authors can use
-      #   #query to find entities that match a token regardless of whether the
-      #   result matches an available response.
-      #
       # @example
       #   respond :reds do |actor|
       #     reds = available(ambiguous: true).query(actor, 'red').match
@@ -49,6 +43,8 @@ module Gamefic
 
       # Get an array of entities that match the query from the context of the
       # subject.
+      #
+      # Subclasses should override this method.
       #
       # @param subject [Entity]
       # @return [Array<Entity>]
