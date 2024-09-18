@@ -11,9 +11,12 @@ module Gamefic
       # @return [String]
       attr_reader :remainder
 
-      def initialize match, remainder
+      attr_reader :strictness
+
+      def initialize match, remainder, strictness = 0
         @match = match
         @remainder = remainder
+        @strictness = strictness
       end
     end
   end
