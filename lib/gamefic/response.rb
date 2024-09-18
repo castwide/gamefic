@@ -82,6 +82,8 @@ module Gamefic
     # @param expression [Expression]
     # @return [Command, nil]
     def to_command actor, expression
+      return nil unless expression.verb == verb && expression.tokens.length <= queries.length
+
       results = filter(actor, expression)
       return nil unless results
 
@@ -96,15 +98,10 @@ module Gamefic
     private
 
     def filter actor, expression
-      return nil unless verb.nil? || expression.verb == verb
-      return nil unless expression.tokens.length <= queries.length
-
-      remainder = verb ? '' : expression.verb.to_s
+      remainder = ''
       results = []
       queries.each_with_index do |query, idx|
         token = "#{remainder} #{expression.tokens[idx]}".strip
-        break if token.empty?
-
         result = query.filter(actor, token)
         break unless result.match
 
