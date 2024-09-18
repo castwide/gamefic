@@ -95,16 +95,16 @@ module Gamefic
 
     def filter actor, expression
       remainder = ''
-      results = []
-      queries.each_with_index do |query, idx|
-        token = "#{remainder} #{expression.tokens[idx]}".strip
-        result = query.filter(actor, token)
-        break unless result.match
+      result = queries.zip(expression.tokens)
+                      .map do |query, token|
+                        token = "#{remainder} #{token}".strip
+                        result = query.filter(actor, token)
+                        return nil unless result.match
 
-        results.push result
-        remainder = result.remainder
-      end
-      results if results.length == queries.length && remainder.empty?
+                        remainder = result.remainder
+                        result
+                      end
+      result if remainder.empty?
     end
 
     def generate_default_syntax
