@@ -23,11 +23,11 @@ module Gamefic
       action = next_action
       return unless action
 
-      run_before_action_hooks action
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
       return if action.cancelled?
 
       action.execute
-      run_after_action_hooks action
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions action }
       action
     end
 
@@ -106,16 +106,6 @@ module Gamefic
         return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
       end
       finalize
-    end
-
-    # @return [void]
-    def run_before_action_hooks action
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
-    end
-
-    # @return [void]
-    def run_after_action_hooks action
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions action }
     end
 
     # If the dispatcher proceeds through all possible responses, it can fall
