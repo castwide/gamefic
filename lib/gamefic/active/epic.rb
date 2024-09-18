@@ -51,6 +51,7 @@ module Gamefic
         rulebooks.flat_map(&:syntaxes)
       end
 
+      # @return [Array<Response>]
       def responses_for(*verbs)
         rulebooks.to_a
                  .reverse

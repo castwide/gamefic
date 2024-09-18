@@ -104,4 +104,12 @@ RSpec.describe Gamefic::Response do
       expect(response.attempt(actor, command)).to be_nil
     end
   end
+
+  describe '#to_command' do
+    it 'rejects expressions with too many tokens' do
+      response = Gamefic::Response.new(:verb, stage_func) {}
+      expression = Gamefic::Expression.new(:verb, ['extra'])
+      expect(response.to_command(nil, expression)).to be_nil
+    end
+  end
 end

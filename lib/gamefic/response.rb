@@ -57,13 +57,9 @@ module Gamefic
     # @param actor [Active]
     # @param command [Command]
     def accept? actor, command
-      return false if command.verb != verb || command.arguments.length != queries.length
-
-      queries.each_with_index do |query, idx|
-        return false unless query.accept?(actor, command.arguments[idx])
-      end
-
-      true
+      command.verb == verb &&
+        command.arguments.length == queries.length &&
+        queries.zip(command.arguments).all? { |query, argument| query.accept?(actor, argument) }
     end
 
     def execute *args
@@ -112,26 +108,13 @@ module Gamefic
     end
 
     def generate_default_syntax
-      user_friendly = verb.to_s.gsub(/_/, ' ')
-      args = []
-      used_names = []
-      queries.each do |_c|
-        num = 1
-        new_name = ":var"
-        while used_names.include? new_name
-          num += 1
-          new_name = ":var#{num}"
-        end
-        used_names.push new_name
-        user_friendly += " #{new_name}"
-        args.push new_name
-      end
-      Syntax.new(user_friendly.strip, "#{verb} #{args.join(' ')}".strip)
+      args = queries.length.times.map { |num| num == 0 ? ':var' : ":var#{num + 1}" }
+      tmpl = "#{verb} #{args.join(' ')}".strip
+      Syntax.new(tmpl.gsub('_', ' '), tmpl)
     end
 
     def calculate_precision
-      total = 0
-      queries.each { |q| total += q.precision }
+      total = queries.sum(&:precision)
       total -= 1000 if verb.nil?
       total
     end
