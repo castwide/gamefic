@@ -74,7 +74,45 @@ module Gamefic
       @precision ||= calculate_precision
     end
 
+    # Turn an actor and an expression into a command by matching the
+    # expression's tokens to queries. Return nil if the expression
+    # could not be matched.
+    #
+    # @param actor [Actor]
+    # @param expression [Expression]
+    # @return [Command, nil]
+    def to_command actor, expression
+      results = filter(actor, expression)
+      return nil unless results
+
+      Command.new(
+        verb,
+        results.map(&:match),
+        results.sum(&:strictness),
+        precision
+      )
+    end
+
     private
+
+    def filter actor, expression
+      return nil unless verb.nil? || expression.verb == verb
+      return nil unless expression.tokens.length <= queries.length
+
+      remainder = verb ? '' : expression.verb.to_s
+      results = []
+      queries.each_with_index do |query, idx|
+        token = "#{remainder} #{expression.tokens[idx]}".strip
+        break if token.empty?
+
+        result = query.filter(actor, token)
+        break unless result.match
+
+        results.push result
+        remainder = result.remainder
+      end
+      results if results.length == queries.length && remainder.empty?
+    end
 
     def generate_default_syntax
       user_friendly = verb.to_s.gsub(/_/, ' ')

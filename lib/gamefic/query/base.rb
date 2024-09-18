@@ -42,9 +42,10 @@ module Gamefic
       # @param token [String]
       # @return [Result]
       def query(subject, token)
-        scan = scan(subject, token)
+        scan = Scanner.scan(select(subject), token)
         ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
       end
+      alias filter query
 
       # Get an array of entities that match the query from the context of the
       # subject.
@@ -53,15 +54,6 @@ module Gamefic
       # @return [Array<Entity>]
       def select _subject
         []
-      end
-
-      def scan subject, token, processors = Scanner.processors
-        available = select(subject)
-        processors.each do |processor|
-          result = processor.scan(available, token)
-          return result unless result.matched.empty?
-        end
-        Scanner::Result.unmatched(subject, token, nil)
       end
 
       # True if the object is selectable by the subject.
@@ -122,7 +114,7 @@ module Gamefic
       def unambiguous_result scan
         return Result.new(nil, scan.token) unless scan.matched.one?
 
-        Result.new(scan.matched.first, scan.remainder)
+        Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
     end
   end

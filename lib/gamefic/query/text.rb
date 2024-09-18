@@ -23,6 +23,7 @@ module Gamefic
           Result.new(nil, token)
         end
       end
+      alias filter query
 
       def precision
         0
