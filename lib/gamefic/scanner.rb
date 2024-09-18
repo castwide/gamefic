@@ -46,7 +46,7 @@ module Gamefic
     end
 
     def self.strictness processor
-      processors.length - (processors.find_index(processor) || processors.length)
+      (processors.length - (processors.find_index(processor) || processors.length)) * 100
     end
 
     use DEFAULT_PROCESSORS
