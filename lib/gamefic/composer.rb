@@ -5,11 +5,11 @@ module Gamefic
   #
   module Composer
     class Result
-      attr_reader :command, :level, :precision
+      attr_reader :command, :strictness, :precision
 
-      def initialize command, level, precision
+      def initialize command, strictness, precision
         @command = command
-        @level = level
+        @strictness = strictness
         @precision = precision
       end
     end
@@ -24,7 +24,7 @@ module Gamefic
         match_expressions_to_response actor, expressions, processor
       end
       .compact
-      .sort_by.with_index { |result, idx| [-result.precision, result.level, idx] }
+      .sort_by.with_index { |result, idx| [-result.precision, result.strictness, idx] }
 
       results.first&.command || Command.new(nil, [])
     end

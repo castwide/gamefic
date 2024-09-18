@@ -27,6 +27,8 @@ module Gamefic
       # @return [String]
       attr_reader :remainder
 
+      attr_reader :processor
+
       def initialize scanned, token, matched, remainder, processor
         @scanned = scanned
         @token = token
@@ -35,8 +37,8 @@ module Gamefic
         @processor = processor
       end
 
-      def level
-        @level ||= Scanner.processors.length - (Scanner.processors.find_index(processor) || Scanner.processors.length)
+      def strictness
+        @strictness ||= Scanner.strictness(processor)
       end
 
       def self.unmatched scanned, token, processor

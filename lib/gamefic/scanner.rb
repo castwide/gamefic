@@ -31,7 +31,8 @@ module Gamefic
     # will be used in order until one of them returns matches. The default
     # processor list is `DEFAULT_PROCESSORS`.
     #
-    # Processor classes should be in order from most to least exacting.
+    # Processor classes should be in order from most to least strict rules
+    # for matching tokens to entities.
     #
     # @param klasses [Array<Class<Base>>]
     # @return [Array<Class<Base>>]
@@ -42,6 +43,10 @@ module Gamefic
     # @return [Array<Class<Base>>]
     def self.processors
       @processors ||= []
+    end
+
+    def self.strictness processor
+      processors.length - (processors.find_index(processor) || processors.length)
     end
 
     use DEFAULT_PROCESSORS
