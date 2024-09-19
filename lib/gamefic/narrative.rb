@@ -23,7 +23,7 @@ module Gamefic
     def initialize
       seed
       script
-      post_initialize
+      post_script
     end
 
     def seed
@@ -40,7 +40,7 @@ module Gamefic
       self.class.included_blocks
     end
 
-    def post_initialize
+    def post_script
       entity_vault.lock
       rulebook.freeze
     end
@@ -113,7 +113,7 @@ module Gamefic
 
     def hydrate
       script
-      post_initialize
+      post_script
     end
 
     def self.inherited klass
