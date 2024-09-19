@@ -29,5 +29,28 @@ module Gamefic
       @strictness = strictness
       @precision = precision
     end
+
+    class << self
+      # @param actor [Actor]
+      # @param expressions [Array<Expression>]
+      # @return [Command]
+      def compose actor, expressions
+        expressions.flat_map { |expression| expression_to_commands(actor, expression) }
+                   .first || Command.new(nil, [])
+      end
+
+      private
+
+      # @param actor [Actor]
+      # @param expression [Expression]
+      # @return [Array<Command>]
+      def expression_to_commands actor, expression
+        actor.epic
+             .responses_for(expression.verb)
+             .map { |response| response.to_command(actor, expression) }
+             .compact
+             .sort_by.with_index { |result, idx| [-result.precision, -result.strictness, idx] }
+      end
+    end
   end
 end

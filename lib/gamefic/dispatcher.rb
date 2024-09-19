@@ -10,7 +10,6 @@ module Gamefic
       @actor = actor
       @command = command
       @executed = false
-      @finalized = false
     end
 
     # Run the dispatcher.
@@ -47,8 +46,7 @@ module Gamefic
     # @return [Dispatcher]
     def self.dispatch actor, input
       expressions = Syntax.tokenize(input, actor.epic.syntaxes)
-      command = compose(actor, expressions)
-      new(actor, command)
+      new(actor, Command.compose(actor, expressions))
     end
 
     # @param actor [Active]
@@ -58,29 +56,6 @@ module Gamefic
     def self.dispatch_from_params actor, verb, params
       command = Command.new(verb, params)
       new(actor, command)
-    end
-
-    class << self
-      private
-
-      # @param actor [Actor]
-      # @param expressions [Array<Expression>]
-      # @return [Command]
-      def compose actor, expressions
-        expressions.flat_map { |expression| expression_to_commands(actor, expression) }
-                   .first || Command.new(nil, [])
-      end
-
-      # @param actor [Actor]
-      # @param expression [Expression]
-      # @return [Array<Command>]
-      def expression_to_commands actor, expression
-        actor.epic
-             .responses_for(expression.verb)
-             .map { |response| response.to_command(actor, expression) }
-             .compact
-             .sort_by.with_index { |result, idx| [-result.precision, -result.strictness, idx] }
-      end
     end
 
     protected
