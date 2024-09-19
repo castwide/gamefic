@@ -65,5 +65,17 @@ describe Gamefic::Scriptable::Actions do
     it 'raises ArgumentError for invalid arguments' do
       expect { object.respond(:use, nil) {} }.to raise_error(ArgumentError)
     end
+
+    it 'handles proxies from class definitions' do
+      klass = Class.new(Gamefic::Narrative) do
+        def thing
+          @thing ||= make Gamefic::Entity, name: 'thing'
+        end
+
+        respond :use, proxy(:thing)
+      end
+
+      expect { klass.new }.not_to raise_error
+    end
   end
 end
