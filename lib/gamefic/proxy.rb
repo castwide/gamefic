@@ -9,7 +9,7 @@ module Gamefic
     attr_reader :key
 
     # @param type [Symbol]
-    # @param key [Symbol, String, Integer]
+    # @param key [Symbol, String]
     def initialize type, key
       @type = type
       @key = key
@@ -34,17 +34,13 @@ module Gamefic
     end
 
     def pick narrative
-      Stage.run(narrative, key) { |key| pick!(key) }
-    end
-
-    def index narrative
-      Stage.run(narrative, key) { |key| entities[key] }
+      Stage.run(narrative, key) { |key| pick(key) }
     end
 
     def validate_type
-      return if [:attr, :ivar, :pick, :index].include?(type)
+      return if [:attr, :ivar, :pick].include?(type)
 
-      raise ArgumentError, "Invalid proxy type `#{type}` (must be :attr, :ivar, :pick, or :index)"
+      raise ArgumentError, "Invalid proxy type `#{type}` (must be :attr, :ivar, or :pick)"
     end
   end
 end

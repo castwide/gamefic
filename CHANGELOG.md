@@ -3,6 +3,7 @@
 - Refactored scanners and queries
 - Allow assignment to nil instance variables in stage
 - Lazy proxies
+- Remove buggy index proxies
 
 ## 3.4.0 - September 10, 2024
 - Chapters

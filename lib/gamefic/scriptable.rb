@@ -100,8 +100,10 @@ module Gamefic
     #   make_seed Gamefic::Entity, name: 'thing'
     #
     # @param klass [Class<Gamefic::Entity>]
+    # @return [void]
     def make_seed klass, **opts
       seed { make(klass, **opts) }
+      nil
     end
 
     # Seed an entity with an attribute method.
@@ -116,13 +118,17 @@ module Gamefic
     #
     # @param name [Symbol] The attribute name
     # @param klass [Class<Gamefic::Entity>]
+    # @return [Proxy]
     def attr_seed name, klass, **opts
       seed do
         instance_variable_set("@#{name}", make(klass, **opts))
         self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
+      Proxy.new(:attr, name)
     end
 
+    # @param symbol [Symbol]
+    # @return [Proxy]
     def proxy symbol
       Logging.logger.warn "#proxy is deprecated. Use lazy_attr, lazy_ivar, or lazy_pick instead"
       if symbol.to_s.start_with?('@')
@@ -132,18 +138,39 @@ module Gamefic
       end
     end
 
+    # Lazy reference an entity by its instance variable.
+    #
+    # @example
+    #   lazy_ivar(:@variable)
+    #
+    # @param key [Symbol]
+    # @return [Proxy]
     def lazy_ivar key
       Proxy.new(:ivar, key)
     end
     alias _ivar lazy_ivar
 
+    # Lazy reference an entity by its attribute or method.
+    #
+    # @example
+    #   lazy_attr(:method)
+    #
+    # @param key [Symbol]
+    # @return [Proxy]
     def lazy_attr key
       Proxy.new(:attr, key)
     end
     alias _attr lazy_attr
 
-    def lazy_pick key
-      Proxy.new(:pick, key)
+    # Lazy reference an entity by its description.
+    #
+    # @example
+    #   lazy_pick('the red box')
+    #
+    # @param description [String]
+    # @return [Proxy]
+    def lazy_pick description
+      Proxy.new(:pick, description)
     end
     alias _pick lazy_pick
 
