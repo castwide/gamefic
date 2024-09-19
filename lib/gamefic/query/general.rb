@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'gamefic/scriptable/proxy'
-
 module Gamefic
   module Query
     # A General query accepts an array of entities to filter. Unlike Scoped

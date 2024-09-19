@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-describe Gamefic::Scriptable::Proxy do
+describe Gamefic::Scriptable::Proxies do
   let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
 
   let(:object) do
     klass = Class.new do
-      include Gamefic::Scriptable::Proxy
+      include Gamefic::Scriptable::Proxies
 
       def proxyable
         'working'
@@ -16,7 +16,7 @@ describe Gamefic::Scriptable::Proxy do
   end
 
   it 'proxies' do
-    agent = object.proxy(:proxyable)
+    agent = Gamefic::Proxy.new(:attr, :proxyable)
     unproxy = object.unproxy(agent)
     expect(unproxy).to be('working')
   end

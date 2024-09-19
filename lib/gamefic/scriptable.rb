@@ -27,10 +27,9 @@ module Gamefic
     autoload :Entities,  'gamefic/scriptable/entities'
     autoload :Events,    'gamefic/scriptable/events'
     autoload :Queries,   'gamefic/scriptable/queries'
-    autoload :Proxy,     'gamefic/scriptable/proxy'
+    autoload :Proxies,   'gamefic/scriptable/proxies'
     autoload :Scenes,    'gamefic/scriptable/scenes'
 
-    include Proxy
     include Queries
     # @!parse
     #   include Scriptable::Actions
@@ -102,9 +101,7 @@ module Gamefic
     #
     # @param klass [Class<Gamefic::Entity>]
     def make_seed klass, **opts
-      @count ||= 0
       seed { make(klass, **opts) }
-      Proxy::Agent.new(@count.tap { @count += 1 })
     end
 
     # Seed an entity with an attribute method.
@@ -120,17 +117,35 @@ module Gamefic
     # @param name [Symbol] The attribute name
     # @param klass [Class<Gamefic::Entity>]
     def attr_seed name, klass, **opts
-      @count ||= 0
       seed do
         instance_variable_set("@#{name}", make(klass, **opts))
         self.class.define_method(name) { instance_variable_get("@#{name}") }
       end
-      Proxy::Agent.new(@count.tap { @count += 1 })
     end
 
-    def lazy description
-      proxy("pick:#{description}")
+    def proxy symbol
+      Logging.logger.warn "#proxy is deprecated. Use lazy_attr, lazy_ivar, or lazy_pick instead"
+      if symbol.to_s.start_with?('@')
+        lazy_ivar(symbol)
+      else
+        lazy_attr(symbol)
+      end
     end
+
+    def lazy_ivar key
+      Proxy.new(:ivar, key)
+    end
+    alias _ivar lazy_ivar
+
+    def lazy_attr key
+      Proxy.new(:attr, key)
+    end
+    alias _attr lazy_attr
+
+    def lazy_pick key
+      Proxy.new(:pick, key)
+    end
+    alias _pick lazy_pick
 
     if RUBY_ENGINE == 'opal'
       # :nocov:

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Gamefic::Scriptable::Proxy do
+describe Gamefic::Scriptable::Proxies do
   let(:plot) do
     klass = Class.new(Gamefic::Narrative) do
       attr_reader :foo
@@ -11,25 +11,25 @@ describe Gamefic::Scriptable::Proxy do
   end
 
   it 'fetches from instance methods' do
-    agent = plot.proxy(:foo)
+    agent = Gamefic::Proxy.new(:attr, :foo)
     object = plot.unproxy(agent)
     expect(object).to be(plot.foo)
   end
 
   it 'fetches from instance variables' do
-    agent = plot.proxy(:@foo)
+    agent = Gamefic::Proxy.new(:ivar, :@foo)
     object = plot.unproxy(agent)
     expect(object).to be(plot.foo)
   end
 
   it 'fetches from indexes' do
-    agent = plot.proxy(0)
+    agent = Gamefic::Proxy.new(:index, 0)
     object = plot.unproxy(agent)
     expect(object).to be(plot.foo)
   end
 
   it 'raises on invalid agent symbols' do
-    agent = plot.proxy(:error)
+    agent = Gamefic::Proxy.new(:attr, :error)
     expect { plot.unproxy(agent) }.to raise_error(ArgumentError)
   end
 end

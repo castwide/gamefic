@@ -9,7 +9,7 @@ module Gamefic
     #   #make and #destroy instead.
     #
     module Entities
-      include Proxy
+      include Proxies
 
       def entity_vault
         @entity_vault ||= Vault.new

@@ -5,7 +5,7 @@ module Gamefic
     # Scriptable methods related to creating action queries.
     #
     module Queries
-      include Proxy
+      include Proxies
 
       # Define a query that searches the entire plot's entities.
       #

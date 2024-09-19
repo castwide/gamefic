@@ -33,7 +33,7 @@ module Gamefic
 
     include Scriptable::Actions
     include Scriptable::Events
-    include Scriptable::Proxy
+    include Scriptable::Proxies
     include Scriptable::Queries
     include Scriptable::Scenes
 

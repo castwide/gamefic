@@ -82,7 +82,7 @@ module Gamefic
       def calculate_precision
         @arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
-          when Entity, Scriptable::Proxy::Agent
+          when Entity, Proxy
             1000
           when Class, Module
             class_depth(arg) * 100
@@ -118,7 +118,7 @@ module Gamefic
       def unproxied_arguments
         @unproxied_arguments ||= arguments.map do |arg|
           case arg
-          when Gamefic::Scriptable::Proxy::Agent
+          when Proxy
             arg.fetch(narrative)
           else
             arg

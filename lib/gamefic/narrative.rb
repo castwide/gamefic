@@ -14,7 +14,7 @@ module Gamefic
     include Scriptable::Actions
     include Scriptable::Entities
     include Scriptable::Events
-    include Scriptable::Proxy
+    include Scriptable::Proxies
     include Scriptable::Queries
     include Scriptable::Scenes
 

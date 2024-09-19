@@ -86,7 +86,7 @@ describe Gamefic::Scriptable::Actions do
           make Gamefic::Entity, name: 'thing'
         end
 
-        respond(:use, anywhere(lazy('thing'))) { executed = true }
+        respond(:use, anywhere(lazy_pick('thing'))) { executed = true }
       end
 
       plot = klass.new
