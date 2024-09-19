@@ -14,7 +14,7 @@ module Gamefic
 
     OVERWRITEABLE_CLASSES = [String, Numeric, Symbol].freeze
 
-    SWAPPABLE_VALUES = [true, false, nil].freeze
+    SWAPPABLE_VALUES = [true, false].freeze
 
     class << self
       private
@@ -37,7 +37,7 @@ module Gamefic
       end
 
       def overwriteable? cval, nval
-        return true if swappable?(cval, nval)
+        return true if cval.nil? || swappable?(cval, nval)
 
         allowed = OVERWRITEABLE_CLASSES.find { |klass| cval.is_a?(klass) }
         allowed && cval.is_a?(allowed)

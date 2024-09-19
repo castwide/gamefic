@@ -1,6 +1,7 @@
 ## 3.5.0
 - Configurable scanners
 - Refactored scanners and queries
+- Allow assignment to nil instance variables in stage
 
 ## 3.4.0 - September 10, 2024
 - Chapters

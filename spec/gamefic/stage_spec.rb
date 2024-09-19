@@ -33,4 +33,26 @@ describe Gamefic::Stage do
       end
     }.not_to raise_error
   end
+
+  it 'allows assignment to nil values' do
+    Gamefic::Stage.run(object) do
+      @object = nil
+    end
+    expect {
+      Gamefic::Stage.run(object) do
+        @object = Object.new
+      end
+    }.not_to raise_error
+  end
+
+  it 'raises on reassignment from object to nil' do
+    Gamefic::Stage.run(object) do
+      @object = Object.new
+    end
+    expect {
+      Gamefic::Stage.run(object) do
+        @object = nil
+      end
+    }.to raise_error(RuntimeError)
+  end
 end
