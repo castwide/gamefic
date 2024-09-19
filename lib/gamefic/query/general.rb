@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gamefic/scriptable/proxy'
+
 module Gamefic
   module Query
     # A General query accepts an array of entities to filter. Unlike Scoped
@@ -20,7 +22,7 @@ module Gamefic
       end
 
       def select subject
-        available_entities(subject).that_are(*@arguments)
+        available_entities(subject).that_are(*unproxied_arguments)
       end
 
       private
@@ -28,9 +30,9 @@ module Gamefic
       def available_entities(subject)
         if @entities.is_a?(Proc)
           if @entities.arity.zero?
-            @entities.call
+            Stage.run narrative, &@entities
           else
-            @entities.call(subject)
+            Stage.run narrative, subject, &@entities
           end
         else
           @entities

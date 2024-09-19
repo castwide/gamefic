@@ -18,6 +18,7 @@ module Gamefic
     # @param block [Proc]
     def initialize verb, narrative, *queries, meta: false, &block
       @verb = verb
+      @narrative = narrative
       @queries = map_queryable_objects(queries)
       @meta = meta
       @block = block
@@ -89,6 +90,10 @@ module Gamefic
         results.sum(&:strictness),
         precision
       )
+    end
+
+    def apply_narrative
+      queries.each { |qry| qry.narrative = @narrative }
     end
 
     private

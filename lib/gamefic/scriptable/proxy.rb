@@ -26,7 +26,9 @@ module Gamefic
         private
 
         def safe_fetch container
-          if symbol.to_s =~ /^\d+$/
+          if symbol.to_s.start_with?('pick:')
+            Stage.run(container, symbol) { |sym| pick(sym.to_s[5..]) }
+          elsif symbol.to_s =~ /^\d+$/
             Stage.run(container, symbol) { |sym| entities[sym] }
           elsif symbol.to_s.start_with?('@')
             Stage.run(container, symbol) { |sym| instance_variable_get(sym) }

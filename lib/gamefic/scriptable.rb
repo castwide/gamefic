@@ -128,6 +128,10 @@ module Gamefic
       Proxy::Agent.new(@count.tap { @count += 1 })
     end
 
+    def lazy description
+      proxy("pick:#{description}")
+    end
+
     if RUBY_ENGINE == 'opal'
       # :nocov:
       def method_missing method, *args, &block

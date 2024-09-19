@@ -13,6 +13,8 @@ module Gamefic
       # @return [Boolean]
       attr_reader :ambiguous
 
+      attr_accessor :narrative
+
       # @raise [ArgumentError] if any of the arguments are nil
       #
       # @param arguments [Array<Object>]
@@ -111,6 +113,17 @@ module Gamefic
         return Result.new(nil, scan.token) unless scan.matched.one?
 
         Result.new(scan.matched.first, scan.remainder, scan.strictness)
+      end
+
+      def unproxied_arguments
+        @unproxied_arguments ||= arguments.map do |arg|
+          case arg
+          when Gamefic::Scriptable::Proxy::Agent
+            arg.fetch(narrative)
+          else
+            arg
+          end
+        end
       end
     end
   end

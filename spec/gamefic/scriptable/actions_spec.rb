@@ -77,5 +77,22 @@ describe Gamefic::Scriptable::Actions do
 
       expect { klass.new }.not_to raise_error
     end
+
+    it 'handles lazy picks in queries' do
+      executed = false
+
+      klass = Class.new(Gamefic::Plot) do
+        seed do
+          make Gamefic::Entity, name: 'thing'
+        end
+
+        respond(:use, anywhere(lazy('thing'))) { executed = true }
+      end
+
+      plot = klass.new
+      player = plot.introduce
+      player.perform 'use thing'
+      expect(executed).to be(true)
+    end
   end
 end

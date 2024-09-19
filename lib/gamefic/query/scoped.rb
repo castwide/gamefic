@@ -17,7 +17,7 @@ module Gamefic
 
       def select(subject)
         @scope.matches(subject)
-              .that_are(*@arguments)
+              .that_are(*unproxied_arguments)
       end
 
       def precision
