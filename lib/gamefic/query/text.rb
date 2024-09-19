@@ -5,6 +5,8 @@ module Gamefic
     # A special query that handles text instead of entities.
     #
     class Text
+      attr_accessor :narrative
+
       # @param argument [String, Regexp]
       def initialize argument = /.*/
         @argument = argument

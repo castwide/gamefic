@@ -23,6 +23,7 @@ module Gamefic
       @meta = meta
       @block = block
       @callback = Callback.new(narrative, block)
+      apply_narrative
     end
 
     # The `meta?` flag is just a way for authors to identify responses that
@@ -92,11 +93,11 @@ module Gamefic
       )
     end
 
+    private
+
     def apply_narrative
       queries.each { |qry| qry.narrative = @narrative }
     end
-
-    private
 
     def filter actor, expression
       remainder = ''

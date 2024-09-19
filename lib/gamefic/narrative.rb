@@ -41,7 +41,6 @@ module Gamefic
     end
 
     def post_script
-      rulebook.responses.each(&:apply_narrative)
       entity_vault.lock
       rulebook.freeze
     end

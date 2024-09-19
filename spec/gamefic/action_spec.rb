@@ -7,14 +7,14 @@ describe Gamefic::Action do
 
   it 'executes actions' do
     executed = false
-    response = Gamefic::Response.new(:verb, stage_func, []) { |_| executed = true }
+    response = Gamefic::Response.new(:verb, stage_func) { |_| executed = true }
     action = Gamefic::Action.new(nil, [], response)
     action.execute
     expect(executed).to be(true)
   end
 
   it 'marks actions executed' do
-    response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
+    response = Gamefic::Response.new(:verb, stage_func) {}
     action = Gamefic::Action.new(nil, [], response)
     expect(action).not_to be_executed
     action.execute
@@ -22,7 +22,7 @@ describe Gamefic::Action do
   end
 
   it 'does not execute cancelled actions' do
-    response = Gamefic::Response.new(:verb, stage_func, []) { |_| nil }
+    response = Gamefic::Response.new(:verb, stage_func) {}
     action = Gamefic::Action.new(nil, [], response)
     action.cancel
     action.execute
