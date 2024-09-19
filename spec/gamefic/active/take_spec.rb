@@ -5,7 +5,7 @@ describe Gamefic::Active::Take do
 
   it 'runs start blocks' do
     Gamefic::Plot.script do
-      scene :scene, Gamefic::Scene::Default do |scene|
+      block :scene, Gamefic::Scene::Default do |scene|
         scene.on_start do |actor, _props|
           actor[:scene_started] = true
         end
@@ -21,7 +21,7 @@ describe Gamefic::Active::Take do
 
   it 'runs finish blocks' do
     Gamefic::Plot.script do
-      scene :scene, Gamefic::Scene::Default do |scene|
+      block :scene, Gamefic::Scene::Default do |scene|
         scene.on_finish do |actor, _props|
           actor[:scene_finished] = true
         end

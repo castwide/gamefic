@@ -80,4 +80,11 @@ describe Gamefic::Scriptable::Scenes do
       expect(scene).to be_a(Gamefic::Scene::Conclusion)
     end
   end
+
+  describe '#scene' do
+    it 'accesses scenes' do
+      object.block(:scene)
+      expect(object.scene(:scene)).to be_a(Gamefic::Scene::Default)
+    end
+  end
 end

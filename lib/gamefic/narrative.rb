@@ -35,6 +35,7 @@ module Gamefic
       included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
     end
 
+    # @return [Array<Module>]
     def included_blocks
       self.class.included_blocks
     end
@@ -44,6 +45,7 @@ module Gamefic
       rulebook.freeze
     end
 
+    # @return [Array<Symbol>]
     def scenes
       rulebook.scenes.names
     end

@@ -36,7 +36,6 @@ module Gamefic
         rulebook.scenes.add klass.new(name, self, on_start: on_start, on_finish: on_finish, &blk)
         name
       end
-      alias scene block
 
       def preface name, klass = Scene::Activity, &start
         rulebook.scenes.add klass.new(name, self, on_start: start)
@@ -160,8 +159,15 @@ module Gamefic
               on_start: start
       end
 
+      # @return [Array<Symbol>]
       def scenes
         rulebook.scenes.names
+      end
+
+      # @param name [Symbol]
+      # @return [Scene::Default, nil]
+      def scene(name)
+        rulebook.scenes[name]
       end
     end
   end
