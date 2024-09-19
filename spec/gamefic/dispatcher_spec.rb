@@ -38,17 +38,4 @@ describe Gamefic::Dispatcher do
     # though @bookshelf gets tested first
     expect(action.arguments.first.name).to eq('books')
   end
-
-  it 'falls back to a nil response' do
-    # @type klass [Class<Gamefic::Plot>]
-    klass = Class.new(Gamefic::Plot) do
-      respond(:command) { |actor| actor.proceed }
-      respond(nil, plaintext) { |actor, text| actor.tell "You tried to run #{text}" }
-    end
-
-    plot = klass.new
-    player = plot.introduce
-    player.perform 'command'
-    expect(player.messages).to include("You tried to run command")
-  end
 end

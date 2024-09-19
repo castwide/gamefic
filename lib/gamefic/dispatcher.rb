@@ -80,21 +80,6 @@ module Gamefic
 
         return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
       end
-      finalize
-    end
-
-    # If the dispatcher proceeds through all possible responses, it can fall
-    # back to a nil response as a catchall for commands that could not be
-    # completed.
-    #
-    # @return [Action, nil]
-    def finalize
-      return nil if @finalized
-
-      @finalized = true
-      @command = Command.new(nil, ["#{command.verb} #{command.arguments.join(' ').strip}"])
-      @responses = actor.epic.responses_for(nil)
-      next_action
     end
   end
 end
