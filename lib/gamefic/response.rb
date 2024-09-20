@@ -8,20 +8,19 @@ module Gamefic
     # @return [Symbol]
     attr_reader :verb
 
-    # @return [Array<Query::Base>]
+    # @return [Array<Query::Base, Query::Text>]
     attr_reader :queries
 
     # @param verb [Symbol]
     # @param narrative [Narrative]
-    # @param queries [Array<Query::Base>]
+    # @param args [Array<Object>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, narrative, *queries, meta: false, &block
+    def initialize verb, narrative, *args, meta: false, &block
       @verb = verb
-      @queries = map_queryable_objects(queries, narrative)
+      @queries = map_queries(args, narrative)
       @meta = meta
       @callback = Callback.new(narrative, block)
-      update_queries narrative
     end
 
     # The `meta?` flag is just a way for authors to identify responses that
@@ -93,10 +92,6 @@ module Gamefic
 
     private
 
-    def update_queries narrative
-      queries.each { |qry| qry.narrative = narrative }
-    end
-
     def filter actor, expression
       remainder = ''
       result = queries.zip(expression.tokens)
@@ -123,8 +118,10 @@ module Gamefic
       total
     end
 
-    def map_queryable_objects queries, narrative
-      queries.map { |arg| select_query arg, narrative }
+    def map_queries args, narrative
+      args.map do |arg|
+        select_query(arg, narrative).tap { |qry| qry.narrative = narrative }
+      end
     end
 
     def select_query arg, narrative

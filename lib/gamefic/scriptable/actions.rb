@@ -26,11 +26,11 @@ module Gamefic
       #   end
       #
       # @param verb [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
+      # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
-      def respond(verb, *queries, &proc)
-        rulebook.calls.add_response Response.new(verb, self, *queries, &proc)
+      def respond(verb, *args, &proc)
+        rulebook.calls.add_response Response.new(verb, self, *args, &proc)
         verb
       end
 
@@ -46,11 +46,11 @@ module Gamefic
       #   end
       #
       # @param verb [Symbol] An imperative verb for the command
-      # @param queries [Array<Query::Base, Query::Text>] Filters for the command's tokens
+      # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
-      def meta(verb, *queries, &proc)
-        rulebook.calls.add_response Response.new(verb, self, *queries, meta: true, &proc)
+      def meta(verb, *args, &proc)
+        rulebook.calls.add_response Response.new(verb, self, *args, meta: true, &proc)
         verb
       end
 
