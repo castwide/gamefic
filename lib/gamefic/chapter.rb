@@ -6,12 +6,10 @@ module Gamefic
   # adding the required instance variables, methods, and attributes to the
   # plot.
   #
-  # Chapters are similar to subplots with a few important exceptions:
-  # * Chapters persist for the duration of the plot.
+  # Chapters are similar to subplots with three important exceptions:
+  # * Chapters normally persist for the duration of a plot.
   # * Players do not need to be introduced to a chapter.
-  # * Scripts in chapters apply to the parent plot's rulebook.
-  # * Using `make` to create an entity in a chapter adds it to the parent
-  #   plot's entity list.
+  # * Chapters share their plot's entities, players, and rulebook.
   #
   # @example
   #   class MyChapter < Gamefic::Chapter
@@ -28,61 +26,31 @@ module Gamefic
   #   plot.entities                 #=> [<#Gamefic::Entity a chapter thing>]
   #   plot.instance_exec { @thing } #=> nil
   #
-  class Chapter
-    extend Scriptable
-
-    include Scriptable::Actions
-    include Scriptable::Events
-    include Scriptable::Proxies
-    include Scriptable::Queries
-    include Scriptable::Scenes
-
+  class Chapter < Narrative
     # @return [Plot]
     attr_reader :plot
 
     # @param plot [Plot]
-    def initialize plot
+    def initialize(plot)
       @plot = plot
+      # The plot is responsible for hydrating chapters
+      super(hydrate: false)
     end
 
     def included_blocks
       self.class.included_blocks - plot.included_blocks
     end
 
-    def seed
-      included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
-    end
-
-    def script
-      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
-    end
-
     def rulebook
       plot.rulebook
     end
 
-    def make klass, **opts
-      plot.make klass, **opts
+    def entity_vault
+      plot.entity_vault
     end
 
-    def entities
-      plot.entities
-    end
-
-    def players
-      plot.players
-    end
-
-    def destroy entity
-      plot.destroy entity
-    end
-
-    def pick description
-      plot.pick description
-    end
-
-    def pick! description
-      plot.pick! description
+    def player_vault
+      plot.player_vault
     end
   end
 end

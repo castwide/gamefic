@@ -20,7 +20,9 @@ module Gamefic
 
     attr_reader :rulebook
 
-    def initialize
+    def initialize(hydrate: true)
+      return unless hydrate
+
       seed
       script
       post_script
