@@ -18,7 +18,7 @@ module Gamefic
     # @param block [Proc]
     def initialize verb, narrative, *queries, meta: false, &block
       @verb = verb
-      @queries = map_queryable_objects(queries)
+      @queries = map_queryable_objects(queries, narrative)
       @meta = meta
       @callback = Callback.new(narrative, block)
       update_queries narrative
@@ -63,7 +63,7 @@ module Gamefic
     end
 
     def execute *args
-      @callback.run *args
+      @callback.run(*args)
     end
 
     def precision
@@ -112,7 +112,7 @@ module Gamefic
     end
 
     def generate_default_syntax
-      args = queries.length.times.map { |num| num == 0 ? ':var' : ":var#{num + 1}" }
+      args = queries.length.times.map { |num| num.zero? ? ':var' : ":var#{num + 1}" }
       tmpl = "#{verb} #{args.join(' ')}".strip
       Syntax.new(tmpl.gsub('_', ' '), tmpl)
     end
@@ -123,9 +123,21 @@ module Gamefic
       total
     end
 
-    def map_queryable_objects queries
-      # @todo Considering moving mapping from Actions to here
-      queries
+    def map_queryable_objects queries, narrative
+      queries.map { |arg| select_query arg, narrative }
+    end
+
+    def select_query arg, narrative
+      case arg
+      when Entity, Class, Module, Proc, Proxy
+        narrative.available(arg)
+      when String, Regexp
+        narrative.plaintext(arg)
+      when Query::Base, Query::Text
+        arg
+      else
+        raise ArgumentError, "invalid argument in response: #{arg.inspect}"
+      end
     end
   end
 end

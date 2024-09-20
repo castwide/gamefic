@@ -30,8 +30,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond(verb, *queries, &proc)
-        args = map_response_args(queries)
-        rulebook.calls.add_response Response.new(verb, self, *args, &proc)
+        rulebook.calls.add_response Response.new(verb, self, *queries, &proc)
         verb
       end
 
@@ -51,8 +50,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def meta(verb, *queries, &proc)
-        args = map_response_args(queries)
-        rulebook.calls.add_response Response.new(verb, self, *args, meta: true, &proc)
+        rulebook.calls.add_response Response.new(verb, self, *queries, meta: true, &proc)
         verb
       end
 
@@ -133,23 +131,6 @@ module Gamefic
       # @return [Array<Syntax>]
       def syntaxes
         rulebook.syntaxes
-      end
-
-      private
-
-      def map_response_args args
-        args.map do |arg|
-          case arg
-          when Entity, Class, Module, Proc, Proxy
-            available(arg)
-          when String, Regexp
-            plaintext(arg)
-          when Gamefic::Query::Base, Gamefic::Query::Text
-            arg
-          else
-            raise ArgumentError, "invalid argument in response: #{arg.inspect}"
-          end
-        end
       end
     end
   end
