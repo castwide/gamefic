@@ -16,6 +16,11 @@ module Gamefic
       rulebook.scenes.with_defaults self
     end
 
+    def post_script
+      super
+      chapters.freeze
+    end
+
     def chapters
       @chapters ||= self.class.appended_chapters.map { |klass| klass.new(self) }
     end
