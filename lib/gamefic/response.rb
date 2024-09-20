@@ -18,12 +18,10 @@ module Gamefic
     # @param block [Proc]
     def initialize verb, narrative, *queries, meta: false, &block
       @verb = verb
-      @narrative = narrative
       @queries = map_queryable_objects(queries)
       @meta = meta
-      @block = block
       @callback = Callback.new(narrative, block)
-      apply_narrative
+      update_queries narrative
     end
 
     # The `meta?` flag is just a way for authors to identify responses that
@@ -95,8 +93,8 @@ module Gamefic
 
     private
 
-    def apply_narrative
-      queries.each { |qry| qry.narrative = @narrative }
+    def update_queries narrative
+      queries.each { |qry| qry.narrative = narrative }
     end
 
     def filter actor, expression
@@ -121,7 +119,7 @@ module Gamefic
 
     def calculate_precision
       total = queries.sum(&:precision)
-      total -= 1000 if verb.nil?
+      total -= 1000 unless verb
       total
     end
 

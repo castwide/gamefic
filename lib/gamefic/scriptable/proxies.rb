@@ -5,6 +5,13 @@ module Gamefic
     # Methods for referencing entities from proxies.
     #
     module Proxies
+      # Convert a proxy into its referenced entity.
+      #
+      # This method can receive any kind of object. If it's a proxy, its entity
+      # will be returned. If it's an array, each of its elements will be
+      # unproxied. If it's a hash, each of its values will be unproxied. Any
+      # other object will be returned unchanged.
+      #
       # @param object [Object]
       # @return [Object]
       def unproxy object
