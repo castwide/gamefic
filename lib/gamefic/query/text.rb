@@ -40,7 +40,7 @@ module Gamefic
       private
 
       def match? token
-        return false unless token.is_a?(String)
+        return false unless token.is_a?(String) && !token.empty?
 
         case argument
         when Regexp
