@@ -54,5 +54,13 @@ module Gamefic
     def player_vault
       plot.player_vault
     end
+
+    def subplots
+      plot.subplots
+    end
+
+    def branch(...)
+      plot.branch(...)
+    end
   end
 end
