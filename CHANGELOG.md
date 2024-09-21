@@ -4,6 +4,8 @@
 - Allow assignment to nil instance variables in stage
 - Lazy proxies
 - Remove buggy index proxies
+- Chapter inherits Narrative
+- Plot attribute proxy for chapters and subplots
 
 ## 3.4.0 - September 10, 2024
 - Chapters

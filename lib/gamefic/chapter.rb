@@ -27,6 +27,8 @@ module Gamefic
   #   plot.instance_exec { @thing } #=> nil
   #
   class Chapter < Narrative
+    extend Scriptable::PlotProxies
+
     # @return [Plot]
     attr_reader :plot
 

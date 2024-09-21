@@ -5,7 +5,7 @@ module Gamefic
     # @return [Symbol]
     attr_reader :type
 
-    # @return [Symbol, String, Integer]
+    # @return [Symbol, Array<Symbol>, String, Integer]
     attr_reader :key
 
     # @param type [Symbol]
@@ -24,7 +24,7 @@ module Gamefic
     private
 
     def attr narrative
-      Stage.run(narrative, key) { |key| send(key) }
+      Stage.run(narrative, [key].flatten) { |keys| keys.inject(self) { |obj, key| obj.send(key) } }
     rescue NoMethodError
       nil
     end

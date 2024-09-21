@@ -23,12 +23,13 @@ module Gamefic
   #   end
   #
   module Scriptable
-    autoload :Actions,   'gamefic/scriptable/actions'
-    autoload :Entities,  'gamefic/scriptable/entities'
-    autoload :Events,    'gamefic/scriptable/events'
-    autoload :Queries,   'gamefic/scriptable/queries'
-    autoload :Proxies,   'gamefic/scriptable/proxies'
-    autoload :Scenes,    'gamefic/scriptable/scenes'
+    autoload :Actions,     'gamefic/scriptable/actions'
+    autoload :Entities,    'gamefic/scriptable/entities'
+    autoload :Events,      'gamefic/scriptable/events'
+    autoload :Queries,     'gamefic/scriptable/queries'
+    autoload :Proxies,     'gamefic/scriptable/proxies'
+    autoload :Scenes,      'gamefic/scriptable/scenes'
+    autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
 
     include Queries
     # @!parse
