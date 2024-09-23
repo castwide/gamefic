@@ -168,6 +168,8 @@ module Gamefic
     # @example
     #   lazy_pick('the red box')
     #
+    # @raise [RuntimeError] if a unique match could not be found.
+    #
     # @param description [String]
     # @return [Proxy]
     def lazy_pick description

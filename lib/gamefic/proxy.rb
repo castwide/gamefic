@@ -24,17 +24,17 @@ module Gamefic
     private
 
     def attr narrative
-      Stage.run(narrative, [key].flatten) { |keys| keys.inject(self) { |obj, key| obj.send(key) } }
+      Stage.run(narrative, [key].flatten) { |keys| keys.inject(self) { |obj, key| obj.send key } }
     rescue NoMethodError
       nil
     end
 
     def ivar narrative
-      Stage.run(narrative, key) { |key| instance_variable_get(key) }
+      narrative.instance_variable_get key
     end
 
     def pick narrative
-      Stage.run(narrative, key) { |key| pick(key) }
+      narrative.pick! key
     end
 
     def validate_type

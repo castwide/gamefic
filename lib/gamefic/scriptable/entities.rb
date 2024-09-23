@@ -63,6 +63,9 @@ module Gamefic
 
       # Same as #pick, but raise an error if a unique match could not be found.
       #
+      #
+      # @raise [RuntimeError] if a unique match was not found.
+      #
       # @param description [String]
       # @return [Gamefic::Entity, nil]
       def pick! description
