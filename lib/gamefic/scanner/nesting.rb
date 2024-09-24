@@ -26,7 +26,7 @@ module Gamefic
           last_result = subprocessor.scan(objects, current)
           return Result.unmatched(selection, token, self.class) if last_result.matched.empty? || last_result.matched.length > 1
 
-          objects = last_result.matched.first.children
+          objects = last_result.matched.first.children & objects
         end
         last_result
       end
