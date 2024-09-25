@@ -24,7 +24,7 @@ module Gamefic
   #
   #   plot = MyPlot.new
   #   plot.entities             #=> [<#Gamefic::Entity a chapter thing>]
-  #   plot.thing                #=> raise NoMethodError
+  #   plot.thing                #   raises NoMethodError
   #   plot.chapters.first.thing #=> <#Gamefic::Entity a chapter thing>
   #
   class Chapter < Narrative
