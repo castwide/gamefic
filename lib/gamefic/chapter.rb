@@ -13,8 +13,8 @@ module Gamefic
   #
   # @example
   #   class MyChapter < Gamefic::Chapter
-  #     seed do
-  #       @thing = make Gamefic::Entity, name: 'chapter thing'
+  #     def thing
+  #       @thing ||= make Gamefic::Entity, name: 'chapter thing'
   #     end
   #   end
   #
@@ -23,8 +23,9 @@ module Gamefic
   #   end
   #
   #   plot = MyPlot.new
-  #   plot.entities                 #=> [<#Gamefic::Entity a chapter thing>]
-  #   plot.instance_exec { @thing } #=> nil
+  #   plot.entities             #=> [<#Gamefic::Entity a chapter thing>]
+  #   plot.thing                #=> raise NoMethodError
+  #   plot.chapters.first.thing #=> <#Gamefic::Entity a chapter thing>
   #
   class Chapter < Narrative
     extend Scriptable::PlotProxies
