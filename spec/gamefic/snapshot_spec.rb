@@ -111,5 +111,10 @@ describe Gamefic::Snapshot do
       restored_player = restored_plot.players.first
       expect(restored_plot.pick('thing').parent).to be(restored_player)
     end
+
+    it 'saves plots with chapters' do
+      plot = PlotWithChapter.new
+      expect { Gamefic::Snapshot.restore plot.save }.not_to raise_error
+    end
   end
 end

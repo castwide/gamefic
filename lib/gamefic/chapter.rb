@@ -40,6 +40,10 @@ module Gamefic
       super(hydrate: false)
     end
 
+    def script
+      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
+    end
+
     def included_blocks
       self.class.included_blocks - plot.included_blocks
     end
