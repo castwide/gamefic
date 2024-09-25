@@ -26,4 +26,14 @@ describe Gamefic::Entity do
     entity3 = klass3.new
     expect(entity3.attribute).to eq('one')
   end
+
+  it 'leaves parents' do
+    room = Gamefic::Entity.new(name: 'room')
+    person = Gamefic::Entity.new(name: 'person', parent: room)
+    thing = Gamefic::Entity.new(name: 'thing', parent: person)
+
+    expect(thing.parent).to be(person)
+    thing.leave
+    expect(thing.parent).to be(room)
+  end
 end

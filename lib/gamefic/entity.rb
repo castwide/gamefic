@@ -55,6 +55,22 @@ module Gamefic
       "#<#{self.class} #{name}>"
     end
 
+    # Move this entity to its parent entity.
+    #
+    # @example
+    #   room =   Gamefic::Entity.new(name: 'room')
+    #   person = Gamefic::Entity.new(name: 'person', parent: room)
+    #   thing =  Gamefic::Entity.new(name: 'thing', parent: person)
+    #
+    #   thing.parent #=> person
+    #   thing.leave
+    #   thing.parent #=> room
+    #
+    # @return [void]
+    def leave
+      self.parent = parent&.parent
+    end
+
     class << self
       # Set or update the default attributes for new instances.
       #

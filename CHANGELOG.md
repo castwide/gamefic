@@ -6,6 +6,7 @@
 - Remove buggy index proxies
 - Chapter inherits Narrative
 - Plot attribute proxy for chapters and subplots
+- Entity#leave
 
 ## 3.4.0 - September 10, 2024
 - Chapters
