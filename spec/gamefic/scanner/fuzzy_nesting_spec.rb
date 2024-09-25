@@ -6,7 +6,7 @@ describe Gamefic::Scanner::FuzzyNesting do
     sock = Gamefic::Entity.new(name: 'sock', parent: drawer)
     Gamefic::Entity.new(name: 'thing', parent: drawer)
 
-    result = Gamefic::Scanner::FuzzyNesting.scan([drawer], 'soc in dra')
+    result = Gamefic::Scanner::FuzzyNesting.scan([drawer, sock], 'soc in dra')
     expect(result.matched).to eq([sock])
   end
 
@@ -15,7 +15,7 @@ describe Gamefic::Scanner::FuzzyNesting do
     sock = Gamefic::Entity.new(name: 'sock', parent: drawer)
     coin = Gamefic::Entity.new(name: 'coin', parent: sock)
 
-    result = Gamefic::Scanner::FuzzyNesting.scan([drawer], 'coi from soc in dra')
+    result = Gamefic::Scanner::FuzzyNesting.scan([drawer, sock, coin], 'coi from soc in dra')
     expect(result.matched).to eq([coin])
   end
 end
