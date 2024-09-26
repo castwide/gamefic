@@ -10,8 +10,8 @@ module Gamefic
       attr_reader :scope
 
       # @param scope [Class<Gamefic::Scope::Base>]
-      def initialize scope, *arguments, ambiguous: false
-        super(*arguments, ambiguous: ambiguous)
+      def initialize scope, *arguments, ambiguous: false, name: nil
+        super(*arguments, ambiguous: ambiguous, name: name)
         @scope = scope
       end
 

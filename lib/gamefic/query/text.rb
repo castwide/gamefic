@@ -6,8 +6,9 @@ module Gamefic
     #
     class Text < Base
       # @param argument [String, Regexp]
-      def initialize argument = /.*/
-        super
+      # @param name [String, nil]
+      def initialize argument = /.*/, name: nil
+        super argument, name: name
         validate
       end
 

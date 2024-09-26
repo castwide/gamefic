@@ -90,6 +90,11 @@ module Gamefic
       )
     end
 
+    def signature
+      parts = [verb || 'nil'] + queries.map(&:signature)
+      "[#{parts.join(', ')}]"
+    end
+
     private
 
     def filter actor, expression

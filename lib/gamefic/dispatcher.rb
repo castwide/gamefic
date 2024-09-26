@@ -4,6 +4,8 @@ module Gamefic
   # The action executor for character commands.
   #
   class Dispatcher
+    include Logging
+
     # @param actor [Actor]
     # @param command [Command]
     def initialize actor, command
@@ -22,6 +24,7 @@ module Gamefic
       action = next_action
       return unless action
 
+      logger.info "Executing #{action.response.signature}"
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
       return if action.cancelled?
 

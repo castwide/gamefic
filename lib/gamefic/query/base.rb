@@ -19,11 +19,13 @@ module Gamefic
       #
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
-      def initialize *arguments, ambiguous: false
+      # @param name [String, nil]
+      def initialize *arguments, ambiguous: false, name: nil
         raise ArgumentError, "nil argument in query" if arguments.any?(&:nil?)
 
         @arguments = arguments
         @ambiguous = ambiguous
+        @name = name
       end
 
       # Get a query result for a given subject and token.
@@ -75,6 +77,14 @@ module Gamefic
 
       def ambiguous?
         @ambiguous
+      end
+
+      def name
+        @name || self.class.to_s
+      end
+
+      def signature
+        "#{name}(#{arguments.join(', ')})"
       end
 
       private
