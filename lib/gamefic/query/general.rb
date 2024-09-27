@@ -14,8 +14,8 @@ module Gamefic
       # @param entities [Array, Proc]
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
-      def initialize entities, *arguments, ambiguous: false
-        super(*arguments, ambiguous: ambiguous)
+      def initialize entities, *arguments, ambiguous: false, name: nil
+        super(*arguments, ambiguous: ambiguous, name: name)
         @entities = entities
       end
 
