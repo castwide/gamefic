@@ -84,7 +84,7 @@ module Gamefic
       end
 
       def signature
-        "#{name}(#{arguments.join(', ')})"
+        "#{name}(#{unproxied_arguments.join(', ')})"
       end
 
       private
