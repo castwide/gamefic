@@ -84,7 +84,7 @@ module Gamefic
       end
 
       def signature
-        "#{name}(#{unproxied_arguments.join(', ')})"
+        "##{ambiguous? ? '*' : ''}{name}(#{unproxied_arguments.join(', ')})"
       end
 
       private
