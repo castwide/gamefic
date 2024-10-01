@@ -21,6 +21,7 @@ module Gamefic
       #
       # @return [Array<Entity>, String]
       attr_reader :matched
+      alias match matched
 
       # The remaining (unmatched) portion of the token
       #
