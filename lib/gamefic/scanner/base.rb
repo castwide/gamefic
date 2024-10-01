@@ -35,6 +35,10 @@ module Gamefic
       def unmatched_result
         Result.unmatched(selection, token, self.class)
       end
+
+      def matched_result matched, remainder
+        Result.new(selection, token, matched, remainder, self.class)
+      end
     end
   end
 end
