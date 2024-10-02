@@ -2,19 +2,41 @@
 
 module Gamefic
   module Scope
-    # The Family scope returns an entity's parent, siblings, accessible
-    # descendants, and siblings' accessible descendants.
+    # The Family scope returns an entity's ascendants, descendants, siblings,
+    # and siblings' descendants.
     #
     class Family < Base
       def matches
-        result = context.parent ? [context.parent] : []
-        result.concat subquery_accessible(context.parent)
-        result.delete context
-        context.children.each do |c|
-          result.push c
-          result.concat subquery_accessible(c)
+        match_ascendants + match_descendants + match_siblings
+      end
+
+      private
+
+      def match_ascendants
+        [].tap do |result|
+          here = context.parent
+          while here
+            result.push here
+            here = here.parent
+          end
         end
-        result.uniq
+      end
+
+      def match_descendants
+        context.children.flat_map do |child|
+          [child] + subquery_accessible(child)
+        end
+      end
+
+      def match_siblings
+        return [] unless context.parent
+
+        context.parent
+               .children
+               .that_are_not(context)
+               .flat_map do |child|
+                 [child] + subquery_accessible(child)
+               end
       end
     end
   end

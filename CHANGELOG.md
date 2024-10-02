@@ -7,8 +7,10 @@
 - Chapter inherits Narrative
 - Plot attribute proxy for chapters and subplots
 - Entity#leave
+- Descendants query
 - Persistent subplots
 - Entity#broadcast
+- Ascendants in family query
 
 ## 3.4.0 - September 10, 2024
 - Chapters
