@@ -3,8 +3,13 @@
 module Gamefic
   module Scriptable
     module PlotProxies
-      def plot_attr key
+      def lazy_plot key
         Proxy.new(:attr, [:plot, key])
+      end
+      alias _plot lazy_plot
+
+      def attr_plot attr
+        define_method(attr) { plot.send(attr) }
       end
     end
   end
