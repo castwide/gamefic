@@ -29,11 +29,32 @@ describe Gamefic::Entity do
 
   it 'leaves parents' do
     room = Gamefic::Entity.new(name: 'room')
-    person = Gamefic::Entity.new(name: 'person', parent: room)
+    person = Gamefic::Actor.new(name: 'person', parent: room)
     thing = Gamefic::Entity.new(name: 'thing', parent: person)
 
     expect(thing.parent).to be(person)
     thing.leave
     expect(thing.parent).to be(room)
+  end
+
+  it 'broadcasts to participating actors' do
+    plot = Gamefic::Plot.new
+    room = plot.make(Gamefic::Entity, name: 'room')
+    container = plot.make(Gamefic::Entity, name: 'thing', parent: room)
+    person = plot.introduce
+    person.parent = container
+
+    room.broadcast 'Hello, world!'
+    expect(person.messages).to include('Hello, world!')
+  end
+
+  it 'does not broadcast to non-participants' do
+    plot = Gamefic::Plot.new
+    room = plot.make(Gamefic::Entity, name: 'room')
+    container = plot.make(Gamefic::Entity, name: 'thing', parent: room)
+    person = plot.make(Gamefic::Actor, name: 'person', parent: container)
+
+    room.broadcast 'Hello, world!'
+    expect(person.messages).to be_empty
   end
 end

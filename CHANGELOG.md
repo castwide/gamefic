@@ -8,6 +8,7 @@
 - Plot attribute proxy for chapters and subplots
 - Entity#leave
 - Persistent subplots
+- Entity#broadcast
 
 ## 3.4.0 - September 10, 2024
 - Chapters

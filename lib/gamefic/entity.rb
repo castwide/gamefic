@@ -71,6 +71,16 @@ module Gamefic
       self.parent = parent&.parent
     end
 
+    # Tell a message to all of this entity's accessible descendants.
+    #
+    # @param message [String]
+    # @return [void]
+    def broadcast message
+      Query::Scoped.new(Scope::Descendants).select(self)
+                                           .that_are(Active, proc(&:acting?))
+                                           .each { |actor| actor.tell message }
+    end
+
     class << self
       # Set or update the default attributes for new instances.
       #
