@@ -121,10 +121,8 @@ module Gamefic
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
     def attr_seed name, klass, **opts
-      seed do
-        instance_variable_set("@#{name}", make(klass, **opts))
-        self.class.define_method(name) { instance_variable_get("@#{name}") }
-      end
+      define_method(name) { instance_variable_get("@#{name}") }
+      seed { instance_variable_set("@#{name}", make(klass, **opts)) }
       Proxy.new(:attr, name)
     end
 
