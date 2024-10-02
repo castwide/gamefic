@@ -42,6 +42,14 @@ module Gamefic
         Query::Scoped.new Scope::Children, *args, ambiguous: ambiguous
       end
 
+      # Define a query that searches an actor's descendants.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @return [Query::Scoped]
+      def descendants *args, ambiguous: false
+        Query::Scoped.new Scope::Descendants, *args, ambiguous: ambiguous
+      end
+
       # Define a query that searches an actor's siblings.
       #
       # @param args [Array<Object>] Query arguments

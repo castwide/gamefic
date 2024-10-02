@@ -2,7 +2,8 @@
 
 module Gamefic
   module Scope
-    # The Family scope returns an entity's parent, siblings, and descendants.
+    # The Family scope returns an entity's parent, siblings, accessible
+    # descendants, and siblings' accessible descendants.
     #
     class Family < Base
       def matches
