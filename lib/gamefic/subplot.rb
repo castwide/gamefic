@@ -24,7 +24,20 @@ module Gamefic
       configure
       @config.freeze
       super()
-      [introduce].flatten.each { |pl| self.introduce pl }
+      @concluded = false
+      [introduce].flatten.each { |plyr| self.introduce plyr }
+    end
+
+    def self.persist!
+      @persistent = true
+    end
+
+    def self.persistent?
+      @persistent ||= false
+    end
+
+    def persistent?
+      self.class.persistent?
     end
 
     def included_blocks
@@ -43,6 +56,7 @@ module Gamefic
         uncast plyr
       end
       entities.each { |ent| destroy ent }
+      @concluded = true
     end
 
     # Make an entity that persists in the subplot's parent plot.
@@ -70,6 +84,16 @@ module Gamefic
     # options.
     #
     def configure; end
+
+    def concluding?
+      return super unless persistent?
+
+      @concluded
+    end
+
+    def introduce player
+      @concluded ? player : super
+    end
 
     def inspect
       "#<#{self.class}>"

@@ -115,4 +115,24 @@ describe Gamefic::Subplot do
     expect(subplot.rulebook.responses).to be_empty
     expect(subplot.entities).to be_empty
   end
+
+  it 'is not usually persistent' do
+    plot = Gamefic::Plot.new
+    subplot = plot.branch Gamefic::Subplot
+    expect(subplot).not_to be_persistent
+    expect(subplot).to be_concluding
+  end
+
+  it 'can be persistent' do
+    klass = Class.new(Gamefic::Subplot) do
+      persist!
+    end
+
+    plot = Gamefic::Plot.new
+    subplot = plot.branch klass
+    expect(subplot).to be_persistent
+    expect(subplot).not_to be_concluding
+    subplot.conclude
+    expect(subplot).to be_concluding
+  end
 end
