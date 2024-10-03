@@ -80,7 +80,7 @@ module Gamefic
       private
 
       def calculate_precision
-        @arguments.sum(@ambiguous ? -1000 : 0) do |arg|
+        unproxied_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
           when Entity, Proxy
             1000
