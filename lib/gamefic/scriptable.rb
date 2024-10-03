@@ -121,8 +121,13 @@ module Gamefic
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
     def attr_seed name, klass, **opts
-      define_method(name) { instance_variable_get("@#{name}") }
-      seed { instance_variable_set("@#{name}", make(klass, **opts)) }
+      ivname = "@#{name}"
+      define_method(name) do
+        return instance_variable_get(ivname) if instance_variable_defined?(ivname)
+
+        instance_variable_set(ivname, make(klass, **opts))
+      end
+      seed { send name }
       Proxy.new(:attr, name)
     end
 

@@ -175,6 +175,7 @@ describe Gamefic::Scriptable do
     end
 
     plot = klass.new
+    expect(plot.instance_variable_defined?(:@foo)).to be(true)
     expect(plot.foo.name).to eq('foo')
   end
 end
