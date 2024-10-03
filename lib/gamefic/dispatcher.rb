@@ -45,8 +45,9 @@ module Gamefic
     # @param input [String]
     # @return [Dispatcher]
     def self.dispatch actor, input
-      expressions = Syntax.tokenize(input, actor.epic.syntaxes)
-      new(actor, Command.compose(actor, expressions))
+      # expressions = Syntax.tokenize(input, actor.epic.syntaxes)
+      # new(actor, Command.compose(actor, expressions))
+      new(actor, Command.compose(actor, input))
     end
 
     # @param actor [Active]
