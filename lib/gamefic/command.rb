@@ -31,10 +31,13 @@ module Gamefic
     end
 
     class << self
+      # Compose a command from input.
+      #
       # @param actor [Actor]
-      # @param expressions [Array<Expression>]
+      # @param input [String]
       # @return [Command]
-      def compose actor, expressions
+      def compose actor, input
+        expressions = Syntax.tokenize(input, actor.epic.syntaxes)
         expressions.flat_map { |expression| expression_to_commands(actor, expression) }
                    .first || Command.new(nil, [])
       end
