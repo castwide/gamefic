@@ -104,7 +104,7 @@ module Gamefic
     # @return [Proxy]
     def make_seed klass, **opts
       seed { make(klass, **opts) }
-      Proxy.new(:pick!, [klass, *opts[:name]])
+      Proxy::Pick.new(klass, opts[:name], raise: true)
     end
     alias make make_seed
 
@@ -178,7 +178,7 @@ module Gamefic
     # @param args [Array]
     # @return [Proxy]
     def pick *args
-      Proxy.new(:pick, args)
+      Proxy::Pick.new(*args)
     end
     alias lazy_pick pick
     alias _pick pick
@@ -186,7 +186,7 @@ module Gamefic
     # Lazy pick an entity or raise
     #
     def pick! *args
-      Proxy.new(:pick!, args)
+      Proxy::Pick.new(*args)
     end
     alias lazy_pick! pick
     alias _pick! pick

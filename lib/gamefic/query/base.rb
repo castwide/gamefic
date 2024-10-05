@@ -82,7 +82,7 @@ module Gamefic
       def calculate_precision
         normalized_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
-          when Entity, Proxy
+          when Entity, Proxy, Proxy::Base
             1000
           when Class, Module
             class_depth(arg) * 100
@@ -118,7 +118,7 @@ module Gamefic
       def normalized_arguments
         @normalized_arguments ||= arguments.map do |arg|
           case arg
-          when Proxy
+          when Proxy, Proxy::Base
             arg.fetch(narrative)
           when String
             proc do |entity|

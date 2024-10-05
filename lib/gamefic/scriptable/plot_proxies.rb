@@ -13,13 +13,13 @@ module Gamefic
       end
 
       def plot_pick *args
-        Proxy.new(:plot_pick, args)
+        Proxy::PlotPick.new(*args)
       end
       alias lazy_plot_pick plot_pick
       alias _plot_pick plot_pick
 
       def plot_pick! *args
-        Proxy.new(:plot_pick!, args)
+        Proxy::PlotPick.new(*args)
       end
       alias lazy_plot_pick! plot_pick!
       alias _plot_pick! plot_pick!

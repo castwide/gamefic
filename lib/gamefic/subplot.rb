@@ -101,7 +101,7 @@ module Gamefic
 
     class << self
       def config
-        Proxy.new(:config, nil)
+        Proxy::Config.new
       end
     end
   end

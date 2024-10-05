@@ -126,7 +126,7 @@ module Gamefic
 
     def select_query arg, narrative
       case arg
-      when Entity, Class, Module, Proc, Proxy
+      when Entity, Class, Module, Proc, Proxy, Proxy::Base
         narrative.available(arg)
       when String, Regexp
         narrative.plaintext(arg)

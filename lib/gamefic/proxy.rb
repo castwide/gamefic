@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 module Gamefic
+  # @todo Turn this into a module after the old proxies are completely deprecated
+  #
   class Proxy
+    require 'gamefic/proxy/base'
+    require 'gamefic/proxy/config'
+    require 'gamefic/proxy/pick'
+    require 'gamefic/proxy/plot_pick'
+
     TYPES = %i[attr ivar pick pick! plot_pick plot_pick! config].freeze
 
     # @return [Symbol]
@@ -13,6 +20,7 @@ module Gamefic
     # @param type [Symbol]
     # @param key [Symbol, String, Array]
     def initialize type, key
+      Gamefic.logger.debug "Using deprecated #{type} proxy"
       @type = type
       validate_type
       @key = type == :config ? [key].compact : key

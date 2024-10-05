@@ -16,7 +16,7 @@ module Gamefic
       # @return [Object]
       def unproxy object
         case object
-        when Proxy
+        when Proxy, Proxy::Base
           object.fetch self
         when Array
           object.map { |obj| unproxy obj }
