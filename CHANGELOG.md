@@ -1,6 +1,7 @@
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings
 - Smarter picks and proxies
+- Commands prefer strictness over precision
 
 ## 3.5.0 - October 5, 2024
 - Configurable scanners

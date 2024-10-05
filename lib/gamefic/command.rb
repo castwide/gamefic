@@ -52,7 +52,7 @@ module Gamefic
              .responses_for(expression.verb)
              .map { |response| response.to_command(actor, expression) }
              .compact
-             .sort_by.with_index { |result, idx| [-result.precision, -result.strictness, idx] }
+             .sort_by.with_index { |result, idx| [-result.strictness, -result.precision, idx] }
       end
     end
   end
