@@ -4,7 +4,7 @@ module Gamefic
   class Proxy
     class Pick < Base
       def select narrative
-        narrative.pick *args
+        raise? ? narrative.pick!(*args) : narrative.pick(*args)
       end
     end
   end

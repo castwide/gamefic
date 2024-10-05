@@ -3,6 +3,7 @@
 - Smarter picks and proxies
 - Commands prefer strictness over precision
 - Queries scan for ambiguity before filtering through arguments
+- Abstract queries
 
 ## 3.5.0 - October 5, 2024
 - Configurable scanners
