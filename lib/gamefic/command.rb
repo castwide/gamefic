@@ -30,6 +30,10 @@ module Gamefic
       @precision = precision
     end
 
+    def substantiality
+      @substantiality ||= arguments.that_are(Entity).length + (verb ? 1 : 0)
+    end
+
     class << self
       # Compose a command from input.
       #
@@ -52,7 +56,7 @@ module Gamefic
              .responses_for(expression.verb)
              .map { |response| response.to_command(actor, expression) }
              .compact
-             .sort_by.with_index { |result, idx| [-result.strictness, -result.precision, idx] }
+             .sort_by.with_index { |result, idx| [-result.substantiality, -result.strictness, -result.precision, idx] }
       end
     end
   end
