@@ -46,5 +46,12 @@ describe Gamefic::Query::General do
       result = general.select(nil)
       expect(result).to eq(['two'])
     end
+
+    it 'filters string arguments' do
+      entities = ['one', 'two']
+      general = Gamefic::Query::General.new(entities, 'one')
+      result = general.select(nil)
+      expect(result).to eq(['one'])
+    end
   end
 end

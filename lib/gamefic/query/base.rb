@@ -80,7 +80,7 @@ module Gamefic
       private
 
       def calculate_precision
-        unproxied_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
+        normalized_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
           when Entity, Proxy
             1000
@@ -115,11 +115,15 @@ module Gamefic
         Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
 
-      def unproxied_arguments
-        @unproxied_arguments ||= arguments.map do |arg|
+      def normalized_arguments
+        @normalized_arguments ||= arguments.map do |arg|
           case arg
           when Proxy
             arg.fetch(narrative)
+          when String
+            proc do |entity|
+              arg.keywords.all? { |word| entity.keywords.include?(word) }
+            end
           else
             arg
           end
