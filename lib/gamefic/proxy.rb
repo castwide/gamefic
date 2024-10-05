@@ -2,7 +2,7 @@
 
 module Gamefic
   class Proxy
-    TYPES = %i[attr ivar pick pick! plot_pick plot_pick!].freeze
+    TYPES = %i[attr ivar pick pick! plot_pick plot_pick! config].freeze
 
     # @return [Symbol]
     attr_reader :type
@@ -14,13 +14,20 @@ module Gamefic
     # @param key [Symbol, String, Array]
     def initialize type, key
       @type = type
-      @key = key
       validate_type
+      @key = type == :config ? [key].compact : key
     end
 
     def fetch narrative
       send(type, narrative) ||
         raise(ArgumentError, "Unable to fetch entity from proxy agent symbol `#{key}`")
+    end
+
+    def [](key)
+      raise ArgumentError, 'Invalid []' unless type == :config
+
+      @key.push key
+      self
     end
 
     private
@@ -49,6 +56,10 @@ module Gamefic
 
     def plot_pick! narrative
       narrative.plot.pick! *key
+    end
+
+    def config narrative
+      key.inject(narrative.config) { |hash, key| hash[key] }
     end
 
     def validate_type
