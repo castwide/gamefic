@@ -42,6 +42,16 @@ module Gamefic
         @strictness ||= Scanner.strictness(processor)
       end
 
+      def filter *args
+        Scanner::Result.new(
+          scanned,
+          token,
+          match.that_are(*args),
+          remainder,
+          processor
+        )
+      end
+
       def self.unmatched scanned, token, processor
         new(scanned, token, [], token, processor)
       end

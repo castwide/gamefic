@@ -38,19 +38,35 @@ module Gamefic
       # @param token [String]
       # @return [Result]
       def query(subject, token)
-        scan = Scanner.scan(select(subject), token)
-        ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
+        first_pass = Scanner.scan(span(subject), token)
+        if ambiguous?
+          ambiguous_result(first_pass.filter(*normalized_arguments))
+        elsif first_pass.match.one?
+          unambiguous_result(first_pass.filter(*normalized_arguments))
+        else
+          unambiguous_result(first_pass)
+        end
       end
       alias filter query
 
-      # Get an array of entities that match the query from the context of the
-      # subject.
+      # Get an array of entities that match the arguments from the context of
+      # the subject.
+      #
+      # @param subject [Entity]
+      # @return [Array<Entity>]
+      def select subject
+        span(subject).that_are(*normalized_arguments)
+      end
+
+      # Get an array of entities that are candidates for selection from the
+      # context of the subject. These are the entities that #select will
+      # filter through query's arguments.
       #
       # Subclasses should override this method.
       #
       # @param subject [Entity]
       # @return [Array<Entity>]
-      def select _subject
+      def span _subject
         []
       end
 

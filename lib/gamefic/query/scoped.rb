@@ -15,9 +15,8 @@ module Gamefic
         @scope = scope
       end
 
-      def select(subject)
+      def span(subject)
         @scope.matches(subject)
-              .that_are(*normalized_arguments)
       end
 
       def precision
