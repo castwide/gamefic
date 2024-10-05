@@ -122,7 +122,6 @@ module Gamefic
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
     def attr_seed name, klass, **opts
-      # Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`attr_seed` is deprecated."
       ivname = "@#{name}"
       define_method(name) do
         return instance_variable_get(ivname) if instance_variable_defined?(ivname)

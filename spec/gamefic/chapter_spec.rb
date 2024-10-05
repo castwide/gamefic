@@ -122,7 +122,7 @@ describe Gamefic::Chapter do
 
   it 'accesses plot proxies' do
     chap_klass = Class.new(Gamefic::Chapter) do
-      attr_seed :thing, Gamefic::Entity, name: 'thing', parent: _plot(:room)
+      attr_seed :thing, Gamefic::Entity, name: 'thing', parent: plot_pick!('room')
     end
 
     plot_klass = Class.new(Gamefic::Plot) do
@@ -137,8 +137,7 @@ describe Gamefic::Chapter do
 
   it 'accesses plot attributes' do
     chap_klass = Class.new(Gamefic::Chapter) do
-      attr_plot :room
-      attr_seed :thing, Gamefic::Entity, name: 'thing', parent: _attr(:room)
+      attr_seed :thing, Gamefic::Entity, name: 'thing', parent: plot_pick!('room')
     end
 
     plot_klass = Class.new(Gamefic::Plot) do
