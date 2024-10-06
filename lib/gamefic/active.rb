@@ -216,6 +216,10 @@ module Gamefic
       !epic.empty?
     end
 
+    def cancel
+      dispatchers.last&.cancel
+    end
+
     # @return [Command]
     def command
       dispatchers.last&.command || Command.new(nil, [])

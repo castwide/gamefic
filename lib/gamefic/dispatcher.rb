@@ -12,26 +12,25 @@ module Gamefic
     def initialize actor, command
       @actor = actor
       @command = command
-      @executed = false
+      @action = nil
       Gamefic.logger.info "Dispatching #{command.inspect}"
     end
 
-    # Run the dispatcher.
+    # Start executing actions in the dispatcher.
     #
     # @return [Action, nil]
     def execute
-      return if @executed
+      return if @action
 
-      @executed = true
-      action = next_action
-      return unless action
+      @action = next_action
+      return unless @action
 
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
-      return if action.cancelled?
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions @action }
+      return if @action.cancelled?
 
-      action.execute
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions action }
-      action
+      @action.execute
+      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions @action }
+      @action
     end
 
     # Execute the next available action.
@@ -40,9 +39,15 @@ module Gamefic
     #
     # @return [Action, nil]
     def proceed
-      return unless @executed
+      return unless @action
+      return if @action.cancelled?
 
-      next_action&.execute
+      @action = next_action
+      @action&.execute
+    end
+
+    def cancel
+      @action&.cancel
     end
 
     # @param actor [Active]
