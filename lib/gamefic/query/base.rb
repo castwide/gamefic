@@ -80,8 +80,8 @@ module Gamefic
       # @return [Boolean]
       def accept?(subject, object)
         available = select(subject)
-        if ambiguous?
-          object & available == object
+        if ambiguous? && object.is_a?(Array)
+          object.flatten & available == object
         else
           available.include?(object)
         end
