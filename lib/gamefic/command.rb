@@ -10,6 +10,9 @@ module Gamefic
     # @return [Array<Array<Entity>, Entity, String>]
     attr_reader :arguments
 
+    # @return [Array<String>, nil]
+    attr_reader :tokens
+
     # @return [Integer]
     attr_reader :strictness
 
@@ -18,14 +21,16 @@ module Gamefic
 
     # @param verb [Symbol]
     # @param arguments [Array<Array<Entity>, Entity, String>]
+    # @param expression [Expression, nil]
     # @param strictness [Integer]
     # @param precision [Integer]
     #
     # @todo Consider making strictness and precision required or providing
     #   another generator
-    def initialize verb, arguments, strictness = 0, precision = 0
+    def initialize verb, arguments, tokens = arguments.map(&:to_s), strictness = 0, precision = 0
       @verb = verb
       @arguments = arguments
+      @tokens = tokens
       @strictness = strictness
       @precision = precision
     end

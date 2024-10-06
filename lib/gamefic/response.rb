@@ -86,6 +86,7 @@ module Gamefic
       Command.new(
         verb,
         results.map(&:match),
+        expression.tokens,
         results.sum(&:strictness),
         precision
       )

@@ -216,6 +216,11 @@ module Gamefic
       !epic.empty?
     end
 
+    # @return [Command]
+    def command
+      dispatchers.last&.command || Command.new(nil, [])
+    end
+
     private
 
     # @return [Array<Dispatcher>]
