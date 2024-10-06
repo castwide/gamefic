@@ -1,3 +1,9 @@
+## 3.7.0
+- Nuanced scans
+- Active#command
+- Command hooks
+- Refactored queries
+
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings
 - Smarter picks and proxies
