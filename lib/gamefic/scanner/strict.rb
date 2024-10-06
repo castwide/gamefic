@@ -18,7 +18,8 @@ module Gamefic
         available = selection.clone
         filtered = []
         words.each_with_index do |word, idx|
-          tested = match_word(available, word)
+          # @todo This might not be the best way to filter articles, but it works for now
+          tested = %w[a an the].include?(word) ? available : match_word(available, word)
           return matched_result(reduce_noise(filtered, words[0, idx]), words[idx..].join(' ')) if tested.empty?
 
           filtered = tested
