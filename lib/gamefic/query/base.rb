@@ -19,8 +19,8 @@ module Gamefic
       #
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
-      # @param name [String, nil]
-      def initialize *arguments, ambiguous: false, name: nil
+      # @param name [String]
+      def initialize *arguments, ambiguous: false, name: self.class.to_s
         raise ArgumentError, "nil argument in query" if arguments.any?(&:nil?)
 
         @arguments = arguments
@@ -83,8 +83,8 @@ module Gamefic
         @name || self.class.to_s
       end
 
-      def signature
-        "##{ambiguous? ? '*' : ''}{name}(#{unproxied_arguments.join(', ')})"
+      def inspect
+        "##{ambiguous? ? '*' : ''}#{name}(#{unproxied_arguments.join(', ')})"
       end
 
       private

@@ -24,7 +24,7 @@ module Gamefic
       action = next_action
       return unless action
 
-      logger.info "Executing #{action.response.signature}"
+      logger.info "Executing #{action.response.inspect} from command #{command.inspect}"
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
       return if action.cancelled?
 

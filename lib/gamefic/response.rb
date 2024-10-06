@@ -90,8 +90,8 @@ module Gamefic
       )
     end
 
-    def signature
-      parts = [verb || 'nil'] + queries.map(&:signature)
+    def inspect
+      parts = [verb || 'nil'] + queries.map(&:inspect)
       "[#{parts.join(', ')}]"
     end
 
