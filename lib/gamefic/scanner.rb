@@ -6,14 +6,12 @@ require 'gamefic/scanner/strict'
 require 'gamefic/scanner/fuzzy'
 require 'gamefic/scanner/nesting'
 require 'gamefic/scanner/fuzzy_nesting'
-require 'gamefic/scanner/nuanced'
-require 'gamefic/scanner/nuanced_nesting'
 
 module Gamefic
   # A module for matching objects to tokens.
   #
   module Scanner
-    DEFAULT_PROCESSORS = [Nesting, Strict, FuzzyNesting, Fuzzy, NuancedNesting, Nuanced].freeze
+    DEFAULT_PROCESSORS = [Nesting, Strict, FuzzyNesting, Fuzzy].freeze
 
     # Scan entities against a token.
     #

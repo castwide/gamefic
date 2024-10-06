@@ -28,7 +28,7 @@ module Gamefic
       end
 
       def match_word available, word
-        available.select { |obj| obj.keywords.include?(word) }
+        available.select { |obj| (obj.keywords + obj.nuance.keywords).include?(word) }
       end
 
       def reduce_noise entities, keywords
