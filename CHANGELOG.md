@@ -4,6 +4,7 @@
 - Commands prefer strictness over precision
 - Queries scan for ambiguity before filtering through arguments
 - Abstract queries
+- Command logging
 
 ## 3.5.0 - October 5, 2024
 - Configurable scanners
