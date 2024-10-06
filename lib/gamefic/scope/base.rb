@@ -11,6 +11,7 @@ module Gamefic
 
       # @param [Gamefic::Entity]
       def initialize context
+        Gamefic.logger.warn "`#{self.class}` is deprecated. Use one of the current classes (e.g., `Gamefic::Query::Family`) instead."
         @context = context
       end
 

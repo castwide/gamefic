@@ -9,6 +9,7 @@ module Gamefic
 
       # @param scope [Class<Gamefic::Scope::Base>]
       def initialize scope, *arguments, ambiguous: false, name: nil
+        Gamefic.logger.warn '`Gamefic::Query::Scoped::Base` is deprecated. Use one of the current classes (e.g., `Gamefic::Query::Family`) instead.'
         super(*arguments, ambiguous: ambiguous, name: name)
         @scope = scope
       end
