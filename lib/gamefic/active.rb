@@ -219,6 +219,7 @@ module Gamefic
     def cancel
       dispatchers.last&.cancel
     end
+    alias stop cancel
 
     def executing?
       !dispatchers.empty?
@@ -227,6 +228,7 @@ module Gamefic
     def cancelled?
       dispatchers.last&.cancelled?
     end
+    alias stopped? cancelled?
 
     # @return [Command]
     def command
