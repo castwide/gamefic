@@ -14,7 +14,7 @@ class String
   #
   # @return [Array]
   def keywords
-    gsub(/[\s-]+/, ' ').strip.downcase.split - %w[a an the]
+    gsub(/[\s-]+/, ' ').strip.downcase.split
   end
 
   # @return [String]
