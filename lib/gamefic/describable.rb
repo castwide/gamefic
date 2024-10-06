@@ -24,7 +24,7 @@ module Gamefic
     # "big red" could be considered nuance.
     #
     # @return [String]
-    attr_accessor :nuance
+    attr_writer :nuance
 
     # The object's indefinite article (usually "a" or "an").
     #
@@ -38,6 +38,11 @@ module Gamefic
 
     def keywords
       "#{name} #{synonyms}".keywords
+    end
+
+    # @return [String]
+    def nuance
+      @nuance ||= ''
     end
 
     # The name of the object with an indefinite article.
