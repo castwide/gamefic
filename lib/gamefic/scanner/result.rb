@@ -38,6 +38,10 @@ module Gamefic
         @processor = processor
       end
 
+      def passed
+        @passed ||= (token.keywords - remainder.keywords).join(' ')
+      end
+
       def strictness
         @strictness ||= Scanner.strictness(processor)
       end
