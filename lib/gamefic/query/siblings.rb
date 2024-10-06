@@ -2,10 +2,9 @@
 
 module Gamefic
   module Query
-    class Abstract < General
+    class Siblings < Base
       def span subject
-        super.that_are_not(Node)
-             .that_are(Describable)
+        subject.parent.children - [subject]
       end
     end
   end

@@ -13,6 +13,7 @@ module Gamefic
       # @return [Boolean]
       attr_reader :ambiguous
 
+      # @todo Maybe deprecate
       attr_accessor :narrative
 
       # @raise [ArgumentError] if any of the arguments are nil
@@ -80,8 +81,8 @@ module Gamefic
       # @return [Boolean]
       def accept?(subject, object)
         available = select(subject)
-        if ambiguous? && object.is_a?(Array)
-          object.flatten & available == object
+        if ambiguous?
+          object & available == object
         else
           available.include?(object)
         end

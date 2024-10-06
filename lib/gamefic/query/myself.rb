@@ -2,10 +2,9 @@
 
 module Gamefic
   module Query
-    class Abstract < General
+    class Myself < Base
       def span subject
-        super.that_are_not(Node)
-             .that_are(Describable)
+        [subject]
       end
     end
   end
