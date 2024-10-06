@@ -9,7 +9,7 @@ module Gamefic
       end
 
       def precision
-        @precision ||= super - 1000
+        @precision ||= super - 2000
       end
     end
   end
