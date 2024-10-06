@@ -68,9 +68,6 @@ module Gamefic
     # @return [Actor]
     attr_reader :actor
 
-    # @return [Command]
-    attr_reader :command
-
     # @return [Array<Response>]
     def responses
       @responses ||= actor.epic.responses_for(command.verb)
