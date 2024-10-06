@@ -69,6 +69,11 @@ module Gamefic
       @last_output ||= output
     end
 
+    # The last executed command.
+    #
+    # @return [Command, nil]
+    attr_reader :last_command
+
     # Perform a command.
     #
     # The command's action will be executed immediately, regardless of the
@@ -81,7 +86,7 @@ module Gamefic
     # @return [Action, nil]
     def perform(command)
       dispatchers.push Dispatcher.dispatch(self, command)
-      dispatchers.last.execute.tap { dispatchers.pop }
+      dispatch_and_pop
     end
 
     # Quietly perform a command.
@@ -110,7 +115,7 @@ module Gamefic
     # @return [Action, nil]
     def execute(verb, *params)
       dispatchers.push Dispatcher.dispatch_from_params(self, verb, params)
-      dispatchers.last.execute.tap { dispatchers.pop }
+      dispatch_and_pop
     end
 
     # Proceed to the next Action in the current stack.
@@ -240,6 +245,13 @@ module Gamefic
     # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
+    end
+
+    def dispatch_and_pop
+      dispatchers.last.execute.tap do
+        @last_command = dispatchers.last.command
+        dispatchers.pop
+      end
     end
 
     def ensure_cue
