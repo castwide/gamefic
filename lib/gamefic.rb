@@ -38,3 +38,4 @@ require 'gamefic/actor'
 # @todo Deprecated classes under temporary support for gamefic-standard
 require 'gamefic/scope/base'
 require 'gamefic/query/scoped'
+require 'gamefic/scope/family'
