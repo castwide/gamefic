@@ -19,8 +19,8 @@ module Gamefic
         @entities = entities
       end
 
-      def select subject
-        available_entities(subject).that_are(*unproxied_arguments)
+      def span subject
+        available_entities(subject)
       end
 
       private

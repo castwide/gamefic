@@ -22,6 +22,12 @@ describe Gamefic::Scriptable::Proxies do
     expect(object).to be(plot.foo)
   end
 
+  it 'fetches from specialized proxies' do
+    agent = Gamefic::Proxy::Pick.new('foo')
+    object = plot.unproxy(agent)
+    expect(object).to be(plot.foo)
+  end
+
   it 'raises on invalid keys' do
     agent = Gamefic::Proxy.new(:attr, :error)
     expect { plot.unproxy(agent) }.to raise_error(ArgumentError)

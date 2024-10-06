@@ -12,7 +12,7 @@ module Gamefic
       end
 
       def scan
-        return Result.unmatched(selection, token, self.class) unless token =~ NEST_REGEXP
+        return unmatched_result unless token =~ NEST_REGEXP
 
         denest selection, token
       end
@@ -20,13 +20,17 @@ module Gamefic
       private
 
       def denest objects, token
+        near = objects
+        far = objects
         parts = token.split(NEST_REGEXP)
         until parts.empty?
           current = parts.pop
-          last_result = subprocessor.scan(objects, current)
-          return Result.unmatched(selection, token, self.class) if last_result.matched.empty? || last_result.matched.length > 1
+          last_result = subprocessor.scan(near, current)
+          last_result = subprocessor.scan(far, current) if last_result.matched.empty? && near != far
+          return unmatched_result if last_result.matched.empty? || last_result.matched.length > 1
 
-          objects = last_result.matched.first.flatten & objects
+          near = last_result.matched.first.children & objects
+          far = last_result.matched.first.flatten & objects
         end
         last_result
       end

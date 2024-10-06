@@ -212,6 +212,10 @@ module Gamefic
       false
     end
 
+    def acting?
+      !epic.empty?
+    end
+
     private
 
     # @return [Array<Dispatcher>]

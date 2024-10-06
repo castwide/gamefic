@@ -101,11 +101,12 @@ module Gamefic
     #   make_seed Gamefic::Entity, name: 'thing'
     #
     # @param klass [Class<Gamefic::Entity>]
-    # @return [void]
+    # @return [Proxy]
     def make_seed klass, **opts
       seed { make(klass, **opts) }
-      nil
+      Proxy::Pick.new(klass, opts[:name], raise: true)
     end
+    alias make make_seed
 
     # Seed an entity with an attribute method.
     #
@@ -121,21 +122,24 @@ module Gamefic
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
     def attr_seed name, klass, **opts
-      seed do
-        instance_variable_set("@#{name}", make(klass, **opts))
-        self.class.define_method(name) { instance_variable_get("@#{name}") }
+      ivname = "@#{name}"
+      define_method(name) do
+        return instance_variable_get(ivname) if instance_variable_defined?(ivname)
+
+        instance_variable_set(ivname, make(klass, **opts))
       end
+      seed { send name }
       Proxy.new(:attr, name)
     end
 
     # @param symbol [Symbol]
     # @return [Proxy]
     def proxy symbol
-      Logging.logger.warn "#proxy is deprecated. Use lazy_attr, lazy_ivar, or lazy_pick instead"
+      Logging.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`proxy` is deprecated. Use `pick` or `pick!` instead."
       if symbol.to_s.start_with?('@')
-        lazy_ivar(symbol)
+        Proxy.new(:ivar, symbol)
       else
-        lazy_attr(symbol)
+        Proxy.new(:attr, symbol)
       end
     end
 
@@ -147,6 +151,7 @@ module Gamefic
     # @param key [Symbol]
     # @return [Proxy]
     def lazy_ivar key
+      Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`lazy_ivar` is deprecated. Use `pick` or `pick!` instead."
       Proxy.new(:ivar, key)
     end
     alias _ivar lazy_ivar
@@ -159,23 +164,31 @@ module Gamefic
     # @param key [Symbol]
     # @return [Proxy]
     def lazy_attr key
+      Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`lazy_attr` is deprecated. Use `pick` or `pick!` instead."
       Proxy.new(:attr, key)
     end
     alias _attr lazy_attr
 
-    # Lazy reference an entity by its description.
+    # Lazy pick an entity.
     #
     # @example
-    #   lazy_pick('the red box')
+    #   pick('the red box')
     #
-    # @raise [RuntimeError] if a unique match could not be found.
-    #
-    # @param description [String]
+    # @param args [Array]
     # @return [Proxy]
-    def lazy_pick description
-      Proxy.new(:pick, description)
+    def pick *args
+      Proxy::Pick.new(*args)
     end
-    alias _pick lazy_pick
+    alias lazy_pick pick
+    alias _pick pick
+
+    # Lazy pick an entity or raise
+    #
+    def pick! *args
+      Proxy::Pick.new(*args)
+    end
+    alias lazy_pick! pick
+    alias _pick! pick
 
     if RUBY_ENGINE == 'opal'
       # :nocov:
@@ -209,7 +222,7 @@ module Gamefic
     #
     # @return [Module<self>]
     def no_scripts
-      Logging.logger.warn 'Calling `no_scripts` on Scriptable modules is no longer necessary.'
+      Logging.logger.warn "#{caller.first ? "#{caller.first}: " : ''}Calling `no_scripts` on Scriptable modules is no longer necessary."
       self
     end
   end

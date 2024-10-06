@@ -15,6 +15,17 @@ module Gamefic
         Query::General.new -> { entities }, *args, ambiguous: ambiguous, name: 'anywhere'
       end
 
+      # Define a query that searches for abstract entities.
+      #
+      # An abstract entity is a pseudo-entity that is describable but does
+      # not have a parent or children.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @return [Query::Abstract]
+      def abstract *args, ambiguous: false
+        Query::Abstract.new -> { entities }, *args, ambiguous: ambiguous
+      end
+
       # Define a query that searches an actor's family of entities. The
       # results include the parent, siblings, children, and accessible
       # descendants of siblings and children.
@@ -40,6 +51,14 @@ module Gamefic
       # @return [Query::Scoped]
       def children *args, ambiguous: false
         Query::Scoped.new Scope::Children, *args, ambiguous: ambiguous, name: 'children'
+      end
+
+      # Define a query that searches an actor's descendants.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @return [Query::Scoped]
+      def descendants *args, ambiguous: false
+        Query::Scoped.new Scope::Descendants, *args, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's siblings.

@@ -21,6 +21,7 @@ module Gamefic
       #
       # @return [Array<Entity>, String]
       attr_reader :matched
+      alias match matched
 
       # The remaining (unmatched) portion of the token
       #
@@ -39,6 +40,16 @@ module Gamefic
 
       def strictness
         @strictness ||= Scanner.strictness(processor)
+      end
+
+      def filter *args
+        Scanner::Result.new(
+          scanned,
+          token,
+          match.that_are(*args),
+          remainder,
+          processor
+        )
       end
 
       def self.unmatched scanned, token, processor

@@ -20,7 +20,7 @@ module Gamefic
 
       # @return [Result]
       def scan
-        Result.unmatched(selection, token, self.class)
+        unmatched_result
       end
 
       # @param selection [Array<Entity>]
@@ -28,6 +28,16 @@ module Gamefic
       # @return [Result]
       def self.scan selection, token
         new(selection, token).scan
+      end
+
+      private
+
+      def unmatched_result
+        Result.unmatched(selection, token, self.class)
+      end
+
+      def matched_result matched, remainder
+        Result.new(selection, token, matched, remainder, self.class)
       end
     end
   end

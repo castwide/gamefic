@@ -1,4 +1,11 @@
-## 3.5.0
+## 3.6.0 - October 6, 2024
+- Normalized arguments accept strings
+- Smarter picks and proxies
+- Commands prefer strictness over precision
+- Queries scan for ambiguity before filtering through arguments
+- Abstract queries
+
+## 3.5.0 - October 5, 2024
 - Configurable scanners
 - Refactored scanners and queries
 - Allow assignment to nil instance variables in stage
@@ -7,6 +14,10 @@
 - Chapter inherits Narrative
 - Plot attribute proxy for chapters and subplots
 - Entity#leave
+- Descendants query
+- Persistent subplots
+- Entity#broadcast
+- Ascendants in family query
 
 ## 3.4.0 - September 10, 2024
 - Chapters

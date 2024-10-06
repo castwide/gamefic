@@ -24,8 +24,8 @@ describe Gamefic::Dispatcher do
         @books = make Gamefic::Entity, name: 'books', parent: @room
       end
 
-      respond(:look, proxy(:@books)) { |_, _| }
-      respond(:look, proxy(:@bookshelf)) { |_, _| }
+      respond(:look, pick!('books')) { |_, _| }
+      respond(:look, pick!('bookshelf')) { |_, _| }
     end
 
     plot = klass.new

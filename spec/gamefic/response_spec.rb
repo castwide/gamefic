@@ -3,6 +3,14 @@
 RSpec.describe Gamefic::Response do
   let(:stage_func) { Object.new }
 
+  describe '#new' do
+    it 'accepts proxies' do
+      plot = Gamefic::Plot.new
+      plot.make Gamefic::Entity, name: 'something'
+      Gamefic::Response.new(:verb, plot, Gamefic::Proxy::Pick.new('something')) {}
+    end
+  end
+
   describe '#meta?' do
     it 'is false by default' do
       response = Gamefic::Response.new(:verb, stage_func) { |actor| actor }

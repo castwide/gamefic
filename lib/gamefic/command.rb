@@ -30,11 +30,18 @@ module Gamefic
       @precision = precision
     end
 
+    def substantiality
+      @substantiality ||= arguments.that_are(Entity).length + (verb ? 1 : 0)
+    end
+
     class << self
+      # Compose a command from input.
+      #
       # @param actor [Actor]
-      # @param expressions [Array<Expression>]
+      # @param input [String]
       # @return [Command]
-      def compose actor, expressions
+      def compose actor, input
+        expressions = Syntax.tokenize(input, actor.epic.syntaxes)
         expressions.flat_map { |expression| expression_to_commands(actor, expression) }
                    .first || Command.new(nil, [])
       end
@@ -49,7 +56,7 @@ module Gamefic
              .responses_for(expression.verb)
              .map { |response| response.to_command(actor, expression) }
              .compact
-             .sort_by.with_index { |result, idx| [-result.precision, -result.strictness, idx] }
+             .sort_by.with_index { |result, idx| [-result.substantiality, -result.strictness, -result.precision, idx] }
       end
     end
   end

@@ -77,6 +77,7 @@ module Gamefic
     # @param expression [Expression]
     # @return [Command, nil]
     def to_command actor, expression
+      Gamefic.logger.info "Attempting #{queries.inspect} with #{expression.inspect}"
       return nil unless expression.verb == verb && expression.tokens.length <= queries.length
 
       results = filter(actor, expression)
@@ -131,7 +132,7 @@ module Gamefic
 
     def select_query arg, narrative
       case arg
-      when Entity, Class, Module, Proc, Proxy
+      when Entity, Class, Module, Proc, Proxy, Proxy::Base
         narrative.available(arg)
       when String, Regexp
         narrative.plaintext(arg)
