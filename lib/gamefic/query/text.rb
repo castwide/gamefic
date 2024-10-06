@@ -31,7 +31,7 @@ module Gamefic
       alias filter query
 
       def precision
-        0
+        -1000
       end
 
       def accept? _subject, argument

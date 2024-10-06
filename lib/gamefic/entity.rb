@@ -76,9 +76,10 @@ module Gamefic
     # @param message [String]
     # @return [void]
     def broadcast message
-      Query::Scoped.new(Scope::Descendants).select(self)
-                                           .that_are(Active, proc(&:acting?))
-                                           .each { |actor| actor.tell message }
+      Query::Descendants.new
+                        .select(self)
+                        .that_are(Active, proc(&:acting?))
+                        .each { |actor| actor.tell message }
     end
 
     class << self

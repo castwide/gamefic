@@ -7,6 +7,10 @@ module Gamefic
         super.that_are_not(Node)
              .that_are(Describable)
       end
+
+      def precision
+        @precision ||= super - 1000
+      end
     end
   end
 end

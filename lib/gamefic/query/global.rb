@@ -8,6 +8,10 @@ module Gamefic
 
         subject.epic.narratives.flat_map(&:entities)
       end
+
+      def precision
+        @precision ||= super - 2000
+      end
     end
   end
 end

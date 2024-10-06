@@ -150,7 +150,7 @@ describe Gamefic::Rulebook do
   end
 
   it 'skips duplicate syntaxes' do
-    rulebook.calls.add_response Gamefic::Response.new(:make, stage_func, Gamefic::Query::Scoped.new(Gamefic::Scope::Family)) { |_, _, _| }
+    rulebook.calls.add_response Gamefic::Response.new(:make, stage_func, Gamefic::Query::Family.new) { |_, _, _| }
     # Making the action creates a default syntax `make :var1 :var2`
     expect(rulebook.syntaxes.length).to eq(1)
     rulebook.calls.add_syntax Gamefic::Syntax.new('make :a from :b', 'make :a :b')
@@ -173,7 +173,7 @@ describe Gamefic::Rulebook do
     end
 
     it 'sorts by precision' do
-      high = rulebook.calls.add_response Gamefic::Response.new(:verb, stage_func, Gamefic::Query::Scoped.new(Gamefic::Scope::Family, Gamefic::Active)) { |*args| nil }
+      high = rulebook.calls.add_response Gamefic::Response.new(:verb, stage_func, Gamefic::Query::Family.new) { |*args| nil }
       low = rulebook.calls.add_response Gamefic::Response.new(:verb, stage_func, Gamefic::Query::Text.new) { |*args| nil }
       responses = rulebook.responses_for(:verb)
       expect(responses).to eq([high, low])

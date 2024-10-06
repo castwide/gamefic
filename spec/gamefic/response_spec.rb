@@ -41,7 +41,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'returns nil with an empty query match' do
-      defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
+      defn = Gamefic::Query::Family.new
       response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
       actor = Gamefic::Actor.new
       command = Gamefic::Command.new(:verb, ['arg'])
@@ -50,7 +50,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'returns an action with a successful token match' do
-      defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
+      defn = Gamefic::Query::Family.new
       response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
@@ -64,7 +64,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'returns nil with a failed token match' do
-      defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
+      defn = Gamefic::Query::Family.new
       response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
@@ -77,7 +77,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'returns nil with ambiguous results' do
-      defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family)
+      defn = Gamefic::Query::Family.new
       response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
@@ -91,7 +91,7 @@ RSpec.describe Gamefic::Response do
     end
 
     it 'returns ambiguous results when defined' do
-      defn = Gamefic::Query::Scoped.new(Gamefic::Scope::Family, ambiguous: true)
+      defn = Gamefic::Query::Family.new(ambiguous: true)
       response = Gamefic::Response.new(:verb, stage_func, defn) { |actor| actor }
 
       room = Gamefic::Entity.new
