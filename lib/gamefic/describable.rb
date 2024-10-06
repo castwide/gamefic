@@ -19,6 +19,13 @@ module Gamefic
     # @return [String]
     attr_reader :synonyms
 
+    # Optional words that shouldn't match an object on their own but might
+    # be used in a larger phrase. For example, in the phrase "big red dog,"
+    # "big red" could be considered nuance.
+    #
+    # @return [String]
+    attr_accessor :nuance
+
     # The object's indefinite article (usually "a" or "an").
     #
     # @return [String]

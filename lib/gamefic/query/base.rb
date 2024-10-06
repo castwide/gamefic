@@ -38,6 +38,7 @@ module Gamefic
       #
       # @param subject [Gamefic::Entity]
       # @param token [String]
+      # @param nuance [String]
       # @return [Result]
       def query(subject, token)
         first_pass = Scanner.scan(span(subject), token)

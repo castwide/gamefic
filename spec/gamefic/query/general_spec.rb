@@ -1,57 +1,44 @@
 # frozen_string_literal: true
 
 describe Gamefic::Query::General do
+  let(:entities) {
+    [
+      Gamefic::Entity.new(name: 'one'),
+      Gamefic::Entity.new(name: 'two')
+    ]
+  }
+
   describe '#query' do
     it 'returns match from array' do
-      entities = ['one', 'two']
       general = Gamefic::Query::General.new(entities)
       result = general.query(nil, 'one')
-      expect(result.match).to eq('one')
+      expect(result.match).to eq(entities.first)
     end
 
     it 'returns nil for unmatched objects' do
-      entities = ['one', 'two']
       general = Gamefic::Query::General.new(entities)
       result = general.query(nil, 'three')
       expect(result.match).to be_nil
-    end
-
-    it 'accepts procs' do
-      prc = proc { ['one', 'two']}
-      general = Gamefic::Query::General.new(prc)
-      result = general.query(nil, 'one')
-      expect(result.match).to eq('one')
-    end
-
-    it 'accepts procs with an argument' do
-      subject = []
-      prc = proc { |subj| subj + ['one'] }
-      general = Gamefic::Query::General.new(prc)
-      result = general.query(subject, 'one')
-      expect(result.match).to eq('one')
     end
   end
 
   describe '#select' do
     it 'returns initial array' do
-      entities = ['one', 'two']
       general = Gamefic::Query::General.new(entities)
       result = general.select(nil)
-      expect(result).to eq(['one', 'two'])
+      expect(result).to eq(entities)
     end
 
     it 'filters initial array with proc argument' do
-      entities = ['one', 'two']
-      general = Gamefic::Query::General.new(entities, ->(str) { str == 'two' })
+      general = Gamefic::Query::General.new(entities, ->(ent) { ent.name == 'two' })
       result = general.select(nil)
-      expect(result).to eq(['two'])
+      expect(result).to eq([entities.last])
     end
 
     it 'filters string arguments' do
-      entities = ['one', 'two']
       general = Gamefic::Query::General.new(entities, 'one')
       result = general.select(nil)
-      expect(result).to eq(['one'])
+      expect(result).to eq([entities.first])
     end
   end
 end
