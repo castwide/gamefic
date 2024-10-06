@@ -34,3 +34,7 @@ require 'gamefic/dispatcher'
 require 'gamefic/active'
 require 'gamefic/active/cue'
 require 'gamefic/actor'
+
+# @todo Deprecated classes under temporary support for gamefic-standard
+require 'gamefic/scope/base'
+require 'gamefic/query/scoped'
