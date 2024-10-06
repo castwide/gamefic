@@ -12,6 +12,7 @@ module Gamefic
       @actor = actor
       @command = command
       @executed = false
+      Gamefic.logger.info "Dispatching #{command.inspect}"
     end
 
     # Run the dispatcher.
@@ -24,7 +25,6 @@ module Gamefic
       action = next_action
       return unless action
 
-      logger.info "Executing #{action.response.inspect} from command #{command.inspect}"
       actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions action }
       return if action.cancelled?
 

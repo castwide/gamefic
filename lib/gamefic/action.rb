@@ -51,7 +51,7 @@ module Gamefic
     def execute
       return self if cancelled? || executed?
 
-      Gamefic.logger.info "Executing #{verb} #{arguments.inspect}"
+      Gamefic.logger.info "Executing #{([verb] + [arguments]).flatten.map(&:inspect).join(', ')}"
       @executed = true
       response.execute actor, *arguments
       self

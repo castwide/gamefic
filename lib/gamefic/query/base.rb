@@ -100,7 +100,7 @@ module Gamefic
       end
 
       def inspect
-        "##{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.join(', ')})"
+        "##{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.map(&:inspect).join(', ')})"
       end
 
       private

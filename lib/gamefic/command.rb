@@ -34,6 +34,10 @@ module Gamefic
       @substantiality ||= arguments.that_are(Entity).length + (verb ? 1 : 0)
     end
 
+    def inspect
+      "#<#{self.class} #{([verb] + arguments).map(&:inspect).join(', ')}>"
+    end
+
     class << self
       # Compose a command from input.
       #
@@ -52,6 +56,7 @@ module Gamefic
       # @param expression [Expression]
       # @return [Array<Command>]
       def expression_to_commands actor, expression
+        Gamefic.logger.info "Evaluating #{expression.inspect}"
         actor.epic
              .responses_for(expression.verb)
              .map { |response| response.to_command(actor, expression) }

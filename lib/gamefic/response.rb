@@ -77,12 +77,12 @@ module Gamefic
     # @param expression [Expression]
     # @return [Command, nil]
     def to_command actor, expression
-      Gamefic.logger.info "Attempting #{queries.inspect} with #{expression.inspect}"
-      return nil unless expression.verb == verb && expression.tokens.length <= queries.length
+      return log_and_discard unless expression.verb == verb && expression.tokens.length <= queries.length
 
       results = filter(actor, expression)
-      return nil unless results
+      return log_and_discard unless results
 
+      Gamefic.logger.info "Accepted #{inspect}"
       Command.new(
         verb,
         results.map(&:match),
@@ -92,11 +92,15 @@ module Gamefic
     end
 
     def inspect
-      parts = [verb || 'nil'] + queries.map(&:inspect)
-      "[#{parts.join(', ')}]"
+      "#<#{self.class} #{([verb] + queries).map(&:inspect).join(', ')}>"
     end
 
     private
+
+    def log_and_discard
+      Gamefic.logger.info "Discarded #{inspect}"
+      nil
+    end
 
     def filter actor, expression
       remainder = ''
