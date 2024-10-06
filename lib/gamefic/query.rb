@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 require 'gamefic/query/base'
-require 'gamefic/query/general'
 require 'gamefic/query/text'
 require 'gamefic/query/result'
-
 require 'gamefic/query/subqueries'
 require 'gamefic/query/global'
 require 'gamefic/query/abstract'
