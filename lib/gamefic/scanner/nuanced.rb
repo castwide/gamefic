@@ -2,15 +2,24 @@
 
 module Gamefic
   module Scanner
-    # Fuzzy token matching.
+    # Nuanced token matching.
     #
-    # An entity will match a word in a fuzzy scan if it matches the beginning
-    # of one of the entity's keywords, e.g., `pen` is a fuzzy token match for
-    # the keyword `pencil`.
+    # 
     #
     class Nuanced < Fuzzy
+      def scan
+        result = super
+        return result if result.matched.empty? || result.remainder.empty?
+
+        used = token.keywords - result.remainder.keywords
+        concrete = result.matched.select do |object|
+          object.keywords.any? { |word| used.any? { |word2| word2.start_with?(word) } }
+        end
+        matched_result concrete, result.remainder
+      end
+
       def match_word available, word
-        available.select { |obj| (obj.keywords + obj.nuance.to_s.keywords).any? { |wrd| wrd.start_with?(word) } }
+        available.select { |obj| (obj.keywords + obj.nuance.keywords).any? { |wrd| wrd.start_with?(word) } }
       end
     end
   end
