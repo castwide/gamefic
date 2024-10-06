@@ -4,6 +4,9 @@ module Gamefic
   # The action executor for character commands.
   #
   class Dispatcher
+    # @return [Command]
+    attr_reader :command
+
     # @param actor [Actor]
     # @param command [Command]
     def initialize actor, command
