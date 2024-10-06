@@ -220,6 +220,14 @@ module Gamefic
       dispatchers.last&.cancel
     end
 
+    def executing?
+      !dispatchers.empty?
+    end
+
+    def cancelled?
+      dispatchers.last&.cancelled?
+    end
+
     # @return [Command]
     def command
       dispatchers.last&.command || Command.new(nil, [])

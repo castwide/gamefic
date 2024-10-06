@@ -76,6 +76,14 @@ module Gamefic
         rulebook.hooks.after_action self, *verbs, &block
       end
 
+      def before_command *verbs, &block
+        rulebook.hooks.before_command self, *verbs, &block
+      end
+
+      def after_command *verbs, &block
+        rulebook.hooks.after_command self, *verbs, &block
+      end
+
       # Create an alternate Syntax for a response.
       # The command and its translation can be parameterized.
       #

@@ -42,12 +42,15 @@ module Gamefic
       return unless @action
       return if @action.cancelled?
 
-      @action = next_action
-      @action&.execute
+      next_action&.execute
     end
 
     def cancel
       @action&.cancel
+    end
+
+    def cancelled?
+      @action&.cancelled?
     end
 
     # @param actor [Active]

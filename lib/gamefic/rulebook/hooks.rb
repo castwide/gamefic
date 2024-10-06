@@ -73,7 +73,7 @@ module Gamefic
 
       def run_command_hooks actor, hooks
         hooks.each do |hook|
-          break if actor.cancelling?
+          break if actor.cancelled?
 
           next unless hook.match?(actor.command.verb)
 
