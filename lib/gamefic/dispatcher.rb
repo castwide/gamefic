@@ -13,6 +13,7 @@ module Gamefic
       @actor = actor
       @command = command
       @executed = false
+      Gamefic.logger.info "Dispatching #{command.inspect}"
     end
 
     # Run the dispatcher.

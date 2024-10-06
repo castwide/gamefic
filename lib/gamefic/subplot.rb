@@ -98,5 +98,11 @@ module Gamefic
     def inspect
       "#<#{self.class}>"
     end
+
+    class << self
+      def config
+        Proxy::Config.new
+      end
+    end
   end
 end

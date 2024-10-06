@@ -88,11 +88,9 @@ module Gamefic
     end
 
     def validate_parent(node)
-      raise NodeError, 'Parent must be a Node' unless node.is_a?(Node) || node.nil?
-
-      raise NodeError, "Node cannot be its own parent" if node == self
-
-      raise NodeError, 'Node cannot be a child of a descendant' if flatten.include?(node)
+      raise NodeError, "Parent of #{inspect} must be a Node, received #{node.inspect}" unless node.is_a?(Node) || node.nil?
+      raise NodeError, "#{inspect} cannot be its own parent" if node == self
+      raise NodeError, "#{inspect} cannot be a child of descendant #{node.inspect}" if flatten.include?(node)
     end
   end
 end

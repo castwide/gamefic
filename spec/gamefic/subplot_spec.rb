@@ -135,4 +135,22 @@ describe Gamefic::Subplot do
     subplot.conclude
     expect(subplot).to be_concluding
   end
+
+  it 'proxies config' do
+    executed = false
+
+    klass = Class.new(Gamefic::Subplot) do
+      def configure
+        config[:thing] = make Gamefic::Entity, name: 'thing'
+      end
+
+      respond(:execute, anywhere(config[:thing])) { executed = true }
+    end
+
+    plot = Gamefic::Plot.new
+    player = plot.introduce
+    plot.branch klass, introduce: player
+    player.perform 'execute thing'
+    expect(executed).to be(true)
+  end
 end

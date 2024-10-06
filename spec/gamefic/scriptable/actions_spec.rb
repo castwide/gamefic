@@ -72,7 +72,7 @@ describe Gamefic::Scriptable::Actions do
           @thing ||= make Gamefic::Entity, name: 'thing'
         end
 
-        respond :use, proxy(:thing)
+        respond :use, pick!('thing')
       end
 
       expect { klass.new }.not_to raise_error

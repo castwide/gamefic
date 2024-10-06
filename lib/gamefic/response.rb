@@ -77,11 +77,12 @@ module Gamefic
     # @param expression [Expression]
     # @return [Command, nil]
     def to_command actor, expression
-      return nil unless expression.verb == verb && expression.tokens.length <= queries.length
+      return log_and_discard unless expression.verb == verb && expression.tokens.length <= queries.length
 
       results = filter(actor, expression)
-      return nil unless results
+      return log_and_discard unless results
 
+      Gamefic.logger.info "Accepted #{inspect}"
       Command.new(
         verb,
         results.map(&:match),
@@ -91,7 +92,16 @@ module Gamefic
       )
     end
 
+    def inspect
+      "#<#{self.class} #{([verb] + queries).map(&:inspect).join(', ')}>"
+    end
+
     private
+
+    def log_and_discard
+      Gamefic.logger.info "Discarded #{inspect}"
+      nil
+    end
 
     def filter actor, expression
       remainder = ''
@@ -127,7 +137,7 @@ module Gamefic
 
     def select_query arg, narrative
       case arg
-      when Entity, Class, Module, Proc, Proxy
+      when Entity, Class, Module, Proc, Proxy, Proxy::Base
         narrative.available(arg)
       when String, Regexp
         narrative.plaintext(arg)

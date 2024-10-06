@@ -6,9 +6,10 @@ module Gamefic
     #
     class Text < Base
       # @param argument [String, Regexp]
-      def initialize argument = /.*/
-        super
-        validate
+      # @param name [String, nil]
+      def initialize argument = /.*/, name: self.class.name
+        super(argument, name: name)
+        validate_argument
       end
 
       def argument
@@ -50,7 +51,7 @@ module Gamefic
         end
       end
 
-      def validate
+      def validate_argument
         return if argument.is_a?(String) || argument.is_a?(Regexp)
 
         raise ArgumentError, 'Invalid text query argument'

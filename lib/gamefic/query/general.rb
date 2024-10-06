@@ -14,13 +14,13 @@ module Gamefic
       # @param entities [Array, Proc]
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
-      def initialize entities, *arguments, ambiguous: false
-        super(*arguments, ambiguous: ambiguous)
+      def initialize entities, *arguments, ambiguous: false, name: nil
+        super(*arguments, ambiguous: ambiguous, name: name)
         @entities = entities
       end
 
-      def select subject
-        available_entities(subject).that_are(*unproxied_arguments)
+      def span subject
+        available_entities(subject)
       end
 
       private

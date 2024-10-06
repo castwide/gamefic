@@ -49,16 +49,30 @@ module Gamefic
         entity_vault.delete entity
       end
 
-      # Pick an entity based on a unique name or description. Return nil if an
-      # entity could not be found or there is more than one possible match.
-      #
-      # @param description [String]
-      # @return [Gamefic::Entity, nil]
-      def pick description
-        result = Scanner.scan(entities, description)
-        return nil unless result.matched.one?
+      def find *args
+        args.inject(entities) do |entities, arg|
+          case arg
+          when String
+            result = Scanner.scan(entities, arg)
+            result.remainder.empty? ? result.match : []
+          else
+            entities.that_are(arg)
+          end
+        end
+      end
 
-        result.matched.first
+      # Pick a unique entity based on the given arguments. String arguments are
+      # used to scan the entities for matching names and synonyms. Return nil
+      # if an entity could not be found or there is more than one possible
+      # match.
+      #
+      # @param description [Array]
+      # @return [Gamefic::Entity, nil]
+      def pick *args
+        matches = find(*args)
+        return nil unless matches.one?
+
+        matches.first
       end
 
       # Same as #pick, but raise an error if a unique match could not be found.
@@ -66,16 +80,14 @@ module Gamefic
       #
       # @raise [RuntimeError] if a unique match was not found.
       #
-      # @param description [String]
-      # @return [Gamefic::Entity, nil]
-      def pick! description
-        result = Scanner.scan(entities, description)
+      # @param args [Array]
+      # @return [Gamefic::Entity]
+      def pick! *args
+        matches = find(*args)
+        raise "no entity matching '#{args.inspect}'" if matches.empty?
+        raise "multiple entities matching '#{args.inspect}': #{matches.join_and}" unless matches.one?
 
-        raise "no entity matching '#{description}'" if result.matched.empty?
-
-        raise "multiple entities matching '#{description}': #{result.matched.join_and}" unless result.matched.one?
-
-        result.matched.first
+        matches.first
       end
     end
   end

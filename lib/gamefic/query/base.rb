@@ -19,11 +19,13 @@ module Gamefic
       #
       # @param arguments [Array<Object>]
       # @param ambiguous [Boolean]
-      def initialize *arguments, ambiguous: false
+      # @param name [String]
+      def initialize *arguments, ambiguous: false, name: self.class.to_s
         raise ArgumentError, "nil argument in query" if arguments.any?(&:nil?)
 
         @arguments = arguments
         @ambiguous = ambiguous
+        @name = name
       end
 
       # Get a query result for a given subject and token.
@@ -38,19 +40,35 @@ module Gamefic
       # @param token [String]
       # @return [Result]
       def query(subject, token)
-        scan = Scanner.scan(select(subject), token)
-        ambiguous? ? ambiguous_result(scan) : unambiguous_result(scan)
+        first_pass = Scanner.scan(span(subject), token)
+        if ambiguous?
+          ambiguous_result(first_pass.filter(*normalized_arguments))
+        elsif first_pass.match.one?
+          unambiguous_result(first_pass.filter(*normalized_arguments))
+        else
+          unambiguous_result(first_pass)
+        end
       end
       alias filter query
 
-      # Get an array of entities that match the query from the context of the
-      # subject.
+      # Get an array of entities that match the arguments from the context of
+      # the subject.
+      #
+      # @param subject [Entity]
+      # @return [Array<Entity>]
+      def select subject
+        span(subject).that_are(*normalized_arguments)
+      end
+
+      # Get an array of entities that are candidates for selection from the
+      # context of the subject. These are the entities that #select will
+      # filter through query's arguments.
       #
       # Subclasses should override this method.
       #
       # @param subject [Entity]
       # @return [Array<Entity>]
-      def select _subject
+      def span _subject
         []
       end
 
@@ -77,12 +95,20 @@ module Gamefic
         @ambiguous
       end
 
+      def name
+        @name || self.class.to_s
+      end
+
+      def inspect
+        "##{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.map(&:inspect).join(', ')})"
+      end
+
       private
 
       def calculate_precision
-        unproxied_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
+        normalized_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
-          when Entity, Proxy
+          when Entity, Proxy, Proxy::Base
             1000
           when Class, Module
             class_depth(arg) * 100
@@ -115,11 +141,15 @@ module Gamefic
         Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
 
-      def unproxied_arguments
-        @unproxied_arguments ||= arguments.map do |arg|
+      def normalized_arguments
+        @normalized_arguments ||= arguments.map do |arg|
           case arg
-          when Proxy
+          when Proxy, Proxy::Base
             arg.fetch(narrative)
+          when String
+            proc do |entity|
+              arg.keywords.all? { |word| entity.keywords.include?(word) }
+            end
           else
             arg
           end

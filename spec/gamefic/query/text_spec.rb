@@ -44,6 +44,6 @@ describe Gamefic::Query::Text do
   end
 
   it 'raises errors for invalid arguments' do
-    expect { Gamefic::Query::Text.new({ bad: :arg }) }.to raise_error(ArgumentError)
+    expect { Gamefic::Query::Text.new(Object.new) }.to raise_error(ArgumentError)
   end
 end
