@@ -22,7 +22,7 @@ describe Gamefic::Scriptable::Queries do
   describe '#anywhere' do
     it 'returns a general query' do
       query = object.anywhere
-      expect(query).to be_a(Gamefic::Query::General)
+      expect(query).to be_a(Gamefic::Query::Global)
     end
   end
 

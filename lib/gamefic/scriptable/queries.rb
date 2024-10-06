@@ -7,23 +7,28 @@ module Gamefic
     module Queries
       include Proxies
 
-      # Define a query that searches the entire plot's entities.
+      # Define a query that searches all entities in the subject's epic.
+      #
+      # If the subject is not an actor, the result will always be empty.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::General]
-      def anywhere *args, ambiguous: false
-        Query::General.new -> { entities }, *args, ambiguous: ambiguous, name: 'anywhere'
+      # @return [Query::Global]
+      def global *args, ambiguous: false
+        Query::Global.new *args, ambiguous: ambiguous, name: 'global'
       end
+      alias anywhere global
 
       # Define a query that searches for abstract entities.
       #
       # An abstract entity is a pseudo-entity that is describable but does
       # not have a parent or children.
       #
+      # If the subject is not an actor, the result will always be empty.
+      #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Abstract]
       def abstract *args, ambiguous: false
-        Query::Abstract.new -> { entities }, *args, ambiguous: ambiguous
+        Query::Abstract.new *args, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's family of entities. The
@@ -33,7 +38,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def available *args, ambiguous: false
-        Query::Scoped.new Scope::Family, *args, ambiguous: ambiguous, name: 'available'
+        Query::Family.new *args, ambiguous: ambiguous, name: 'available'
       end
       alias family available
 
@@ -42,7 +47,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def parent *args, ambiguous: false
-        Query::Scoped.new Scope::Parent, *args, ambiguous: ambiguous, name: 'parent'
+        Query::Parent.new *args, ambiguous: ambiguous, name: 'parent'
       end
 
       # Define a query that searches an actor's children.
@@ -50,7 +55,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def children *args, ambiguous: false
-        Query::Scoped.new Scope::Children, *args, ambiguous: ambiguous, name: 'children'
+        Query::Children.new *args, ambiguous: ambiguous, name: 'children'
       end
 
       # Define a query that searches an actor's descendants.
@@ -58,7 +63,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def descendants *args, ambiguous: false
-        Query::Scoped.new Scope::Descendants, *args, ambiguous: ambiguous
+        Query::Descendants.new *args, ambiguous: ambiguous
       end
 
       # Define a query that searches an actor's siblings.
@@ -66,7 +71,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def siblings *args, ambiguous: false
-        Query::Scoped.new Scope::Siblings, *args, ambiguous: ambiguous, name: 'siblings'
+        Query::Siblings.new *args, ambiguous: ambiguous, name: 'siblings'
       end
 
       # Define a query that returns the actor itself.
@@ -74,7 +79,7 @@ module Gamefic
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
       def myself *args, ambiguous: false
-        Query::Scoped.new Scope::Myself, *args, ambiguous: ambiguous, name: 'myself'
+        Query::Myself.new *args, ambiguous: ambiguous, name: 'myself'
       end
 
       # Define a query that performs a plaintext search. It can take a String

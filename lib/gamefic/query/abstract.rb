@@ -2,7 +2,7 @@
 
 module Gamefic
   module Query
-    class Abstract < General
+    class Abstract < Global
       def span subject
         super.that_are_not(Node)
              .that_are(Describable)
