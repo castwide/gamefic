@@ -2,9 +2,9 @@
 
 describe Gamefic::Scene::MultipleChoice do
   let(:multiple_choice) do
-    Gamefic::Scene::MultipleChoice.new(nil) do |scene|
+    Gamefic::Scene::MultipleChoice.hydrate(nil, nil) do |scene|
       scene.on_finish { |_, props| raise unless props.index }
-    end
+    end.new(nil)
   end
 
   it 'initializes MultipleChoice props' do

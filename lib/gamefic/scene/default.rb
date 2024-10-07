@@ -28,14 +28,6 @@ module Gamefic
         self.class.props_class.new(self, **context)
       end
 
-      def on_start &block
-        @start_blocks.push block
-      end
-
-      def on_finish &block
-        @finish_blocks.push block
-      end
-
       # @param actor [Gamefic::Actor]
       # @param props [Props::Default]
       # @return [void]
@@ -52,11 +44,11 @@ module Gamefic
       end
 
       def run_start_blocks actor, props
-        @start_blocks.each { |blk| blk[actor, props] }
+        @start_blocks.each { |blk| execute(blk, actor, props) }
       end
 
       def run_finish_blocks actor, props
-        @finish_blocks.each { |blk| blk[actor, props] }
+        @finish_blocks.each { |blk| execute(blk, actor, props) }
       end
 
       def conclusion?
@@ -65,6 +57,12 @@ module Gamefic
 
       def to_hash
         { name: name, type: type }
+      end
+
+      private
+
+      def execute block, actor, props
+        block[actor, props]
       end
 
       class << self
@@ -106,16 +104,11 @@ module Gamefic
             use_props_class super_props
             @name = name
 
-            define_method(:run_start_blocks) do |actor, props|
-              @start_blocks.each { |blk| Stage.run(narrative, actor, props, &blk) }
+            define_method(:execute) do |block, actor, props|
+              Stage.run(narrative, actor, props, &block)
             end
 
-            define_method(:run_finish_blocks) do |actor, props|
-              @finish_blocks.each { |blk| Stage.run(narrative, actor, props, &blk) }
-            end
-
-            Stage.run(narrative, self, &block) if block
-          end
+          end.tap { |klass| Stage.run(narrative, klass, &block) if block }
         end
 
         def conclusion?
