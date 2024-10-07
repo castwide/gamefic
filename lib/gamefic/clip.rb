@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # Fragments are standalone clips that can be executed from game events.
+  # Clips are runnables that can be executed from game events. They can be
+  # useful for reducing the size of event callbacks and creating reusable
+  # features.
   #
-  # Authors should subclass Fragment and override the `run` method.
+  # Authors should subclass Clip and override the `run` method.
   #
   # @example
   #   class HelloWorld < Gamefic::Fragment
@@ -18,7 +20,7 @@ module Gamefic
   #     end
   #   end
   #
-  class Fragment
+  class Clip
     # @return [Actor]
     attr_reader :actor
 

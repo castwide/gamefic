@@ -3,7 +3,7 @@
 - Active#command
 - Command hooks
 - Refactored queries
-- Fragments
+- Clips
 
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings

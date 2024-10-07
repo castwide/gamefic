@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-describe Gamefic::Fragment do
+describe Gamefic::Clip do
   it 'runs' do
-    klass = Class.new(Gamefic::Fragment) do
+    klass = Class.new(Gamefic::Clip) do
       def run
         actor[:executed] = config[:execute]
       end

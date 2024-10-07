@@ -146,11 +146,11 @@ module Gamefic
       dispatchers.last&.proceed
     end
 
-    # Run a fragment.
+    # Run a clip.
     #
-    # @param fragment_class [Class<Fragment>]
-    def run fragment_class, **opts
-      fragment_class.run self, **opts
+    # @param clip_class [Class<Clip>]
+    def run clip_class, **opts
+      clip_class.run self, **opts
     end
 
     # Cue a scene to start in the next turn.
