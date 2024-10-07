@@ -63,6 +63,14 @@ describe Gamefic::Active do
     expect { object.cue :scene }.not_to raise_error
   end
 
+  it 'cues a scene by class' do
+    klass = Class.new(Gamefic::Scene::Default)
+    Gamefic::Narrative.script { block :scene }
+    narr = Gamefic::Narrative.new
+    narr.cast object
+    expect { object.cue klass }.not_to raise_error
+  end
+
   it 'raises an error for non-conclusions' do
     Gamefic::Narrative.script { block :scene }
     narr = Gamefic::Narrative.new

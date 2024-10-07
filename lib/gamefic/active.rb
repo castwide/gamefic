@@ -157,7 +157,7 @@ module Gamefic
     #
     # @raise [ArgumentError] if the scene is not valid
     #
-    # @param scene [Symbol]
+    # @param scene [Class<Scene::Default>, Symbol]
     # @param context [Hash] Extra data to pass to the scene's props
     # @return [Cue]
     def cue scene, **context

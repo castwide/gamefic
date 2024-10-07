@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # Clips are runnables that can be executed from game events. They can be
-  # useful for reducing the size of event callbacks and creating reusable
-  # features.
+  # Clips are runnables that can execute code that involves an actor. They can
+  # be useful for reducing the size of callbacks and making features resuable.
   #
   # Authors should subclass `Clip` and override the `run` method.
   #

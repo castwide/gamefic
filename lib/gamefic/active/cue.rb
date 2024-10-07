@@ -5,13 +5,13 @@ module Gamefic
     # The data that actors use to configure a Take.
     #
     class Cue
-      # @return [Symbol]
+      # @return [Class<Scene::Default>, Symbol]
       attr_reader :scene
 
       # @return [Hash]
       attr_reader :context
 
-      # @param scene [Symbol]
+      # @param scene [Class<Scene::Default>, Symbol]
       def initialize scene, **context
         @scene = scene
         @context = context

@@ -9,13 +9,13 @@ module Gamefic
       # @return [Symbol]
       attr_reader :name
 
-      # @param name [Symbol]
+      # @param name [Symbol, nil]
       # @param narrative [Narrative]
       # @param on_start [Proc, nil]
       # @param on_finish [Proc, nil]
       # @yieldparam [self]
       def initialize name, narrative, on_start: nil, on_finish: nil
-        @name = name
+        @name = name || self.class.default_name
         @narrative = narrative
         @start_blocks = []
         @finish_blocks = []
@@ -77,6 +77,10 @@ module Gamefic
       end
 
       class << self
+        def default_name
+          @default_name ||= self.class.name.to_s.gsub('::', '_').to_sym
+        end
+
         protected
 
         def use_props_class klass

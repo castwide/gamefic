@@ -4,6 +4,7 @@
 - Command hooks
 - Refactored queries
 - Clips
+- Cue scenes by class
 
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings

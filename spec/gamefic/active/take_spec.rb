@@ -35,6 +35,36 @@ describe Gamefic::Active::Take do
     expect(actor[:scene_finished]).to be(true)
   end
 
+  it 'starts a scene by class' do
+    scene_class = Class.new(Gamefic::Scene::Default) do
+      def start actor, _props
+        actor[:executed] = true
+      end
+    end
+    actor = Gamefic::Actor.new
+    cue = Gamefic::Active::Cue.new(scene_class)
+    Gamefic::Active::Take.start(actor, cue)
+    expect(actor[:executed]).to be(true)
+  end
+
+  it 'finishes a scene by class' do
+    scene_class = Class.new(Gamefic::Scene::Default) do
+      def finish actor, _props
+        actor[:executed] = true
+      end
+    end
+    actor = Gamefic::Actor.new
+    cue = Gamefic::Active::Cue.new(scene_class)
+    Gamefic::Active::Take.finish(actor, cue, nil)
+    expect(actor[:executed]).to be(true)
+  end
+
+  it 'starts a scene by class' do
+    scene_class = Class.new(Gamefic::Scene::Default) do
+
+    end
+  end
+
   it 'performs actions in Activity scene types' do
     Gamefic::Narrative.script do
       respond(:command) { |actor| actor[:executed] = true }

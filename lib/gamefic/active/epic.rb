@@ -58,9 +58,23 @@ module Gamefic
                  .flat_map { |rb| rb.responses_for(*verbs) }
       end
 
-      # @param name [Symbol]
+      # @param name [Class<Scene::Default>, Symbol]
       # @return [Scene]
-      def select_scene name
+      def select_scene class_or_name
+        if class_or_name.is_a?(Class)
+          instantiate_scene class_or_name
+        else
+          select_scene_by_symbol class_or_name
+        end
+      end
+
+      private
+
+      def instantiate_scene klass
+        klass.new(nil, narratives.first)
+      end
+
+      def select_scene_by_symbol name
         scenes = rulebooks.map { |rlbk| rlbk.scenes[name] }
                           .compact
         raise ArgumentError, "Scene named `#{name}` does not exist" if scenes.empty?

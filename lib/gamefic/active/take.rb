@@ -49,18 +49,20 @@ module Gamefic
         scene.run_finish_blocks actor, props
       end
 
-      # @param actor [Active]
-      # @param cue [Active::Cue]
-      # @return [Props::Default]
-      def self.start actor, cue
-        Take.new(actor, cue).start
-      end
+      class << self
+        # @param actor [Active]
+        # @param cue [Active::Cue]
+        # @return [Props::Default]
+        def start actor, cue
+          Take.new(actor, cue).start
+        end
 
-      # @param actor [Active]
-      # @param cue [Active::Cue]
-      # @return [void]
-      def self.finish actor, cue, props
-        Take.new(actor, cue, props).finish
+        # @param actor [Active]
+        # @param cue [Active::Cue]
+        # @return [void]
+        def finish actor, cue, props
+          Take.new(actor, cue, props).finish
+        end
       end
     end
   end
