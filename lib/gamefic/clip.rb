@@ -5,10 +5,10 @@ module Gamefic
   # useful for reducing the size of event callbacks and creating reusable
   # features.
   #
-  # Authors should subclass Clip and override the `run` method.
+  # Authors should subclass `Clip` and override the `run` method.
   #
   # @example
-  #   class HelloWorld < Gamefic::Fragment
+  #   class HelloWorld < Gamefic::Clip
   #    def run
   #      actor.tell 'Hello, world!'
   #    end
@@ -16,7 +16,7 @@ module Gamefic
   #
   #   class MyPlot < Gamefic::Plot
   #     respond :hello do |actor|
-  #       HelloWorld.run actor
+  #       actor.run HelloWorld # or `HelloWorld.run actor`
   #     end
   #   end
   #
