@@ -41,6 +41,7 @@ module Gamefic
         Query::Family.new *args, ambiguous: ambiguous, name: 'available'
       end
       alias family available
+      alias avail available
 
       # Define a query that returns the actor's parent.
       #

@@ -95,20 +95,22 @@ module Gamefic
                       .concat(blocks)
     end
 
-    # Seed an entity.
+    # Lazy make an entity.
     #
     # @example
-    #   make_seed Gamefic::Entity, name: 'thing'
+    #   make Gamefic::Entity, name: 'thing'
     #
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
-    def make_seed klass, **opts
+    def make klass, **opts
       seed { make(klass, **opts) }
       Proxy::Pick.new(klass, opts[:name], raise: true)
     end
-    alias make make_seed
+    alias make_seed make
 
     # Seed an entity with an attribute method.
+    #
+    # The entity will also be memoized with an instance variable.
     #
     # @example
     #   class Plot < Gamefic::Plot
