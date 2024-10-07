@@ -11,17 +11,13 @@ module Gamefic
 
       # @param name [Symbol, nil]
       # @param narrative [Narrative]
-      # @param on_start [Proc, nil]
-      # @param on_finish [Proc, nil]
       # @yieldparam [self]
-      def initialize name, narrative, on_start: nil, on_finish: nil
+      def initialize name, narrative, &block
         @name = name || self.class.default_name
         @narrative = narrative
-        @start_blocks = []
-        @finish_blocks = []
-        @start_blocks.push on_start if on_start
-        @finish_blocks.push on_finish if on_finish
-        yield(self) if block_given?
+        @start_blocks = self.class.start_blocks
+        @finish_blocks = self.class.finish_blocks
+        Stage.run(narrative, self, &block) if block
       end
 
       # @return [String]
@@ -81,10 +77,34 @@ module Gamefic
           @default_name ||= self.class.name.to_s.gsub('::', '_').to_sym
         end
 
+        def start_blocks
+          protected_start_blocks.clone
+        end
+
+        def finish_blocks
+          protected_finish_blocks.clone
+        end
+
         protected
 
         def use_props_class klass
           @props_class = klass
+        end
+
+        def protected_start_blocks
+          @protected_start_blocks ||= []
+        end
+
+        def protected_finish_blocks
+          @protected_finish_blocks ||= []
+        end
+
+        def on_start &block
+          protected_start_blocks.push block
+        end
+
+        def on_finish &block
+          protected_finish_blocks.push block
         end
       end
     end

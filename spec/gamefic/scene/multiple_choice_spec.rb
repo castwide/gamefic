@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::MultipleChoice do
-  let(:multiple_choice) { Gamefic::Scene::MultipleChoice.new(nil, nil, on_finish: ->(_, props) { raise unless props.index } ) }
+  let(:multiple_choice) do
+    Gamefic::Scene::MultipleChoice.new(nil, nil) do |scene|
+      scene.on_finish { |_, props| raise unless props.index }
+    end
+  end
 
   it 'initializes MultipleChoice props' do
     expect(multiple_choice.new_props).to be_a(Gamefic::Props::MultipleChoice)

@@ -85,7 +85,7 @@ describe Gamefic::Active do
   end
 
   it 'is concluding when starting a conclusion' do
-    Gamefic::Narrative.script { conclusion :ending }
+    Gamefic::Narrative.script { conclusion(:ending) {} }
     narr = Gamefic::Narrative.new
     narr.cast object
     object.cue :ending

@@ -32,13 +32,15 @@ module Gamefic
       # @param block [Proc]
       # @yieldparam [Scene]
       # @return [Symbol]
-      def block name, klass = Scene::Default, on_start: nil, on_finish: nil, &blk
-        rulebook.scenes.add klass.new(name, self, on_start: on_start, on_finish: on_finish, &blk)
+      def block name, klass = Scene::Default, &blk
+        rulebook.scenes.add klass.new(name, self, &blk)
         name
       end
 
       def preface name, klass = Scene::Activity, &start
-        rulebook.scenes.add klass.new(name, self, on_start: start)
+        rulebook.scenes.add(klass.new(name, self) do |scene|
+          scene.on_start &start
+        end)
         name
       end
       alias precursor preface
@@ -58,9 +60,7 @@ module Gamefic
       # @return [Symbol]
       def introduction(&start)
         rulebook.scenes
-                .introduction Scene::Default.new nil,
-                                                 self,
-                                                 on_start: proc { |actor, _props| Stage.run(self, actor, &start) }
+                .introduction(Scene::Default.new(nil, self) { |scene| scene.on_start(&start) })
       end
 
       # Create a multiple-choice scene.
@@ -83,13 +83,13 @@ module Gamefic
       # @yieldparam [Props::MultipleChoice]
       # @return [Symbol]
       def multiple_choice name, choices = [], prompt = 'What is your choice?', &blk
-        block name,
-              Scene::MultipleChoice,
-              on_start: proc { |_actor, props|
-                props.prompt = prompt
-                props.options.concat choices
-              },
-              on_finish: blk
+        block name, Scene::MultipleChoice do |scene|
+          scene.on_start do |_actor, props|
+            props.prompt = prompt
+            props.options.concat choices
+          end
+          scene.on_finish &blk
+        end
       end
 
       # Create a yes-or-no scene.
@@ -111,12 +111,12 @@ module Gamefic
       # @yieldparam [Props::YesOrNo]
       # @return [Symbol]
       def yes_or_no name, prompt = 'Answer:', &blk
-        block name,
-              Scene::YesOrNo,
-              on_start: proc { |_actor, props|
-                props.prompt = prompt
-              },
-              on_finish: blk
+        block name, Scene::YesOrNo do |scene|
+          scene.on_start do |_actor, props|
+            props.prompt = prompt
+          end
+          scene.on_finish &blk
+        end
       end
 
       # Create a scene that pauses the game.
@@ -133,12 +133,12 @@ module Gamefic
       # @yieldparam [Actor]
       # @return [Symbol]
       def pause name, prompt: 'Press enter to continue...', &start
-        block name,
-              Scene::Pause,
-              on_start: proc { |actor, props|
-                props.prompt = prompt if prompt
-                instance_exec(actor, props, &start)
-              }
+        block name, Scene::Pause do |scene|
+          scene.on_start do |_actor, props|
+            props.prompt = prompt if prompt
+          end
+          scene.on_start &start
+        end
       end
 
       # Create a conclusion.
@@ -154,9 +154,9 @@ module Gamefic
       # @yieldparam [Actor]
       # @return [Symbol]
       def conclusion name, &start
-        block name,
-              Scene::Conclusion,
-              on_start: start
+        block name, Scene::Conclusion do |scene|
+          scene.on_start &start
+        end
       end
 
       # @return [Array<Symbol>]
