@@ -146,6 +146,13 @@ module Gamefic
       dispatchers.last&.proceed
     end
 
+    # Run a fragment.
+    #
+    # @param fragment_class [Class<Fragment>]
+    def run fragment_class, **opts
+      fragment_class.run self, **opts
+    end
+
     # Cue a scene to start in the next turn.
     #
     # @raise [ArgumentError] if the scene is not valid
