@@ -33,14 +33,14 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, klass = Scene::Default, &blk
-        rulebook.scenes.add klass.new(name, self, &blk)
+        rulebook.scenes.add klass.hydrate(name, self, &blk), name
         name
       end
 
       def preface name, klass = Scene::Activity, &start
-        rulebook.scenes.add(klass.new(name, self) do |scene|
+        rulebook.scenes.add(klass.hydrate(name, self) do |scene|
           scene.on_start &start
-        end)
+        end, name)
         name
       end
       alias precursor preface
@@ -60,7 +60,7 @@ module Gamefic
       # @return [Symbol]
       def introduction(&start)
         rulebook.scenes
-                .introduction(Scene::Default.new(nil, self) { |scene| scene.on_start(&start) })
+                .introduction(Scene::Default.hydrate(nil, self) { |scene| scene.on_start(&start) })
       end
 
       # Create a multiple-choice scene.

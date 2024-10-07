@@ -5,7 +5,7 @@ describe Gamefic::Scene do
 
   it 'executes start blocks from params' do
     executed = false
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
+    scene = Gamefic::Scene::Default.new(nil) do |scene|
       scene.on_start { executed = true }
     end
     scene.run_start_blocks nil, nil
@@ -14,7 +14,7 @@ describe Gamefic::Scene do
 
   it 'executes finish blocks from params' do
     executed = false
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
+    scene = Gamefic::Scene::Default.new(nil) do |scene|
       scene.on_finish { executed = true }
     end
 
@@ -24,7 +24,7 @@ describe Gamefic::Scene do
 
   it 'executes start blocks from blocks' do
     executed = false
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
+    scene = Gamefic::Scene::Default.new(nil) do |scene|
       scene.on_start { |_, _| executed = true }
     end
     scene.run_start_blocks nil, nil
@@ -33,7 +33,7 @@ describe Gamefic::Scene do
 
   it 'executes finish blocks from blocks' do
     executed = false
-    scene = Gamefic::Scene::Default.new(:scene, stage_func) do |scene|
+    scene = Gamefic::Scene::Default.new(nil) do |scene|
       scene.on_finish { |_, _| executed = true }
     end
     scene.run_finish_blocks nil, nil

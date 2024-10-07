@@ -9,6 +9,10 @@ module Gamefic
         super
         actor.perform props.input
       end
+
+      def self.type
+        'Activity'
+      end
     end
   end
 end

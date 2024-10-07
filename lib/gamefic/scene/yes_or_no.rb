@@ -6,6 +6,10 @@ module Gamefic
     #
     class YesOrNo < MultipleChoice
       use_props_class Props::YesOrNo
+
+      def self.type
+        'YesOrNo'
+      end
     end
   end
 end

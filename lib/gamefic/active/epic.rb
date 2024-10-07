@@ -61,28 +61,32 @@ module Gamefic
       # @param name [Class<Scene::Default>, Symbol]
       # @return [Scene]
       def select_scene class_or_name
-        if class_or_name.is_a?(Class)
-          instantiate_scene class_or_name
-        else
-          select_scene_by_symbol class_or_name
-        end
-      end
+        return class_or_name if class_or_name.is_a?(Class)
 
-      private
-
-      def instantiate_scene klass
-        klass.new(nil, narratives.first)
-      end
-
-      def select_scene_by_symbol name
-        scenes = rulebooks.map { |rlbk| rlbk.scenes[name] }
+        scenes = rulebooks.map { |rlbk| rlbk.scenes[class_or_name] }
                           .compact
-        raise ArgumentError, "Scene named `#{name}` does not exist" if scenes.empty?
+        raise ArgumentError, "Scene named `#{class_or_name}` does not exist" if scenes.empty?
 
-        logger.warn "Found #{scenes.length} scenes named `#{name}`" unless scenes.one?
+        logger.warn "Found #{scenes.length} scenes named `#{class_or_name}`" unless scenes.one?
 
         scenes.last
       end
+
+      # private
+
+      # def instantiate_scene klass
+      #   klass.new(nil)
+      # end
+
+      # def select_scene_by_symbol name
+      #   scenes = rulebooks.map { |rlbk| rlbk.scenes[name] }
+      #                     .compact
+      #   raise ArgumentError, "Scene named `#{name}` does not exist" if scenes.empty?
+
+      #   logger.warn "Found #{scenes.length} scenes named `#{name}`" unless scenes.one?
+
+      #   scenes.last.new(nil)
+      # end
     end
   end
 end

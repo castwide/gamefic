@@ -8,6 +8,10 @@ module Gamefic
     #
     class Pause < Default
       use_props_class Props::Pause
+
+      def self.type
+        'Pause'
+      end
     end
   end
 end

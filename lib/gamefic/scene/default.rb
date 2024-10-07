@@ -12,17 +12,16 @@ module Gamefic
       # @param name [Symbol, nil]
       # @param narrative [Narrative]
       # @yieldparam [self]
-      def initialize name, narrative, &block
-        @name = name || self.class.default_name
-        @narrative = narrative
+      def initialize name, &block
+        @name = name || self.class.name
         @start_blocks = self.class.start_blocks
         @finish_blocks = self.class.finish_blocks
-        Stage.run(narrative, self, &block) if block
+        Stage.run(self, self, &block) if block
       end
 
       # @return [String]
       def type
-        @type ||= self.class.to_s.sub(/^Gamefic::Scene::/, '')
+        self.class.type
       end
 
       def new_props(**context)
@@ -53,15 +52,11 @@ module Gamefic
       end
 
       def run_start_blocks actor, props
-        @start_blocks.each { |blk| Stage.run(@narrative, actor, props, &blk) }
+        @start_blocks.each { |blk| blk[actor, props] }
       end
 
       def run_finish_blocks actor, props
-        @finish_blocks.each { |blk| Stage.run(@narrative, actor, props, &blk) }
-      end
-
-      def self.props_class
-        @props_class ||= Props::Default
+        @finish_blocks.each { |blk| blk[actor, props] }
       end
 
       def conclusion?
@@ -73,6 +68,14 @@ module Gamefic
       end
 
       class << self
+        def type
+          'Default'
+        end
+
+        def props_class
+          @props_class ||= Props::Default
+        end
+
         def default_name
           @default_name ||= self.class.name.to_s.gsub('::', '_').to_sym
         end
@@ -83,6 +86,40 @@ module Gamefic
 
         def finish_blocks
           protected_finish_blocks.clone
+        end
+
+        def on_start &block
+          protected_start_blocks.push block
+        end
+
+        def on_finish &block
+          protected_finish_blocks.push block
+        end
+
+        def name
+          @name || super
+        end
+
+        def hydrate name, narrative, &block
+          super_props = props_class
+          Class.new(self) do
+            use_props_class super_props
+            @name = name
+
+            define_method(:run_start_blocks) do |actor, props|
+              @start_blocks.each { |blk| Stage.run(narrative, actor, props, &blk) }
+            end
+
+            define_method(:run_finish_blocks) do |actor, props|
+              @finish_blocks.each { |blk| Stage.run(narrative, actor, props, &blk) }
+            end
+
+            Stage.run(narrative, self, &block) if block
+          end
+        end
+
+        def conclusion?
+          false
         end
 
         protected
@@ -97,14 +134,6 @@ module Gamefic
 
         def protected_finish_blocks
           @protected_finish_blocks ||= []
-        end
-
-        def on_start &block
-          protected_start_blocks.push block
-        end
-
-        def on_finish &block
-          protected_finish_blocks.push block
         end
       end
     end

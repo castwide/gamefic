@@ -22,10 +22,10 @@ module Gamefic
       # Add a scene to the scenebook.
       #
       # @param [Scene]
-      def add scene
+      def add scene, name
         raise ArgumentError, "A scene named `#{scene.name} already exists" if @scene_map.key?(scene.name)
 
-        @scene_map[scene.name] = scene
+        @scene_map[name] = scene
       end
 
       def scene? name
@@ -57,7 +57,7 @@ module Gamefic
       end
 
       def maybe_add name, klass, narrative
-        add klass.new(name, narrative) unless names.include?(name)
+        add klass, name unless names.include?(name)
       end
 
       def empty?

@@ -119,7 +119,7 @@ describe Gamefic::Active do
   describe '#start_take' do
     it 'updates the output' do
       klass = Class.new(Gamefic::Narrative) do
-        pause (:pause) {|actor| actor.tell 'pause message' }
+        pause(:pause) { |actor| actor.tell 'pause message' }
       end
       narr = klass.new
       narr.cast object

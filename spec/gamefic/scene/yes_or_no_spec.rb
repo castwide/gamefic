@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::YesOrNo do
-  let(:yes_or_no) { Gamefic::Scene::YesOrNo.new(:yes_or_no, nil) }
+  let(:yes_or_no) { Gamefic::Scene::YesOrNo.new(nil) }
 
   it 'initializes YesOrNo props' do
     expect(yes_or_no.new_props).to be_a(Gamefic::Props::YesOrNo)

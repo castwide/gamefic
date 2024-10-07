@@ -26,6 +26,10 @@ module Gamefic
 
         super
       end
+
+      def self.type
+        'MultipleChoice'
+      end
     end
   end
 end
