@@ -94,11 +94,8 @@ module Gamefic
         end
 
         def hydrate scene_name, narrative, &block
-          super_props = props_class
-
           Class.new(self) do
             set_scene_name scene_name
-            use_props_class super_props
 
             define_method(:execute) do |block, actor, props|
               Stage.run(narrative, actor, props, &block)
@@ -110,6 +107,10 @@ module Gamefic
 
         def conclusion?
           false
+        end
+
+        def inherited klass
+          klass.use_props_class props_class
         end
 
         protected
