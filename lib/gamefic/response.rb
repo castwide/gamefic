@@ -17,6 +17,7 @@ module Gamefic
     # @param meta [Boolean]
     # @param block [Proc]
     def initialize verb, narrative, *args, meta: false, &block
+      Gamefic.logger.warn "Underscores to hide verbs (`#{verb}`) are deprecated." if verb.to_s.start_with?('_')
       @verb = verb
       @queries = map_queries(args, narrative)
       @meta = meta
@@ -30,10 +31,6 @@ module Gamefic
     #
     def meta?
       @meta
-    end
-
-    def hidden?
-      @hidden ||= verb.to_s.start_with?('_')
     end
 
     def syntax
@@ -120,7 +117,7 @@ module Gamefic
     def generate_default_syntax
       args = queries.length.times.map { |num| num.zero? ? ':var' : ":var#{num + 1}" }
       tmpl = "#{verb} #{args.join(' ')}".strip
-      Syntax.new(tmpl.gsub('_', ' '), tmpl)
+      Syntax.new(tmpl, tmpl)
     end
 
     def calculate_precision

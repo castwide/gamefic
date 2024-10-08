@@ -5,6 +5,7 @@
 - Refactored queries
 - Clips
 - Cue scenes by class
+- Deprecate underscore verbs
 
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings
