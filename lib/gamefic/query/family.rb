@@ -2,40 +2,25 @@
 
 module Gamefic
   module Query
+    # Query the subject's ascendants, descendants, siblings, and siblings'
+    # descendants.
+    #
+    # Entities other than the subject's parent and immediate children need to
+    # be `accessible` to be included in the query.
+    #
     class Family < Base
       include Subqueries
 
       def span subject
-        match_ascendants(subject) + match_descendants(subject) + match_siblings(subject)
+        Ascendants.span(subject) + Descendants.span(subject) + match_sibling_branches(subject)
       end
 
       private
 
-      def match_ascendants context
-        [].tap do |result|
-          here = context.parent
-          while here
-            result.push here
-            here = here.parent
-          end
-        end
-      end
-
-      def match_descendants context
-        context.children.flat_map do |child|
+      def match_sibling_branches subject
+        Siblings.span(subject).flat_map do |child|
           [child] + subquery_accessible(child)
         end
-      end
-
-      def match_siblings context
-        return [] unless context.parent
-
-        context.parent
-               .children
-               .that_are_not(context)
-               .flat_map do |child|
-                 [child] + subquery_accessible(child)
-               end
       end
     end
   end

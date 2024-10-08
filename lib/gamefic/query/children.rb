@@ -2,6 +2,8 @@
 
 module Gamefic
   module Query
+    # Query the subject's children.
+    #
     class Children < Base
       include Subqueries
 

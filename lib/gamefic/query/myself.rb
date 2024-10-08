@@ -2,6 +2,8 @@
 
 module Gamefic
   module Query
+    # Query the subject itself.
+    #
     class Myself < Base
       def span subject
         [subject]

@@ -2,6 +2,8 @@
 
 module Gamefic
   module Query
+    # Query the subject's children and accessible grandchildren.
+    #
     class Descendants < Base
       include Subqueries
 

@@ -105,6 +105,10 @@ module Gamefic
         "#{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.map(&:inspect).join(', ')})"
       end
 
+      def self.span subject
+        new.span(subject)
+      end
+
       private
 
       def calculate_precision
