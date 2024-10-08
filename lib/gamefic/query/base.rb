@@ -105,8 +105,12 @@ module Gamefic
         "#{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.map(&:inspect).join(', ')})"
       end
 
+      def self.plain
+        @plain ||= new
+      end
+
       def self.span subject
-        new.span(subject)
+        plain.span(subject)
       end
 
       private
