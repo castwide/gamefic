@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::Pause do
-  let(:base) { Gamefic::Scene::Pause.new(nil) }
+  let(:base) { Gamefic::Scene::Pause.new }
 
   it 'sets a default prompt' do
     props = base.new_props

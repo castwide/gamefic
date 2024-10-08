@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::Default do
-  let(:base) { Gamefic::Scene::Default.new(nil) }
+  let(:base) { Gamefic::Scene::Default.new }
 
   it 'initializes Base props' do
     expect(base.new_props).to be_a(Gamefic::Props::Default)

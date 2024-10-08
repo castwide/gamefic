@@ -20,7 +20,7 @@ module Gamefic
       def initialize actor, cue, props = nil
         @actor = actor
         @cue = cue
-        @scene = actor.epic.select_scene(cue.scene).new(nil)
+        @scene = actor.epic.select_scene(cue.scene).new
         @props = props
       end
 

@@ -4,7 +4,7 @@ describe Gamefic::Scene::MultipleChoice do
   let(:multiple_choice) do
     Gamefic::Scene::MultipleChoice.hydrate(nil, nil) do |scene|
       scene.on_finish { |_, props| raise unless props.index }
-    end.new(nil)
+    end.new
   end
 
   it 'initializes MultipleChoice props' do

@@ -8,7 +8,7 @@ describe Gamefic::Scene do
     klass = Class.new(Gamefic::Scene::Default) do
       on_start { executed = true }
     end
-    scene = klass.new(nil)
+    scene = klass.new
     scene.run_start_blocks nil, nil
     expect(executed).to be(true)
   end
@@ -18,7 +18,7 @@ describe Gamefic::Scene do
     klass = Class.new(Gamefic::Scene::Default) do
       on_finish { executed = true }
     end
-    scene = klass.new(nil)
+    scene = klass.new
     scene.run_finish_blocks nil, nil
     expect(executed).to be(true)
   end

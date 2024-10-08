@@ -6,17 +6,16 @@ module Gamefic
     # and customize it with on_start and on_finish blocks.
     #
     class Default
-      # @return [Symbol]
-      attr_reader :name
-
       # @param name [Symbol, nil]
       # @param narrative [Narrative]
       # @yieldparam [self]
-      def initialize name, &block
-        @name = name || self.class.name
+      def initialize
         @start_blocks = self.class.start_blocks
         @finish_blocks = self.class.finish_blocks
-        Stage.run(self, self, &block) if block
+      end
+
+      def name
+        self.class.name
       end
 
       # @return [String]
@@ -108,7 +107,8 @@ module Gamefic
               Stage.run(narrative, actor, props, &block)
             end
 
-          end.tap { |klass| Stage.run(narrative, klass, &block) if block }
+            block&.call(self)
+          end
         end
 
         def conclusion?

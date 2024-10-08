@@ -4,7 +4,7 @@ describe Gamefic::Scene::Activity do
   let(:stage_func) { Object.new }
 
   it 'performs a command' do
-    type = Gamefic::Scene::Activity.new(nil)
+    type = Gamefic::Scene::Activity.new
     actor = Gamefic::Actor.new
     rulebook = Gamefic::Rulebook.new
     rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |actor| actor[:executed] = true }
