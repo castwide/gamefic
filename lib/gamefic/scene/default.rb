@@ -15,7 +15,7 @@ module Gamefic
       end
 
       def name
-        self.class.name
+        self.class.scene_name
       end
 
       # @return [String]
@@ -73,10 +73,6 @@ module Gamefic
           @props_class ||= Props::Default
         end
 
-        def default_name
-          @default_name ||= self.class.name.to_s.gsub('::', '_').to_sym
-        end
-
         def start_blocks
           protected_start_blocks.clone
         end
@@ -93,15 +89,17 @@ module Gamefic
           protected_finish_blocks.push block
         end
 
-        def name
-          @name || super
+        def scene_name
+          @scene_name || type
         end
 
-        def hydrate name, narrative, &block
+        def hydrate scene_name, narrative, &block
           super_props = props_class
+          instance_exec { @scene_name = scene_name }
+
           Class.new(self) do
+            set_scene_name scene_name
             use_props_class super_props
-            @name = name
 
             define_method(:execute) do |block, actor, props|
               Stage.run(narrative, actor, props, &block)
@@ -116,6 +114,10 @@ module Gamefic
         end
 
         protected
+
+        def set_scene_name name
+          @scene_name = name
+        end
 
         def use_props_class klass
           @props_class = klass
