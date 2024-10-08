@@ -95,7 +95,6 @@ module Gamefic
 
         def hydrate scene_name, narrative, &block
           super_props = props_class
-          instance_exec { @scene_name = scene_name }
 
           Class.new(self) do
             set_scene_name scene_name
