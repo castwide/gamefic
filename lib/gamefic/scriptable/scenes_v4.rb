@@ -9,8 +9,8 @@ module Gamefic
       end
 
       def block *args, warned: false, &blk
-        if args.first.is_a?(Class)
-          _block_v4 args.first, &blk
+        if args.empty? || args.first.is_a?(Class)
+          _block_v4 args.first || Scene::Default, &blk
         else
           name, klass = args
           klass = (klass.is_a?(Class) && klass <= Scene::Default) ? klass : Scene::Default
@@ -22,6 +22,7 @@ module Gamefic
           name
         end
       end
+      alias scene block
 
       # Add a block to be executed when a player is added to the game.
       # Each Plot should only have one introduction.
