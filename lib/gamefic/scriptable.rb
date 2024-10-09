@@ -29,9 +29,12 @@ module Gamefic
     autoload :Queries,     'gamefic/scriptable/queries'
     autoload :Proxies,     'gamefic/scriptable/proxies'
     autoload :Scenes,      'gamefic/scriptable/scenes'
+    autoload :ScenesV4,    'gamefic/scriptable/scenes_v4'
     autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
 
     include Queries
+    include ScenesV4
+
     # @!parse
     #   include Scriptable::Actions
     #   include Scriptable::Events

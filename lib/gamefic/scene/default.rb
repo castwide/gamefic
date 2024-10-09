@@ -105,6 +105,14 @@ module Gamefic
           end
         end
 
+        def update_narrative narr
+          class_exec do
+            define_method(:execute) do |block, actor, props|
+              Stage.run(narr, actor, props, &block)
+            end
+          end
+        end
+
         def conclusion?
           false
         end
