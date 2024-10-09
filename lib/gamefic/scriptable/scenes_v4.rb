@@ -5,24 +5,23 @@ module Gamefic
     module ScenesV4
       # @deprecated Temporary method that will replace #block
       def _block_v4 klass = Scene::Default, &blk
-        klass = args.first || Scene::Default
         scene = klass.hydrate(name, self, &blk)
         script { scene.update_narrative self }
         scene
       end
 
       def block *args, warned: false, &blk
-        if args.first.is_a?(Symbol)
+        if args.first.is_a?(Class)
+          _block_v4 args.first, &blk
+        else
           name, klass = args
-          klass ||= Scene::Default
+          klass = (klass.is_a?(Class) && klass <= Scene::Default) ? klass : Scene::Default
           Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
           script do
-            rulebook.scenes.add klass.hydrate(name, klass, &blk), name
+            rulebook.scenes.add klass.hydrate(name, klass, &blk).tap { |kls| kls.update_narrative self}, name
             name
           end
           name
-        else
-          _block_v4 arg, &blk
         end
       end
 
@@ -66,17 +65,21 @@ module Gamefic
       # @yieldparam [Props::MultipleChoice]
       # @return [Symbol]
       def multiple_choice *args, &blk
-        if args.empty?
-          _block_v4 Scene::MultipleChoice, &blk
-        else
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = multiple_choice(...)`) instead." unless warned
+        if args.first.is_a?(Symbol) || args.length > 1
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = multiple_choice(...)`) instead."
+          name, options, prompt = args
+          options ||= prompt
+          prompt ||= 'What is your choice?'
           block name, Scene::MultipleChoice, warned: true do |scene|
             scene.on_start do |_actor, props|
               props.prompt = prompt
-              props.options.concat choices
+              props.options.concat options
             end
             scene.on_finish &blk
           end
+          name
+        else
+          _block_v4 Scene::MultipleChoice, &blk
         end
       end
 
@@ -102,7 +105,7 @@ module Gamefic
         if name.nil?
           _block_v4 Scene::YesOrNo, &blk
         else
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = yes_or_no(...)`) instead." unless warned
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = yes_or_no(...)`) instead."
           block name, Scene::YesOrNo, warned: true do |scene|
             scene.on_start do |_actor, props|
               props.prompt = prompt
