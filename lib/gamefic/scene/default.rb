@@ -6,12 +6,7 @@ module Gamefic
     # and customize it with on_start and on_finish blocks.
     #
     class Default
-      # @param name [Symbol, nil]
-      # @param narrative [Narrative]
-      # @yieldparam [self]
       def initialize
-        @start_blocks = self.class.start_blocks
-        @finish_blocks = self.class.finish_blocks
       end
 
       def name
@@ -43,11 +38,11 @@ module Gamefic
       end
 
       def run_start_blocks actor, props
-        @start_blocks.each { |blk| execute(blk, actor, props) }
+        self.class.start_blocks.each { |blk| execute(blk, actor, props) }
       end
 
       def run_finish_blocks actor, props
-        @finish_blocks.each { |blk| execute(blk, actor, props) }
+        self.class.finish_blocks.each { |blk| execute(blk, actor, props) }
       end
 
       def conclusion?
@@ -74,19 +69,19 @@ module Gamefic
         end
 
         def start_blocks
-          protected_start_blocks.clone
+          @start_blocks ||= []
         end
 
         def finish_blocks
-          protected_finish_blocks.clone
+          @finish_blocks ||= []
         end
 
         def on_start &block
-          protected_start_blocks.push block
+          start_blocks.push block
         end
 
         def on_finish &block
-          protected_finish_blocks.push block
+          finish_blocks.push block
         end
 
         def scene_name
@@ -127,14 +122,6 @@ module Gamefic
 
         def use_props_class klass
           @props_class = klass
-        end
-
-        def protected_start_blocks
-          @protected_start_blocks ||= []
-        end
-
-        def protected_finish_blocks
-          @protected_finish_blocks ||= []
         end
       end
     end
