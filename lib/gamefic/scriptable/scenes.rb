@@ -33,13 +33,13 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, klass = Scene::Default, &blk
-        rulebook.scenes.add klass.hydrate(name, self, &blk), name
+        rulebook.scenes.add klass.bind(self, &blk), name
         name
       end
 
       def preface name, klass = Scene::Activity, &start
         Logging.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`proxy` is deprecated. Use `pick` or `pick!` instead."
-        rulebook.scenes.add(klass.hydrate(name, self) do |scene|
+        rulebook.scenes.add(klass.bind(self) do |scene|
           scene.on_start &start
         end, name)
         name
@@ -61,7 +61,7 @@ module Gamefic
       # @return [Symbol]
       def introduction(&start)
         rulebook.scenes
-                .introduction(Scene::Default.hydrate(nil, self) { |scene| scene.on_start(&start) })
+                .introduction(Scene::Default.bind(self) { |scene| scene.on_start(&start) })
       end
 
       # Create a multiple-choice scene.

@@ -93,10 +93,8 @@ module Gamefic
           @scene_name || type
         end
 
-        def hydrate scene_name, narrative, &block
+        def bind narrative, &block
           Class.new(self) do
-            set_scene_name scene_name
-
             define_method(:execute) do |block, actor, props|
               Stage.run(narrative, actor, props, &block)
             end

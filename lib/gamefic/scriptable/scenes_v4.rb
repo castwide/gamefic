@@ -5,9 +5,7 @@ module Gamefic
     module ScenesV4
       # @deprecated Temporary method that will replace #block
       def _block_v4 klass = Scene::Default, &blk
-        scene = klass.hydrate(name, self, &blk)
-        script { scene.update_narrative self }
-        scene
+        klass.bind(self, &blk)
       end
 
       def block *args, warned: false, &blk
@@ -18,7 +16,7 @@ module Gamefic
           klass = (klass.is_a?(Class) && klass <= Scene::Default) ? klass : Scene::Default
           Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
           script do
-            rulebook.scenes.add klass.hydrate(name, klass, &blk).tap { |kls| kls.update_narrative self}, name
+            rulebook.scenes.add klass.bind(klass, &blk).tap { |kls| kls.update_narrative self}, name
             name
           end
           name
@@ -41,7 +39,7 @@ module Gamefic
       def introduction(&start)
         script do
           rulebook.scenes
-                  .introduction(Scene::Default.hydrate(nil, self) { |scene| scene.on_start(&start) })
+                  .introduction(Scene::Default.bind(self) { |scene| scene.on_start(&start) })
         end
       end
 
@@ -111,6 +109,21 @@ module Gamefic
               props.prompt = prompt
             end
             scene.on_finish &blk
+          end
+        end
+      end
+
+      def pause name = nil, prompt = nil, &blk
+        if name.nil?
+          _block_v4 Scene::Pause, &blk
+        else
+          prompt ||= 'Answer:'
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = pause(...)`) instead."
+          block name, Scene::Pause, warned: true do |scene|
+            scene.on_start do |actor, props|
+              props.prompt = prompt
+              blk[actor, props]
+            end
           end
         end
       end
