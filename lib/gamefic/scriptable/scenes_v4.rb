@@ -16,7 +16,7 @@ module Gamefic
           klass = (klass.is_a?(Class) && klass <= Scene::Default) ? klass : Scene::Default
           Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
           script do
-            rulebook.scenes.add klass.bind(klass, &blk).tap { |kls| kls.update_narrative self}, name
+            rulebook.scenes.add klass.bind(self.class, &blk), name
             name
           end
           name
@@ -39,7 +39,7 @@ module Gamefic
       def introduction(&start)
         script do
           rulebook.scenes
-                  .introduction(Scene::Default.bind(self) { |scene| scene.on_start(&start) })
+                  .introduction(Scene::Default.bind(self.class) { |scene| scene.on_start(&start) })
         end
       end
 

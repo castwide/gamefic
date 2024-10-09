@@ -9,7 +9,8 @@ describe Gamefic::Scene do
       on_start { executed = true }
     end
     scene = klass.new
-    scene.run_start_blocks nil, nil
+    actor = Gamefic::Actor.new
+    scene.run_start_blocks actor, nil
     expect(executed).to be(true)
   end
 
@@ -19,7 +20,8 @@ describe Gamefic::Scene do
       on_finish { executed = true }
     end
     scene = klass.new
-    scene.run_finish_blocks nil, nil
+    actor = Gamefic::Actor.new
+    scene.run_finish_blocks actor, nil
     expect(executed).to be(true)
   end
 end

@@ -19,8 +19,9 @@ describe Gamefic::Scriptable::Scenes do
     it 'creates an activity scene with a custom start block' do
       object.preface(:scene) { |_, props| props.output[:executed] = true }
       scene = object.rulebook.scenes[:scene].new
+      actor = Gamefic::Actor.new
       props = Gamefic::Props::Default.new(scene)
-      scene.run_start_blocks(nil, props)
+      scene.run_start_blocks(actor, props)
       expect(props.output[:executed]).to be(true)
     end
   end
@@ -35,8 +36,9 @@ describe Gamefic::Scriptable::Scenes do
     it 'sets choices' do
       object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene].new
+      actor = Gamefic::Actor.new
       props = Gamefic::Props::MultipleChoice.new(scene)
-      scene.run_start_blocks(nil, props)
+      scene.run_start_blocks(actor, props)
       expect(props.options).to eq(%w[one two])
     end
   end
@@ -51,8 +53,9 @@ describe Gamefic::Scriptable::Scenes do
     it 'sets a prompt' do
       object.yes_or_no(:scene, 'What?') { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene].new
+      actor = Gamefic::Actor.new
       props = Gamefic::Props::MultipleChoice.new(scene)
-      scene.run_start_blocks(nil, props)
+      scene.run_start_blocks(actor, props)
       expect(props.prompt).to eq('What?')
     end
   end
@@ -67,8 +70,9 @@ describe Gamefic::Scriptable::Scenes do
     it 'sets a prompt' do
       object.pause(:scene, prompt: 'Pause!') { |_actor, _props| nil }
       scene = object.rulebook.scenes[:scene].new
+      actor = Gamefic::Actor.new
       props = Gamefic::Props::MultipleChoice.new(scene)
-      scene.run_start_blocks(nil, props)
+      scene.run_start_blocks(actor, props)
       expect(props.prompt).to eq('Pause!')
     end
   end

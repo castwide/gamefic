@@ -247,6 +247,16 @@ module Gamefic
       dispatchers.last&.command || Command.new(nil, [])
     end
 
+    def match context
+      return nil unless context
+
+      matches = epic.narratives
+                    .select { |narr| narr.is_a?(context) }
+      Gamefic.logger.warn "#{inspect} is in #{matches.length} instances of #{context.inspect}" if matches.length > 1
+
+      matches.last
+    end
+
     private
 
     # @return [Array<Dispatcher>]

@@ -56,10 +56,17 @@ module Gamefic
       private
 
       def execute block, actor, props
-        block[actor, props]
+        context = actor.match(self.class.context)
+        if context
+          Stage.run(context, actor, props, &block)
+        else
+          block[actor, props]
+        end
       end
 
       class << self
+        attr_reader :context
+
         def type
           'Default'
         end
@@ -88,21 +95,10 @@ module Gamefic
           @scene_name || type
         end
 
-        def bind narrative, &block
+        def bind klass, &block
           Class.new(self) do
-            define_method(:execute) do |block, actor, props|
-              Stage.run(narrative, actor, props, &block)
-            end
-
+            self.context = klass
             block&.call(self)
-          end
-        end
-
-        def update_narrative narr
-          class_exec do
-            define_method(:execute) do |block, actor, props|
-              Stage.run(narr, actor, props, &block)
-            end
           end
         end
 
@@ -111,14 +107,13 @@ module Gamefic
         end
 
         def inherited klass
+          super
           klass.use_props_class props_class
         end
 
         protected
 
-        def set_scene_name name
-          @scene_name = name
-        end
+        attr_writer :context
 
         def use_props_class klass
           @props_class = klass
