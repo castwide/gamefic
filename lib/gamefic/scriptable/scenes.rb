@@ -38,6 +38,7 @@ module Gamefic
       end
 
       def preface name, klass = Scene::Activity, &start
+        Logging.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`proxy` is deprecated. Use `pick` or `pick!` instead."
         rulebook.scenes.add(klass.hydrate(name, self) do |scene|
           scene.on_start &start
         end, name)
