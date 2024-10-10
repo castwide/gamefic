@@ -31,6 +31,10 @@ module Gamefic
         run_start_blocks
         props.output[:scene] = to_hash
         props.output[:prompt] = props.prompt
+        props.output.merge!({
+                              messages: actor.messages,
+                              queue: actor.queue
+                            })
       end
 
       # @param actor [Gamefic::Actor]
