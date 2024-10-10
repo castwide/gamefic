@@ -116,7 +116,7 @@ describe Gamefic::Active do
     end
   end
 
-  describe '#start_take' do
+  describe '#start' do
     it 'updates the output' do
       klass = Class.new(Gamefic::Narrative) do
         pause(:pause) { |actor| actor.tell 'pause message' }
@@ -127,7 +127,7 @@ describe Gamefic::Active do
       object.start
       expect(object.output).to be_frozen
       expect(object.messages).to include('pause message')
-      expect(object.output.scene[:name]).to be(:pause)
+      expect(object.output.scene[:name]).to eq('pause')
     end
   end
 end
