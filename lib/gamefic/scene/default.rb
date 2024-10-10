@@ -16,7 +16,7 @@ module Gamefic
       end
 
       def name
-        self.class.scene_name
+        @name ||= self.class.nickname
       end
 
       # @return [String]
@@ -78,6 +78,12 @@ module Gamefic
           @props_class ||= Props::Default
         end
 
+        def rename nickname
+          @nickname = nickname
+        end
+
+        attr_reader :nickname
+
         def start_blocks
           @start_blocks ||= []
         end
@@ -92,10 +98,6 @@ module Gamefic
 
         def on_finish &block
           finish_blocks.push block
-        end
-
-        def scene_name
-          @scene_name || type
         end
 
         def bind klass, &block
