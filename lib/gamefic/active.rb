@@ -181,6 +181,7 @@ module Gamefic
       return unless @scene
 
       @scene.finish
+      @scene.run_finish_blocks
       @last_input = @scene.props.input
     end
 
