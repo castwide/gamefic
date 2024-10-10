@@ -1,42 +1,38 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::MultipleChoice do
+  let(:actor) { Gamefic::Actor.new }
+
   let(:multiple_choice) do
     Gamefic::Scene::MultipleChoice.bind(nil) do |scene|
       scene.on_finish { |_, props| raise unless props.index }
-    end.new
+    end.new(actor)
   end
 
   it 'initializes MultipleChoice props' do
-    expect(multiple_choice.new_props).to be_a(Gamefic::Props::MultipleChoice)
+    expect(multiple_choice.props).to be_a(Gamefic::Props::MultipleChoice)
   end
 
   it 'sets props on valid input' do
-    props = multiple_choice.new_props
-    props.options.concat ['one', 'two', 'three']
-    actor = Gamefic::Actor.new
+    multiple_choice.props.options.concat ['one', 'two', 'three']
     actor.queue.push 'one'
-    multiple_choice.finish actor, props
+    multiple_choice.finish
     expect(actor.queue).to be_empty
-    expect(props.input).to eq('one')
-    expect(props.selection).to eq('one')
-    expect(props.index).to eq(0)
-    expect(props.number).to eq(1)
+    expect(multiple_choice.props.input).to eq('one')
+    expect(multiple_choice.props.selection).to eq('one')
+    expect(multiple_choice.props.index).to eq(0)
+    expect(multiple_choice.props.number).to eq(1)
     expect {
-      multiple_choice.run_finish_blocks(actor, props)
+      multiple_choice.run_finish_blocks
     }.not_to raise_error
   end
 
   it 'cancels on invalid input' do
-    props = multiple_choice.new_props
-    props.options.concat ['one', 'two', 'three']
-    actor = Gamefic::Actor.new
+    multiple_choice.props.options.concat ['one', 'two', 'three']
     actor.queue.push 'four'
-    multiple_choice.finish actor, props
+    multiple_choice.finish
     expect(actor.queue).to be_empty
     expect(actor.messages).to include('"four" is not a valid choice.')
-    expect {
-      multiple_choice.run_finish_blocks(actor, props)
-    }.not_to raise_error
+    expect { multiple_choice.run_finish_blocks }.not_to raise_error
   end
 end

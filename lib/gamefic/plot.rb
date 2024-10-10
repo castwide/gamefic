@@ -28,14 +28,14 @@ module Gamefic
     def ready
       super
       subplots.each(&:ready)
-      players.each(&:start_take)
+      players.each(&:start)
       subplots.each(&:conclude) if concluding?
       players.select(&:concluding?).each { |plyr| rulebook.run_player_conclude_blocks plyr }
       subplots.delete_if(&:concluding?)
     end
 
     def update
-      players.each(&:finish_take)
+      players.each(&:finish)
       super
       subplots.each(&:update)
     end

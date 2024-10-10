@@ -18,69 +18,65 @@ describe Gamefic::Scriptable::Scenes do
   describe '#preface' do
     it 'creates an activity scene with a custom start block' do
       object.preface(:scene) { |_, props| props.output[:executed] = true }
-      scene = object.rulebook.scenes[:scene].new
       actor = Gamefic::Actor.new
-      props = Gamefic::Props::Default.new(scene)
-      scene.run_start_blocks(actor, props)
-      expect(props.output[:executed]).to be(true)
+      scene = object.rulebook.scenes[:scene].new(actor)
+      scene.run_start_blocks
+      expect(scene.props.output[:executed]).to be(true)
     end
   end
 
   describe '#multiple_choice' do
     it 'creates a multiple choice scene' do
       object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
+      scene = object.rulebook.scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::MultipleChoice)
     end
 
     it 'sets choices' do
       object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
       actor = Gamefic::Actor.new
-      props = Gamefic::Props::MultipleChoice.new(scene)
-      scene.run_start_blocks(actor, props)
-      expect(props.options).to eq(%w[one two])
+      scene = object.rulebook.scenes[:scene].new(actor)
+      scene.run_start_blocks
+      expect(scene.props.options).to eq(%w[one two])
     end
   end
 
   describe '#yes_or_no' do
     it 'creates a yes-or-no scene' do
       object.yes_or_no(:scene) { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
+      scene = object.rulebook.scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::YesOrNo)
     end
 
     it 'sets a prompt' do
       object.yes_or_no(:scene, 'What?') { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
       actor = Gamefic::Actor.new
-      props = Gamefic::Props::MultipleChoice.new(scene)
-      scene.run_start_blocks(actor, props)
-      expect(props.prompt).to eq('What?')
+      scene = object.rulebook.scenes[:scene].new(actor)
+      scene.run_start_blocks
+      expect(scene.props.prompt).to eq('What?')
     end
   end
 
   describe '#pause' do
     it 'creates a pause scene' do
       object.pause(:scene) { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
+      scene = object.rulebook.scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::Pause)
     end
 
     it 'sets a prompt' do
       object.pause(:scene, prompt: 'Pause!') { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
       actor = Gamefic::Actor.new
-      props = Gamefic::Props::MultipleChoice.new(scene)
-      scene.run_start_blocks(actor, props)
-      expect(props.prompt).to eq('Pause!')
+      scene = object.rulebook.scenes[:scene].new(actor)
+      scene.run_start_blocks
+      expect(scene.props.prompt).to eq('Pause!')
     end
   end
 
   describe '#conclusion' do
     it 'creates a conclusion' do
       object.conclusion(:scene) { |_actor, _props| nil }
-      scene = object.rulebook.scenes[:scene].new
+      scene = object.rulebook.scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::Conclusion)
     end
   end

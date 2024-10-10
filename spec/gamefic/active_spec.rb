@@ -89,7 +89,7 @@ describe Gamefic::Active do
     narr = Gamefic::Narrative.new
     narr.cast object
     object.cue :ending
-    object.start_take
+    object.start
     expect(object).to be_concluding
   end
 
@@ -124,7 +124,7 @@ describe Gamefic::Active do
       narr = klass.new
       narr.cast object
       object.cue :pause
-      object.start_take
+      object.start
       expect(object.output).to be_frozen
       expect(object.messages).to include('pause message')
       expect(object.output.scene[:name]).to be(:pause)

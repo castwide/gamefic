@@ -4,7 +4,6 @@ require 'set'
 require 'gamefic/active/cue'
 require 'gamefic/active/epic'
 require 'gamefic/active/messaging'
-require 'gamefic/active/take'
 
 module Gamefic
   # The Active module gives entities the ability to perform actions and
@@ -169,24 +168,20 @@ module Gamefic
     end
     alias prepare cue
 
-    # @return [void]
-    def start_take
+    def start
       ensure_cue
       @last_cue = @next_cue
       cue :default_scene
-      @props = Take.start(self, @last_cue)
-      @last_output = self.output
-      @props.output[:last_prompt] = @last_output.prompt
-      @props.output[:last_input] = @last_input
-      @output = @props.output.dup.freeze
+      @scene = epic.select_scene(@last_cue.scene).new(self, **@last_cue.context)
+      @scene.start
+      @output = @scene.props.output.dup.freeze
     end
 
-    # @return [void]
-    def finish_take
-      return unless @last_cue
+    def finish
+      return unless @scene
 
-      Take.finish(self, @last_cue, @props)
-      @last_input = @props.input
+      @scene.finish
+      @last_input = @scene.props.input
     end
 
     # Restart the scene from the most recent cue.
@@ -217,7 +212,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      epic.empty? || @props&.scene&.fetch(:type) == 'Conclusion'
+      epic.empty? || @scene&.type == 'Conclusion'
     end
 
     def accessible?

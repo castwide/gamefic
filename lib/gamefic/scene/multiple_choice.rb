@@ -8,12 +8,12 @@ module Gamefic
     class MultipleChoice < Default
       use_props_class Props::MultipleChoice
 
-      def start actor, props
+      def start
         super
         props.output[:options] = props.options
       end
 
-      def finish actor, props
+      def finish
         super
         return if props.index
 
@@ -21,7 +21,7 @@ module Gamefic
         actor.recue
       end
 
-      def run_finish_blocks actor, props
+      def run_finish_blocks
         return unless props.index
 
         super

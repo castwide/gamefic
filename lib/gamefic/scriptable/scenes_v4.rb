@@ -128,6 +128,29 @@ module Gamefic
           end
         end
       end
+
+      # Create a conclusion.
+      # The game (or the character's participation in it) will end after this
+      # scene is complete.
+      #
+      # @example
+      #   conclusion :ending do |actor|
+      #     actor.tell 'GAME OVER'
+      #   end
+      #
+      # @param name [Symbol]
+      # @yieldparam [Actor]
+      # @return [Symbol]
+      def conclusion name = nil, &blk
+        if name.nil?
+          block Scene::Conclusion, &blk
+        else
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = conclude(...)`) instead."
+          block name, Scene::Conclusion, warned: true do |scene|
+            scene.on_start(&blk)
+          end
+        end
+      end
     end
   end
 end

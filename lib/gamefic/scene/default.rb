@@ -6,7 +6,13 @@ module Gamefic
     # and customize it with on_start and on_finish blocks.
     #
     class Default
-      def initialize
+      attr_reader :actor
+
+      attr_reader :props
+
+      def initialize actor, **context
+        @actor = actor
+        @props = self.class.props_class.new(self, **context)
       end
 
       def name
@@ -18,14 +24,11 @@ module Gamefic
         self.class.type
       end
 
-      def new_props(**context)
-        self.class.props_class.new(self, **context)
-      end
-
       # @param actor [Gamefic::Actor]
       # @param props [Props::Default]
       # @return [void]
-      def start actor, props
+      def start
+        run_start_blocks
         props.output[:scene] = to_hash
         props.output[:prompt] = props.prompt
       end
@@ -33,16 +36,16 @@ module Gamefic
       # @param actor [Gamefic::Actor]
       # @param props [Props::Default]
       # @return [void]
-      def finish actor, props
+      def finish
         props.input = actor.queue.shift&.strip
       end
 
-      def run_start_blocks actor, props
-        self.class.start_blocks.each { |blk| execute(blk, actor, props) }
+      def run_start_blocks
+        self.class.start_blocks.each { |blk| execute(blk) }
       end
 
-      def run_finish_blocks actor, props
-        self.class.finish_blocks.each { |blk| execute(blk, actor, props) }
+      def run_finish_blocks
+        self.class.finish_blocks.each { |blk| execute(blk) }
       end
 
       def conclusion?
@@ -55,7 +58,7 @@ module Gamefic
 
       private
 
-      def execute block, actor, props
+      def execute block
         context = actor.match(self.class.context)
         if context
           Stage.run(context, actor, props, &block)

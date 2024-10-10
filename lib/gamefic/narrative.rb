@@ -59,7 +59,7 @@ module Gamefic
     def introduce(player = Gamefic::Actor.new)
       cast player
       rulebook.scenes.introductions.each do |scene|
-        scene.new.run_start_blocks player, nil
+        scene.new(player).run_start_blocks
       end
       player
     end
