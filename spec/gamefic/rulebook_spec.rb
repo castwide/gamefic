@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Rulebook do
-  let(:stage_func) { Object.new }
+  let(:stage_func) { Gamefic::Narrative.new }
 
   let(:rulebook) { Gamefic::Rulebook.new }
 

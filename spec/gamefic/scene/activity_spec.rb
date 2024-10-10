@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scene::Activity do
-  let(:stage_func) { Object.new }
+  let(:stage_func) { Gamefic::Narrative.new }
 
   it 'performs a command' do
     actor = Gamefic::Actor.new

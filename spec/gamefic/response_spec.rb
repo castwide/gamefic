@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Gamefic::Response do
-  let(:stage_func) { Object.new }
+  let(:stage_func) { Gamefic::Narrative.new }
 
   describe '#new' do
     it 'accepts proxies' do

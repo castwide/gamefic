@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scriptable::Events do
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
-
   let(:object) do
     klass = Class.new do
       include Gamefic::Scriptable::Events

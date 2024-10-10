@@ -3,8 +3,6 @@
 describe Gamefic::Active do
   let(:object) { Gamefic::Entity.new.tap { |obj| obj.extend Gamefic::Active } }
 
-  let(:stage_func) { Proc.new { |*args, &block| block.call *args } }
-
   it 'performs a command' do
     Gamefic::Narrative.script do
       respond(:command) { |actor| actor[:executed] = true }
