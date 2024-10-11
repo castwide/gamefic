@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
+require 'gamefic/scriptable'
+
 module Gamefic
   # A proc to be executed in response to a command that matches its verb and
   # queries.
   #
   class Response
+    include Scriptable::Queries
+
     # @return [Symbol]
     attr_reader :verb
 
@@ -16,11 +20,15 @@ module Gamefic
     # @param args [Array<Object>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, narrative, *args, meta: false, &block
+    def initialize verb, *args, meta: false, &block
+      narrative = if args.first.is_a?(Narrative) || args.first.is_a?(Scriptable::Actions)
+                    Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}Script-level responses are deprecated. Use class-level responses instead."
+                    args.shift
+                  end
       Gamefic.logger.warn "Underscores to hide verbs (`#{verb}`) are deprecated." if verb.to_s.start_with?('_')
       @verb = verb
-      @queries = map_queries(args, narrative)
       @meta = meta
+      @queries = map_queries(args, narrative)
       @callback = Callback.new(narrative, block)
     end
 
@@ -42,7 +50,7 @@ module Gamefic
     # @param actor [Entity]
     # @param command [Command]
     # @return [Action, nil]
-    def attempt actor, command
+    def attempt(actor, command)
       return nil unless accept?(actor, command)
 
       Action.new(actor, command.arguments, self)
@@ -52,7 +60,7 @@ module Gamefic
     #
     # @param actor [Active]
     # @param command [Command]
-    def accept? actor, command
+    def accept?(actor, command)
       command.verb == verb &&
         command.arguments.length == queries.length &&
         queries.zip(command.arguments).all? { |query, argument| query.accept?(actor, argument) }
@@ -73,7 +81,7 @@ module Gamefic
     # @param actor [Actor]
     # @param expression [Expression]
     # @return [Command, nil]
-    def to_command actor, expression
+    def to_command(actor, expression)
       return log_and_discard unless expression.verb == verb && expression.tokens.length <= queries.length
 
       results = filter(actor, expression)
@@ -100,7 +108,7 @@ module Gamefic
       nil
     end
 
-    def filter actor, expression
+    def filter(actor, expression)
       remainder = ''
       result = queries.zip(expression.tokens)
                       .map do |query, token|
@@ -126,19 +134,19 @@ module Gamefic
       total
     end
 
-    def map_queries args, narrative
+    def map_queries(args, narrative)
       args.map do |arg|
-        select_query(arg, narrative).tap { |qry| qry.narrative = narrative }
+        select_query(arg).tap { |qry| qry.narrative = narrative }
       end
     end
 
-    def select_query arg, narrative
+    def select_query(arg)
       case arg
       when Entity, Class, Module, Proc, Proxy, Proxy::Base
-        narrative.available(arg)
+        available(arg)
       when String, Regexp
-        narrative.plaintext(arg)
-      when Query::Base, Query::Text
+        plaintext(arg)
+      when Query::Base
         arg
       else
         raise ArgumentError, "invalid argument in response: #{arg.inspect}"

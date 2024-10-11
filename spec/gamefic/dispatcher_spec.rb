@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Dispatcher do
-  let(:stage_func) { Object.new }
+  let(:stage_func) { Gamefic::Narrative.new }
 
   it 'filters and orders actions' do
     rulebook = Gamefic::Rulebook.new

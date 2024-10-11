@@ -28,11 +28,13 @@ module Gamefic
     autoload :Events,      'gamefic/scriptable/events'
     autoload :Queries,     'gamefic/scriptable/queries'
     autoload :Proxies,     'gamefic/scriptable/proxies'
+    autoload :Responses,   'gamefic/scriptable/responses'
     autoload :Scenes,      'gamefic/scriptable/scenes'
     autoload :ScenesV4,    'gamefic/scriptable/scenes_v4'
     autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
 
     include Queries
+    include Responses
     include ScenesV4
 
     # @!parse
@@ -126,16 +128,18 @@ module Gamefic
     # @param name [Symbol] The attribute name
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
-    def attr_seed name, klass, **opts
+    def attr_make name, klass, **opts
       ivname = "@#{name}"
       define_method(name) do
         return instance_variable_get(ivname) if instance_variable_defined?(ivname)
 
         instance_variable_set(ivname, make(klass, **opts))
       end
+      define_singleton_method(name) { Proxy::Attr.new }
       seed { send name }
       Proxy.new(:attr, name)
     end
+    alias attr_seed attr_make
 
     # @param symbol [Symbol]
     # @return [Proxy]
