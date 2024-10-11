@@ -7,20 +7,6 @@ module Gamefic
   # queries.
   #
   class Response
-    class Binding
-      attr_reader :response
-  
-      attr_reader :model
-  
-      # @param response [Response]
-      # @param model [Model]
-      def initialize response, model
-        @response = response
-  
-        @model = model
-      end
-    end
-  
     include Scriptable::Queries
 
     # @return [Symbol]
