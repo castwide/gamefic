@@ -11,8 +11,8 @@ module Gamefic
       end
 
       def select narrative
-        narrative.send(arg)
-      rescue e
+        narrative.send(name)
+      rescue StandardError => e
         raise e if raise?
 
         Logger.warn "Proxy not found for `#{name}`"

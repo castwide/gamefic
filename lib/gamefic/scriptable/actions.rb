@@ -30,7 +30,9 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond(verb, *args, &proc)
-        rulebook.calls.add_response Response.new(verb, self, *args, &proc)
+        response = Response.new(verb, *args, &proc)
+        self.class.responses.push response if self.class.respond_to?(:responses)
+        rulebook.calls.add_response response
         verb
       end
 
@@ -50,7 +52,9 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def meta(verb, *args, &proc)
-        rulebook.calls.add_response Response.new(verb, self, *args, meta: true, &proc)
+        response = Response.new(verb, *args, meta: true, &proc)
+        self.class.responses.push response if self.class.respond_to?(:responses)
+        rulebook.calls.add_response response
         verb
       end
 

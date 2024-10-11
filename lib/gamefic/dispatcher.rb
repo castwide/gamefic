@@ -78,7 +78,13 @@ module Gamefic
 
     # @return [Array<Response>]
     def responses
-      @responses ||= actor.epic.responses_for(command.verb)
+      # @responses ||= actor.epic.responses_for(command.verb)
+      @responses ||= actor.epic
+                          .narratives
+                          .flat_map(&:responses)
+                          .reverse
+                          .tap { |resps| puts resps.inspect }
+                          .select { |resp| resp.verb == command.verb }
     end
 
     private

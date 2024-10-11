@@ -1,91 +1,69 @@
 # frozen_string_literal: true
 
 module Gamefic
-  # The handler for executing responses for a provided actor and array of
-  # arguments. It's also responsible for executing before_action and
-  # after_action hooks if necessary.
+  # The handler for executing a command response.
   #
   class Action
-    include Logging
+    include Scriptable::Queries
 
-    # Hooks are blocks of code that get executed before or after an actor
-    # performs an action. A before action hook is capable of cancelling the
-    # action's performance.
-    #
-    class Hook
-      # @param [Array<Symbol>]
-      attr_reader :verbs
-
-      # @param [Callback]
-      attr_reader :callback
-
-      def initialize verbs, callback
-        @verbs = verbs
-        @callback = callback
-      end
-
-      def match?(input)
-        verbs.empty? || verbs.include?(input)
-      end
-    end
-
-    # @return [Active]
-    attr_reader :actor
-
-    # @return [Array]
-    attr_reader :arguments
-
-    # @return [Response]
-    attr_reader :response
-
-    # @param actor [Active]
-    # @param arguments [Array]
+    # @param actor [Actor]
+    # @param command [Command]
     # @param response [Response]
-    def initialize actor, arguments, response
+    # @param model [Model]
+    def initialize actor, command, response, model
       @actor = actor
-      @arguments = arguments
+      @command = command
       @response = response
+      @model = model
     end
 
-    # @return [self]
     def execute
-      return self if cancelled? || executed?
-
-      Gamefic.logger.info "Executing #{([verb] + [arguments]).flatten.map(&:inspect).join(', ')}"
-      @executed = true
-      response.execute actor, *arguments
-      self
+      if valid?
+        model.execute actor, &response.block
+        self
+      else
+        actor.proceed
+      end
     end
 
-    # True if the response has been executed. False typically means that the
-    # #execute method has not been called or the action was cancelled in a
-    # before_action hook.
-    #
-    def executed?
-      @executed ||= false
+    def valid?
+      valid_verb? && valid_arity? && valid_arguments?
     end
 
-    # Cancel an action. This method can be called in an action hook to
-    # prevent subsequent hooks and/or the action itself from being executed.
-    #
-    def cancel
-      @cancelled = true
-    end
-
-    def cancelled?
-      @cancelled ||= false
-    end
-
-    def verb
-      response.verb
-    end
-
-    def narrative
-      response.narrative
+    def invalid?
+      !valid?
     end
 
     def meta?
       response.meta?
+    end
+
+    private
+
+    attr_reader :actor, :command, :response, :model
+
+    def valid_verb?
+      command.verb == response.verb
+    end
+
+    def valid_arity?
+      command.arguments.length == response.queries.length
+    end
+
+    def valid_arguments?
+      @response.queries
+               .zip(@command.arguments)
+               .all? { |query, argument| accept? actor, query, argument, model }
+    end
+
+    def accept? actor, query, argument, model
+      selectors = model.unproxy(query.arguments)
+      available = query.span(actor).that_are(*selectors)
+      if query.ambiguous?
+        argument & available == argument
+      else
+        available.include? argument
+      end
     end
   end
 end

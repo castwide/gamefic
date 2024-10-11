@@ -42,6 +42,14 @@ module Gamefic
       self.class.included_blocks
     end
 
+    def responses
+      self.class
+          .included_scripts
+          .flat_map(&:responses)
+          .concat(self.class.responses)
+          .map { |resp| resp.bind self }
+    end
+
     def post_script
       entity_vault.lock
       rulebook.freeze

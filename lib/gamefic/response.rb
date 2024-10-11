@@ -7,6 +7,20 @@ module Gamefic
   # queries.
   #
   class Response
+    class Binding
+      attr_reader :response
+  
+      attr_reader :model
+  
+      # @param response [Response]
+      # @param model [Model]
+      def initialize response, model
+        @response = response
+  
+        @model = model
+      end
+    end
+  
     include Scriptable::Queries
 
     # @return [Symbol]
@@ -14,6 +28,8 @@ module Gamefic
 
     # @return [Array<Query::Base, Query::Text>]
     attr_reader :queries
+
+    attr_reader :block
 
     # @param verb [Symbol]
     # @param narrative [Narrative]
@@ -28,7 +44,11 @@ module Gamefic
       Gamefic.logger.warn "Underscores to hide verbs (`#{verb}`) are deprecated." if verb.to_s.start_with?('_')
       @verb = verb
       @meta = meta
-      @queries = map_queries(args, narrative)
+      @args = args
+      @block = block
+      # @queries = map_queries(args, narrative)
+      @queries = map_queries_v4(args)
+      # @todo Callback should not be necessary. Bind block in Action instead
       @callback = Callback.new(narrative, block)
     end
 
@@ -101,6 +121,16 @@ module Gamefic
       "#<#{self.class} #{([verb] + queries).map(&:inspect).join(', ')}>"
     end
 
+    def bind narrative
+      clone.tap do |copy|
+        copy.instance_exec do
+          @narrative = narrative
+          @queries = map_queries(@args, narrative)
+          @callback = Callback.new(narrative, @block)
+        end
+      end
+    end
+
     private
 
     def log_and_discard
@@ -138,6 +168,10 @@ module Gamefic
       args.map do |arg|
         select_query(arg).tap { |qry| qry.narrative = narrative }
       end
+    end
+
+    def map_queries_v4(args)
+      args.map { |arg| select_query(arg) }
     end
 
     def select_query(arg)

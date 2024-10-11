@@ -88,6 +88,15 @@ module Gamefic
         end
       end
 
+      def accept_v4? subject, model, object
+        available = span(subject).that_are(*normalized_arguments_v4(model))
+        if ambiguous?
+          object & available == object
+        else
+          available.include?(object)
+        end
+      end
+
       # @return [Integer]
       def precision
         @precision ||= calculate_precision
@@ -156,6 +165,21 @@ module Gamefic
           case arg
           when Proxy, Proxy::Base
             arg.fetch(narrative)
+          when String
+            proc do |entity|
+              arg.keywords.all? { |word| entity.keywords.include?(word) }
+            end
+          else
+            arg
+          end
+        end
+      end
+
+      def normalized_arguments_v4 model
+        arguments.map do |arg|
+          case arg
+          when Proxy, Proxy::Base
+            arg.fetch(model)
           when String
             proc do |entity|
               arg.keywords.all? { |word| entity.keywords.include?(word) }

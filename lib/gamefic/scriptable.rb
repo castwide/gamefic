@@ -93,11 +93,13 @@ module Gamefic
 
     # @return [Array<Block>]
     def included_blocks
-      included_modules.that_are(Scriptable)
-                      .uniq
-                      .reverse
+      included_scripts.reverse
                       .flat_map(&:blocks)
                       .concat(blocks)
+    end
+
+    def included_scripts
+      included_modules.that_are(Scriptable)
     end
 
     # Lazy make an entity.

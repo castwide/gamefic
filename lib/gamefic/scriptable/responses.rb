@@ -29,15 +29,11 @@ module Gamefic
       # @return [Symbol]
       def respond verb, *args, &proc
         responses.push Response.new(verb, *args, &proc)
-        # @todo The script version is deprecated
-        script { rulebook.calls.add_response Response.new(verb, self, *args, &proc) }
         verb
       end
 
       def meta verb, *args, &proc
         responses.push Response.new(verb, *args, meta: true, &proc)
-        # @todo The script version is deprecated
-        script { rulebook.calls.add_response Response.new(verb, self, *args, meta: true, &proc) }
         verb
       end
 
