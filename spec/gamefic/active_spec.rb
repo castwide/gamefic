@@ -55,8 +55,10 @@ describe Gamefic::Active do
   end
 
   it 'cues a scene' do
-    Gamefic::Narrative.script { block :scene }
-    narr = Gamefic::Narrative.new
+    klass = Class.new(Gamefic::Narrative) do
+      block :scene
+    end
+    narr = klass.new
     narr.cast object
     expect { object.cue :scene }.not_to raise_error
   end
@@ -67,13 +69,6 @@ describe Gamefic::Active do
     narr = Gamefic::Narrative.new
     narr.cast object
     expect { object.cue klass }.not_to raise_error
-  end
-
-  it 'raises an error for non-conclusions' do
-    Gamefic::Narrative.script { block :scene }
-    narr = Gamefic::Narrative.new
-    narr.cast object
-    expect { object.conclude :scene }.to raise_error(ArgumentError)
   end
 
   it 'is not concluding by default' do
@@ -92,7 +87,8 @@ describe Gamefic::Active do
   end
 
   it 'adds last_prompt and last_input to output' do
-    plot = Gamefic::Plot.new
+    klass = Class.new(Gamefic::Plot)
+    plot = klass.new
     plot.cast object
     plot.ready
     object.queue.push 'my input'

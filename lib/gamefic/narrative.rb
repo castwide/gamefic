@@ -21,10 +21,8 @@ module Gamefic
     include Scriptable::Actions
     include Scriptable::Events
     include Scriptable::Queries
-    include Scriptable::Scenes
 
     select_default_scene Scene::Activity
-
     select_default_conclusion Scene::Conclusion
 
     def initialize
@@ -61,9 +59,7 @@ module Gamefic
     # @return [Gamefic::Actor]
     def introduce(player = Gamefic::Actor.new)
       cast player
-      introductions.each do |klass|
-        klass.new(player).start
-      end
+      introductions.each { |blk| blk[player] }
       player
     end
 

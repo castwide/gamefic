@@ -167,7 +167,7 @@ module Gamefic
     def start
       ensure_cue
       @last_cue = @next_cue
-      cue epic.narratives.first&.default_scene
+      cue(epic.narratives.first&.default_scene || Scene::Activity)
       @scene = epic.select_scene(@last_cue.scene).new(self, **@last_cue.context)
       @scene.start
       @output = @scene.props.output.dup.freeze
@@ -188,22 +188,6 @@ module Gamefic
       logger.warn "No scene to recue" unless @last_cue
 
       @next_cue = @last_cue
-    end
-
-    # Cue a conclusion. This method works like #cue, except it will raise an
-    # error if the scene is not a conclusion.
-    #
-    # @raise [ArgumentError] if the requested scene is not a conclusion
-    #
-    # @param new_scene [Symbol]
-    # @oaram context [Hash] Additional scene data
-    # @return [Cue]
-    def conclude scene, **context
-      cue scene, **context
-      available = epic.select_scene(scene)
-      raise ArgumentError, "`#{scene}` is not a conclusion" unless available.conclusion?
-
-      @next_cue
     end
 
     # True if the actor is ready to leave the game.
@@ -267,7 +251,7 @@ module Gamefic
       return if next_cue
 
       logger.debug "Using default scene for actor without cue"
-      cue epic.narratives.first&.default_scene
+      cue(epic.narratives.first&.default_scene || Scene::Activity)
     end
   end
 end

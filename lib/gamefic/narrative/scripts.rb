@@ -48,8 +48,7 @@ module Gamefic
       end
 
       def introductions
-        included_scripts.flat_map(&:introductions)
-                        .concat(self.class.introductions)
+        find_and_bind(:introductions)
       end
 
       def conclusions

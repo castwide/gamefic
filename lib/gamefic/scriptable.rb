@@ -29,7 +29,6 @@ module Gamefic
     autoload :Queries,     'gamefic/scriptable/queries'
     autoload :Responses,   'gamefic/scriptable/responses'
     autoload :Scenes,      'gamefic/scriptable/scenes'
-    autoload :ScenesV4,    'gamefic/scriptable/scenes_v4'
     autoload :Seeds,       'gamefic/scriptable/seeds'
     autoload :Syntaxes,    'gamefic/scriptable/syntaxes'
     autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
@@ -37,7 +36,7 @@ module Gamefic
     include Hooks
     include Queries
     include Responses
-    include ScenesV4
+    include Scenes
     include Seeds
 
     # Add a block of code to be executed during initialization.

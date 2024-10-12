@@ -2,49 +2,44 @@
 
 module Gamefic
   module Scriptable
-    # Scriptable methods related to creating scenes.
-    #
     module Scenes
-      # Block a new scene.
-      #
-      # @example Prompt the player for a name
-      #   block :name_of_scene do |scene|
-      #     # The scene's start occurs before the user gets prompted for input
-      #     scene.on_start do |actor, props|
-      #       props.prompt = 'What's your name?'
-      #     end
-      #
-      #     # The scene's finish is where you can process the user's input
-      #     scene.on_finish do |actor, props|
-      #       if props.input.empty?
-      #         # You can use recue to start the scene again
-      #         actor.recue
-      #       else
-      #         actor.tell "Hello, #{props.input}!"
-      #       end
-      #     end
-      #   end
-      #
-      # @param name [Symbol]
-      # @param klass [Class<Scene::Default>]
-      # @param on_start [Proc, nil]
-      # @param on_finish [Proc, nil]
-      # @param block [Proc]
-      # @yieldparam [Scene]
-      # @return [Symbol]
-      def block name, klass = Scene::Default, &blk
-        self.class.block name, klass, &blk
-        name
+      attr_reader :default_scene, :default_conclusion
+
+      def select_default_scene(klass)
+        @default_scene = klass
       end
 
-      def preface name, klass = Scene::Activity, &start
-        Logging.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`proxy` is deprecated. Use `pick` or `pick!` instead."
-        rulebook.scenes.add(klass.bind(self.class) do |scene|
-          scene.on_start &start
-        end, name)
-        name
+      def select_default_conclusion(klass)
+        @default_conclusion = klass
       end
-      alias precursor preface
+
+      def named_scenes
+        @named_scenes ||= {}
+      end
+
+      # @deprecated Temporary method that will replace #block
+      def _block_v4(klass = Scene::Default, &blk)
+        klass.bind(self, &blk)
+      end
+
+      def block *args, warned: false, &blk
+        if args.empty? || args.first.is_a?(Class)
+          _block_v4 args.first || Scene::Default, &blk
+        else
+          name, klass = args
+          klass = klass.is_a?(Class) && klass <= Scene::Default ? klass : Scene::Default
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
+          scene = klass.bind(self, &blk)
+          scene.rename name.to_s
+          named_scenes[name] = scene
+          name
+        end
+      end
+      alias scene block
+
+      def introductions
+        @introductions ||= []
+      end
 
       # Add a block to be executed when a player is added to the game.
       # Each Plot should only have one introduction.
@@ -60,8 +55,12 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Symbol]
       def introduction(&start)
-        rulebook.scenes
-                .introduction(Scene::Default.bind(self.class) { |scene| scene.on_start(&start) })
+        # script do
+        #   rulebook.scenes
+        #           .introduction(Scene::Default.bind(self.class) { |scene| scene.on_start(&start) })
+        # end
+        # introductions.push(_block_v4 { |scene| scene.on_start(&start) })
+        introductions.push start
       end
 
       # Create a multiple-choice scene.
@@ -83,13 +82,22 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::MultipleChoice]
       # @return [Symbol]
-      def multiple_choice name, choices = [], prompt = 'What is your choice?', &blk
-        block name, Scene::MultipleChoice do |scene|
-          scene.on_start do |_actor, props|
-            props.prompt = prompt
-            props.options.concat choices
+      def multiple_choice *args, &blk
+        if args.first.is_a?(Symbol) || args.length > 1
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = multiple_choice(...)`) instead."
+          name, options, prompt = args
+          options ||= prompt
+          prompt ||= 'What is your choice?'
+          block name, Scene::MultipleChoice, warned: true do |scene|
+            scene.on_start do |_actor, props|
+              props.prompt = prompt
+              props.options.concat options
+            end
+            scene.on_finish(&blk)
           end
-          scene.on_finish &blk
+          name
+        else
+          _block_v4 Scene::MultipleChoice, &blk
         end
       end
 
@@ -111,34 +119,32 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::YesOrNo]
       # @return [Symbol]
-      def yes_or_no name, prompt = 'Answer:', &blk
-        block name, Scene::YesOrNo do |scene|
-          scene.on_start do |_actor, props|
-            props.prompt = prompt
+      def yes_or_no(name = nil, prompt = 'Answer:', &blk)
+        if name.nil?
+          _block_v4 Scene::YesOrNo, &blk
+        else
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = yes_or_no(...)`) instead."
+          block name, Scene::YesOrNo, warned: true do |scene|
+            scene.on_start do |_actor, props|
+              props.prompt = prompt
+            end
+            scene.on_finish(&blk)
           end
-          scene.on_finish &blk
         end
       end
 
-      # Create a scene that pauses the game.
-      # This scene will execute the specified block and wait for input from the
-      # the user (e.g., pressing Enter) to continue.
-      #
-      # @example
-      #   pause :wait do |actor|
-      #     actor.tell "After you continue, you will be prompted for a command."
-      #   end
-      #
-      # @param name [Symbol]
-      # @param prompt [String, nil] The text to display when prompting the user to continue
-      # @yieldparam [Actor]
-      # @return [Symbol]
-      def pause name, prompt: 'Press enter to continue...', &start
-        block name, Scene::Pause do |scene|
-          scene.on_start do |_actor, props|
-            props.prompt = prompt if prompt
+      def pause(name = nil, prompt = nil, &blk)
+        if name.nil?
+          _block_v4 Scene::Pause, &blk
+        else
+          prompt ||= 'Answer:'
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = pause(...)`) instead."
+          block name, Scene::Pause, warned: true do |scene|
+            scene.on_start do |actor, props|
+              props.prompt = prompt
+              blk[actor, props]
+            end
           end
-          scene.on_start &start
         end
       end
 
@@ -154,21 +160,15 @@ module Gamefic
       # @param name [Symbol]
       # @yieldparam [Actor]
       # @return [Symbol]
-      def conclusion name, &start
-        block name, Scene::Conclusion do |scene|
-          scene.on_start &start
+      def conclusion(name = nil, &blk)
+        if name.nil?
+          block Scene::Conclusion, &blk
+        else
+          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = conclude(...)`) instead."
+          block name, Scene::Conclusion, warned: true do |scene|
+            scene.on_start(&blk)
+          end
         end
-      end
-
-      # @return [Array<Symbol>]
-      def scenes
-        rulebook.scenes.names
-      end
-
-      # @param name [Symbol]
-      # @return [Scene::Default, nil]
-      def scene(name)
-        rulebook.scenes[name]
       end
     end
   end
