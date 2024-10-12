@@ -28,6 +28,10 @@ module Gamefic
       next_cue&.scene
     end
 
+    def current
+      Binding.for(self)
+    end
+
     # The narratives in which the entity is participating.
     #
     # @return [Epic]

@@ -6,9 +6,7 @@ module Gamefic
     # and customize it with on_start and on_finish blocks.
     #
     class Default
-      attr_reader :actor
-
-      attr_reader :props
+      attr_reader :actor, :props
 
       def initialize actor, **context
         @actor = actor
@@ -63,16 +61,18 @@ module Gamefic
       private
 
       def execute block
-        context = actor.match(self.class.context)
+        context = actor.current ||
+                  actor.match(self.class.context) ||
+                  actor.epic.narratives.first
         if context
-          Stage.run(context, actor, props, &block)
+          Binding.new(context, block).call(actor, props)
         else
           block[actor, props]
         end
       end
 
       class << self
-        attr_reader :context
+        attr_reader :context, :nickname
 
         def type
           'Default'
@@ -85,8 +85,6 @@ module Gamefic
         def rename nickname
           @nickname = nickname
         end
-
-        attr_reader :nickname
 
         def start_blocks
           @start_blocks ||= []
