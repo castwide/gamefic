@@ -50,7 +50,6 @@ module Gamefic
     end
 
     def conclude
-      rulebook.run_conclude_blocks
       players.each do |plyr|
         player_conclude_blocks.each { |blk| blk[plyr] }
         uncast plyr

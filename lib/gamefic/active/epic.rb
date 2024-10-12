@@ -24,19 +24,14 @@ module Gamefic
         narratives.delete narrative
       end
 
-      # @return [Array<Rulebook>]
-      def rulebooks
-        narratives.map(&:rulebook)
-      end
-
       # @return [Array<Symbol>]
       def verbs
-        rulebooks.flat_map(&:verbs).uniq
+        narratives.flat_map(&:verbs).uniq
       end
 
       # @return [Array<Symbol>]
       def synonyms
-        rulebooks.flat_map(&:synonyms).uniq
+        narratives.flat_map(&:synonyms).uniq
       end
 
       def empty?

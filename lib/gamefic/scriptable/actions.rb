@@ -31,9 +31,6 @@ module Gamefic
       # @return [Symbol]
       def respond(verb, *args, &proc)
         self.class.respond verb, *args, &proc
-        # response = Response.new(verb, *args, &proc)
-        # self.class.responses.push response if self.class.respond_to?(:responses)
-        # rulebook.calls.add_response response
         verb
       end
 
@@ -57,9 +54,6 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def meta(verb, *args, &proc)
-        # response = Response.new(verb, *args, meta: true, &proc)
-        # self.class.responses.push response if self.class.respond_to?(:responses)
-        # rulebook.calls.add_response response
         self.class.meta verb, *args, &proc
         verb
       end
@@ -72,7 +66,7 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def before_action *verbs, &block
-        rulebook.hooks.before_action self, *verbs, &block
+        self.class.before_action *verbs, &block
       end
 
       # Add a proc to be evaluated after a character executes an action.
@@ -83,56 +77,16 @@ module Gamefic
       # @yieldparam [Gamefic::Action]
       # @return [Action::Hook]
       def after_action *verbs, &block
-        rulebook.hooks.after_action self, *verbs, &block
+        self.class.after_action *verbs, &block
       end
 
       def before_command *verbs, &block
-        rulebook.hooks.before_command self, *verbs, &block
+        self.class.before_command *verbs, &block
       end
 
       def after_command *verbs, &block
-        rulebook.hooks.after_command self, *verbs, &block
+        self.class.after_command *verbs, &block
       end
-
-      # Verbs are the symbols that have responses defined in the rulebook.
-      #
-      # @example
-      #   class MyPlot < Gamefic::Plot
-      #     script do
-      #       respond :think { |actor| actor.tell 'You think.' }
-      #
-      #       verbs #=> [:think]
-      #     end
-      #   end
-      #
-      # @return [Array<Symbol>]
-      # def verbs
-      #   self.class.verbs
-      #   # rulebook.verbs
-      # end
-
-      # Synonyms are a combination of the rulebook's concrete verbs plus the
-      # alternative variants defined in syntaxes.
-      #
-      # @example
-      #   class MyPlot < Gamefic::Plot
-      #       respond :think { |actor| actor.tell 'You think.' }
-      #       interpret 'ponder', 'think'
-      #
-      #       verbs #=> [:think]
-      #       synonyms #=> [:think, :ponder]
-      #     end
-      #   end
-      #
-      # @return [Array<Symbol>]
-      # def synonyms
-      #   rulebook.synonyms
-      # end
-
-      # @return [Array<Syntax>]
-      # def syntaxes
-      #   rulebook.syntaxes
-      # end
     end
   end
 end

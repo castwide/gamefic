@@ -150,15 +150,6 @@ RSpec.describe Gamefic::Plot do
     expect(plot.subplots.first.players).to be_empty
   end
 
-  it 'reattaches rulebooks' do
-    plot = Gamefic::Plot.new
-    subplot = plot.branch(Gamefic::Subplot)
-    cache = plot.detach
-    plot.attach cache
-    expect(plot.rulebook).to be_a(Gamefic::Rulebook)
-    expect(subplot.rulebook).to be_a(Gamefic::Rulebook)
-  end
-
   it 'concludes its subplots' do
     plot = Gamefic::Plot.new
     actor = plot.introduce

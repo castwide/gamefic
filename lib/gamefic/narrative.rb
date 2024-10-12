@@ -26,8 +26,6 @@ module Gamefic
 
     select_default_conclusion Scene::Conclusion
 
-    attr_reader :rulebook
-
     def initialize(hydrate: true)
       return unless hydrate
 
@@ -41,7 +39,6 @@ module Gamefic
     end
 
     def script
-      @rulebook = Rulebook.new
       included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
     end
 
@@ -52,7 +49,6 @@ module Gamefic
 
     def post_script
       entity_vault.lock
-      rulebook.freeze
     end
 
     # @return [Array<Symbol>]

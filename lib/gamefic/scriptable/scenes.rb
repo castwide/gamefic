@@ -33,7 +33,7 @@ module Gamefic
       # @yieldparam [Scene]
       # @return [Symbol]
       def block name, klass = Scene::Default, &blk
-        rulebook.scenes.add klass.bind(self.class, &blk), name
+        self.class.block name, klass, &blk
         name
       end
 

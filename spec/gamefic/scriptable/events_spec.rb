@@ -3,27 +3,21 @@
 describe Gamefic::Scriptable::Events do
   let(:object) do
     klass = Class.new do
-      include Gamefic::Scriptable::Events
-
-      attr_accessor :rulebook
-    end
-
-    klass.new.tap do |obj|
-      obj.rulebook = Gamefic::Rulebook.new
+      extend Gamefic::Scriptable
     end
   end
 
   describe '#on_conclude' do
     it 'adds an on_conclude block' do
       object.on_conclude { nil }
-      expect(object.rulebook.events.conclude_blocks).to be_one
+      expect(object.conclude_blocks).to be_one
     end
   end
 
   describe '#on_player_output' do
     it 'adds an on_player_output block' do
       object.on_player_output { |_player, _output| nil }
-      expect(object.rulebook.events.player_output_blocks).to be_one
+      expect(object.player_output_blocks).to be_one
     end
   end
 end

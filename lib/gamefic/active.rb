@@ -28,14 +28,6 @@ module Gamefic
       next_cue&.scene
     end
 
-    # The rulebooks that will be used to perform commands. Every plot and
-    # subplot has its own rulebook.
-    #
-    # @return [Set<Gamefic::World::Rulebook>]
-    # def rulebooks
-    #   @rulebooks ||= Set.new
-    # end
-
     # The narratives in which the entity is participating.
     #
     # @return [Epic]

@@ -2,6 +2,7 @@
 - Move rules to Scriptable
 - JIT Scriptable binding
 - Sunset Chapter
+- Sunset Rulebook
 
 ## 3.7.0
 - Nuanced scans
