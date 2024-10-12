@@ -52,7 +52,7 @@ module Gamefic
     def conclude
       rulebook.run_conclude_blocks
       players.each do |plyr|
-        rulebook.run_player_conclude_blocks plyr
+        player_conclude_blocks.each { |blk| blk[plyr] }
         uncast plyr
       end
       entities.each { |ent| destroy ent }
