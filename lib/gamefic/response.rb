@@ -68,7 +68,7 @@ module Gamefic
     end
 
     def execute *args
-      binding.call(*args)
+      gamefic_binding.call(*args)
     end
 
     def precision
@@ -114,14 +114,14 @@ module Gamefic
 
     def inject_binding narrative
       @queries = map_queries(narrative.unproxy(@queries))
-      @binding = Binding.new(narrative, @block)
+      @gamefic_binding = Binding.new(narrative, @block)
       self
     end
 
     private
 
-    def binding
-      @binding || Binding.new(nil, @block).tap { Gamefic.logger.warn "Executing unbound response" }
+    def gamefic_binding
+      @gamefic_binding || Binding.new(nil, @block).tap { Gamefic.logger.warn "Executing unbound response" }
     end
 
     def log_and_discard
