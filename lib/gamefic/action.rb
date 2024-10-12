@@ -6,25 +6,22 @@ module Gamefic
   class Action
     include Scriptable::Queries
 
-    attr_reader :actor, :command, :response, :model
+    attr_reader :actor, :command, :response
 
     # @param actor [Actor]
     # @param command [Command]
     # @param response [Response]
-    # @param model [Model]
-    def initialize actor, command, response, model = nil
-      Gamefic.logger.warn "Creating an action with a model" if model
+    def initialize actor, command, response
       @actor = actor
       @command = command
-      @response = model&.unproxy(response) || response
-      @model = model
+      @response = response
     end
 
     def execute
       return if cancelled?
 
       if valid?
-        model&.execute(actor, *command.arguments, &response.block) || response.callback.run(actor, *command.arguments)
+        @response.execute(actor, *command.arguments)
         self
       else
         actor.proceed
@@ -62,13 +59,14 @@ module Gamefic
     end
 
     def valid_arguments?
+      Gamefic.logger.warn "Attempting to validate unbound response" unless @response.bound?
       @response.queries
                .zip(@command.arguments)
-               .all? { |query, argument| accept? actor, query, argument, model }
+               .all? { |query, argument| accept? actor, query, argument }
     end
 
-    def accept? actor, query, argument, model
-      selectors = model&.unproxy(query.arguments) || query.arguments
+    def accept? actor, query, argument
+      selectors = query.arguments
       available = query.span(actor).that_are(*selectors)
       if query.ambiguous?
         argument & available == argument

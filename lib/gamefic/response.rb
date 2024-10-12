@@ -25,19 +25,12 @@ module Gamefic
     # @param meta [Boolean]
     # @param block [Proc]
     def initialize verb, *args, meta: false, &block
-      narrative = if args.first.is_a?(Narrative) || args.first.is_a?(Scriptable::Actions)
-                    Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}Script-level responses are deprecated. Use class-level responses instead."
-                    args.shift
-                  end
       Gamefic.logger.warn "Underscores to hide verbs (`#{verb}`) are deprecated." if verb.to_s.start_with?('_')
       @verb = verb
       @meta = meta
       @args = args
       @block = block
-      # @queries = map_queries(args, narrative)
-      @queries = map_queries_v4(args)
-      # @todo Callback should not be necessary. Bind block in Action instead
-      @callback = Callback.new(narrative, block)
+      @queries = map_queries(args)
     end
 
     # The `meta?` flag is just a way for authors to identify responses that
@@ -75,7 +68,7 @@ module Gamefic
     end
 
     def execute *args
-      @callback.run(*args)
+      binding.call(*args)
     end
 
     def precision
@@ -110,23 +103,26 @@ module Gamefic
     end
 
     def bound?
-      @bound
+      !!@binding
     end
 
-    def bind model
-      clone.tap do |copy|
-        copy.instance_exec do
-          # @narrative = narrative
-          @queries = model.unproxy(@queries)
-          # @queries = map_queries(@args, narrative)
-          # @todo Maybe unnecessay? idk
-          @callback = Callback.new(model, @block)
-          @bound = true
-        end
-      end
+    def bind narrative
+      clone.inject_binding narrative
+    end
+
+    protected
+
+    def inject_binding narrative
+      @queries = map_queries(narrative.unproxy(@queries))
+      @binding = Binding.new(narrative, @block)
+      self
     end
 
     private
+
+    def binding
+      @binding || Binding.new(nil, @block).tap { Gamefic.logger.warn "Executing unbound response" }
+    end
 
     def log_and_discard
       Gamefic.logger.info "Discarded #{inspect}"
@@ -159,13 +155,7 @@ module Gamefic
       total
     end
 
-    def map_queries(args, narrative)
-      args.map do |arg|
-        select_query(arg).tap { |qry| qry.narrative = narrative }
-      end
-    end
-
-    def map_queries_v4(args)
+    def map_queries(args)
       args.map { |arg| select_query(arg) }
     end
 
