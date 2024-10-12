@@ -19,11 +19,8 @@ RSpec.configure do |config|
   # Kernel.srand config.seed
 
   config.after :each do
-    Gamefic::Narrative.blocks.clear
     Gamefic::Narrative.responses.clear
-    Gamefic::Plot.blocks.clear
     Gamefic::Plot.responses.clear
-    Gamefic::Subplot.blocks.clear
     Gamefic::Subplot.responses.clear
   end
 end

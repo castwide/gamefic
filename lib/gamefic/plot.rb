@@ -5,20 +5,6 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
-    def seed
-      super
-    end
-
-    def script
-      super
-      self.class.named_scenes[:default_scene] ||= self.class.default_scene
-      self.class.named_scenes[:default_conclusion] ||= self.class.default_conclusion
-    end
-
-    def post_script
-      super
-    end
-
     def ready
       super
       subplots.each(&:ready)

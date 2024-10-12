@@ -7,6 +7,10 @@ module Gamefic
             .that_are(Scriptable)
       end
 
+      def seeds
+        find_and_bind(:seeds)
+      end
+
       def before_actions
         find_and_bind(:before_actions)
       end
@@ -50,6 +54,14 @@ module Gamefic
       def conclusions
         included_scripts.flat_map(&:introductions)
                         .concat(self.class.introductions)
+      end
+
+      def default_scene
+        self.class.default_scene
+      end
+
+      def default_conclusion
+        self.class.default_conclusion
       end
 
       private

@@ -32,6 +32,7 @@ module Gamefic
     autoload :Responses,   'gamefic/scriptable/responses'
     autoload :Scenes,      'gamefic/scriptable/scenes'
     autoload :ScenesV4,    'gamefic/scriptable/scenes_v4'
+    autoload :Seeds,       'gamefic/scriptable/seeds'
     autoload :Syntaxes,    'gamefic/scriptable/syntaxes'
     autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
 
@@ -39,17 +40,7 @@ module Gamefic
     include Queries
     include Responses
     include ScenesV4
-
-    # @!parse
-    #   include Scriptable::Actions
-    #   include Scriptable::Events
-    #   include Scriptable::Scenes
-
-    # @return [Array<Block>]
-    def blocks
-      @blocks ||= []
-    end
-    alias scripts blocks
+    include Seeds
 
     # Add a block of code to be executed during initialization.
     #
@@ -71,8 +62,7 @@ module Gamefic
     #   end
     #
     def script &block
-      # blocks.push Block.new(:script, block)
-      # @todo deprecate
+      Gamefic.logger.warn "The `script` method is deprecated. Use class-level script methods instead."
       instance_exec(&block)
     end
 
@@ -92,9 +82,9 @@ module Gamefic
     #     end
     #   end
     #
-    def seed &block
-      blocks.push Block.new(:seed, block)
-    end
+    # def seed &block
+    #   blocks.push Block.new(:seed, block)
+    # end
 
     # @return [Array<Block>]
     def included_blocks
@@ -205,41 +195,5 @@ module Gamefic
     end
     alias lazy_pick! pick
     alias _pick! pick
-
-    # if RUBY_ENGINE == 'opal'
-    #   # :nocov:
-    #   def method_missing method, *args, &block
-    #     return super unless respond_to_missing?(method)
-
-    #     script { send(method, *args, &block) }
-    #   end
-    #   # :nocov:
-    # else
-    #   def method_missing method, *args, **kwargs, &block
-    #     return super unless respond_to_missing?(method)
-
-    #     script { send(method, *args, **kwargs, &block) }
-    #   end
-    # end
-
-    # def respond_to_missing?(method, _with_private = false)
-    #   [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
-    #                                                                .include?(method)
-    # end
-
-    # Create an anonymous module that includes the features of a Scriptable
-    # module but does not include its scripts.
-    #
-    # This can be useful when you need access to the Scriptable's constants and
-    # instance methods, but you don't want to duplicate its rules.
-    #
-    # @deprecated Removing script blocks is no longer necessary. This method
-    #   will simply return self until it's removed.
-    #
-    # @return [Module<self>]
-    def no_scripts
-      Logging.logger.warn "#{caller.first ? "#{caller.first}: " : ''}Calling `no_scripts` on Scriptable modules is no longer necessary."
-      self
-    end
   end
 end

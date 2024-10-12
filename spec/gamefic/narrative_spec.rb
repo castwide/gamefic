@@ -4,9 +4,10 @@ describe Gamefic::Narrative do
   describe 'class' do
     it 'adds a seed' do
       blk = proc {}
-      Gamefic::Narrative.seed &blk
-      expect(Gamefic::Narrative.blocks).to be_one
-      expect(Gamefic::Narrative.blocks.first).to be_seed
+      klass = Class.new(Gamefic::Narrative) do
+        seed &blk
+      end
+      expect(klass.seeds).to be_one
     end
   end
 
@@ -43,10 +44,12 @@ describe Gamefic::Narrative do
       end
 
       it 'rejects scenes from seeds' do
-        Gamefic::Narrative.seed do
-          pause(:scene) { |actor| actor.tell 'Pause' }
+        klass = Class.new(Gamefic::Narrative) do
+          seed do
+            pause(:scene) { |actor| actor.tell 'Pause' }
+          end
         end
-        expect { Gamefic::Narrative.new }.to raise_error(NoMethodError)
+        expect { klass.new }.to raise_error(NoMethodError)
       end
     end
   end

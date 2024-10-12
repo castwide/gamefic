@@ -167,7 +167,7 @@ module Gamefic
     def start
       ensure_cue
       @last_cue = @next_cue
-      cue :default_scene
+      cue epic.narratives.first&.default_scene
       @scene = epic.select_scene(@last_cue.scene).new(self, **@last_cue.context)
       @scene.start
       @output = @scene.props.output.dup.freeze
@@ -267,7 +267,7 @@ module Gamefic
       return if next_cue
 
       logger.debug "Using default scene for actor without cue"
-      cue :default_scene
+      cue epic.narratives.first&.default_scene
     end
   end
 end

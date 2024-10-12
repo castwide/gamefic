@@ -26,16 +26,9 @@ module Gamefic
 
     select_default_conclusion Scene::Conclusion
 
-    def initialize(hydrate: true)
-      return unless hydrate
-
-      seed
-      script
+    def initialize
+      seeds.each(&:call)
       post_script
-    end
-
-    def seed
-      included_blocks.select(&:seed?).each { |blk| Stage.run self, &blk.code }
     end
 
     def script
@@ -128,7 +121,7 @@ module Gamefic
 
     def self.inherited klass
       super
-      klass.blocks.concat blocks
+      klass.seeds.concat seeds
       klass.select_default_scene default_scene
       klass.select_default_conclusion default_conclusion
     end

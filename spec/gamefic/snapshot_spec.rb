@@ -63,7 +63,7 @@ describe Gamefic::Snapshot do
 
     it 'restores references in actions' do
       player = restored.players.first
-      player.cue :default_scene
+      player.cue restored.default_scene
       restored.ready
       player.perform 'look thing'
       expect(player.messages).to include('thing')

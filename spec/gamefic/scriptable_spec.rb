@@ -131,9 +131,8 @@ describe Gamefic::Scriptable do
 
   it 'scripts after_action' do
     klass = Class.new(Gamefic::Plot) do
-      attr_reader :foo
+      attr_make :foo, Gamefic::Entity, name: 'foo'
 
-      seed { @foo = make Gamefic::Entity, name: 'foo' }
       respond(:foo) { |_| nil }
       after_action { |_action| foo.name = 'bar' }
     end

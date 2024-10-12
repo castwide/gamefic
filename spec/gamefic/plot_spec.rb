@@ -25,8 +25,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = klass.new
-    # There are 3 scenes because the plot created 2 defaults
-    expect(plot.class.named_scenes.length).to eq(3)
+    expect(plot.class.named_scenes).to be_one
   end
 
   it 'cues the introduction' do
@@ -49,7 +48,7 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.introduce
     plot.ready
-    expect(player.next_cue.scene).to be(:default_scene)
+    expect(player.next_cue.scene).to be(plot.default_scene)
   end
 
   it 'tracks player subplots' do
@@ -77,7 +76,7 @@ RSpec.describe Gamefic::Plot do
     end
     plot = klass.new
     player = plot.introduce
-    player.cue :default_conclusion
+    player.cue plot.default_conclusion
     plot.ready
     expect(player[:concluded]).to be(true)
   end
@@ -154,7 +153,7 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     actor = plot.introduce
     plot.branch Gamefic::Subplot, introduce: actor
-    actor.cue :default_conclusion
+    actor.cue plot.default_conclusion
     plot.ready
     expect(plot.subplots).to be_empty
     expect(actor.epic).to be_one
