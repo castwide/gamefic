@@ -104,7 +104,7 @@ module Gamefic
     end
 
     def included_scripts
-      included_modules.that_are(Scriptable)
+      included_modules.that_are(Scriptable).uniq
     end
 
     # Lazy make an entity.
