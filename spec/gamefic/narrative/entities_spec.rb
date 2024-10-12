@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
-describe Gamefic::Scriptable::Entities do
-  let(:object) {
-    Class.new do
-      include Gamefic::Scriptable::Entities
-    end
-    .new
-  }
+describe Gamefic::Narrative::Entities do
+  let(:object) { Object.new.extend(Gamefic::Narrative::Entities) }
 
   describe '#pick!' do
     it 'finds a match' do

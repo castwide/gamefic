@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scriptable
+  class Narrative
     # Methods for referencing entities from proxies.
     #
     module Proxies

@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 module Gamefic
-  module Scriptable
-    # Scriptable methods related to managing entities.
-    #
-    # @note The public versions of the entity and player arrays are frozen.
-    #   Authors need access to them but shouldn't modify them directly. Use
-    #   #make and #destroy instead.
+  class Narrative
+    # Methods related to managing entities.
     #
     module Entities
       include Proxies

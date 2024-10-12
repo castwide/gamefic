@@ -5,8 +5,6 @@ module Gamefic
     # Scriptable methods related to creating action queries.
     #
     module Queries
-      include Proxies
-
       # Define a query that searches all entities in the subject's epic.
       #
       # If the subject is not an actor, the result will always be empty.

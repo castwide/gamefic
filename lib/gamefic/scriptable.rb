@@ -24,11 +24,9 @@ module Gamefic
   #
   module Scriptable
     autoload :Actions,     'gamefic/scriptable/actions'
-    autoload :Entities,    'gamefic/scriptable/entities'
     autoload :Events,      'gamefic/scriptable/events'
     autoload :Hooks,       'gamefic/scriptable/hooks'
     autoload :Queries,     'gamefic/scriptable/queries'
-    autoload :Proxies,     'gamefic/scriptable/proxies'
     autoload :Responses,   'gamefic/scriptable/responses'
     autoload :Scenes,      'gamefic/scriptable/scenes'
     autoload :ScenesV4,    'gamefic/scriptable/scenes_v4'
