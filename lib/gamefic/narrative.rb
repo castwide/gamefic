@@ -27,7 +27,7 @@ module Gamefic
     select_default_conclusion Scene::Conclusion
 
     def initialize
-      seeds.each(&:call)
+      seeds.each { |blk| instance_exec(&blk) }
       post_script
     end
 

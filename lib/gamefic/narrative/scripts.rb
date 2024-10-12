@@ -8,7 +8,8 @@ module Gamefic
       end
 
       def seeds
-        find_and_bind(:seeds)
+        included_scripts.flat_map(&:seeds)
+                        .concat(self.class.seeds)
       end
 
       def before_actions
