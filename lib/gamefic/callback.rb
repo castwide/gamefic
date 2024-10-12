@@ -10,7 +10,7 @@ module Gamefic
     end
 
     def run *args
-      Stage.run @narrative, *args, &@code
+      Binding.new(@narrative, @code).call(*args)
     end
   end
 end

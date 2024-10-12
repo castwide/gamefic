@@ -142,9 +142,9 @@ module Gamefic
 
         instance_variable_set(ivname, make(klass, **opts))
       end
-      define_singleton_method(name) { Proxy::Attr.new }
+      define_singleton_method(name) { Proxy::Attr.new(name) }
       seed { send name }
-      Proxy.new(:attr, name)
+      Proxy::Attr.new(name)
     end
     alias attr_seed attr_make
 

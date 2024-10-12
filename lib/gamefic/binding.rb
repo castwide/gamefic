@@ -19,7 +19,7 @@ module Gamefic
         end
       end
 
-      def respond_to_missing?(symbol, _)
+      def respond_to_missing?(symbol, _ = false)
         (@narrative.public_methods - UNDELEGATED).include?(symbol)
       end
     end
@@ -53,7 +53,7 @@ module Gamefic
 
     def call(*args)
       args.each { |arg| Binding.push arg, @narrative }
-      Stage.run(@narrative, *args, &@code)
+      Model.new(@narrative).instance_exec(*args, &@code)
     ensure
       args.each { |arg| Binding.pop arg }
     end

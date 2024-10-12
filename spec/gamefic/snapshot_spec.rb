@@ -3,25 +3,29 @@
 require 'date'
 
 class SnapshotTestPlot < Gamefic::Plot
-  seed do
-    @room = make Gamefic::Entity, name: 'room'
-    @thing = make Gamefic::Entity, name: 'thing', parent: @room
+  attr_make :room, Gamefic::Entity,
+            name: 'room'
 
+  attr_make :thing, Gamefic::Entity,
+            name: 'thing',
+            parent: room
+
+  seed do
     # Make sure various other objects can get serialized
     @object = Object.new
     @date_time = DateTime.new
   end
 
   introduction do |actor|
-    actor.parent = @room
-    branch Gamefic::Subplot, introduce: actor, configured: @thing
+    actor.parent = room
+    branch Gamefic::Subplot, introduce: actor, configured: thing
   end
 
-  respond :look, lazy_pick('thing') do |actor, thing|
+  respond :look, thing do |actor, thing|
     actor.tell "You see #{thing}"
   end
 
-  respond :take, lazy_pick('thing') do |actor, thing|
+  respond :take, thing do |actor, thing|
     thing.parent = actor
   end
 end
@@ -35,7 +39,7 @@ describe Gamefic::Snapshot do
   end
 
   context 'after the introduction' do
-    let(:restored) { Gamefic::Plot.restore plot.save }
+    let(:restored) { SnapshotTestPlot.restore plot.save }
 
     it 'restores players' do
       player = restored.players.first

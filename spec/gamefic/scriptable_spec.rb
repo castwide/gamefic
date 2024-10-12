@@ -38,15 +38,15 @@ describe Gamefic::Scriptable do
 
   it 'scripts responses' do
     klass = Class.new(Gamefic::Plot) do
-      seed do
-        @room = make Gamefic::Entity, name: 'room'
-        @item = make Gamefic::Entity, name: 'item', parent: @room
-      end
+      attr_make :room, Gamefic::Entity,
+                name: 'room'
 
-      attr_reader :item
+      attr_make :item, Gamefic::Entity,
+                name: 'item',
+                parent: room
 
       introduction do |actor|
-        actor.parent = @room
+        actor.parent = room
       end
 
       respond(:take, Gamefic::Entity) do |actor, entity|
