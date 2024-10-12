@@ -14,12 +14,12 @@ describe Gamefic::Active do
   end
 
   it 'executes a command' do
-    Gamefic::Narrative.script do
+    klass = Class.new(Gamefic::Narrative) do
       room = make Gamefic::Entity, name: 'room'
       item = make Gamefic::Entity, name: 'item', parent: room
-      respond(:command, item) { |actor| item[:commanded] = true }
+      respond(:command, item) { |actor, item| item[:commanded] = true }
     end
-    narrative = Gamefic::Narrative.new
+    narrative = klass.new
     narrative.cast object
     object.parent = narrative.pick('room')
     item = narrative.pick('item')

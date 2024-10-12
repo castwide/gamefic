@@ -21,7 +21,7 @@ describe Gamefic::Scriptable do
     klass = Class.new(Gamefic::Narrative)
     klass.include scriptable
     klass.include other
-    expect(klass.included_scripts).to eq(2)
+    expect(klass.included_scripts.length).to eq(2)
   end
 
   it 'scripts introductions' do

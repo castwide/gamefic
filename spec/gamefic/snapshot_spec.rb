@@ -2,33 +2,33 @@
 
 require 'date'
 
+class SnapshotTestPlot < Gamefic::Plot
+  seed do
+    @room = make Gamefic::Entity, name: 'room'
+    @thing = make Gamefic::Entity, name: 'thing', parent: @room
+
+    # Make sure various other objects can get serialized
+    @object = Object.new
+    @date_time = DateTime.new
+  end
+
+  introduction do |actor|
+    actor.parent = @room
+    branch Gamefic::Subplot, introduce: actor, configured: @thing
+  end
+
+  respond :look, lazy_pick('thing') do |actor, thing|
+    actor.tell "You see #{thing}"
+  end
+
+  respond :take, lazy_pick('thing') do |actor, thing|
+    thing.parent = actor
+  end
+end
+
 describe Gamefic::Snapshot do
   let(:plot) do
-    Gamefic::Plot.seed do
-      @room = make Gamefic::Entity, name: 'room'
-      @thing = make Gamefic::Entity, name: 'thing', parent: @room
-
-      # Make sure various other objects can get serialized
-      @object = Object.new
-      @date_time = DateTime.new
-    end
-
-    Gamefic::Plot.script do
-      introduction do |actor|
-        actor.parent = @room
-        branch Gamefic::Subplot, introduce: actor, configured: @thing
-      end
-
-      respond :look, @thing do |actor, thing|
-        actor.tell "You see #{thing}"
-      end
-
-      respond :take, @thing do |actor, thing|
-        thing.parent = actor
-      end
-    end
-
-    Gamefic::Plot.new.tap do |plot|
+    SnapshotTestPlot.new.tap do |plot|
       plot.introduce
       plot.ready
     end
@@ -72,17 +72,6 @@ describe Gamefic::Snapshot do
     it 'retains player configuration after save' do
       expect(plot.players).to be_one
       expect(plot.players.first.epic.narratives.length).to eq(2)
-    end
-
-    it 'warns when scripts change restored plots' do
-      # @todo Opal marshal dumps are not idempotent
-      next if RUBY_ENGINE == 'opal'
-
-      expect(Gamefic::Logging.logger).to receive(:warn).with(/Scripts modified/i)
-      Gamefic::Plot.script { @foo = 'foo' }
-      plot = Gamefic::Plot.new
-      plot.instance_exec { @foo = 'bar' }
-      Gamefic::Plot.restore plot.save
     end
   end
 

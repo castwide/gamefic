@@ -2,13 +2,6 @@
 
 describe Gamefic::Narrative do
   describe 'class' do
-    it 'adds a script' do
-      blk = proc {}
-      Gamefic::Narrative.script &blk
-      expect(Gamefic::Narrative.blocks).to be_one
-      expect(Gamefic::Narrative.blocks.first).to be_script
-    end
-
     it 'adds a seed' do
       blk = proc {}
       Gamefic::Narrative.seed &blk
@@ -27,18 +20,18 @@ describe Gamefic::Narrative do
       end
 
       it 'adds scenes from scripts' do
-        Gamefic::Narrative.script do
+        klass = Class.new(Gamefic::Narrative) do
           pause(:scene) { |actor| actor.tell 'Pause' }
         end
-        narr = Gamefic::Narrative.new
-        expect(narr.rulebook.scenes.names).to eq(%i[scene])
+        narr = klass.new
+        expect(narr.named_scenes.keys).to eq(%i[scene])
       end
 
       it 'adds actions from scripts' do
-        Gamefic::Narrative.script do
+        klass = Class.new(Gamefic::Narrative) do
           respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
         end
-        narr = Gamefic::Narrative.new
+        narr = klass.new
         expect(narr.responses).to be_one
       end
 
@@ -50,17 +43,8 @@ describe Gamefic::Narrative do
       end
 
       it 'rejects scenes from seeds' do
-        # @todo Maybe raise ScriptError or SeedError
         Gamefic::Narrative.seed do
           pause(:scene) { |actor| actor.tell 'Pause' }
-        end
-        expect { Gamefic::Narrative.new }.to raise_error(NoMethodError)
-      end
-
-      it 'rejects actions from seeds' do
-        # @todo Maybe raise ScriptError or SeedError
-        Gamefic::Narrative.seed do
-          respond(:think) { |actor| actor.tell 'You ponder your predicament.' }
         end
         expect { Gamefic::Narrative.new }.to raise_error(NoMethodError)
       end
