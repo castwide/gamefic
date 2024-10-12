@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe Gamefic::Plot do
-  it 'creates responses from scripts' do
-    Gamefic::Plot.script do
+  it 'creates responses' do
+    klass = Class.new(Gamefic::Plot) do
       respond :command do |_actor|
         nil
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
+    puts plot.responses.inspect
     expect(plot.responses).to be_one
   end
 
   it 'creates scenes from scripts' do
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       block :scene do |scene|
         scene.on_start do |actor, props|
           actor.tell "What's your name?"
@@ -23,9 +24,9 @@ RSpec.describe Gamefic::Plot do
         end
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
     # There are 3 scenes because the plot created 2 defaults
-    expect(plot.rulebook.scenes.all.length).to eq(3)
+    expect(plot.class.named_scenes.length).to eq(3)
   end
 
   it 'cues the introduction' do
@@ -69,12 +70,12 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'runs on_player_conclude blocks' do
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       on_player_conclude do |player|
         player[:concluded] = true
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
     player = plot.introduce
     player.cue :default_conclusion
     plot.ready
@@ -137,16 +138,6 @@ RSpec.describe Gamefic::Plot do
     player1 = plot.introduce
     player2 = plot.introduce
     expect(plot.players).to eq([player1, player2])
-  end
-
-  it 'warns of overwrites during script setup' do
-    next if RUBY_ENGINE == 'opal'
-
-    # @todo Raise ScriptError from FrozenError
-    Gamefic::Plot.script { @here = Object.new }
-    Gamefic::Plot.script { @here = Object.new }
-
-    expect { Gamefic::Plot.new }.to raise_error(RuntimeError)
   end
 
   it 'uncasts players from plot and subplots' do

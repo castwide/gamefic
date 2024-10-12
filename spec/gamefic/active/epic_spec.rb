@@ -15,6 +15,6 @@ describe Gamefic::Active::Epic do
     epic.add plot1
     epic.add plot2
     scene = epic.select_scene(:pause)
-    expect(scene).to be(plot2.rulebook.scenes[:pause])
+    expect(scene).to be(plot2.named_scenes[:pause])
   end
 end

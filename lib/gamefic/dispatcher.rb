@@ -25,11 +25,15 @@ module Gamefic
       @action = next_action
       return unless @action
 
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_before_actions @action }
+      # actor.epic.narratives.flat_map { |rlbk| rlbk.run_before_actions @action }
+      # @todo Bind
+      actor.epic.narratives.flat_map(&:before_actions).each { |blk| blk[@action] }
       return if @action.cancelled?
 
       @action.execute
-      actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions @action }
+      # actor.epic.rulebooks.flat_map { |rlbk| rlbk.run_after_actions @action }
+      # @todo Bind
+      actor.epic.narratives.flat_map(&:after_actions).each { |blk| blk[@action] }
       @action
     end
 

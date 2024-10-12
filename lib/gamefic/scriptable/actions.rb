@@ -30,10 +30,15 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond(verb, *args, &proc)
-        response = Response.new(verb, *args, &proc)
-        self.class.responses.push response if self.class.respond_to?(:responses)
-        rulebook.calls.add_response response
+        self.class.respond verb, *args, &proc
+        # response = Response.new(verb, *args, &proc)
+        # self.class.responses.push response if self.class.respond_to?(:responses)
+        # rulebook.calls.add_response response
         verb
+      end
+
+      def interpret command, translation
+        self.class.interpret command, translation
       end
 
       # Create a meta response for a command.
@@ -52,9 +57,10 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def meta(verb, *args, &proc)
-        response = Response.new(verb, *args, meta: true, &proc)
-        self.class.responses.push response if self.class.respond_to?(:responses)
-        rulebook.calls.add_response response
+        # response = Response.new(verb, *args, meta: true, &proc)
+        # self.class.responses.push response if self.class.respond_to?(:responses)
+        # rulebook.calls.add_response response
+        self.class.meta verb, *args, &proc
         verb
       end
 
@@ -119,14 +125,14 @@ module Gamefic
       #   end
       #
       # @return [Array<Symbol>]
-      def synonyms
-        rulebook.synonyms
-      end
+      # def synonyms
+      #   rulebook.synonyms
+      # end
 
       # @return [Array<Syntax>]
-      def syntaxes
-        rulebook.syntaxes
-      end
+      # def syntaxes
+      #   rulebook.syntaxes
+      # end
     end
   end
 end

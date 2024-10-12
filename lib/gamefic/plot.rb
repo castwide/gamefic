@@ -13,7 +13,8 @@ module Gamefic
     def script
       super
       chapters.each(&:script)
-      rulebook.scenes.with_defaults self
+      self.class.named_scenes[:default_scene] ||= self.class.default_scene
+      self.class.named_scenes[:default_conclusion] ||= self.class.default_conclusion
     end
 
     def post_script
@@ -30,7 +31,8 @@ module Gamefic
       subplots.each(&:ready)
       players.each(&:start)
       subplots.each(&:conclude) if concluding?
-      players.select(&:concluding?).each { |plyr| rulebook.run_player_conclude_blocks plyr }
+      # players.select(&:concluding?).each { |plyr| rulebook.run_player_conclude_blocks plyr }
+      players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
       subplots.delete_if(&:concluding?)
     end
 

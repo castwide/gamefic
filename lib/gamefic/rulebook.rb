@@ -63,21 +63,21 @@ module Gamefic
     #   @calls.syntaxes_for *synonyms
     # end
 
-    def run_ready_blocks
-      events.ready_blocks.each(&:run)
-    end
+    # def run_ready_blocks
+    #   events.ready_blocks.each(&:run)
+    # end
 
-    def run_update_blocks
-      events.update_blocks.each(&:run)
-    end
+    # def run_update_blocks
+    #   events.update_blocks.each(&:run)
+    # end
 
-    def run_before_actions action
-      hooks.run_before action
-    end
+    # def run_before_actions action
+    #   hooks.run_before action
+    # end
 
-    def run_after_actions action
-      hooks.run_after action
-    end
+    # def run_after_actions action
+    #   hooks.run_after action
+    # end
 
     def run_conclude_blocks
       events.conclude_blocks.each(&:run)

@@ -8,7 +8,11 @@ module Gamefic
   # functionality.
   #
   class Narrative
+    require 'gamefic/narrative/scripts'
+
     extend Scriptable
+
+    include Scripts
 
     include Logging
     include Scriptable::Actions
@@ -17,6 +21,10 @@ module Gamefic
     include Scriptable::Proxies
     include Scriptable::Queries
     include Scriptable::Scenes
+
+    select_default_scene Scene::Activity
+
+    select_default_conclusion Scene::Conclusion
 
     attr_reader :rulebook
 
@@ -42,33 +50,6 @@ module Gamefic
       self.class.included_blocks
     end
 
-    def responses
-      self.class
-          .included_scripts
-          .flat_map { |script| script.responses }
-          .concat(self.class.responses)
-          .map { |response| response.bind(self) }
-    end
-
-    def responses_for *verbs
-      self.class
-          .included_scripts
-          .flat_map { |script| script.responses_for(*verbs) }
-          .concat(self.class.responses_for(*verbs))
-          .map { |response| response.bind(self) }
-    end
-
-    def syntaxes
-      @syntaxes ||= self.class
-                        .included_scripts
-                        .flat_map(&:syntaxes)
-                        .concat(self.class.syntaxes)
-    end
-
-    def syntaxes_for *synonyms
-      synonyms.flat_map { |syn| syntax_map.fetch(syn, []) }
-    end
-
     def post_script
       entity_vault.lock
       rulebook.freeze
@@ -79,14 +60,19 @@ module Gamefic
       rulebook.scenes.names
     end
 
+    def named_scenes
+      {}.merge(*included_scripts.map(&:named_scenes))
+        .merge(self.class.named_scenes)
+    end
+
     # Introduce an actor to the story.
     #
     # @param player [Gamefic::Actor]
     # @return [Gamefic::Actor]
     def introduce(player = Gamefic::Actor.new)
       cast player
-      rulebook.scenes.introductions.each do |scene|
-        scene.new(player).run_start_blocks
+      introductions.each do |klass|
+        klass.new(player).start
       end
       player
     end
@@ -122,11 +108,17 @@ module Gamefic
     end
 
     def ready
-      rulebook.run_ready_blocks
+      self.class.included_scripts
+                .flat_map(&:ready_blocks)
+                .concat(self.class.ready_blocks)
+                .each { |block| Stage.run(self, &block) }
     end
 
     def update
-      rulebook.run_update_blocks
+      self.class.included_scripts
+                .flat_map(&:update_blocks)
+                .concat(self.class.update_blocks)
+                .each { |block| Stage.run(self, &block) }
     end
 
     # @return [Object]
@@ -152,14 +144,8 @@ module Gamefic
     def self.inherited klass
       super
       klass.blocks.concat blocks
-    end
-
-    private
-
-    def syntax_map
-      @syntax_map ||= syntaxes.to_set
-                              .classify(&:verb)
-                              .transform_values { |list| list.sort! { |a, b| a.compare b } }
+      klass.select_default_scene default_scene
+      klass.select_default_conclusion default_conclusion
     end
   end
 end

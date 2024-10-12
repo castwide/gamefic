@@ -63,8 +63,8 @@ module Gamefic
       def select_scene class_or_name
         return class_or_name if class_or_name.is_a?(Class)
 
-        scenes = rulebooks.map { |rlbk| rlbk.scenes[class_or_name] }
-                          .compact
+        scenes = narratives.map { |narr| narr.named_scenes[class_or_name] }
+                           .compact
         raise ArgumentError, "Scene named `#{class_or_name}` does not exist" if scenes.empty?
 
         logger.warn "Found #{scenes.length} scenes named `#{class_or_name}`" unless scenes.one?

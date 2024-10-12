@@ -3,8 +3,22 @@
 module Gamefic
   module Scriptable
     module ScenesV4
+      attr_reader :default_scene, :default_conclusion
+
+      def select_default_scene(klass)
+        @default_scene = klass
+      end
+
+      def select_default_conclusion(klass)
+        @default_conclusion = klass
+      end
+
+      def named_scenes
+        @named_scenes ||= {}
+      end
+
       # @deprecated Temporary method that will replace #block
-      def _block_v4 klass = Scene::Default, &blk
+      def _block_v4(klass = Scene::Default, &blk)
         klass.bind(self, &blk)
       end
 
@@ -13,18 +27,19 @@ module Gamefic
           _block_v4 args.first || Scene::Default, &blk
         else
           name, klass = args
-          klass = (klass.is_a?(Class) && klass <= Scene::Default) ? klass : Scene::Default
+          klass = klass.is_a?(Class) && klass <= Scene::Default ? klass : Scene::Default
           Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
           scene = klass.bind(self, &blk)
           scene.rename name.to_s
-          script do
-            rulebook.scenes.add scene, name
-            name
-          end
+          named_scenes[name] = scene
           name
         end
       end
       alias scene block
+
+      def introductions
+        @introductions ||= []
+      end
 
       # Add a block to be executed when a player is added to the game.
       # Each Plot should only have one introduction.
@@ -40,10 +55,11 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Symbol]
       def introduction(&start)
-        script do
-          rulebook.scenes
-                  .introduction(Scene::Default.bind(self.class) { |scene| scene.on_start(&start) })
-        end
+        # script do
+        #   rulebook.scenes
+        #           .introduction(Scene::Default.bind(self.class) { |scene| scene.on_start(&start) })
+        # end
+        introductions.push(_block_v4 { |scene| scene.on_start(&start) })
       end
 
       # Create a multiple-choice scene.
@@ -76,7 +92,7 @@ module Gamefic
               props.prompt = prompt
               props.options.concat options
             end
-            scene.on_finish &blk
+            scene.on_finish(&blk)
           end
           name
         else
@@ -102,7 +118,7 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::YesOrNo]
       # @return [Symbol]
-      def yes_or_no name = nil, prompt = 'Answer:', &blk
+      def yes_or_no(name = nil, prompt = 'Answer:', &blk)
         if name.nil?
           _block_v4 Scene::YesOrNo, &blk
         else
@@ -111,12 +127,12 @@ module Gamefic
             scene.on_start do |_actor, props|
               props.prompt = prompt
             end
-            scene.on_finish &blk
+            scene.on_finish(&blk)
           end
         end
       end
 
-      def pause name = nil, prompt = nil, &blk
+      def pause(name = nil, prompt = nil, &blk)
         if name.nil?
           _block_v4 Scene::Pause, &blk
         else
@@ -143,7 +159,7 @@ module Gamefic
       # @param name [Symbol]
       # @yieldparam [Actor]
       # @return [Symbol]
-      def conclusion name = nil, &blk
+      def conclusion(name = nil, &blk)
         if name.nil?
           block Scene::Conclusion, &blk
         else

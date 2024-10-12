@@ -26,6 +26,7 @@ module Gamefic
     autoload :Actions,     'gamefic/scriptable/actions'
     autoload :Entities,    'gamefic/scriptable/entities'
     autoload :Events,      'gamefic/scriptable/events'
+    autoload :Hooks,       'gamefic/scriptable/hooks'
     autoload :Queries,     'gamefic/scriptable/queries'
     autoload :Proxies,     'gamefic/scriptable/proxies'
     autoload :Responses,   'gamefic/scriptable/responses'
@@ -34,6 +35,7 @@ module Gamefic
     autoload :Syntaxes,    'gamefic/scriptable/syntaxes'
     autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
 
+    include Hooks
     include Queries
     include Responses
     include ScenesV4
@@ -69,7 +71,9 @@ module Gamefic
     #   end
     #
     def script &block
-      blocks.push Block.new(:script, block)
+      # blocks.push Block.new(:script, block)
+      # @todo deprecate
+      instance_exec(&block)
     end
 
     # Add a block of code to generate content after initialization.
@@ -202,26 +206,26 @@ module Gamefic
     alias lazy_pick! pick
     alias _pick! pick
 
-    if RUBY_ENGINE == 'opal'
-      # :nocov:
-      def method_missing method, *args, &block
-        return super unless respond_to_missing?(method)
+    # if RUBY_ENGINE == 'opal'
+    #   # :nocov:
+    #   def method_missing method, *args, &block
+    #     return super unless respond_to_missing?(method)
 
-        script { send(method, *args, &block) }
-      end
-      # :nocov:
-    else
-      def method_missing method, *args, **kwargs, &block
-        return super unless respond_to_missing?(method)
+    #     script { send(method, *args, &block) }
+    #   end
+    #   # :nocov:
+    # else
+    #   def method_missing method, *args, **kwargs, &block
+    #     return super unless respond_to_missing?(method)
 
-        script { send(method, *args, **kwargs, &block) }
-      end
-    end
+    #     script { send(method, *args, **kwargs, &block) }
+    #   end
+    # end
 
-    def respond_to_missing?(method, _with_private = false)
-      [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
-                                                                   .include?(method)
-    end
+    # def respond_to_missing?(method, _with_private = false)
+    #   [Scriptable::Actions, Scriptable::Events, Scriptable::Scenes].flat_map(&:public_instance_methods)
+    #                                                                .include?(method)
+    # end
 
     # Create an anonymous module that includes the features of a Scriptable
     # module but does not include its scripts.

@@ -10,10 +10,10 @@ describe Gamefic::Scriptable do
     klass = Class.new(Gamefic::Narrative)
     klass.include scriptable
     narr = klass.new
-    expect(narr.scenes).to include(:extended_pause)
+    expect(narr.named_scenes).to include(:extended_pause)
   end
 
-  it 'includes module blocks once' do
+  it 'includes scriptable modules once' do
     # This test is necessary because Opal can duplicate included modules
     scriptable.script { @foo = Object.new }
     other = Module.new.extend(Gamefic::Scriptable)
@@ -21,7 +21,7 @@ describe Gamefic::Scriptable do
     klass = Class.new(Gamefic::Narrative)
     klass.include scriptable
     klass.include other
-    expect(klass.included_blocks).to be_one
+    expect(klass.included_scripts).to eq(2)
   end
 
   it 'scripts introductions' do
@@ -59,8 +59,6 @@ describe Gamefic::Scriptable do
     player.perform 'take item'
     expect(player.children).to include(plot.item)
   end
-
-  it 'scripts responses with arguments'
 
   it 'scripts meta responses' do
     klass = Class.new(Gamefic::Plot) do
