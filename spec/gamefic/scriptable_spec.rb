@@ -135,7 +135,7 @@ describe Gamefic::Scriptable do
 
       seed { @foo = make Gamefic::Entity, name: 'foo' }
       respond(:foo) { |_| nil }
-      after_action { |_action| @foo.name = 'bar' }
+      after_action { |_action| foo.name = 'bar' }
     end
 
     plot = klass.new

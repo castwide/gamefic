@@ -4,21 +4,29 @@ module Gamefic
   module Scriptable
     module Hooks
       # @deprecated
-      def before_action(&block)
-        before_actions.push block
+      def before_action(*verbs, &block)
+        before_actions.push(proc do |action|
+          instance_exec(action, &block) if verbs.empty? || verbs.include?(action.verb)
+        end)
       end
 
       # @deprecated
-      def after_action(&block)
-        after_actions.push block
+      def after_action(*verbs, &block)
+        after_actions.push(proc do |action|
+          instance_exec(action, &block) if verbs.empty? || verbs.include?(action.verb)
+        end)
       end
 
-      def before_command(&block)
-        before_commands.push block
+      def before_command(*verbs, &block)
+        before_commands.push(proc do |actor, command|
+          instance_exec(actor, command, &block) if verbs.empty? || verbs.include?(command.verb)
+        end)
       end
 
-      def after_command(&block)
-        after_commands.push block
+      def after_command(*verbs, &block)
+        after_commands.push(proc do |actor, command|
+          instance_exec(actor, command, &block) if verbs.empty? || verbs.include?(command.verb)
+        end)
       end
 
       def on_ready(&block)
