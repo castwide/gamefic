@@ -168,17 +168,4 @@ RSpec.describe Gamefic::Plot do
     expect(plot.subplots).to be_empty
     expect(actor.epic).to be_one
   end
-
-  it 'appends a chapter' do
-    chap_klass = Class.new(Gamefic::Chapter)
-    plot_klass = Class.new(Gamefic::Plot) do
-      append chap_klass
-    end
-
-    expect(plot_klass.appended_chapters).to include(chap_klass)
-
-    plot = plot_klass.new
-    expect(plot.chapters).to be_one
-    expect(plot.chapters.first).to be_a(chap_klass)
-  end
 end

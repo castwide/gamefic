@@ -7,23 +7,16 @@ module Gamefic
   class Plot < Narrative
     def seed
       super
-      chapters.each(&:seed)
     end
 
     def script
       super
-      chapters.each(&:script)
       self.class.named_scenes[:default_scene] ||= self.class.default_scene
       self.class.named_scenes[:default_conclusion] ||= self.class.default_conclusion
     end
 
     def post_script
       super
-      chapters.freeze
-    end
-
-    def chapters
-      @chapters ||= self.class.appended_chapters.map { |klass| klass.new(self) }
     end
 
     def ready
@@ -94,22 +87,6 @@ module Gamefic
     def hydrate
       super
       subplots.each(&:hydrate)
-    end
-
-    def responses
-      super + chapters.flat_map(&:responses)
-    end
-
-    def verbs
-      super + chapters.flat_map(&:verbs)
-    end
-
-    def self.append chapter
-      appended_chapters.add chapter
-    end
-
-    def self.appended_chapters
-      @appended_chapters ||= Set.new
     end
 
     def self.restore data

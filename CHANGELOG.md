@@ -1,3 +1,8 @@
+## 4.0.0
+- Move rules to Scriptable
+- JIT Scriptable binding
+- Sunset Chapter
+
 ## 3.7.0
 - Nuanced scans
 - Active#command

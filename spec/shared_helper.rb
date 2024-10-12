@@ -3,8 +3,6 @@
 require 'ostruct'
 require 'gamefic'
 
-require_relative 'fixtures/plot_with_chapter'
-
 Gamefic.logger.level = Logger::WARN
 
 RSpec.configure do |config|
