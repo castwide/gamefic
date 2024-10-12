@@ -117,17 +117,6 @@ module Gamefic
                 .each { |block| Stage.run(self, &block) }
     end
 
-    # @return [Object]
-    def detach
-      cache = @rulebook
-      @rulebook = nil
-      cache
-    end
-
-    def attach cache
-      @rulebook = cache
-    end
-
     def hydrate
       script
       post_script

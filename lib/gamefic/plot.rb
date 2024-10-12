@@ -72,18 +72,6 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def detach
-      cache = [@rulebook]
-      @rulebook = nil
-      cache.concat subplots.map(&:detach)
-      cache
-    end
-
-    def attach(cache)
-      super(cache.shift)
-      subplots.each { |subplot| subplot.attach cache.shift }
-    end
-
     def hydrate
       super
       subplots.each(&:hydrate)
