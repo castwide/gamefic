@@ -22,6 +22,8 @@ module Gamefic
           object.map { |obj| unproxy obj }
         when Hash
           object.transform_values { |val| unproxy val }
+        when Response, Query::Base
+          object.bind(self)
         else
           object
         end

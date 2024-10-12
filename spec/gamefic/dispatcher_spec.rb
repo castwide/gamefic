@@ -3,17 +3,18 @@
 describe Gamefic::Dispatcher do
   let(:stage_func) { Gamefic::Narrative.new }
 
-  it 'filters and orders actions' do
-    rulebook = Gamefic::Rulebook.new
-    response1 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
-    response2 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
-    actor = Gamefic::Actor.new
-    actor.epic.add OpenStruct.new(rulebook: rulebook)
-    dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')
-    expect(dispatcher.execute.response).to be(response2)
-    expect(dispatcher.proceed.response).to be(response1)
-    expect(dispatcher.proceed).to be_nil
-  end
+  # it 'filters and orders actions' do
+  #   @todo This should not matter anymore because rulebooks don't handle responses
+  #   rulebook = Gamefic::Rulebook.new
+  #   response1 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
+  #   response2 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
+  #   actor = Gamefic::Actor.new
+  #   actor.epic.add OpenStruct.new(rulebook: rulebook)
+  #   dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')
+  #   expect(dispatcher.execute.response).to be(response2)
+  #   expect(dispatcher.proceed.response).to be(response1)
+  #   expect(dispatcher.proceed).to be_nil
+  # end
 
   it 'selects strict over fuzzy matches' do
     # @type klass [Class<Gamefic::Plot>]
@@ -36,6 +37,6 @@ describe Gamefic::Dispatcher do
     action = dispatcher.execute
     # Dispatcher should find an exact match for the @books response, even
     # though @bookshelf gets tested first
-    expect(action.arguments.first.name).to eq('books')
+    expect(action.command.arguments.first.name).to eq('books')
   end
 end

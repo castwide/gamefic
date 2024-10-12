@@ -114,6 +114,14 @@ module Gamefic
         "#{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.map(&:inspect).join(', ')})"
       end
 
+      def bind model
+        clone.tap do |query|
+          query.instance_exec do
+            @arguments = model.unproxy(@arguments)
+          end
+        end
+      end
+
       def self.plain
         @plain ||= new
       end
@@ -161,34 +169,35 @@ module Gamefic
       end
 
       def normalized_arguments
-        @normalized_arguments ||= arguments.map do |arg|
-          case arg
-          when Proxy, Proxy::Base
-            arg.fetch(narrative)
-          when String
-            proc do |entity|
-              arg.keywords.all? { |word| entity.keywords.include?(word) }
-            end
-          else
-            arg
-          end
-        end
+        arguments
+        # @normalized_arguments ||= arguments.map do |arg|
+        #   case arg
+        #   when Proxy, Proxy::Base
+        #     arg.fetch(narrative)
+        #   when String
+        #     proc do |entity|
+        #       arg.keywords.all? { |word| entity.keywords.include?(word) }
+        #     end
+        #   else
+        #     arg
+        #   end
+        # end
       end
 
-      def normalized_arguments_v4 model
-        arguments.map do |arg|
-          case arg
-          when Proxy, Proxy::Base
-            arg.fetch(model)
-          when String
-            proc do |entity|
-              arg.keywords.all? { |word| entity.keywords.include?(word) }
-            end
-          else
-            arg
-          end
-        end
-      end
+      # def normalized_arguments_v4 model
+      #   arguments.map do |arg|
+      #     case arg
+      #     when Proxy, Proxy::Base
+      #       arg.fetch(model)
+      #     when String
+      #       proc do |entity|
+      #         arg.keywords.all? { |word| entity.keywords.include?(word) }
+      #       end
+      #     else
+      #       arg
+      #     end
+      #   end
+      # end
     end
   end
 end

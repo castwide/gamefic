@@ -80,11 +80,7 @@ module Gamefic
     def responses
       # @responses ||= actor.epic.responses_for(command.verb)
       @responses ||= actor.epic
-                          .narratives
-                          .flat_map(&:responses)
-                          .reverse
-                          .tap { |resps| puts resps.inspect }
-                          .select { |resp| resp.verb == command.verb }
+                          .responses_for(command.verb)
     end
 
     private
@@ -94,7 +90,7 @@ module Gamefic
       while (response = responses.shift)
         next if response.queries.length < @command.arguments.length
 
-        return Action.new(actor, @command.arguments, response) if response.accept?(actor, @command)
+        return Action.new(actor, @command, response) if response.accept?(actor, @command)
       end
     end
   end

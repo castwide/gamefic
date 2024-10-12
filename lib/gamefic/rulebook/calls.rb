@@ -32,9 +32,9 @@ module Gamefic
         verb_response_map.values.flatten
       end
 
-      def verbs
-        verb_response_map.keys.compact.sort
-      end
+      # def verbs
+      #   verb_response_map.keys.compact.sort
+      # end
 
       def responses_for *verbs
         verbs.flat_map { |verb| verb_response_map.fetch(verb, []) }

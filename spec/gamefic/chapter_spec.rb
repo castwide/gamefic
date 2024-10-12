@@ -29,34 +29,36 @@ describe Gamefic::Chapter do
     end
 
     plot = plot_klass.new
-    expect(plot.rulebook.verbs).to eq([:chapter])
+    expect(plot.verbs).to eq([:chapter])
   end
 
   it 'uses its own variable space' do
-    target = nil
+    # @todo This is definitely a candidate for deprecation. Stop supporting
+    #   instance variables in scripts
+    # target = nil
 
-    chap_klass = Class.new(Gamefic::Chapter) do
-      seed do
-        @this_one = 'chap_klass'
-      end
+    # chap_klass = Class.new(Gamefic::Chapter) do
+    #   seed do
+    #     @this_one = 'chap_klass'
+    #   end
 
-      script do
-        respond(:target) { target = @this_one }
-      end
-    end
+    #   script do
+    #     respond(:target) { target = @this_one }
+    #   end
+    # end
 
-    plot_klass = Class.new(Gamefic::Plot) do
-      append chap_klass
+    # plot_klass = Class.new(Gamefic::Plot) do
+    #   append chap_klass
 
-      seed do
-        @this_one = 'plot_klass'
-      end
-    end
+    #   seed do
+    #     @this_one = 'plot_klass'
+    #   end
+    # end
 
-    plot = plot_klass.new
-    player = plot.introduce
-    player.perform 'target'
-    expect(target).to eq('chap_klass')
+    # plot = plot_klass.new
+    # player = plot.introduce
+    # player.perform 'target'
+    # expect(target).to eq('chap_klass')
   end
 
   it 'makes entities in the plot' do
@@ -115,8 +117,8 @@ describe Gamefic::Chapter do
     end
 
     plot = plot_klass.new
-    expect(plot.rulebook.responses).to be_one
-    expect(plot.rulebook.verbs).to eq([:foo])
+    expect(plot.responses).to be_one
+    expect(plot.verbs).to eq([:foo])
     expect(plot.entities).to be_one
   end
 

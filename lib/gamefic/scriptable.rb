@@ -31,6 +31,7 @@ module Gamefic
     autoload :Responses,   'gamefic/scriptable/responses'
     autoload :Scenes,      'gamefic/scriptable/scenes'
     autoload :ScenesV4,    'gamefic/scriptable/scenes_v4'
+    autoload :Syntaxes,    'gamefic/scriptable/syntaxes'
     autoload :PlotProxies, 'gamefic/scriptable/plot_proxies'
 
     include Queries

@@ -88,24 +88,6 @@ module Gamefic
         rulebook.hooks.after_command self, *verbs, &block
       end
 
-      # Create an alternate Syntax for a response.
-      # The command and its translation can be parameterized.
-      #
-      # @example Create a synonym for an `inventory` response.
-      #   interpret "catalogue", "inventory"
-      #   # The command "catalogue" will be translated to "inventory"
-      #
-      # @example Create a parameterized synonym for a `look` response.
-      #   interpret "scrutinize :entity", "look :entity"
-      #   # The command "scrutinize chair" will be translated to "look chair"
-      #
-      # @param command [String] The format of the original command
-      # @param translation [String] The format of the translated command
-      # @return [Syntax] the Syntax object
-      def interpret command, translation
-        rulebook.calls.add_syntax Syntax.new(command, translation)
-      end
-
       # Verbs are the symbols that have responses defined in the rulebook.
       #
       # @example
@@ -118,9 +100,10 @@ module Gamefic
       #   end
       #
       # @return [Array<Symbol>]
-      def verbs
-        rulebook.verbs
-      end
+      # def verbs
+      #   self.class.verbs
+      #   # rulebook.verbs
+      # end
 
       # Synonyms are a combination of the rulebook's concrete verbs plus the
       # alternative variants defined in syntaxes.

@@ -38,29 +38,10 @@ module Gamefic
       self
     end
 
-    # @return [Array<Response>]
-    def responses
-      @calls.responses
-    end
-
     # @return [Array<Syntax>]
-    def syntaxes
-      @calls.syntaxes
-    end
-
-    # An array of all the verbs available in the rulebook. This list only
-    # includes verbs that are explicitly defined in reponses. It excludes
-    # synonyms that might be defined in syntaxes (see #synonyms).
-    #
-    # @example
-    #   rulebook.respond :verb { |_| nil }
-    #   rulebook.interpret 'synonym', 'verb'
-    #   rulebook.verbs #=> [:verb]
-    #
-    # @return [Array<Symbol>]
-    def verbs
-      @calls.verbs
-    end
+    # def syntaxes
+    #   @calls.syntaxes
+    # end
 
     # An array of all the verbs defined in responses and any synonyms defined
     # in syntaxes.
@@ -70,25 +51,17 @@ module Gamefic
     #   rulebook.interpret 'synonym', 'verb'
     #   rulebook.synonyms #=> [:synonym, :verb]
     #
-    def synonyms
-      @calls.synonyms
-    end
+    # def synonyms
+    #   @calls.synonyms
+    # end
 
-    # Get an array of all the responses that match a list of verbs.
-    #
-    # @param verbs [Array<Symbol>]
-    # @return [Array<Response>]
-    def responses_for *verbs
-      @calls.responses_for *verbs
-    end
-
-    # Get an array of all the syntaxes that match a lit of verbs.
+    # Get an array of all the syntaxes that match a list of verbs.
     #
     # @param words [Array<Symbol>]
     # @return [Array<Syntax>]
-    def syntaxes_for *synonyms
-      @calls.syntaxes_for *synonyms
-    end
+    # def syntaxes_for *synonyms
+    #   @calls.syntaxes_for *synonyms
+    # end
 
     def run_ready_blocks
       events.ready_blocks.each(&:run)

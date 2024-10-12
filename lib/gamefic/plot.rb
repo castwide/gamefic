@@ -95,6 +95,14 @@ module Gamefic
       subplots.each(&:hydrate)
     end
 
+    def responses
+      super + chapters.flat_map(&:responses)
+    end
+
+    def verbs
+      super + chapters.flat_map(&:verbs)
+    end
+
     def self.append chapter
       appended_chapters.add chapter
     end

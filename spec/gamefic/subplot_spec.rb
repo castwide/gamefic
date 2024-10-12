@@ -112,7 +112,7 @@ describe Gamefic::Subplot do
 
     plot = plot_klass.new
     subplot = plot.branch(subplot_klass)
-    expect(subplot.rulebook.responses).to be_empty
+    expect(subplot.class.responses).to be_empty
     expect(subplot.entities).to be_empty
   end
 

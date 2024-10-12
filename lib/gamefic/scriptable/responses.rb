@@ -4,6 +4,7 @@ module Gamefic
   module Scriptable
     module Responses
       include Queries
+      include Syntaxes
 
       # Create a response to a command.
       # A Response uses the `verb` argument to identify the imperative verb
@@ -28,17 +29,33 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @return [Symbol]
       def respond verb, *args, &proc
-        responses.push Response.new(verb, *args, &proc)
+        response = Response.new(verb, *args, &proc)
+        responses.push response
+        # @todo Syntaxes need to be sorted. Maybe just do it in a memoized instance method
+        # @todo Also, underscored verbs are deprecated
+        syntaxes.push response.syntax unless response.verb.to_s.start_with?('_')
         verb
       end
 
       def meta verb, *args, &proc
-        responses.push Response.new(verb, *args, meta: true, &proc)
+        response = Response.new(verb, *args, meta: true, &proc)
+        responses.push response
+        # @todo Syntaxes need to be sorted. Maybe just do it in a memoized instance method
+        # @todo Also, underscored verbs are deprecated
+        syntaxes.push response.syntax unless response.verb.to_s.start_with?('_')
         verb
       end
 
       def responses
         @responses ||= []
+      end
+
+      def responses_for(*verbs)
+        responses.select { |response| verbs.include? response.verb }
+      end
+
+      def verbs
+        responses.select(&:verb).uniq(&:verb)
       end
     end
   end

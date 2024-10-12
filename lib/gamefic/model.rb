@@ -4,6 +4,8 @@ module Gamefic
   # Models provide narrative methods and context to callbacks.
   #
   class Model
+    include Scriptable::Proxies
+
     # @return [Narrative]
     attr_reader :narrative
 
@@ -13,7 +15,7 @@ module Gamefic
     def initialize narrative, _legacy: false, **context
       @narrative = narrative
       @_legacy = _legacy
-      @context = context
+      @context = unproxy(context)
     end
 
     def execute *args, &block
@@ -21,19 +23,6 @@ module Gamefic
       #   into it
       # Stage.run(narrative, *args, &block)
       @_legacy ? Stage.run(narrative, *args, *block) : instance_exec(*args, &block)
-    end
-
-    def unproxy object
-      case object
-      when Proxy, Proxy::Base
-        object.fetch self
-      when Array
-        object.map { |obj| unproxy obj }
-      when Hash
-        object.transform_values { |val| unproxy val }
-      else
-        object
-      end
     end
 
     def method_missing(symbol, ...)

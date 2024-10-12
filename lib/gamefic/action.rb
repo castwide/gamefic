@@ -6,20 +6,25 @@ module Gamefic
   class Action
     include Scriptable::Queries
 
+    attr_reader :actor, :command, :response, :model
+
     # @param actor [Actor]
     # @param command [Command]
     # @param response [Response]
     # @param model [Model]
-    def initialize actor, command, response, model
+    def initialize actor, command, response, model = nil
+      Gamefic.logger.warn "Creating an action with a model" if model
       @actor = actor
       @command = command
-      @response = response
+      @response = model&.unproxy(response) || response
       @model = model
     end
 
     def execute
+      return if cancelled?
+
       if valid?
-        model.execute actor, &response.block
+        model&.execute(actor, *command.arguments, &response.block) || response.callback.run(actor, *command.arguments)
         self
       else
         actor.proceed
@@ -38,9 +43,15 @@ module Gamefic
       response.meta?
     end
 
-    private
+    def cancel
+      @cancelled = true
+    end
 
-    attr_reader :actor, :command, :response, :model
+    def cancelled?
+      @cancelled
+    end
+
+    private
 
     def valid_verb?
       command.verb == response.verb
@@ -57,7 +68,7 @@ module Gamefic
     end
 
     def accept? actor, query, argument, model
-      selectors = model.unproxy(query.arguments)
+      selectors = model&.unproxy(query.arguments) || query.arguments
       available = query.span(actor).that_are(*selectors)
       if query.ambiguous?
         argument & available == argument

@@ -8,7 +8,7 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = Gamefic::Plot.new
-    expect(plot.rulebook.responses.length).to eq(1)
+    expect(plot.responses).to be_one
   end
 
   it 'creates scenes from scripts' do

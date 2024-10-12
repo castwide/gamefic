@@ -48,14 +48,14 @@ module Gamefic
       end
 
       def syntaxes
-        rulebooks.flat_map(&:syntaxes)
+        narratives.flat_map(&:syntaxes)
       end
 
       # @return [Array<Response>]
       def responses_for(*verbs)
-        rulebooks.to_a
-                 .reverse
-                 .flat_map { |rb| rb.responses_for(*verbs) }
+        narratives.to_a
+                  .reverse
+                  .flat_map { |narr| narr.responses_for(*verbs) }
       end
 
       # @param name [Class<Scene::Default>, Symbol]

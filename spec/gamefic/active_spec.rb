@@ -4,10 +4,10 @@ describe Gamefic::Active do
   let(:object) { Gamefic::Entity.new.tap { |obj| obj.extend Gamefic::Active } }
 
   it 'performs a command' do
-    Gamefic::Narrative.script do
+    klass = Class.new(Gamefic::Narrative) do
       respond(:command) { |actor| actor[:executed] = true }
     end
-    narrative = Gamefic::Narrative.new
+    narrative = klass.new
     narrative.cast object
     object.perform 'command'
     expect(object[:executed]).to be(true)
@@ -38,10 +38,10 @@ describe Gamefic::Active do
   end
 
   it 'performs actions quietly' do
-    Gamefic::Narrative.script do
+    klass = Class.new(Gamefic::Narrative) do
       respond(:command) { |actor| actor.tell 'Keep this quiet' }
     end
-    narr = Gamefic::Narrative.new
+    narr = klass.new
     narr.cast object
     buffer = object.quietly 'command'
     expect(buffer).to include('Keep this quiet')

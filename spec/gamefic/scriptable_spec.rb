@@ -60,8 +60,7 @@ describe Gamefic::Scriptable do
     expect(player.children).to include(plot.item)
   end
 
-  it 'scripts responses with arguments' do
-  end
+  it 'scripts responses with arguments'
 
   it 'scripts meta responses' do
     klass = Class.new(Gamefic::Plot) do

@@ -17,6 +17,8 @@ module Gamefic
 
     attr_reader :block
 
+    attr_reader :callback
+
     # @param verb [Symbol]
     # @param narrative [Narrative]
     # @param args [Array<Object>]
@@ -107,12 +109,19 @@ module Gamefic
       "#<#{self.class} #{([verb] + queries).map(&:inspect).join(', ')}>"
     end
 
-    def bind narrative
+    def bound?
+      @bound
+    end
+
+    def bind model
       clone.tap do |copy|
         copy.instance_exec do
-          @narrative = narrative
-          @queries = map_queries(@args, narrative)
-          @callback = Callback.new(narrative, @block)
+          # @narrative = narrative
+          @queries = model.unproxy(@queries)
+          # @queries = map_queries(@args, narrative)
+          # @todo Maybe unnecessay? idk
+          @callback = Callback.new(model, @block)
+          @bound = true
         end
       end
     end
