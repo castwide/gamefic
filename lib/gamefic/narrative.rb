@@ -23,6 +23,8 @@ module Gamefic
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion
 
+    bind *(Narrative::Entities.public_instance_methods)
+
     def initialize
       seeds.each { |blk| instance_exec(&blk) }
       post_script
@@ -109,11 +111,20 @@ module Gamefic
       self.class.responses.map(&:verb).uniq
     end
 
+    def bound_methods
+      self.class.bound_methods.to_a
+    end
+
+    def bound? method
+      self.class.bound_methods.include?(method)
+    end
+
     def self.inherited klass
       super
       klass.seeds.concat seeds
       klass.select_default_scene default_scene
       klass.select_default_conclusion default_conclusion
+      klass.bind *bound_methods
     end
   end
 end

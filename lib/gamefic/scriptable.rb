@@ -120,7 +120,7 @@ module Gamefic
     # @param name [Symbol] The attribute name
     # @param klass [Class<Gamefic::Entity>]
     # @return [Proxy]
-    def attr_make name, klass, **opts
+    def bind_make name, klass, **opts
       ivname = "@#{name}"
       define_method(name) do
         return instance_variable_get(ivname) if instance_variable_defined?(ivname)
@@ -128,10 +128,12 @@ module Gamefic
         instance_variable_set(ivname, make(klass, **opts))
       end
       define_singleton_method(name) { Proxy::Attr.new(name) }
+      bind name
       seed { send name }
       Proxy::Attr.new(name)
     end
-    alias attr_seed attr_make
+    alias attr_make bind_make
+    alias attr_seed bind_make
 
     # @param symbol [Symbol]
     # @return [Proxy]
@@ -190,5 +192,13 @@ module Gamefic
     end
     alias lazy_pick! pick
     alias _pick! pick
+
+    def bind *methods
+      bound_methods.merge methods
+    end
+
+    def bound_methods
+      @bound_methods ||= Set.new
+    end
   end
 end

@@ -7,14 +7,6 @@ module Gamefic
     module Entities
       include Proxies
 
-      def entity_vault
-        @entity_vault ||= Vault.new
-      end
-
-      def player_vault
-        @player_vault ||= Vault.new
-      end
-
       # @return [Array<Gamefic::Entity>]
       def entities
         entity_vault.array
@@ -84,6 +76,16 @@ module Gamefic
         raise "multiple entities matching '#{args.inspect}': #{matches.join_and}" unless matches.one?
 
         matches.first
+      end
+
+      private
+
+      def entity_vault
+        @entity_vault ||= Vault.new
+      end
+
+      def player_vault
+        @player_vault ||= Vault.new
       end
     end
   end

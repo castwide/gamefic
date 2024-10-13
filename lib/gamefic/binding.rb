@@ -2,28 +2,6 @@
 
 module Gamefic
   class Binding
-    class Model
-      UNDELEGATED = %i[ready update]
-
-      def initialize narrative
-        @narrative = narrative
-      end
-
-      def method_missing(symbol, ...)
-        if UNDELEGATED.include?(symbol)
-          raise(NoMethodError, "Undelegated model call to `#{symbol}` in #{@narrative.inspect}", ...)
-        elsif respond_to_missing?(symbol)
-          @narrative.send(symbol, ...)
-        else
-          super
-        end
-      end
-
-      def respond_to_missing?(symbol, _ = false)
-        (@narrative.public_methods - UNDELEGATED).include?(symbol)
-      end
-    end
-
     class << self
       def registry
         @registry ||= {}
@@ -53,10 +31,22 @@ module Gamefic
 
     def call(*args)
       args.each { |arg| Binding.push arg, @narrative }
-      Model.new(@narrative).instance_exec(*args, &@code)
+      instance_exec(*args, &@code)
     ensure
       args.each { |arg| Binding.pop arg }
     end
     alias [] call
+
+    def method_missing(symbol, ...)
+      if respond_to_missing?(symbol)
+        @narrative.send(symbol, ...)
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(symbol, _ = false)
+      (@narrative.bound_methods).include?(symbol) || super
+    end
   end
 end
