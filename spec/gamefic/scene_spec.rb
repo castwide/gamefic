@@ -5,7 +5,7 @@ describe Gamefic::Scene do
 
   it 'executes start blocks from blocks' do
     executed = false
-    klass = Class.new(Gamefic::Scene::Default) do
+    klass = Class.new(Gamefic::Scene::Base) do
       on_start { executed = true }
     end
     actor = Gamefic::Actor.new
@@ -16,7 +16,7 @@ describe Gamefic::Scene do
 
   it 'executes finish blocks from blocks' do
     executed = false
-    klass = Class.new(Gamefic::Scene::Default) do
+    klass = Class.new(Gamefic::Scene::Base) do
       on_finish { executed = true }
     end
     actor = Gamefic::Actor.new

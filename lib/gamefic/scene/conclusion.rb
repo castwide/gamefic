@@ -4,7 +4,7 @@ module Gamefic
   module Scene
     # A scene that ends an actor's participation in a narrative.
     #
-    class Conclusion < Default
+    class Conclusion < Base
       def self.conclusion?
         true
       end

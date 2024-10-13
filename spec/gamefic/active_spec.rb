@@ -64,7 +64,7 @@ describe Gamefic::Active do
   end
 
   it 'cues a scene by class' do
-    scene_klass = Class.new(Gamefic::Scene::Default)
+    scene_klass = Class.new(Gamefic::Scene::Base)
     plot_klass = Class.new(Gamefic::Plot)
     plot_klass.script { scene :scene, scene_klass }
     plot = plot_klass.new

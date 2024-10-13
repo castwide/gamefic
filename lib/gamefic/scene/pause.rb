@@ -6,7 +6,7 @@ module Gamefic
     # before proceeding to on_finish. The user input itself is ignored by
     # default.
     #
-    class Pause < Default
+    class Pause < Base
       use_props_class Props::Pause
 
       def self.type

@@ -5,7 +5,7 @@ module Gamefic
   # the output to be sent to the player. The finish processes player input.
   #
   module Scene
-    require 'gamefic/scene/default'
+    require 'gamefic/scene/base'
     require 'gamefic/scene/activity'
     require 'gamefic/scene/multiple_choice'
     require 'gamefic/scene/active_choice'

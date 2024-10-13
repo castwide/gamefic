@@ -16,7 +16,7 @@ module Gamefic
       # @return [Hash]
       attr_reader :context
 
-      # @param scene [Class<Scene::Default>, Symbol]
+      # @param scene [Class<Scene::Base>, Symbol]
       def initialize actor, key, narrative, **context
         @actor = actor
         @key = key

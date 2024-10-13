@@ -5,7 +5,7 @@ module Gamefic
     # A scene that presents a list of choices. If the input does not match any
     # of the choices, the scene gets recued.
     #
-    class MultipleChoice < Default
+    class MultipleChoice < Base
       use_props_class Props::MultipleChoice
 
       def start

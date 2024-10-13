@@ -77,7 +77,7 @@ describe Gamefic::Scriptable::Scenes do
   describe '#scene' do
     it 'accesses scenes' do
       object.block(:scene)
-      expect(object.named_scenes[:scene] < Gamefic::Scene::Default).to be
+      expect(object.named_scenes[:scene] < Gamefic::Scene::Base).to be
     end
   end
 end

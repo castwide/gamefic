@@ -5,7 +5,7 @@ module Gamefic
     # A scene that presents a list of choices. If the input does not match any
     # of the choices, it gets executed as a command.
     #
-    class ActiveChoice < Default
+    class ActiveChoice < Base
       use_props_class Props::MultipleChoice
 
       def finish
