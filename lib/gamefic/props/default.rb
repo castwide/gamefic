@@ -30,7 +30,7 @@ module Gamefic
 
       # @param scene [Scene]
       # @param context [Hash]
-      def initialize scene, **context
+      def initialize scene
         @scene = { name: scene.name, type: scene.type }
         @context = context
       end

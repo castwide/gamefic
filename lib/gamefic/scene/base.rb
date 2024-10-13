@@ -6,11 +6,12 @@ module Gamefic
     # and customize it with on_start and on_finish blocks.
     #
     class Base
-      attr_reader :actor, :props
+      attr_reader :actor, :props, :context
 
       def initialize actor, **context
         @actor = actor
-        @props = self.class.props_class.new(self, **context)
+        @props = self.class.props_class.new(self)
+        @context = context
       end
 
       def name
@@ -61,9 +62,9 @@ module Gamefic
       private
 
       def execute block
-        context = actor.current || actor.narratives.first
-        if context
-          Binding.new(context, block).call(actor, props)
+        bound = actor.current || actor.narratives.first
+        if bound
+          Binding.new(bound, block).call(actor, props, context)
         else
           block[actor, props]
         end
