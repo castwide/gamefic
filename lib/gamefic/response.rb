@@ -17,8 +17,6 @@ module Gamefic
 
     attr_reader :block
 
-    attr_reader :callback
-
     # @param verb [Symbol]
     # @param narrative [Narrative]
     # @param args [Array<Object>]
