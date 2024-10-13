@@ -2,8 +2,8 @@
 
 module Gamefic
   module Scene
-    # A scene that presents a list of choices and processes the player's input.
-    # If the input is not a valid choice, the scene gets recued.
+    # A scene that presents a list of choices. If the input does not match any
+    # of the choices, the scene gets recued.
     #
     class MultipleChoice < Default
       use_props_class Props::MultipleChoice

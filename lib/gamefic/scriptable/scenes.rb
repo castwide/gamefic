@@ -86,6 +86,10 @@ module Gamefic
         block name, Scene::MultipleChoice, &blk
       end
 
+      def active_choice name = nil, &blk
+        block name, Scene::ActiveChoice, &blk
+      end
+
       # Create a yes-or-no scene.
       # The user will be required to answer Yes or No to continue. The scene
       # will restart if the user input is not a valid choice.

@@ -3,6 +3,10 @@
 - JIT Scriptable binding
 - Sunset Chapter
 - Sunset Rulebook
+- Separate Scriptable and Narrative modules
+- Allow named scenes
+- Narrative method binding
+- ActiveChoice scenes
 
 ## 3.7.0
 - Nuanced scans
