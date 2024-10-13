@@ -61,9 +61,7 @@ module Gamefic
       private
 
       def execute block
-        context = actor.current ||
-                  actor.match(self.class.context) ||
-                  actor.epic.narratives.first
+        context = actor.current || actor.narratives.first
         if context
           Binding.new(context, block).call(actor, props)
         else

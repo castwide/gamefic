@@ -50,7 +50,7 @@ module Gamefic
       # @param input [String]
       # @return [Command]
       def compose actor, input
-        expressions = Syntax.tokenize(input, actor.epic.syntaxes)
+        expressions = Syntax.tokenize(input, actor.syntaxes)
         expressions.flat_map { |expression| expression_to_commands(actor, expression) }
                    .first || Command.new(nil, [])
       end
@@ -62,8 +62,7 @@ module Gamefic
       # @return [Array<Command>]
       def expression_to_commands actor, expression
         Gamefic.logger.info "Evaluating #{expression.inspect}"
-        actor.epic
-             .responses_for(expression.verb)
+        actor.responses_for(expression.verb)
              .map { |response| response.to_command(actor, expression) }
              .compact
              .sort_by.with_index { |result, idx| [-result.substantiality, -result.strictness, -result.precision, idx] }

@@ -2,7 +2,6 @@
 
 require 'set'
 require 'gamefic/active/cue'
-require 'gamefic/active/epic'
 require 'gamefic/active/messaging'
 
 module Gamefic
@@ -29,14 +28,14 @@ module Gamefic
     end
 
     def current
-      Binding.for(self) || epic.narratives.first
+      Binding.for(self) || narratives.first
     end
 
     # The narratives in which the entity is participating.
     #
-    # @return [Epic]
-    def epic
-      @epic ||= Epic.new
+    # @return [Set<Narrative>]
+    def narratives
+      @narratives ||= Set.new
     end
 
     # An array of commands waiting to be executed.
@@ -167,7 +166,7 @@ module Gamefic
     def start
       ensure_cue
       @last_cue = @next_cue
-      cue(epic.narratives.first&.default_scene || Scene::Activity)
+      cue(narratives.first&.default_scene || Scene::Activity)
       @last_cue.start
       @output = @last_cue.props.output.dup.freeze
     end
@@ -191,7 +190,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      epic.empty? || @last_cue&.scene&.type == 'Conclusion'
+      narratives.empty? || @last_cue&.scene&.type == 'Conclusion'
     end
 
     def accessible?
@@ -199,7 +198,7 @@ module Gamefic
     end
 
     def acting?
-      !epic.empty?
+      !narratives.empty?
     end
 
     def cancel
@@ -221,14 +220,12 @@ module Gamefic
       dispatchers.last&.command || Command.new(nil, [])
     end
 
-    def match context
-      return nil unless context
+    def syntaxes
+      narratives.flat_map(&:syntaxes)
+    end
 
-      matches = epic.narratives
-                    .select { |narr| narr.is_a?(context) }
-      Gamefic.logger.warn "#{inspect} is in #{matches.length} instances of #{context.inspect}" if matches.length > 1
-
-      matches.last
+    def responses_for(*verbs)
+      narratives.flat_map { |narr| narr.responses_for(*verbs) }
     end
 
     private
@@ -249,7 +246,7 @@ module Gamefic
       return if next_cue
 
       logger.debug "Using default scene for #{inspect} without cue"
-      cue(epic.narratives.first&.default_scene || Scene::Activity)
+      cue(narratives.first&.default_scene || Scene::Activity)
     end
   end
 end

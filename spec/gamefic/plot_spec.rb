@@ -40,7 +40,7 @@ RSpec.describe Gamefic::Plot do
     player = plot.introduce
     plot.ready
     subplot = plot.branch Gamefic::Subplot, introduce: player
-    expect(player.epic.narratives.to_a).to eq([plot, subplot])
+    expect(player.narratives.to_a).to eq([plot, subplot])
   end
 
   it 'deletes concluded subplots on ready' do
@@ -140,6 +140,6 @@ RSpec.describe Gamefic::Plot do
     actor.cue plot.default_conclusion
     plot.ready
     expect(plot.subplots).to be_empty
-    expect(actor.epic).to be_one
+    expect(actor.narratives).to be_one
   end
 end

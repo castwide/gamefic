@@ -11,7 +11,7 @@ module Gamefic
       def span subject
         return [] unless subject.is_a?(Active)
 
-        subject.epic.narratives.flat_map(&:entities)
+        subject.narratives.flat_map(&:entities)
       end
 
       def precision

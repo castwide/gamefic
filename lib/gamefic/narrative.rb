@@ -69,7 +69,7 @@ module Gamefic
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast active
-      active.epic.add self
+      active.narratives.add self
       player_vault.add active
       entity_vault.add active
       active
@@ -80,7 +80,7 @@ module Gamefic
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
     def uncast active
-      active.epic.delete self
+      active.narratives.delete self
       player_vault.delete active
       entity_vault.delete active
       active
