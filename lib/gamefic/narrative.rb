@@ -18,7 +18,6 @@ module Gamefic
     include Scripts
 
     include Logging
-    include Scriptable::Actions
     include Scriptable::Events
     include Scriptable::Queries
 

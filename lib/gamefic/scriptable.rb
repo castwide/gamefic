@@ -23,7 +23,6 @@ module Gamefic
   #   end
   #
   module Scriptable
-    autoload :Actions,     'gamefic/scriptable/actions'
     autoload :Events,      'gamefic/scriptable/events'
     autoload :Hooks,       'gamefic/scriptable/hooks'
     autoload :Queries,     'gamefic/scriptable/queries'
