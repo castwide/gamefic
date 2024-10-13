@@ -5,6 +5,8 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
+    bind :branch
+
     def ready
       super
       subplots.each(&:ready)
