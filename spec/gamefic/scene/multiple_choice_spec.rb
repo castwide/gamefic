@@ -4,7 +4,7 @@ describe Gamefic::Scene::MultipleChoice do
   let(:actor) { Gamefic::Actor.new }
 
   let(:multiple_choice) do
-    Gamefic::Scene::MultipleChoice.bind(nil) do |scene|
+    Class.new(Gamefic::Scene::MultipleChoice) do |scene|
       scene.on_finish { |_, props| raise unless props.index }
     end.new(actor)
   end

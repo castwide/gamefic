@@ -32,7 +32,7 @@ module Gamefic
 
       # @deprecated Temporary method that will replace #block
       def _block_v4(klass = Scene::Default, &blk)
-        klass.bind(self, &blk).tap { |scene| scene_classes.add scene }
+        Class.new(klass, &blk).tap { |scene| scene_classes.add scene }
       end
 
       def block *args, warned: false, &blk
@@ -42,7 +42,7 @@ module Gamefic
           name, klass = args
           klass = klass.is_a?(Class) && klass <= Scene::Default ? klass : Scene::Default
           Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
-          scene = klass.bind(self, &blk)
+          scene = Class.new(klass, &blk)
           scene.rename name.to_s
           named_scenes[name] = scene
           scene_classes.add scene
@@ -69,11 +69,6 @@ module Gamefic
       # @yieldparam [Props::Default]
       # @return [Symbol]
       def introduction(&start)
-        # script do
-        #   rulebook.scenes
-        #           .introduction(Scene::Default.bind(self.class) { |scene| scene.on_start(&start) })
-        # end
-        # introductions.push(_block_v4 { |scene| scene.on_start(&start) })
         introductions.push start
       end
 

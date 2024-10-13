@@ -102,13 +102,6 @@ module Gamefic
           finish_blocks.push block
         end
 
-        def bind klass, &block
-          Class.new(self) do
-            self.context = klass
-            block&.call(self)
-          end
-        end
-
         def conclusion?
           false
         end
