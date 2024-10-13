@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class Proxy
+  module Proxy
     class Base
       attr_reader :args
 

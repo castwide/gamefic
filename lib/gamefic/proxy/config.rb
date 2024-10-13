@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class Proxy
+  module Proxy
     class Config < Base
       def select narrative
         args.inject(narrative.config) { |hash, key| hash[key] }
