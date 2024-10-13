@@ -30,15 +30,6 @@ module Gamefic
       post_script
     end
 
-    def script
-      included_blocks.select(&:script?).each { |blk| Stage.run self, &blk.code }
-    end
-
-    # @return [Array<Module>]
-    def included_blocks
-      self.class.included_blocks
-    end
-
     def post_script
       entity_vault.lock
     end
