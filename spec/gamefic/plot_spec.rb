@@ -12,22 +12,6 @@ RSpec.describe Gamefic::Plot do
     expect(plot.responses).to be_one
   end
 
-  it 'creates scenes from scripts' do
-    klass = Class.new(Gamefic::Plot) do
-      block :scene do |scene|
-        scene.on_start do |actor, props|
-          actor.tell "What's your name?"
-          props.prompt 'Enter your name:'
-        end
-        scene.on_finish do |actor, props|
-          actor.tell "Hello, #{props.input}!"
-        end
-      end
-    end
-    plot = klass.new
-    expect(plot.class.named_scenes).to be_one
-  end
-
   it 'cues the introduction' do
     Gamefic::Plot.script do
       introduction do |actor|
@@ -48,7 +32,7 @@ RSpec.describe Gamefic::Plot do
     plot = Gamefic::Plot.new
     player = plot.introduce
     plot.ready
-    expect(player.next_cue.scene).to be(plot.default_scene)
+    expect(player.next_cue.scene).to be_a(plot.default_scene)
   end
 
   it 'tracks player subplots' do

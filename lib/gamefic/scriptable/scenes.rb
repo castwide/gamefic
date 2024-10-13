@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module Gamefic
   module Scriptable
     module Scenes
       attr_reader :default_scene, :default_conclusion
 
       def select_default_scene(klass)
+        scene_classes.add klass
         @default_scene = klass
       end
 
       def select_default_conclusion(klass)
+        scene_classes.add klass
         @default_conclusion = klass
       end
 
@@ -17,9 +21,18 @@ module Gamefic
         @named_scenes ||= {}
       end
 
+      def scene_classes
+        @scene_classes ||= Set.new
+      end
+
+      def scene_classes_map
+        scene_classes.select(&:name)
+                     .each_with_object(named_scenes.clone) { |klass, hash| hash[klass] = klass }
+      end
+
       # @deprecated Temporary method that will replace #block
       def _block_v4(klass = Scene::Default, &blk)
-        klass.bind(self, &blk)
+        klass.bind(self, &blk).tap { |scene| scene_classes.add scene }
       end
 
       def block *args, warned: false, &blk
@@ -32,6 +45,7 @@ module Gamefic
           scene = klass.bind(self, &blk)
           scene.rename name.to_s
           named_scenes[name] = scene
+          scene_classes.add scene
           name
         end
       end

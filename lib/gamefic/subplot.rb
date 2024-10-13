@@ -98,6 +98,10 @@ module Gamefic
       @concluded ? player : super
     end
 
+    def prepare(...)
+      super || plot.prepare(...)
+    end
+
     def inspect
       "#<#{self.class}>"
     end

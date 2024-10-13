@@ -29,7 +29,7 @@ module Gamefic
     end
 
     def current
-      Binding.for(self)
+      Binding.for(self) || epic.narratives.first
     end
 
     # The narratives in which the entity is participating.
@@ -156,11 +156,11 @@ module Gamefic
     # @param context [Hash] Extra data to pass to the scene's props
     # @return [Cue]
     def cue scene, **context
-      return @next_cue if @next_cue&.scene == scene && @next_cue&.context == context
+      return @next_cue if @next_cue&.key == scene && @next_cue&.context == context
 
-      logger.debug "Overwriting existing cue `#{@next_cue.scene}` with `#{scene}`" if @next_cue
+      logger.debug "Overwriting existing cue `#{@next_cue.key}` with `#{scene}`" if @next_cue
 
-      @next_cue = Cue.new(scene, **context)
+      @next_cue = Cue.new(self, scene, current, **context)
     end
     alias prepare cue
 
@@ -168,17 +168,15 @@ module Gamefic
       ensure_cue
       @last_cue = @next_cue
       cue(epic.narratives.first&.default_scene || Scene::Activity)
-      @scene = epic.select_scene(@last_cue.scene).new(self, **@last_cue.context)
-      @scene.start
-      @output = @scene.props.output.dup.freeze
+      @last_cue.start
+      @output = @last_cue.props.output.dup.freeze
     end
 
     def finish
-      return unless @scene
+      return unless @last_cue
 
-      @scene.finish
-      @scene.run_finish_blocks
-      @last_input = @scene.props.input
+      @last_cue.finish
+      @last_input = @last_cue.props.input
     end
 
     # Restart the scene from the most recent cue.
@@ -193,7 +191,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      epic.empty? || @scene&.type == 'Conclusion'
+      epic.empty? || @last_cue&.scene&.type == 'Conclusion'
     end
 
     def accessible?
@@ -250,7 +248,7 @@ module Gamefic
     def ensure_cue
       return if next_cue
 
-      logger.debug "Using default scene for actor without cue"
+      logger.debug "Using default scene for #{inspect} without cue"
       cue(epic.narratives.first&.default_scene || Scene::Activity)
     end
   end

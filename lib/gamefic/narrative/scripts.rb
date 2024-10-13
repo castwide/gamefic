@@ -64,7 +64,26 @@ module Gamefic
         self.class.default_conclusion
       end
 
+      def named_scenes
+        {}.merge(*included_scripts.flat_map(&:named_scenes))
+          .merge(self.class.named_scenes)
+      end
+
+      def prepare name_or_class, actor, **context
+        self.class.scene_classes_map[name_or_class]&.new(actor, **context)
+      end
+
       private
+
+      def scene_definitions
+        included_scripts.flat_map(&:scene_definitions)
+                        .concat(self.class.scene_definitions)
+      end
+
+      def scene_map
+        {}.merge(*included_scripts.flat_map(&:scene_classes_map))
+          .merge(self.class.scene_classes_map)
+      end
 
       def syntax_map
         @syntax_map ||= syntaxes.to_set

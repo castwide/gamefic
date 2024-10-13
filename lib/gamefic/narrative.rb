@@ -48,11 +48,6 @@ module Gamefic
       rulebook.scenes.names
     end
 
-    def named_scenes
-      {}.merge(*included_scripts.map(&:named_scenes))
-        .merge(self.class.named_scenes)
-    end
-
     # Introduce an actor to the story.
     #
     # @param player [Gamefic::Actor]

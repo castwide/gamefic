@@ -87,7 +87,8 @@ module Gamefic
       end
 
       def freeze
-        raw_data.freeze
+        # @todo Freezing raw_data causes problems in Active
+        # raw_data.freeze
         super
       end
 
