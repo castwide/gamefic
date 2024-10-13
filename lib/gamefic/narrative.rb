@@ -18,7 +18,6 @@ module Gamefic
     include Scripts
 
     include Logging
-    include Scriptable::Events
     include Scriptable::Queries
 
     select_default_scene Scene::Activity
