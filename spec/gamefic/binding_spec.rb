@@ -25,4 +25,19 @@ describe Gamefic::Binding do
       expect(Gamefic::Binding.registry[obj]).to be_nil
     end
   end
+
+  describe '#call' do
+    it 'delegates bound methods' do
+      klass = Class.new(Gamefic::Narrative) do
+        bind def binding_works
+          'working'
+        end
+      end
+
+      narr = klass.new
+      code = proc { binding_works }
+      binding = Gamefic::Binding.new(narr, code)
+      expect(binding.call).to be('working')
+    end
+  end
 end
