@@ -22,7 +22,7 @@ describe Gamefic::Narrative do
 
       it 'adds scenes from scripts' do
         klass = Class.new(Gamefic::Narrative) do
-          pause(:scene) { |actor| actor.tell 'Pause' }
+          pause(:scene) {}
         end
         narr = klass.new
         expect(narr.named_scenes.keys).to eq(%i[scene])

@@ -70,7 +70,7 @@ module Gamefic
       end
 
       def prepare name_or_class, actor, **context
-        self.class.scene_classes_map[name_or_class]&.new(actor, **context)
+        scene_classes_map[name_or_class]&.new(actor, **context)
       end
 
       private
@@ -80,7 +80,7 @@ module Gamefic
                         .concat(self.class.scene_definitions)
       end
 
-      def scene_map
+      def scene_classes_map
         {}.merge(*included_scripts.flat_map(&:scene_classes_map))
           .merge(self.class.scene_classes_map)
       end

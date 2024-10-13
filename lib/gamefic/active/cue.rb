@@ -23,7 +23,7 @@ module Gamefic
         @narrative = narrative
         @context = context
         @scene = narrative.prepare key, actor, **context
-        raise "Failed! #{scene} and #{narrative} and #{narrative.class.scene_classes_map}" unless @scene
+        raise "Failed to cue #{scene} in #{narrative}" unless @scene
       end
 
       def start

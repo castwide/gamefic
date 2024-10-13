@@ -64,11 +64,13 @@ describe Gamefic::Active do
   end
 
   it 'cues a scene by class' do
-    klass = Class.new(Gamefic::Scene::Default)
-    Gamefic::Narrative.script { block :scene }
-    narr = Gamefic::Narrative.new
-    narr.cast object
-    expect { object.cue klass }.not_to raise_error
+    scene_klass = Class.new(Gamefic::Scene::Default)
+    plot_klass = Class.new(Gamefic::Plot)
+    plot_klass.script { scene :scene, scene_klass }
+    plot = plot_klass.new
+    plot.cast object
+    puts plot.send(:scene_classes_map).inspect
+    expect { object.cue scene_klass }.not_to raise_error
   end
 
   it 'is not concluding by default' do
@@ -113,7 +115,7 @@ describe Gamefic::Active do
   describe '#start' do
     it 'updates the output' do
       klass = Class.new(Gamefic::Narrative) do
-        pause(:pause) { |actor| actor.tell 'pause message' }
+        pause(:pause) { |scene| scene.on_start { |actor| actor.tell 'pause message' } }
       end
       narr = klass.new
       narr.cast object

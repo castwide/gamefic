@@ -20,13 +20,13 @@ describe Gamefic::Scriptable::Scenes do
 
   describe '#multiple_choice' do
     it 'creates a multiple choice scene' do
-      object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
+      object.multiple_choice(:scene) { |scene| scene.on_start { |_, props| props.concat(%w[one two]) } }
       scene = object.named_scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::MultipleChoice)
     end
 
     it 'sets choices' do
-      object.multiple_choice(:scene, %w[one two]) { |_actor, _props| nil }
+      object.multiple_choice(:scene) { |scene| scene.on_start { |_, props| props.options.push('one', 'two') } }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
       scene.run_start_blocks
@@ -36,13 +36,13 @@ describe Gamefic::Scriptable::Scenes do
 
   describe '#yes_or_no' do
     it 'creates a yes-or-no scene' do
-      object.yes_or_no(:scene) { |_actor, _props| nil }
+      object.yes_or_no(:scene) {}
       scene = object.named_scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::YesOrNo)
     end
 
     it 'sets a prompt' do
-      object.yes_or_no(:scene, 'What?') { |_actor, _props| nil }
+      object.yes_or_no(:scene) { |scene| scene.on_start { |_, props| props.prompt = 'What?' } }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
       scene.run_start_blocks
@@ -58,7 +58,7 @@ describe Gamefic::Scriptable::Scenes do
     end
 
     it 'sets a prompt' do
-      object.pause(:scene, prompt: 'Pause!') { |_actor, _props| nil }
+      object.pause(:scene) { |scene| scene.on_start { |_, props| props.prompt = 'Pause!' } }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
       scene.run_start_blocks

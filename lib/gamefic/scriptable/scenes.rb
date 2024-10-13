@@ -30,26 +30,17 @@ module Gamefic
                      .each_with_object(named_scenes.clone) { |klass, hash| hash[klass] = klass }
       end
 
-      # @deprecated Temporary method that will replace #block
-      def _block_v4(klass = Scene::Default, &blk)
-        Class.new(klass, &blk).tap { |scene| scene_classes.add scene }
+      def block name = nil, klass = Scene::Default, &blk
+        scene = Class.new(klass, &blk)
+        named_scenes[name] = scene if name
+        scene_classes.add scene
+        name
       end
 
-      def block *args, warned: false, &blk
-        if args.empty? || args.first.is_a?(Class)
-          _block_v4 args.first || Scene::Default, &blk
-        else
-          name, klass = args
-          klass = klass.is_a?(Class) && klass <= Scene::Default ? klass : Scene::Default
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = block(...)`) instead." unless warned
-          scene = Class.new(klass, &blk)
-          scene.rename name.to_s
-          named_scenes[name] = scene
-          scene_classes.add scene
-          name
-        end
+      def scene name, klass
+        named_scenes[name] = klass if name
+        scene_classes.add klass
       end
-      alias scene block
 
       def introductions
         @introductions ||= []
@@ -91,23 +82,8 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::MultipleChoice]
       # @return [Symbol]
-      def multiple_choice *args, &blk
-        if args.first.is_a?(Symbol) || args.length > 1
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = multiple_choice(...)`) instead."
-          name, options, prompt = args
-          options ||= prompt
-          prompt ||= 'What is your choice?'
-          block name, Scene::MultipleChoice, warned: true do |scene|
-            scene.on_start do |_actor, props|
-              props.prompt = prompt
-              props.options.concat options
-            end
-            scene.on_finish(&blk)
-          end
-          name
-        else
-          _block_v4 Scene::MultipleChoice, &blk
-        end
+      def multiple_choice name = nil, &blk
+        block name, Scene::MultipleChoice, &blk
       end
 
       # Create a yes-or-no scene.
@@ -128,33 +104,12 @@ module Gamefic
       # @yieldparam [Actor]
       # @yieldparam [Props::YesOrNo]
       # @return [Symbol]
-      def yes_or_no(name = nil, prompt = 'Answer:', &blk)
-        if name.nil?
-          _block_v4 Scene::YesOrNo, &blk
-        else
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = yes_or_no(...)`) instead."
-          block name, Scene::YesOrNo, warned: true do |scene|
-            scene.on_start do |_actor, props|
-              props.prompt = prompt
-            end
-            scene.on_finish(&blk)
-          end
-        end
+      def yes_or_no(name = nil, &blk)
+        block name, Scene::YesOrNo, &blk
       end
 
-      def pause(name = nil, prompt = nil, &blk)
-        if name.nil?
-          _block_v4 Scene::Pause, &blk
-        else
-          prompt ||= 'Answer:'
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = pause(...)`) instead."
-          block name, Scene::Pause, warned: true do |scene|
-            scene.on_start do |actor, props|
-              props.prompt = prompt
-              blk[actor, props]
-            end
-          end
-        end
+      def pause(name = nil, &blk)
+        block name, Scene::Pause, &blk
       end
 
       # Create a conclusion.
@@ -170,13 +125,8 @@ module Gamefic
       # @yieldparam [Actor]
       # @return [Symbol]
       def conclusion(name = nil, &blk)
-        if name.nil?
-          block Scene::Conclusion, &blk
-        else
-          Gamefic.logger.warn "Scenes with symbol names are deprecated. Use constants (e.g., `#{name.to_s.cap_first} = conclude(...)`) instead."
-          block name, Scene::Conclusion, warned: true do |scene|
-            scene.on_start(&blk)
-          end
+        block name, Scene::Conclusion do |scene|
+          scene.on_start(&blk)
         end
       end
     end
