@@ -95,6 +95,8 @@ describe Gamefic::Subplot do
     expect(player[:concluded]).to be(true)
   end
 
+  # @todo This might not be correct. A subplot should probably run all its
+  #   seeds. A chapter should not run seeds from the plot.
   it 'does not repeat scripts included in the plot' do
     scriptable = Module.new do
       extend Gamefic::Scriptable

@@ -26,10 +26,6 @@ module Gamefic
       [introduce].flatten.each { |plyr| self.introduce plyr }
     end
 
-    def included_scripts
-      super - plot.included_scripts
-    end
-
     def self.persist!
       @persistent = true
     end

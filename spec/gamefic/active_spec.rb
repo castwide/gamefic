@@ -69,7 +69,6 @@ describe Gamefic::Active do
     plot_klass.script { scene :scene, scene_klass }
     plot = plot_klass.new
     plot.cast object
-    puts plot.send(:scene_classes_map).inspect
     expect { object.cue scene_klass }.not_to raise_error
   end
 

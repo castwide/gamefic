@@ -15,8 +15,6 @@ module Gamefic
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion
 
-    bind *(Narrative::Entities.public_instance_methods)
-
     def initialize
       seeds.each { |blk| instance_exec(&blk) }
       post_script

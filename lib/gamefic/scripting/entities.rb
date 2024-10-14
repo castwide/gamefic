@@ -5,15 +5,16 @@ module Gamefic
     # Methods related to managing entities.
     #
     module Entities
+      extend Scriptable
       include Proxies
 
       # @return [Array<Gamefic::Entity>]
-      def entities
+      bind def entities
         entity_vault.array
       end
 
       # @return [Array<Gamefic::Actor, Gamefic::Active>]
-      def players
+      bind def players
         player_vault.array
       end
 
@@ -27,17 +28,17 @@ module Gamefic
       # @param [Class<Gamefic::Entity>]
       # @param args [Hash]
       # @return [Gamefic::Entity]
-      def make klass, **opts
+      bind def make klass, **opts
         entity_vault.add klass.new(**unproxy(opts))
       end
 
-      def destroy entity
+      bind def destroy entity
         entity.children.each { |child| destroy child }
         entity.parent = nil
         entity_vault.delete entity
       end
 
-      def find *args
+      bind def find *args
         args.inject(entities) do |entities, arg|
           case arg
           when String
@@ -56,7 +57,7 @@ module Gamefic
       #
       # @param description [Array]
       # @return [Gamefic::Entity, nil]
-      def pick *args
+      bind def pick *args
         matches = find(*args)
         return nil unless matches.one?
 
@@ -70,7 +71,7 @@ module Gamefic
       #
       # @param args [Array]
       # @return [Gamefic::Entity]
-      def pick! *args
+      bind def pick! *args
         matches = find(*args)
         raise "no entity matching '#{args.inspect}'" if matches.empty?
         raise "multiple entities matching '#{args.inspect}': #{matches.join_and}" unless matches.one?

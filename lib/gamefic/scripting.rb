@@ -23,11 +23,9 @@ module Gamefic
     include Syntaxes
 
     def bound_methods
-      self.class.bound_methods.to_a
-    end
-
-    def bound? method
-      self.class.bound_methods.include?(method)
+      included_scripts.flat_map(&:bound_methods)
+                      .concat(self.class.bound_methods)
+                      .uniq
     end
 
     def included_scripts

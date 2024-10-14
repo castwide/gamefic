@@ -64,16 +64,16 @@ module Gamefic
       instance_exec(&block)
     end
 
-    def included_scripts
-      included_modules.that_are(Scriptable).uniq
-    end
-
     def bind *methods
-      bound_methods.merge methods
+      bound_methods.concat(methods.flatten)
     end
 
     def bound_methods
-      @bound_methods ||= Set.new
+      @bound_methods ||= []
+    end
+
+    def included_scripts
+      included_modules.that_are(Scriptable).uniq
     end
   end
 end

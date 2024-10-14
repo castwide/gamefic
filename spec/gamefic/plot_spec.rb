@@ -8,7 +8,6 @@ RSpec.describe Gamefic::Plot do
       end
     end
     plot = klass.new
-    puts plot.responses.inspect
     expect(plot.responses).to be_one
   end
 
