@@ -7,13 +7,11 @@ module Gamefic
   # started and concluded at any time during the parent plot's runtime.
   #
   class Subplot < Narrative
-    extend Scriptable::PlotProxies
-
     # @return [Hash]
     attr_reader :config
 
     # @return [Plot]
-    attr_reader :plot
+    bind attr_reader :plot
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
