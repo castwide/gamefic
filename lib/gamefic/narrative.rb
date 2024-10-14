@@ -8,17 +8,9 @@ module Gamefic
   # functionality.
   #
   class Narrative
-    require 'gamefic/narrative/proxies'
-    require 'gamefic/narrative/entities'
-    require 'gamefic/narrative/scripts'
-
-    extend Scriptable
-
-    include Entities
-    include Scripts
+    include Scripting
 
     include Logging
-    include Scriptable::Queries
 
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion

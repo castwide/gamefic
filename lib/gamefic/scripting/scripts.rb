@@ -1,5 +1,5 @@
 module Gamefic
-  class Narrative
+  module Scripting
     module Scripts
       def included_scripts
         self.class

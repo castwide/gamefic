@@ -6,6 +6,14 @@ module Gamefic
   # Including `Gamefic::Scripting` also extend `Gamefic::Scriptable`.
   #
   module Scripting
+    require 'gamefic/scripting/proxies'
+    require 'gamefic/scripting/entities'
+    require 'gamefic/scripting/scripts'
+
+    include Scriptable::Queries
+    include Entities
+    include Scripts
+
     def bound_methods
       self.class.bound_methods.to_a
     end

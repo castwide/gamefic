@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class Narrative
+  module Scripting
     # Methods related to managing entities.
     #
     module Entities
