@@ -89,14 +89,6 @@ module Gamefic
       self.class.responses.map(&:verb).uniq
     end
 
-    def bound_methods
-      self.class.bound_methods.to_a
-    end
-
-    def bound? method
-      self.class.bound_methods.include?(method)
-    end
-
     def self.inherited klass
       super
       klass.seeds.concat seeds
