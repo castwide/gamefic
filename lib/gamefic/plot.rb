@@ -60,11 +60,6 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def hydrate
-      super
-      subplots.each(&:hydrate)
-    end
-
     def self.restore data
       Snapshot.restore data
     end

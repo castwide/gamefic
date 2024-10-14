@@ -93,11 +93,6 @@ module Gamefic
                 .each { |block| Stage.run(self, &block) }
     end
 
-    def hydrate
-      script
-      post_script
-    end
-
     def verbs
       self.class.responses.map(&:verb).uniq
     end
