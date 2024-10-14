@@ -5,8 +5,6 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
-    bind :branch
-
     def ready
       super
       subplots.each(&:ready)
@@ -47,7 +45,7 @@ module Gamefic
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>] Players to introduce
     # @param config [Hash] Subplot configuration
     # @return [Gamefic::Subplot]
-    def branch subplot_class = Gamefic::Subplot, introduce: [], **config
+    bind def branch subplot_class = Gamefic::Subplot, introduce: [], **config
       subplot_class.new(self, introduce: introduce, **config)
                    .tap { |sub| subplots.push sub }
     end

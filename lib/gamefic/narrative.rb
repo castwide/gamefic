@@ -72,17 +72,11 @@ module Gamefic
     end
 
     def ready
-      self.class.included_scripts
-                .flat_map(&:ready_blocks)
-                .concat(self.class.ready_blocks)
-                .each { |block| Stage.run(self, &block) }
+      find_and_bind(:ready_blocks).each(&:call)
     end
 
     def update
-      self.class.included_scripts
-                .flat_map(&:update_blocks)
-                .concat(self.class.update_blocks)
-                .each { |block| Stage.run(self, &block) }
+      find_and_bind(:update_blocks).each(&:call)
     end
 
     def verbs
