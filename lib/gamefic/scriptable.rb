@@ -81,13 +81,6 @@ module Gamefic
     #   blocks.push Block.new(:seed, block)
     # end
 
-    # @return [Array<Block>]
-    def included_blocks
-      included_scripts.reverse
-                      .flat_map(&:blocks)
-                      .concat(blocks)
-    end
-
     def included_scripts
       included_modules.that_are(Scriptable).uniq
     end

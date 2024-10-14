@@ -44,10 +44,6 @@ module Gamefic
       self.class.persistent?
     end
 
-    def included_blocks
-      super - plot.included_blocks
-    end
-
     def ready
       super
       conclude if concluding?
