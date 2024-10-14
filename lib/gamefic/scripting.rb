@@ -10,6 +10,7 @@ module Gamefic
     require 'gamefic/scripting/entities'
     require 'gamefic/scripting/hooks'
     require 'gamefic/scripting/responses'
+    require 'gamefic/scripting/syntaxes'
     require 'gamefic/scripting/seeds'
     require 'gamefic/scripting/scenes'
 
@@ -19,6 +20,7 @@ module Gamefic
     include Responses
     include Seeds
     include Scenes
+    include Syntaxes
 
     def bound_methods
       self.class.bound_methods.to_a
