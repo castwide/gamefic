@@ -26,6 +26,10 @@ module Gamefic
       [introduce].flatten.each { |plyr| self.introduce plyr }
     end
 
+    def seeds
+      super - plot.seeds
+    end
+
     def self.persist!
       @persistent = true
     end
