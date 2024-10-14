@@ -3,7 +3,7 @@
 module Gamefic
   # An instance module that enables scripting.
   #
-  # Including this module will also extend `Gamefic::Scriptable`.
+  # Including `Gamefic::Scripting` also extend `Gamefic::Scriptable`.
   #
   module Scripting
     def bound_methods

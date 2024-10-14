@@ -5,6 +5,8 @@ require 'set'
 module Gamefic
   # A class module that enables scripting.
   #
+  # Including `Gamefic::Scripting` also extend `Gamefic::Scriptable`.
+  #
   # Narratives extend Scriptable to enable definition of scripts and seeds.
   # Modules can also be extended with Scriptable to make them includable to
   # other Scriptables.
