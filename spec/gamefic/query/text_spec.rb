@@ -37,6 +37,11 @@ describe Gamefic::Query::Text do
     expect(result.match).to be_nil
   end
 
+  it 'accepts matching tokens' do
+    querydef = Gamefic::Query::Text.new
+    expect(querydef.accept?(nil, 'something')).to be(true)
+  end
+
   it 'rejects non-string tokens' do
     querydef = Gamefic::Query::Text.new
     entity = Gamefic::Entity.new

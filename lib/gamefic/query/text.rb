@@ -34,8 +34,8 @@ module Gamefic
         -10_000
       end
 
-      def accept? _subject, argument
-        match? argument
+      def accept? _subject, token
+        match?(token)
       end
 
       private
@@ -45,9 +45,9 @@ module Gamefic
 
         case argument
         when Regexp
-          token =~ argument
+          token.match?(argument)
         else
-          token == argument
+          argument == token
         end
       end
 
