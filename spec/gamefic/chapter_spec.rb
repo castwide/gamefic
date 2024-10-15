@@ -3,7 +3,8 @@
 describe Gamefic::Chapter do
   it 'does not duplicate plot script features' do
     scriptable = Module.new do
-      include Gamefic::Scripting
+      # include Gamefic::Scripting does not work in Opal
+      extend Gamefic::Scriptable
 
       introduction { |actor| actor[:ready_count] = 0 }
       on_player_ready { |actor| actor[:ready_count] += 1 }
