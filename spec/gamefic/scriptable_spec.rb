@@ -155,23 +155,12 @@ describe Gamefic::Scriptable do
     expect(player[:executed]).to be(true)
   end
 
-  it 'scripts entity seeds' do
-    klass = Class.new(Gamefic::Plot) do
-      make_seed Gamefic::Entity, name: 'foo'
-    end
-
-    plot = klass.new
-    expect(plot.entities).to be_one
-    expect(plot.entities.first.name).to eq('foo')
-  end
-
   it 'scripts attribute seeds' do
     klass = Class.new(Gamefic::Plot) do
-      attr_seed :foo, Gamefic::Entity, name: 'foo'
+      construct :foo, Gamefic::Entity, name: 'foo'
     end
 
     plot = klass.new
-    expect(plot.instance_variable_defined?(:@foo)).to be(true)
     expect(plot.foo.name).to eq('foo')
   end
 end

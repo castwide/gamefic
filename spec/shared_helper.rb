@@ -24,5 +24,3 @@ RSpec.configure do |config|
     Gamefic::Subplot.responses.clear
   end
 end
-
-Gamefic.logger.level = Logger::Severity::DEBUG

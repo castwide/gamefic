@@ -31,7 +31,10 @@ module Gamefic
     end
 
     class << self
+      # @todo These aliases might be removed before the 4.0 release
       alias bind_make construct
+      alias attr_make construct
+      alias attr_seed construct
     end
 
     # Lazy pick an entity.
