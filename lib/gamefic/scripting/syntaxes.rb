@@ -13,7 +13,7 @@ module Gamefic
       end
 
       def synonyms
-        syntaxes.map(&:verb).uniq
+        syntaxes.map(&:synonym).uniq
       end
 
       private
