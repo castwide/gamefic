@@ -6,6 +6,9 @@ module Gamefic
     # and customize it with on_start and on_finish blocks.
     #
     class Base
+      # @todo Code smell
+      attr_writer :name
+
       attr_reader :actor, :props, :context
 
       def initialize actor, **context
@@ -16,6 +19,10 @@ module Gamefic
 
       def name
         @name ||= self.class.nickname
+      end
+
+      def rename name
+        @name = name
       end
 
       # @return [String]
