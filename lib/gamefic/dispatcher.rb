@@ -26,10 +26,12 @@ module Gamefic
       return unless @action
 
       actor.narratives.flat_map(&:before_actions).each { |blk| blk[@action] }
+      actor.narratives.flat_map(&:before_commands).each { |blk| blk[@actor, @command] }
       return if @action.cancelled?
 
       @action.execute
       actor.narratives.flat_map(&:after_actions).each { |blk| blk[@action] }
+      actor.narratives.flat_map(&:after_commands).each { |blk| blk[@actor, @command] }
       @action
     end
 
@@ -57,8 +59,6 @@ module Gamefic
     # @param input [String]
     # @return [Dispatcher]
     def self.dispatch actor, input
-      # expressions = Syntax.tokenize(input, actor.epic.syntaxes)
-      # new(actor, Command.compose(actor, expressions))
       new(actor, Command.compose(actor, input))
     end
 
@@ -78,7 +78,7 @@ module Gamefic
 
     # @return [Array<Response>]
     def responses
-      @responses ||= actor.responses_for(command.verb)
+      @responses ||= actor.narratives.flat_map { |narr| narr.responses_for(command.verb) }
     end
 
     private

@@ -5,9 +5,9 @@ describe Gamefic::Command do
     subclass = Class.new(Gamefic::Entity)
 
     klass = Class.new(Gamefic::Plot) do
-      make_seed Gamefic::Entity, name: 'room'
-      make_seed Gamefic::Entity, name: 'bag', parent: lazy_pick('room')
-      make_seed subclass, name: 'bagel', parent: lazy_pick('room')
+      construct :room, Gamefic::Entity, name: 'room'
+      construct :bag, Gamefic::Entity, name: 'bag', parent: lazy_pick('room')
+      construct :bagel, subclass, name: 'bagel', parent: lazy_pick('room')
 
       introduction do |actor|
         actor.parent = pick!('room')
@@ -25,6 +25,6 @@ describe Gamefic::Command do
     plot = klass.new
     player = plot.introduce
     command = Gamefic::Command.compose(player, 'look bag')
-    expect(command.arguments.first).to be(plot.pick!('bag'))
+    expect(command.arguments.first).to be(plot.bag)
   end
 end

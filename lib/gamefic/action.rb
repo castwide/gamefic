@@ -21,6 +21,7 @@ module Gamefic
       return if cancelled?
 
       if valid?
+        Gamefic.logger.info "Executing #{@response.inspect}"
         @response.execute(actor, *command.arguments)
         self
       else
@@ -59,20 +60,9 @@ module Gamefic
     end
 
     def valid_arguments?
-      Gamefic.logger.warn "Attempting to validate unbound response" unless @response.bound?
       @response.queries
                .zip(@command.arguments)
-               .all? { |query, argument| accept? actor, query, argument }
-    end
-
-    def accept? actor, query, argument
-      selectors = query.arguments
-      available = query.span(actor).that_are(*selectors)
-      if query.ambiguous?
-        argument & available == argument
-      else
-        available.include? argument
-      end
+               .all? { |query, argument| query.accept?(actor, argument) }
     end
   end
 end

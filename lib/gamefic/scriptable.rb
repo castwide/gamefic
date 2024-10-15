@@ -40,27 +40,8 @@ module Gamefic
     include Scenes
     include Seeds
 
-    # Add a block of code to be executed during initialization.
-    #
-    # These blocks are primarily used to define actions, scenes, and hooks in
-    # the narrative's rulebook. Entities and game data should be initialized
-    # with `seed`.
-    #
-    # @example
-    #   class MyPlot < Gamefic::Plot
-    #     script do
-    #       introduction do |actor|
-    #         actor.tell 'Hello, world!'
-    #       end
-    #
-    #       respond :wait do |actor|
-    #         actor.tell 'Time passes.'
-    #       end
-    #     end
-    #   end
-    #
     def script &block
-      Gamefic.logger.warn "The `script` method is deprecated. Use class-level script methods instead."
+      Gamefic::Logging.warn_deprecated 'The `script` method', 'class-level-scripts', caller
       instance_exec(&block)
     end
 

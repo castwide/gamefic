@@ -15,6 +15,48 @@ module Gamefic
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion
 
+    # Construct an entity.
+    #
+    # @return [void]
+    def self.construct name, klass, **opts
+      ivname = "@#{name}"
+      define_method(name) do
+        return instance_variable_get(ivname) if instance_variable_defined?(ivname)
+
+        instance_variable_set(ivname, make(klass, **unproxy(opts)))
+      end
+      bind name
+      seed { send(name) }
+      define_singleton_method(name) { Proxy::Attr.new(name) }
+    end
+
+    class << self
+      # @todo These aliases might be removed before the 4.0 release
+      alias bind_make construct
+      alias attr_make construct
+      alias attr_seed construct
+    end
+
+    # Lazy pick an entity.
+    #
+    # @example
+    #   pick('the red box')
+    #
+    # @param args [Array]
+    # @return [Proxy]
+    def self.pick *args
+      Proxy::Pick.new(*args)
+    end
+    alias lazy_pick pick
+
+    def self.seeds
+      @seeds ||= []
+    end
+
+    def self.seed &block
+      seeds.push block
+    end
+
     def initialize
       seeds.each { |blk| instance_exec(&blk) }
       post_script

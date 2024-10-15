@@ -220,12 +220,18 @@ module Gamefic
       dispatchers.last&.command || Command.new(nil, [])
     end
 
-    def syntaxes
-      narratives.flat_map(&:syntaxes)
+    # True if the actor can perform the verb in the current narrastives.
+    #
+    # @param verb [String, Symbol]
+    def can?(verb)
+      narratives.flat_map(&:synonyms).include?(verb.to_sym)
     end
 
-    def responses_for(*verbs)
-      narratives.flat_map { |narr| narr.responses_for(*verbs) }
+    def last_interaction
+      {
+        last_prompt: @last_cue&.scene&.props&.prompt,
+        last_input: @last_cue&.scene&.props&.input
+      }
     end
 
     private

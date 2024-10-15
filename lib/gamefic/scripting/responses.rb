@@ -8,8 +8,10 @@ module Gamefic
       end
 
       def responses_for *verbs
-        included_scripts.flat_map { |script| script.responses_for(*verbs) }
+        included_scripts.reverse
+                        .flat_map { |script| script.responses_for(*verbs) }
                         .concat(self.class.responses_for(*verbs))
+                        .reverse
                         .map { |response| response.bind(self) }
       end
     end

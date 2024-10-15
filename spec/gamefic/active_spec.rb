@@ -15,9 +15,9 @@ describe Gamefic::Active do
 
   it 'executes a command' do
     klass = Class.new(Gamefic::Narrative) do
-      room = make Gamefic::Entity, name: 'room'
-      item = make Gamefic::Entity, name: 'item', parent: room
-      respond(:command, item) { |actor, item| item[:commanded] = true }
+      construct :room, Gamefic::Entity, name: 'room'
+      construct :item, Gamefic::Entity, name: 'item', parent: room
+      respond(:command, item) { item[:commanded] = true }
     end
     narrative = klass.new
     narrative.cast object
@@ -66,7 +66,7 @@ describe Gamefic::Active do
   it 'cues a scene by class' do
     scene_klass = Class.new(Gamefic::Scene::Base)
     plot_klass = Class.new(Gamefic::Plot)
-    plot_klass.script { scene :scene, scene_klass }
+    plot_klass.instance_exec { scene :scene, scene_klass }
     plot = plot_klass.new
     plot.cast object
     expect { object.cue scene_klass }.not_to raise_error
@@ -79,8 +79,10 @@ describe Gamefic::Active do
   end
 
   it 'is concluding when starting a conclusion' do
-    Gamefic::Narrative.script { conclusion(:ending) {} }
-    narr = Gamefic::Narrative.new
+    klass = Class.new(Gamefic::Narrative) do
+      conclusion(:ending) {}
+    end
+    narr = klass.new
     narr.cast object
     object.cue :ending
     object.start

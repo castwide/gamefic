@@ -5,13 +5,7 @@ module Gamefic
     # The data that actors use to configure a Take.
     #
     class Cue
-      attr_reader :actor
-
-      attr_reader :key
-
-      attr_reader :narrative
-
-      attr_reader :scene
+      attr_reader :actor, :key, :narrative, :scene
 
       # @return [Hash]
       attr_reader :context
@@ -22,8 +16,9 @@ module Gamefic
         @key = key
         @narrative = narrative
         @context = context
-        @scene = narrative.prepare key, actor, **context
-        raise "Failed to cue #{scene} in #{narrative}" unless @scene
+        @scene = narrative.prepare(key, actor, **context) ||
+                 try_unbound_class ||
+                 raise("Failed to cue #{key} in #{narrative}")
       end
 
       def start
@@ -41,6 +36,15 @@ module Gamefic
 
       def to_s
         scene.to_s
+      end
+
+      private
+
+      def try_unbound_class
+        return unless @key.is_a?(Class) && @key <= Scene::Base
+
+        Gamefic.logger.info "Cueing unbound scene #{@key}"
+        @key.new(@actor, **@context)
       end
     end
   end

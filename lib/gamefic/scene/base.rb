@@ -34,12 +34,14 @@ module Gamefic
                               messages: actor.messages,
                               queue: actor.queue
                             })
+        props.output.merge! actor.last_interaction
       end
 
       # @param actor [Gamefic::Actor]
       # @param props [Props::Default]
       # @return [void]
       def finish
+        actor.flush
         props.input = actor.queue.shift&.strip
       end
 
@@ -61,7 +63,7 @@ module Gamefic
 
       private
 
-      def execute block
+      def execute(block)
         bound = actor.current || actor.narratives.first
         if bound
           Binding.new(bound, block).call(actor, props, context)
@@ -74,14 +76,14 @@ module Gamefic
         attr_reader :context, :nickname
 
         def type
-          'Default'
+          'Base'
         end
 
         def props_class
           @props_class ||= Props::Default
         end
 
-        def rename nickname
+        def rename(nickname)
           @nickname = nickname
         end
 
@@ -93,11 +95,11 @@ module Gamefic
           @finish_blocks ||= []
         end
 
-        def on_start &block
+        def on_start(&block)
           start_blocks.push block
         end
 
-        def on_finish &block
+        def on_finish(&block)
           finish_blocks.push block
         end
 
@@ -105,7 +107,7 @@ module Gamefic
           false
         end
 
-        def inherited klass
+        def inherited(klass)
           super
           klass.use_props_class props_class
         end
@@ -114,7 +116,7 @@ module Gamefic
 
         attr_writer :context
 
-        def use_props_class klass
+        def use_props_class(klass)
           @props_class = klass
         end
       end

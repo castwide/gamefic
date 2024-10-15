@@ -12,6 +12,10 @@ module Gamefic
         synonyms.flat_map { |syn| syntax_map.fetch(syn, []) }
       end
 
+      def synonyms
+        syntaxes.map(&:synonym).uniq
+      end
+
       private
 
       def syntax_map
