@@ -21,6 +21,7 @@ module Gamefic
       return if cancelled?
 
       if valid?
+        Gamefic.logger.info "Executing #{@response.inspect}"
         @response.execute(actor, *command.arguments)
         self
       else

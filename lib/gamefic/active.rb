@@ -226,6 +226,7 @@ module Gamefic
 
     def responses_for(*verbs)
       narratives.flat_map { |narr| narr.responses_for(*verbs) }
+                .reverse
     end
 
     private
