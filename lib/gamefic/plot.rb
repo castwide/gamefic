@@ -8,8 +8,8 @@ module Gamefic
     attr_reader :chapters
 
     def initialize
-      super
       @chapters = self.class.appended_chapters.map { |chap| chap.new(self) }
+      super
     end
 
     def ready
@@ -30,14 +30,13 @@ module Gamefic
       subplots.each(&:update)
     end
 
-    # Remove an actor from the game.
-    #
-    # Calling `uncast` on the plot will also remove the actor from its
-    # subplots.
-    #
-    # @param actor [Actor]
-    # @return [Actor]
+    def cast actor
+      chapters.each { |chap| chap.cast actor }
+      super
+    end
+
     def uncast actor
+      chapters.each { |chap| chap.uncast actor }
       subplots.each { |sp| sp.uncast actor }
       super
     end

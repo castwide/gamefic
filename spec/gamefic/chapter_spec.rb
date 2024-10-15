@@ -38,4 +38,31 @@ describe Gamefic::Chapter do
     plot = plot_klass.new
     expect(plot.chapters.first.thing).to be(plot.thing)
   end
+
+  it 'executes responses' do
+    Gamefic.logger.level = Logger::DEBUG
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      bind_from_plot :thing
+
+      respond :take, thing do |actor|
+        thing.parent = actor
+      end
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chapter_klass
+
+      construct :room, Gamefic::Entity, name: 'room'
+      construct :thing, Gamefic::Entity, name: 'thing', parent: room
+
+      introduction do |actor|
+        actor.parent = room
+      end
+    end
+
+    plot = plot_klass.new
+    player = plot.introduce
+    player.perform 'take thing'
+    expect(plot.thing.parent).to be(player)
+  end
 end

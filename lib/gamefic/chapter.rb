@@ -18,6 +18,8 @@ module Gamefic
     def self.bind_from_plot *methods
       methods.flatten.each do |method|
         define_method(method) { plot.send(method) }
+        define_singleton_method(method) { Proxy::Attr.new(method) }
+        bind(method)
       end
     end
   end
