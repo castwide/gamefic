@@ -30,6 +30,30 @@ module Gamefic
       define_singleton_method(name) { Proxy::Attr.new(name) }
     end
 
+    class << self
+      alias bind_make construct
+    end
+
+    # Lazy pick an entity.
+    #
+    # @example
+    #   pick('the red box')
+    #
+    # @param args [Array]
+    # @return [Proxy]
+    def self.pick *args
+      Proxy::Pick.new(*args)
+    end
+    alias lazy_pick pick
+
+    def self.seeds
+      @seeds ||= []
+    end
+
+    def self.seed &block
+      seeds.push block
+    end
+
     def initialize
       seeds.each { |blk| instance_exec(&blk) }
       post_script
