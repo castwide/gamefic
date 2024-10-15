@@ -227,6 +227,13 @@ module Gamefic
       narratives.flat_map(&:synonyms).include?(verb.to_sym)
     end
 
+    def last_interaction
+      {
+        last_prompt: @last_cue&.scene&.props&.prompt,
+        last_input: @last_cue&.scene&.props&.input
+      }
+    end
+
     private
 
     # @return [Array<Dispatcher>]
