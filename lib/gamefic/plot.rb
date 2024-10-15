@@ -9,7 +9,7 @@ module Gamefic
 
     def initialize
       super
-      @chapters = self.class.appended_chapters.each { |chap| chap.new(self) }
+      @chapters = self.class.appended_chapters.map { |chap| chap.new(self) }
     end
 
     def ready

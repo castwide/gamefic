@@ -7,12 +7,18 @@ module Gamefic
 
     # @param [plot] Plot
     def initialize(plot)
-      super
       @plot = plot
+      super()
     end
 
     def included_scripts
       super - plot.included_scripts
+    end
+
+    def self.bind_from_plot *methods
+      methods.flatten.each do |method|
+        define_method(method) { plot.send(method) }
+      end
     end
   end
 end
