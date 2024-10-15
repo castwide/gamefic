@@ -50,7 +50,7 @@ module Gamefic
       # @param input [String]
       # @return [Command]
       def compose actor, input
-        expressions = Syntax.tokenize(input, actor.syntaxes)
+        expressions = Syntax.tokenize(input, actor.narratives.flat_map(&:syntaxes))
         expressions.flat_map { |expression| expression_to_commands(actor, expression) }
                    .first || Command.new(nil, [])
       end

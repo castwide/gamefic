@@ -220,10 +220,6 @@ module Gamefic
       dispatchers.last&.command || Command.new(nil, [])
     end
 
-    def syntaxes
-      narratives.flat_map(&:syntaxes)
-    end
-
     # True if the actor can perform the verb in the current narrastives.
     #
     # @param verb [String, Symbol]
