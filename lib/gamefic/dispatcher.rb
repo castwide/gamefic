@@ -76,7 +76,7 @@ module Gamefic
 
     # @return [Array<Response>]
     def responses
-      @responses ||= actor.responses_for(command.verb)
+      @responses ||= actor.narratives.flat_map { |narr| narr.responses_for(command.verb) }
     end
 
     private

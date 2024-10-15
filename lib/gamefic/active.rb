@@ -231,10 +231,6 @@ module Gamefic
       narratives.flat_map(&:synonyms).include?(verb.to_sym)
     end
 
-    def responses_for(*verbs)
-      narratives.flat_map { |narr| narr.responses_for(*verbs) }
-    end
-
     private
 
     # @return [Array<Dispatcher>]
