@@ -55,17 +55,14 @@ describe Gamefic::Narrative do
   end
 
   it 'marshals' do
-    Gamefic::Narrative.script do
-      respond(:cmd) { |_| nil }
-    end
-    narr = Gamefic::Narrative.new
+    narr = NarrativeWithFeatures.new
 
     plyr = Gamefic::Actor.new
     narr.cast plyr
 
     dump = Marshal.dump(narr)
     rest = Marshal.load(dump)
-    expect(rest).to be_a(Gamefic::Narrative)
+    expect(rest).to be_a(NarrativeWithFeatures)
     expect(rest.players.first.narratives).to eq([rest].to_set)
   end
 end
