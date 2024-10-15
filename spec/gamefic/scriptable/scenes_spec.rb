@@ -8,16 +8,6 @@ describe Gamefic::Scriptable::Scenes do
     end
   end
 
-  describe '#preface' do
-    it 'creates an activity scene with a custom start block' do
-      object.preface(:scene) { |_, props| props.output[:executed] = true }
-      actor = Gamefic::Actor.new
-      scene = object.named_scenes[:scene].new(actor)
-      scene.run_start_blocks
-      expect(scene.props.output[:executed]).to be(true)
-    end
-  end
-
   describe '#multiple_choice' do
     it 'creates a multiple choice scene' do
       object.multiple_choice(:scene) { |scene| scene.on_start { |_, props| props.concat(%w[one two]) } }

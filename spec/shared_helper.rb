@@ -3,8 +3,6 @@
 require 'ostruct'
 require 'gamefic'
 
-Gamefic.logger.level = Logger::WARN
-
 RSpec.configure do |config|
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing

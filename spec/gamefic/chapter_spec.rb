@@ -40,7 +40,6 @@ describe Gamefic::Chapter do
   end
 
   it 'executes responses' do
-    Gamefic.logger.level = Logger::DEBUG
     chapter_klass = Class.new(Gamefic::Chapter) do
       bind_from_plot :thing
 
