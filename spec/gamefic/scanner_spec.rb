@@ -63,4 +63,10 @@ RSpec.describe Gamefic::Scanner do
     expect(result.matched).to eq([three])
     expect(result.remainder).to eq('')
   end
+
+  it 'matches synonyms' do
+    entity = Gamefic::Entity.new name: 'me', synonyms: 'self'
+    result = Gamefic::Scanner.scan([entity], 'self')
+    puts result.inspect
+  end
 end

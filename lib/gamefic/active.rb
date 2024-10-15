@@ -224,9 +224,15 @@ module Gamefic
       narratives.flat_map(&:syntaxes)
     end
 
+    # True if the actor can perform the verb in the current narrastives.
+    #
+    # @param verb [String, Symbol]
+    def can?(verb)
+      narratives.flat_map(&:synonyms).include?(verb.to_sym)
+    end
+
     def responses_for(*verbs)
       narratives.flat_map { |narr| narr.responses_for(*verbs) }
-                .reverse
     end
 
     private

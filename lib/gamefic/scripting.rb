@@ -14,6 +14,7 @@ module Gamefic
     require 'gamefic/scripting/seeds'
     require 'gamefic/scripting/scenes'
 
+    extend Scriptable
     include Scriptable::Queries
     include Entities
     include Hooks
@@ -21,6 +22,8 @@ module Gamefic
     include Seeds
     include Scenes
     include Syntaxes
+
+    bind(*Scriptable::Queries.public_instance_methods)
 
     def bound_methods
       included_scripts.flat_map(&:bound_methods)
