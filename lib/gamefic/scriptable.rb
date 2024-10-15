@@ -60,7 +60,7 @@ module Gamefic
     #   end
     #
     def script &block
-      Gamefic.logger.warn "The `script` method is deprecated. Use class-level script methods instead."
+      Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}The `script` method is deprecated. Use class-level script methods instead."
       instance_exec(&block)
     end
 
