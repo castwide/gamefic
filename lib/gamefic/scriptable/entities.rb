@@ -3,6 +3,8 @@
 module Gamefic
   module Scriptable
     module Entities
+      # @todo A lot of this stuff can probably be eliminated.
+
       # Lazy make an entity.
       #
       # @example

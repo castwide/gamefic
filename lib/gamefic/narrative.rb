@@ -15,6 +15,21 @@ module Gamefic
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion
 
+    # Construct an entity.
+    #
+    # @return [void]
+    def self.construct name, klass, **opts
+      ivname = "@#{name}"
+      define_method(name) do
+        return instance_variable_get(ivname) if instance_variable_defined?(ivname)
+
+        instance_variable_set(ivname, make(klass, **unproxy(opts)))
+      end
+      bind name
+      seed { send(name) }
+      define_singleton_method(name) { Proxy::Attr.new(name) }
+    end
+
     def initialize
       seeds.each { |blk| instance_exec(&blk) }
       post_script
