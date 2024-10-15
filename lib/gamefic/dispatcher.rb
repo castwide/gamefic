@@ -26,10 +26,12 @@ module Gamefic
       return unless @action
 
       actor.narratives.flat_map(&:before_actions).each { |blk| blk[@action] }
+      actor.narratives.flat_map(&:before_commands).each { |blk| blk[@actor, @command] }
       return if @action.cancelled?
 
       @action.execute
       actor.narratives.flat_map(&:after_actions).each { |blk| blk[@action] }
+      actor.narratives.flat_map(&:after_commands).each { |blk| blk[@actor, @command] }
       @action
     end
 
