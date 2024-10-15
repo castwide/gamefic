@@ -3,10 +3,10 @@
 require 'date'
 
 class SnapshotTestPlot < Gamefic::Plot
-  attr_make :room, Gamefic::Entity,
+  construct :room, Gamefic::Entity,
             name: 'room'
 
-  attr_make :thing, Gamefic::Entity,
+  construct :thing, Gamefic::Entity,
             name: 'thing',
             parent: room
 
