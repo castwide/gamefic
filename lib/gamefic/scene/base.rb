@@ -76,7 +76,7 @@ module Gamefic
         attr_reader :context, :nickname
 
         def type
-          'Default'
+          'Base'
         end
 
         def props_class
