@@ -12,6 +12,12 @@ module Gamefic
     def logger
       Gamefic.logger
     end
+
+    def warn_deprecated(old_feature, new_feature, caller)
+      logger.warn <<~MESSAGE.chomp
+        #{caller.first ? "#{caller.first}: " : ''}#{old_feature} is deprecated. Use #{new_feature} instead.
+      MESSAGE
+    end
   end
 
   class << self

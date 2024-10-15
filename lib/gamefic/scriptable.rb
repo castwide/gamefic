@@ -41,7 +41,7 @@ module Gamefic
     include Seeds
 
     def script &block
-      Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}The `script` method is deprecated. Use class-level script methods instead."
+      Gamefic::Logging.warn_deprecated 'The `script` method', 'class-level-scripts', caller
       instance_exec(&block)
     end
 

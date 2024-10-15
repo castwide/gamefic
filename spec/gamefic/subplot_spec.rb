@@ -48,14 +48,15 @@ describe Gamefic::Subplot do
 
   it 'runs ready blocks' do
     readied = false
-    Gamefic::Subplot.script do
+    klass = Class.new(Gamefic::Subplot) do
       on_ready do
         readied = true
       end
     end
+
     plot = Gamefic::Plot.new
     actor = plot.introduce
-    subplot = Gamefic::Subplot.new(plot, introduce: actor)
+    subplot = klass.new(plot, introduce: actor)
     subplot.ready
     expect(readied).to be(true)
   end
@@ -95,10 +96,12 @@ describe Gamefic::Subplot do
     expect(player[:concluded]).to be(true)
   end
 
+  # @todo This test might not be necessary anymore. Repeating scripts will be
+  #   less of a concern going forward, especially since seeds no longer exist
+  #   in scriptable modules.
   it 'does not repeat scripts included in the plot' do
     scriptable = Module.new do
       extend Gamefic::Scriptable
-      make_seed Gamefic::Entity, name: 'thing'
       respond(:foo) {}
     end
 
@@ -113,7 +116,6 @@ describe Gamefic::Subplot do
     plot = plot_klass.new
     subplot = plot.branch(subplot_klass)
     expect(subplot.class.responses).to be_empty
-    expect(subplot.entities).to be_empty
   end
 
   it 'is not usually persistent' do
