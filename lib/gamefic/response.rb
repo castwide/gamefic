@@ -81,12 +81,12 @@ module Gamefic
     # @param expression [Expression]
     # @return [Command, nil]
     def to_command(actor, expression)
-      return log_and_discard unless expression.verb == verb && expression.tokens.length <= queries.length
+      return log_and_discard unless expression.verb == verb && expression.tokens.length == queries.length
 
       results = filter(actor, expression)
       return log_and_discard unless results
 
-      Gamefic.logger.info "Accepted #{inspect}"
+      Gamefic.logger.debug "Accepted #{inspect}"
       Command.new(
         verb,
         results.map(&:match),
@@ -123,7 +123,7 @@ module Gamefic
     end
 
     def log_and_discard
-      Gamefic.logger.info "Discarded #{inspect}"
+      Gamefic.logger.debug "Discarded #{inspect}"
       nil
     end
 

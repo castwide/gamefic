@@ -63,6 +63,7 @@ module Gamefic
       def expression_to_commands actor, expression
         Gamefic.logger.info "Evaluating #{expression.inspect}"
         actor.responses_for(expression.verb)
+             .select { |response| response.queries.length == expression.tokens.length }
              .map { |response| response.to_command(actor, expression) }
              .compact
              .sort_by.with_index { |result, idx| [-result.substantiality, -result.strictness, -result.precision, idx] }
