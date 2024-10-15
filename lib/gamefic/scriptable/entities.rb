@@ -13,6 +13,7 @@ module Gamefic
       # @param klass [Class<Gamefic::Entity>]
       # @return [Proxy]
       def make klass, **opts
+        Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`make` is deprecated. Use `construct` or `seed` instead."
         seed { make(klass, **opts) }
         Proxy::Pick.new(klass, opts[:name], raise: true)
       end
@@ -34,6 +35,7 @@ module Gamefic
       # @param klass [Class<Gamefic::Entity>]
       # @return [Proxy]
       def bind_make name, klass, **opts
+        Gamefic.logger.warn "#{caller.first ? "#{caller.first}: " : ''}`bind_make` is deprecated. Use `construct` instead."
         ivname = "@#{name}"
         define_method(name) do
           return instance_variable_get(ivname) if instance_variable_defined?(ivname)
