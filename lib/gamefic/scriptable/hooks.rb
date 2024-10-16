@@ -3,20 +3,6 @@
 module Gamefic
   module Scriptable
     module Hooks
-      # @deprecated
-      def before_action(*verbs, &block)
-        before_actions.push(proc do |action|
-          instance_exec(action, &block) if verbs.empty? || verbs.include?(action.verb)
-        end)
-      end
-
-      # @deprecated
-      def after_action(*verbs, &block)
-        after_actions.push(proc do |action|
-          instance_exec(action, &block) if verbs.empty? || verbs.include?(action.verb)
-        end)
-      end
-
       def before_command(*verbs, &block)
         before_commands.push(proc do |actor, command|
           instance_exec(actor, command, &block) if verbs.empty? || verbs.include?(command.verb)
@@ -51,14 +37,6 @@ module Gamefic
 
       def on_player_conclude(&block)
         player_conclude_blocks.push(proc { players.each { |player| block[player] } })
-      end
-
-      def before_actions
-        @before_actions ||= []
-      end
-
-      def after_actions
-        @after_actions ||= []
       end
 
       def before_commands

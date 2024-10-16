@@ -117,10 +117,10 @@ describe Gamefic::Scriptable do
     expect(player[:executed]).to be(true)
   end
 
-  it 'scripts before_action' do
+  it 'scripts before_command' do
     klass = Class.new(Gamefic::Plot) do
       respond(:foo) { |_| nil }
-      before_action { |action| action.actor[:executed] = true }
+      before_command { |actor| actor[:executed] = true }
     end
 
     plot = klass.new
@@ -129,12 +129,12 @@ describe Gamefic::Scriptable do
     expect(player[:executed]).to be(true)
   end
 
-  it 'scripts after_action' do
+  it 'scripts after_command' do
     klass = Class.new(Gamefic::Plot) do
       attr_make :foo, Gamefic::Entity, name: 'foo'
 
       respond(:foo) { |_| nil }
-      after_action { |_action| foo.name = 'bar' }
+      after_command { foo.name = 'bar' }
     end
 
     plot = klass.new

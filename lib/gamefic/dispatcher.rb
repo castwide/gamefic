@@ -25,12 +25,10 @@ module Gamefic
       @action = next_action
       return unless @action
 
-      actor.narratives.before_actions.each { |blk| blk[@action] }
       actor.narratives.before_commands.each { |blk| blk[@actor, @command] }
       return if @action.cancelled?
 
       @action.execute
-      actor.narratives.after_actions.each { |blk| blk[@action] }
       actor.narratives.after_commands.each { |blk| blk[@actor, @command] }
       @action
     end

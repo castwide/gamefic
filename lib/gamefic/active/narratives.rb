@@ -41,14 +41,6 @@ module Gamefic
         narrative_set.flat_map { |narr| narr.synonyms_for(*synonyms) }
       end
 
-      def before_actions
-        narrative_set.flat_map(&:before_actions)
-      end
-
-      def after_actions
-        narrative_set.flat_map(&:after_actions)
-      end
-
       def before_commands
         narrative_set.flat_map(&:before_commands)
       end

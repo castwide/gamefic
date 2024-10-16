@@ -1,14 +1,6 @@
 module Gamefic
   module Scripting
     module Hooks
-      def before_actions
-        find_and_bind(:before_actions)
-      end
-
-      def after_actions
-        find_and_bind(:after_actions)
-      end
-
       def before_commands
         find_and_bind(:before_commands)
       end
