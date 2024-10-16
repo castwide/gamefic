@@ -30,6 +30,10 @@ module Gamefic
         scene.tap { |scene| scene.finish && scene.run_finish_blocks }
       end
 
+      def output
+        (props&.output || Props::Output.new).freeze
+      end
+
       def to_s
         scene.to_s
       end

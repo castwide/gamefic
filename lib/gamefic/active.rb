@@ -53,7 +53,7 @@ module Gamefic
     #
     # @return [Props::Output]
     def output
-      @output ||= Props::Output.new.freeze
+      last_cue&.output || Props::Output.new.freeze
     end
 
     # Perform a command.
