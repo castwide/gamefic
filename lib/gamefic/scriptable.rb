@@ -54,7 +54,7 @@ module Gamefic
     end
 
     def included_scripts
-      included_modules.that_are(Scriptable).uniq
+      ancestors.that_are(Scriptable).uniq
     end
   end
 end

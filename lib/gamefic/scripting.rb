@@ -27,7 +27,6 @@ module Gamefic
 
     def bound_methods
       included_scripts.flat_map(&:bound_methods)
-                      .concat(self.class.bound_methods)
                       .uniq
     end
 
@@ -37,7 +36,7 @@ module Gamefic
 
     def find_and_bind(symbol)
       included_scripts.flat_map { |script| script.send(symbol) }
-                      .concat(self.class.send(symbol))
+                      # .concat(self.class.send(symbol))
                       .map { |blk| Binding.new(self, blk) }
     end
 
