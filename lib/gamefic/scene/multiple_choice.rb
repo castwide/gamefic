@@ -14,17 +14,10 @@ module Gamefic
       end
 
       def finish
-        super
-        return if props.index
+        return super if props.selected?
 
         actor.tell format(props.invalid_message, input: props.input)
         actor.recue
-      end
-
-      def run_finish_blocks
-        return unless props.index
-
-        super
       end
 
       def self.type

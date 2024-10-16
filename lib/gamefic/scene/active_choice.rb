@@ -9,8 +9,9 @@ module Gamefic
       use_props_class Props::MultipleChoice
 
       def finish
-        super
-        props.index || actor.perform(props.input)
+        return super if props.selected?
+
+        actor.perform props.input
       end
     end
   end

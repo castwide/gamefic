@@ -6,8 +6,8 @@ module Gamefic
     #
     class Activity < Base
       def finish
-        super
         actor.perform props.input
+        super
       end
 
       def self.type

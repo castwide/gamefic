@@ -44,12 +44,21 @@ module Gamefic
         props.output.merge! actor.last_interaction
       end
 
+      def prepare_and_finish
+        prepare
+        finish
+      end
+
+      def prepare
+        actor.flush
+        props.input = actor.queue.shift&.strip
+      end
+
       # @param actor [Gamefic::Actor]
       # @param props [Props::Default]
       # @return [void]
       def finish
-        actor.flush
-        props.input = actor.queue.shift&.strip
+        run_finish_blocks
       end
 
       def run_start_blocks

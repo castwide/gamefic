@@ -195,11 +195,13 @@ module Gamefic
     #
     def cue_started
       @last_cue = @next_cue
+      @this_cue = @last_cue
       @next_cue = nil
     end
 
     def cue_finished
-      @last_input = last_cue&.props&.input
+      @last_input = @this_cue&.props&.input
+      @this_cue = nil
     end
 
     private

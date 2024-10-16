@@ -27,7 +27,7 @@ module Gamefic
       end
 
       def finish
-        scene.tap { |scene| scene.finish && scene.run_finish_blocks }
+        scene.prepare_and_finish
       end
 
       def output

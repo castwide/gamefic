@@ -15,7 +15,7 @@ describe Gamefic::Scene::YesOrNo do
 
   it 'flags yes?' do
     actor.queue.push 'yes'
-    yes_or_no.finish
+    yes_or_no.prepare_and_finish
     expect(actor.queue).to be_empty
     expect(yes_or_no.props.input).to eq('yes')
     expect(yes_or_no.props.selection).to eq('Yes')
@@ -26,7 +26,7 @@ describe Gamefic::Scene::YesOrNo do
 
   it 'flags no?' do
     actor.queue.push 'no'
-    yes_or_no.finish
+    yes_or_no.prepare_and_finish
     expect(actor.queue).to be_empty
     expect(yes_or_no.props.input).to eq('no')
     expect(yes_or_no.props.selection).to eq('No')
@@ -37,7 +37,7 @@ describe Gamefic::Scene::YesOrNo do
 
   it 'cancels on invalid input' do
     actor.queue.push 'maybe'
-    yes_or_no.finish
+    yes_or_no.prepare_and_finish
     expect(actor.queue).to be_empty
     expect(actor.messages).to include('not a valid choice')
   end
