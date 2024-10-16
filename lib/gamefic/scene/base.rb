@@ -11,9 +11,9 @@ module Gamefic
 
       attr_reader :actor, :props, :context
 
-      def initialize actor, **context
+      def initialize actor, props = nil, **context
         @actor = actor
-        @props = self.class.props_class.new(self)
+        @props = props || self.class.props_class.new(self)
         @context = context
       end
 

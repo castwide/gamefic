@@ -17,8 +17,8 @@ module Gamefic
         {}.merge(*included_scripts.flat_map(&:named_scenes))
       end
 
-      def prepare name_or_class, actor, **context
-        scene_classes_map[name_or_class]&.new(actor, **context).tap do |scene|
+      def prepare name_or_class, actor, props, **context
+        scene_classes_map[name_or_class]&.new(actor, props, **context).tap do |scene|
           scene&.rename(name_or_class.to_s) if name_or_class.is_a?(Symbol)
         end
       end
