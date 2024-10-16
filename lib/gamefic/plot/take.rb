@@ -18,6 +18,7 @@ module Gamefic
 
       def finish
         cue&.finish
+        actor.cue_finished
       end
     end
   end

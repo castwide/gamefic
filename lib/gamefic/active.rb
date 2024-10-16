@@ -24,6 +24,8 @@ module Gamefic
     # @return [Cue, nil]
     attr_reader :next_cue
 
+    # The input from the last finished cue.
+    #
     # @return [String, nil]
     attr_reader :last_input
 
@@ -194,6 +196,10 @@ module Gamefic
     def cue_started
       @last_cue = @next_cue
       @next_cue = nil
+    end
+
+    def cue_finished
+      @last_input = last_cue&.props&.input
     end
 
     private
