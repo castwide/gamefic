@@ -176,11 +176,6 @@ module Gamefic
       !narratives.empty?
     end
 
-    # @return [Command]
-    def command
-      dispatchers.last&.command || Command.new(nil, [])
-    end
-
     # True if the actor can perform the verb in the current narrastives.
     #
     # @param verb [String, Symbol]
