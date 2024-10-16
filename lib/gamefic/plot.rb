@@ -5,6 +5,8 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
+    require 'gamefic/plot/take'
+
     attr_reader :chapters
 
     def initialize
@@ -16,15 +18,12 @@ module Gamefic
       super
       chapters.each(&:ready)
       subplots.each(&:ready)
-      players.each(&:start)
-      subplots.each(&:conclude) if concluding?
-      players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
-      chapters.delete_if(&:concluding?)
-      subplots.delete_if(&:concluding?)
+      start_takes
+      sweep_conclusions
     end
 
     def update
-      players.each(&:finish)
+      finish_takes
       super
       chapters.each(&:update)
       subplots.each(&:update)
@@ -77,6 +76,30 @@ module Gamefic
 
     def self.restore data
       Snapshot.restore data
+    end
+
+    private
+
+    def start_takes
+      takes.concat(players.map do |player|
+        Take.new(player, default_scene)
+      end).each(&:start)
+    end
+
+    def finish_takes
+      takes.each(&:finish)
+      takes.clear
+    end
+
+    def takes
+      @takes ||= []
+    end
+
+    def sweep_conclusions
+      subplots.each(&:conclude) if concluding?
+      players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
+      chapters.delete_if(&:concluding?)
+      subplots.delete_if(&:concluding?)
     end
   end
 end

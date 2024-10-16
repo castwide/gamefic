@@ -85,7 +85,7 @@ describe Gamefic::Active do
     narr = klass.new
     narr.cast object
     object.cue :ending
-    object.start
+    object.cue_started
     expect(object).to be_concluding
   end
 
@@ -97,8 +97,8 @@ describe Gamefic::Active do
     object.queue.push 'my input'
     plot.update
     plot.ready
-    expect(object.output.last_prompt).to eq('>')
-    expect(object.output.last_input).to eq('my input')
+    expect(object.last_cue.props.output.last_prompt).to eq('>')
+    expect(object.last_cue.props.output.last_input).to eq('my input')
   end
 
   describe '#proceed' do
@@ -110,21 +110,6 @@ describe Gamefic::Active do
   describe '#output' do
     it 'is frozen' do
       expect(object.output).to be_frozen
-    end
-  end
-
-  describe '#start' do
-    it 'updates the output' do
-      klass = Class.new(Gamefic::Narrative) do
-        pause(:pause) { |scene| scene.on_start { |actor| actor.tell 'pause message' } }
-      end
-      narr = klass.new
-      narr.cast object
-      object.cue :pause
-      object.start
-      expect(object.output).to be_frozen
-      expect(object.messages).to include('pause message')
-      expect(object.output.scene[:name]).to eq('pause')
     end
   end
 end

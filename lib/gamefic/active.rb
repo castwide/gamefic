@@ -14,19 +14,18 @@ module Gamefic
     include Logging
     include Messaging
 
-    # The cue that will be used to create a scene at the beginning of the next
-    # turn.
+    # The most recently started cue.
     #
-    # @return [Active::Cue, nil]
+    # @return [Cue, nil]
+    attr_reader :last_cue
+
+    # The cue that will be started on the next turn.
+    #
+    # @return [Cue, nil]
     attr_reader :next_cue
 
     # @return [String, nil]
     attr_reader :last_input
-
-    # @return [Symbol, nil]
-    def next_scene
-      next_cue&.scene
-    end
 
     def current
       Binding.for(self) || narratives.first
@@ -55,13 +54,6 @@ module Gamefic
     # @return [Props::Output]
     def output
       @output ||= Props::Output.new.freeze
-    end
-
-    # The output from the previous turn.
-    #
-    # @return [Props::Output]
-    def last_output
-      @last_output ||= output
     end
 
     # Perform a command.
@@ -161,19 +153,6 @@ module Gamefic
     end
     alias prepare cue
 
-    def start
-      ensure_cue
-      @last_cue = @next_cue
-      cue(narratives.first&.default_scene || Scene::Activity)
-      @last_cue.start
-      @output = @last_cue.props.output.dup.freeze
-    end
-
-    def finish
-      @last_cue&.finish
-      @last_input = @last_cue&.props&.input
-    end
-
     # Restart the scene from the most recent cue.
     #
     # @return [Cue, nil]
@@ -216,18 +195,19 @@ module Gamefic
       }
     end
 
+    # Move next_cue into last_cue. This method is typically called by the plot
+    # at the start of a turn.
+    #
+    def cue_started
+      @last_cue = @next_cue
+      @next_cue = nil
+    end
+
     private
 
     # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
-    end
-
-    def ensure_cue
-      return if next_cue
-
-      logger.debug "Using default scene for #{inspect} without cue"
-      cue(narratives.first&.default_scene || Scene::Activity)
     end
   end
 end

@@ -22,18 +22,6 @@ RSpec.describe Gamefic::Plot do
     expect(player.messages).to include('Hello, world!')
   end
 
-  it 'starts the default scene after the introduction' do
-    Gamefic::Plot.script do
-      introduction do |actor|
-        actor[:introduced] = true
-      end
-    end
-    plot = Gamefic::Plot.new
-    player = plot.introduce
-    plot.ready
-    expect(player.next_cue.scene).to be_a(plot.default_scene)
-  end
-
   it 'tracks player subplots' do
     plot = Gamefic::Plot.new
     player = plot.introduce
