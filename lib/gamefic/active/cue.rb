@@ -16,6 +16,8 @@ module Gamefic
         @key = key
         @narrative = narrative
         @context = context
+        # @todo Memoizing the scene might be unsafe. It can be instantiated
+        #   from an anonymous class
         @scene = narrative.prepare(key, actor, **context) ||
                  try_unbound_class ||
                  raise("Failed to cue #{key} in #{narrative}")
