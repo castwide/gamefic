@@ -49,6 +49,10 @@ module Gamefic
         options[index]
       end
 
+      def selected?
+        !!index
+      end
+
       private
 
       def index_by_number
