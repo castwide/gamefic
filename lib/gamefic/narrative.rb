@@ -47,13 +47,24 @@ module Gamefic
     def self.pick *args
       Proxy::Pick.new(*args)
     end
-    alias lazy_pick pick
+    class << self
+      alias lazy_pick pick
+    end
+
+    # Lazy pick an entity or raise an error
+    #
+    def self.pick! *args
+      Proxy::Pick.new(*args)
+    end
+    class << self
+      alias lazy_pick! pick
+    end
 
     def self.seeds
       @seeds ||= []
     end
 
-    def self.seed &block
+    def self.seed(&block)
       seeds.push block
     end
 
@@ -93,7 +104,7 @@ module Gamefic
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
-    def cast active
+    def cast(active)
       active.narratives.add self
       player_vault.add active
       entity_vault.add active
@@ -104,7 +115,7 @@ module Gamefic
     #
     # @param [Gamefic::Active]
     # @return [Gamefic::Active]
-    def uncast active
+    def uncast(active)
       active.narratives.delete self
       player_vault.delete active
       entity_vault.delete active
@@ -123,12 +134,12 @@ module Gamefic
       self.class.responses.map(&:verb).uniq
     end
 
-    def self.inherited klass
+    def self.inherited(klass)
       super
       klass.seeds.concat seeds
       klass.select_default_scene default_scene
       klass.select_default_conclusion default_conclusion
-      klass.bind *bound_methods
+      klass.bind(*bound_methods)
     end
   end
 end

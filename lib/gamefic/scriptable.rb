@@ -25,7 +25,6 @@ module Gamefic
   #   end
   #
   module Scriptable
-    autoload :Entities,    'gamefic/scriptable/entities'
     autoload :Hooks,       'gamefic/scriptable/hooks'
     autoload :Queries,     'gamefic/scriptable/queries'
     autoload :Responses,   'gamefic/scriptable/responses'
@@ -33,7 +32,6 @@ module Gamefic
     autoload :Seeds,       'gamefic/scriptable/seeds'
     autoload :Syntaxes,    'gamefic/scriptable/syntaxes'
 
-    include Entities
     include Hooks
     include Queries
     include Responses
