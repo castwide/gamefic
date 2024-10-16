@@ -32,9 +32,7 @@ module Gamefic
     end
 
     def included_scripts
-      self.class
-          .included_modules
-          .that_are(Scriptable)
+      self.class.included_scripts
     end
 
     def find_and_bind(symbol)
