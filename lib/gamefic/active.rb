@@ -157,9 +157,7 @@ module Gamefic
     #
     # @return [Cue, nil]
     def recue
-      logger.warn "No scene to recue" unless @last_cue
-
-      @next_cue = @last_cue
+      (@next_cue = @last_cue&.restart) || logger.warn("No scene to recue")
     end
 
     # True if the actor is ready to leave the game.

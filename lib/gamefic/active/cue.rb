@@ -34,6 +34,10 @@ module Gamefic
         (props&.output || Props::Output.new).freeze
       end
 
+      def restart
+        Cue.new(actor, key, narrative, **context)
+      end
+
       def to_s
         scene.to_s
       end
