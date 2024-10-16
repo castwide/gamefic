@@ -25,12 +25,12 @@ module Gamefic
   #   end
   #
   module Scriptable
-    autoload :Hooks,       'gamefic/scriptable/hooks'
-    autoload :Queries,     'gamefic/scriptable/queries'
-    autoload :Responses,   'gamefic/scriptable/responses'
-    autoload :Scenes,      'gamefic/scriptable/scenes'
-    autoload :Seeds,       'gamefic/scriptable/seeds'
-    autoload :Syntaxes,    'gamefic/scriptable/syntaxes'
+    require 'gamefic/scriptable/hooks'
+    require 'gamefic/scriptable/queries'
+    require 'gamefic/scriptable/syntaxes'
+    require 'gamefic/scriptable/responses'
+    require 'gamefic/scriptable/scenes'
+    require 'gamefic/scriptable/seeds'
 
     include Hooks
     include Queries
