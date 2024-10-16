@@ -22,4 +22,17 @@ describe Gamefic::Dispatcher do
     # though @bookshelf gets tested first
     expect(action.command.arguments.first.name).to eq('books')
   end
+
+  it 'cancels commands' do
+    executed = false
+    klass = Class.new(Gamefic::Narrative) do
+      respond(:foo) { executed = true }
+      before_command { |_, command| command.stop }
+    end
+
+    plot = klass.new
+    player = plot.introduce
+    player.perform('foo')
+    expect(executed).to be(false)
+  end
 end

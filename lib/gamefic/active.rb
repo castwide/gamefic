@@ -197,11 +197,6 @@ module Gamefic
       !narratives.empty?
     end
 
-    def cancel
-      dispatchers.last&.cancel
-    end
-    alias stop cancel
-
     # @return [Command]
     def command
       dispatchers.last&.command || Command.new(nil, [])

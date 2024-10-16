@@ -26,7 +26,7 @@ module Gamefic
       return unless @action
 
       actor.narratives.before_commands.each { |blk| blk[@actor, @command] }
-      return if @action.cancelled?
+      return if @command.cancelled?
 
       @action.execute
       actor.narratives.after_commands.each { |blk| blk[@actor, @command] }
@@ -40,17 +40,17 @@ module Gamefic
     # @return [Action, nil]
     def proceed
       return unless @action
-      return if @action.cancelled?
+      return if @command.cancelled?
 
       next_action&.execute
     end
 
     def cancel
-      @action&.cancel
+      @command&.cancel
     end
 
     def cancelled?
-      @action&.cancelled?
+      @command&.cancelled?
     end
 
     # @param actor [Active]
