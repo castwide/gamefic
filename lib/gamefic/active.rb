@@ -3,6 +3,7 @@
 require 'set'
 require 'gamefic/active/cue'
 require 'gamefic/active/messaging'
+require 'gamefic/active/narratives'
 
 module Gamefic
   # The Active module gives entities the ability to perform actions and
@@ -35,7 +36,7 @@ module Gamefic
     #
     # @return [Set<Narrative>]
     def narratives
-      @narratives ||= Set.new
+      @narratives ||= Narratives.new
     end
 
     # An array of commands waiting to be executed.

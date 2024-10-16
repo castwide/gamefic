@@ -34,7 +34,7 @@ module Gamefic
       end
 
       def find_and_bind(symbol)
-        included_scripts.flat_map { |script| script.send(symbol) }
+        included_scripts.reverse.flat_map { |script| script.send(symbol) }
                         .map { |blk| Binding.new(self, blk) }
       end
     end

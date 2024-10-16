@@ -25,13 +25,13 @@ module Gamefic
       @action = next_action
       return unless @action
 
-      actor.narratives.flat_map(&:before_actions).each { |blk| blk[@action] }
-      actor.narratives.flat_map(&:before_commands).each { |blk| blk[@actor, @command] }
+      actor.narratives.before_actions.each { |blk| blk[@action] }
+      actor.narratives.before_commands.each { |blk| blk[@actor, @command] }
       return if @action.cancelled?
 
       @action.execute
-      actor.narratives.flat_map(&:after_actions).each { |blk| blk[@action] }
-      actor.narratives.flat_map(&:after_commands).each { |blk| blk[@actor, @command] }
+      actor.narratives.after_actions.each { |blk| blk[@action] }
+      actor.narratives.after_commands.each { |blk| blk[@actor, @command] }
       @action
     end
 
@@ -78,7 +78,7 @@ module Gamefic
 
     # @return [Array<Response>]
     def responses
-      @responses ||= actor.narratives.flat_map { |narr| narr.responses_for(command.verb) }
+      @responses ||= actor.narratives.responses_for(command.verb)
     end
 
     private

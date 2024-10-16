@@ -43,7 +43,7 @@ describe Gamefic::Snapshot do
 
     it 'restores players' do
       player = restored.players.first
-      expect(player.narratives).to eq([restored, restored.subplots.first].to_set)
+      expect(player.narratives.to_set).to eq([restored, restored.subplots.first].to_set)
     end
 
     it 'handles restored introduction cues' do

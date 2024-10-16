@@ -52,6 +52,24 @@ describe Gamefic::Narrative do
         expect { klass.new }.to raise_error(NoMethodError)
       end
     end
+
+    describe '#introduce' do
+      it 'runs introductions in order of inclusion' do
+        klass = Class.new(Gamefic::Narrative) do
+          introduction do |actor|
+            actor.stream 'first...'
+          end
+
+          introduction do |actor|
+            actor.stream 'second'
+          end
+        end
+
+        plot = klass.new
+        actor = plot.introduce
+        expect(actor.messages).to eq('first...second')
+      end
+    end
   end
 
   it 'marshals' do
@@ -63,6 +81,6 @@ describe Gamefic::Narrative do
     dump = Marshal.dump(narr)
     rest = Marshal.load(dump)
     expect(rest).to be_a(NarrativeWithFeatures)
-    expect(rest.players.first.narratives).to eq([rest].to_set)
+    expect(rest.players.first.narratives.to_a).to eq([rest])
   end
 end

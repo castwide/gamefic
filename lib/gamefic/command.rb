@@ -65,7 +65,7 @@ module Gamefic
       def expression_to_commands(actor, expression)
         Gamefic.logger.info "Evaluating #{expression.inspect}"
         actor.narratives
-             .flat_map { |narr| narr.responses_for(expression.verb) }
+             .responses_for(expression.verb)
              .select { |response| response.queries.length == expression.tokens.length }
              .map { |response| response.to_command(actor, expression) }
              .compact
