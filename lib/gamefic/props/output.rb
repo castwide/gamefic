@@ -103,6 +103,8 @@ module Gamefic
       def respond_to_missing?(method, _with_private = false)
         READER_METHODS.include?(method) || WRITER_METHODS.include?(method)
       end
+
+      EMPTY = new.freeze
     end
   end
 end

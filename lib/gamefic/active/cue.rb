@@ -31,7 +31,7 @@ module Gamefic
       end
 
       def output
-        (props&.output || Props::Output.new).freeze
+        props&.output.clone.freeze || Props::Output::EMPTY
       end
 
       def restart
