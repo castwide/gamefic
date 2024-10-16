@@ -7,6 +7,8 @@ module Gamefic
       end
 
       def responses_for *verbs
+        # @todo This double reversal is odd, but Gamefic::Standard fails in
+        #   Opal without it.
         included_scripts.reverse
                         .flat_map { |script| script.responses_for(*verbs) }
                         .reverse
