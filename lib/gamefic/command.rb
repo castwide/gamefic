@@ -33,11 +33,22 @@ module Gamefic
       @tokens = tokens
       @strictness = strictness
       @precision = precision
+      @cancelled = false
     end
 
     def substantiality
       @substantiality ||= arguments.that_are(Entity).length + (verb ? 1 : 0)
     end
+
+    def cancel
+      @cancelled = true
+    end
+    alias stop cancel
+
+    def cancelled?
+      @cancelled
+    end
+    alias stopped? cancelled?
 
     def inspect
       "#<#{self.class} #{([verb] + arguments).map(&:inspect).join(', ')}>"
