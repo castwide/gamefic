@@ -27,7 +27,7 @@ module Gamefic
     #
     # @todo Consider making strictness and precision required or providing
     #   another generator
-    def initialize verb, arguments, tokens = arguments.map(&:to_s), strictness = 0, precision = 0
+    def initialize(verb, arguments, tokens = arguments.map(&:to_s), strictness = 0, precision = 0)
       @verb = verb
       @arguments = arguments
       @tokens = tokens
@@ -49,10 +49,12 @@ module Gamefic
       # @param actor [Actor]
       # @param input [String]
       # @return [Command]
-      def compose actor, input
-        expressions = Syntax.tokenize(input, actor.narratives.flat_map(&:syntaxes))
-        expressions.flat_map { |expression| expression_to_commands(actor, expression) }
-                   .first || Command.new(nil, [])
+      def compose(actor, input)
+        Syntax.tokenize(input, actor.narratives.flat_map(&:syntaxes))
+              .flatten
+              .uniq { |exp| [exp.verb, exp.tokens] }
+              .flat_map { |expression| expression_to_commands(actor, expression) }
+              .first || Command.new(nil, [])
       end
 
       private
@@ -60,7 +62,7 @@ module Gamefic
       # @param actor [Actor]
       # @param expression [Expression]
       # @return [Array<Command>]
-      def expression_to_commands actor, expression
+      def expression_to_commands(actor, expression)
         Gamefic.logger.info "Evaluating #{expression.inspect}"
         actor.narratives
              .flat_map { |narr| narr.responses_for(expression.verb) }

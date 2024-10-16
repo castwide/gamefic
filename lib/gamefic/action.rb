@@ -30,7 +30,7 @@ module Gamefic
     end
 
     def valid?
-      valid_verb? && valid_arity? && valid_arguments?
+      @valid ||= valid_verb? && valid_arity? && valid_arguments?
     end
 
     def invalid?

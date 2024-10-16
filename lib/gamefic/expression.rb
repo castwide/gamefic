@@ -20,6 +20,7 @@ module Gamefic
     def inspect
       "#<#{self.class} #{([verb] + tokens).map(&:inspect).join(', ')}>"
     end
+
     # Compare two syntaxes for the purpose of ordering them by relevance while
     # dispatching.
     #

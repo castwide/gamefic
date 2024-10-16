@@ -86,9 +86,10 @@ module Gamefic
     # @return [Action, nil]
     def next_action
       while (response = responses.shift)
-        next if response.queries.length < @command.arguments.length
+        next if response.queries.length != @command.arguments.length
 
-        return Action.new(actor, @command, response) if response.accept?(actor, @command)
+        action = Action.new(actor, @command, response)
+        return action if action.valid?
       end
     end
   end

@@ -1,37 +1,20 @@
 # frozen_string_literal: true
 
 describe Gamefic::Dispatcher do
-  let(:stage_func) { Gamefic::Narrative.new }
-
-  # it 'filters and orders actions' do
-  #   @todo This should not matter anymore because rulebooks don't handle responses
-  #   rulebook = Gamefic::Rulebook.new
-  #   response1 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
-  #   response2 = rulebook.calls.add_response Gamefic::Response.new(:command, stage_func) { |_| nil }
-  #   actor = Gamefic::Actor.new
-  #   actor.epic.add OpenStruct.new(rulebook: rulebook)
-  #   dispatcher = Gamefic::Dispatcher.dispatch(actor, 'command')
-  #   expect(dispatcher.execute.response).to be(response2)
-  #   expect(dispatcher.proceed.response).to be(response1)
-  #   expect(dispatcher.proceed).to be_nil
-  # end
-
   it 'selects strict over fuzzy matches' do
     # @type klass [Class<Gamefic::Plot>]
     klass = Class.new(Gamefic::Plot) do
-      seed do
-        @room = make Gamefic::Entity, name: 'room'
-        @bookshelf = make Gamefic::Entity, name: 'bookshelf', parent: @room
-        @books = make Gamefic::Entity, name: 'books', parent: @room
-      end
+      construct :room, Gamefic::Entity, name: 'room'
+      construct :bookshelf, Gamefic::Entity, name: 'bookshelf', parent: room
+      construct :books, Gamefic::Entity, name: 'books', parent: room
 
-      respond(:look, pick!('books')) { |_, _| }
-      respond(:look, pick!('bookshelf')) { |_, _| }
+      respond(:look, books) { |_, _| }
+      respond(:look, bookshelf) { |_, _| }
     end
 
     plot = klass.new
     player = plot.introduce
-    player.parent = plot.pick('room')
+    player.parent = plot.room
 
     dispatcher = Gamefic::Dispatcher.dispatch(player, 'look books')
     action = dispatcher.execute
