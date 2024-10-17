@@ -4,12 +4,6 @@ module Gamefic
   # The action executor for character commands.
   #
   class Dispatcher
-    # @return [Actor]
-    attr_reader :actor
-
-    # @return [Command]
-    attr_reader :command
-
     # @param actionable [#to_actions]
     def initialize(actionable)
       @actions = actionable.to_actions
@@ -54,12 +48,15 @@ module Gamefic
       command&.cancel
     end
 
-    def cancelled?
-      command&.cancelled?
-    end
-
     private
 
+    # @return [Actor]
+    attr_reader :actor
+
+    # @return [Command]
+    attr_reader :command
+
+    # @return [Array<Action>]
     attr_reader :actions
   end
 end
