@@ -39,7 +39,7 @@ module Gamefic
 
     # @param template [Template, String]
     # @param command [String]
-    def initialize template, command
+    def initialize(template, command)
       @template = Template.to_template(template)
       @command = command.normalize
       @verb = Syntax.literal_or_nil(@command.keywords[0])
@@ -62,7 +62,7 @@ module Gamefic
     #
     # @param text [String]
     # @return [Expression, nil]
-    def tokenize text
+    def tokenize(text)
       match = text&.match(template.regexp)
       return nil unless match
 
@@ -73,7 +73,7 @@ module Gamefic
     #
     # @param text [String]
     # @return [Boolean]
-    def accept? text
+    def accept?(text)
       !!text.match(template.regexp)
     end
 
@@ -95,22 +95,23 @@ module Gamefic
     # @param text [String] The text to tokenize.
     # @param syntaxes [Array<Syntax>] The syntaxes to use.
     # @return [Array<Expression>] The tokenized expressions.
-    def self.tokenize text, syntaxes
+    def self.tokenize(text, syntaxes)
       syntaxes
         .map { |syn| syn.tokenize(text) }
         .compact
+        .uniq { |exp| [exp.verb, exp.tokens] }
         .sort { |syn, other_syn| syn.compare other_syn }
     end
 
     # Compare two syntaxes for the purpose of ordering them in rulebooks.
     #
-    def compare other
+    def compare(other)
       template.compare other.template
     end
 
     # @param string [String]
     # @return [Symbol, nil]
-    def self.literal_or_nil string
+    def self.literal_or_nil(string)
       string.start_with?(':') ? nil : string.to_sym
     end
 
@@ -129,7 +130,7 @@ module Gamefic
       end.join(' ')
     end
 
-    def match_to_args match
+    def match_to_args(match)
       start = replace.start_with?('{') ? 0 : 1
       replace.keywords[start..].map do |str|
         str.match?(/^\{\$[0-9]+\}$/) ? match[str[2..-2].to_i] : str

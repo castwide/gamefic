@@ -4,16 +4,17 @@ module Gamefic
   # The action executor for character commands.
   #
   class Dispatcher
+    # @return [Actor]
+    attr_reader :actor
+
     # @return [Command]
     attr_reader :command
 
-    # @param actor [Actor]
-    # @param command [Command]
-    def initialize actor, command
-      @actor = actor
-      @command = command
-      @action = nil
-      Gamefic.logger.info "Dispatching #{command.inspect}"
+    # @param actions [Array<Action>]
+    def initialize actions
+      @actions = actions
+      @actor = actions.first&.actor
+      @command = actions.first&.command
     end
 
     # Start executing actions in the dispatcher.
@@ -22,14 +23,15 @@ module Gamefic
     def execute
       return if @action
 
+      Gamefic.logger.info "Dispatching #{actor.inspect} #{command.inspect}"
       @action = next_action
       return unless @action
 
-      actor.narratives.before_commands.each { |blk| blk[@actor, @command] }
-      return if @command.cancelled?
+      actor.narratives.before_commands.each { |blk| blk[actor, command] }
+      return if command.cancelled?
 
       @action.execute
-      actor.narratives.after_commands.each { |blk| blk[@actor, @command] }
+      actor.narratives.after_commands.each { |blk| blk[actor, command] }
       @action
     end
 
@@ -40,24 +42,24 @@ module Gamefic
     # @return [Action, nil]
     def proceed
       return unless @action
-      return if @command.cancelled?
+      return if command.cancelled?
 
       next_action&.execute
     end
 
     def cancel
-      @command&.cancel
+      command&.cancel
     end
 
     def cancelled?
-      @command&.cancelled?
+      command&.cancelled?
     end
 
     # @param actor [Active]
     # @param input [String]
     # @return [Dispatcher]
     def self.dispatch actor, input
-      new(actor, Command.compose(actor, input))
+      new(Action.compose(actor, input))
     end
 
     # @param actor [Active]
@@ -65,28 +67,23 @@ module Gamefic
     # @param params [Array<Object>]
     # @return [Dispatcher]
     def self.dispatch_from_params actor, verb, params
-      command = Command.new(verb, params)
-      new(actor, command)
-    end
-
-    protected
-
-    # @return [Actor]
-    attr_reader :actor
-
-    # @return [Array<Response>]
-    def responses
-      @responses ||= actor.narratives.responses_for(command.verb)
+      actions = actor.narratives
+                     .responses_for(verb)
+                     .map { |response| Response::Request.from_params(actor, response, params) }
+                     .select(&:valid?)
+                     .map { |request| Action.new(actor, request) }
+      new(actions)
     end
 
     private
 
+    attr_reader :actions
+
     # @return [Action, nil]
     def next_action
-      while (response = responses.shift)
-        next if response.queries.length != @command.arguments.length
-
-        action = Action.new(actor, @command, response)
+      while (action = actions.shift)
+        # @todo The thing to do here, maybe, is to compare actor and command, then validate
+        next if action.actor != actor
         return action if action.valid?
       end
     end

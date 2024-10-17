@@ -6,31 +6,51 @@ module Gamefic
   class Action
     include Scriptable::Queries
 
-    attr_reader :actor, :command, :response
+    attr_reader :actor, :request
 
     # @param actor [Actor]
-    # @param command [Command]
-    # @param response [Response]
-    def initialize actor, command, response
+    # @param request [Response::Request]
+    def initialize actor, request
       @actor = actor
-      @command = command
-      @response = response
+      @request = request
+    end
+
+    def response
+      request.response
+    end
+
+    def command
+      @command ||= Command.new(request.verb, request.arguments)
     end
 
     def execute
       return if cancelled?
 
       if valid?
-        Gamefic.logger.info "Executing #{@response.inspect}"
-        @response.execute(actor, *command.arguments)
+        Gamefic.logger.info "Executing #{request.response.inspect}"
+        request.response.execute(actor, *command.arguments)
         self
       else
         actor.proceed
       end
     end
 
+    def substantiality
+      command.substantiality
+    end
+
+    def strictness
+      request.strictness
+    end
+
+    def precision
+      request.response.precision
+    end
+
     def valid?
-      @valid ||= valid_verb? && valid_arity? && valid_arguments?
+      request.valid?
+      # @todo Maybe we should still do this? Just to be safe?
+      # @valid ||= valid_verb? && valid_arity? && valid_arguments?
     end
 
     def invalid?
@@ -38,7 +58,7 @@ module Gamefic
     end
 
     def meta?
-      response.meta?
+      request.response.meta?
     end
 
     def cancel
@@ -63,6 +83,26 @@ module Gamefic
       @response.queries
                .zip(@command.arguments)
                .all? { |query, argument| query.accept?(actor, argument) }
+    end
+
+    class << self
+      def compose actor, input
+        Syntax.tokenize(input, actor.narratives.syntaxes)
+              .flatten # @todo This seems redundant
+              .flat_map { |expression| expression_to_actions(actor, input, expression) }
+              .sort_by.with_index { |action, idx| [-action.substantiality, -action.strictness, -action.precision, idx] }
+      end
+
+      private
+
+      def expression_to_actions(actor, input, expression)
+        Gamefic.logger.info "Evaluating #{expression.inspect}"
+        actor.narratives
+             .responses_for(expression.verb)
+             .map { |response| response.request(actor, expression) }
+             .select(&:valid?)
+             .map { |request| Action.new(actor, request) }
+      end
     end
   end
 end

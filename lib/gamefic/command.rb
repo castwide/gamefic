@@ -57,12 +57,14 @@ module Gamefic
     class << self
       # Compose a command from input.
       #
+      # @todo Candidate for deprecation. Action.compose is preferred.
+      #
       # @param actor [Actor]
       # @param input [String]
       # @return [Command]
       def compose(actor, input)
         Syntax.tokenize(input, actor.narratives.flat_map(&:syntaxes))
-              .flatten
+              .flatten # @todo This seems redundant
               .uniq { |exp| [exp.verb, exp.tokens] }
               .flat_map { |expression| expression_to_commands(actor, expression) }
               .first || Command.new(nil, [])

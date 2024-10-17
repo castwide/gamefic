@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'gamefic/scriptable'
+require 'gamefic/response/request'
 
 module Gamefic
   # A proc to be executed in response to a command that matches its verb and
@@ -104,13 +105,30 @@ module Gamefic
       !!@binding
     end
 
-    def bind narrative
+    def bind(narrative)
       clone.inject_binding narrative
+    end
+
+    def request(actor, expression)
+      remainder = ''
+      results = queries.zip(expression.tokens)
+                       .each_with_object([]) do |zipped, matches|
+                         query, token = zipped
+                         break matches if query.nil?
+
+                         token = "#{remainder} #{token}".strip
+                         result = query.filter(actor, token)
+                         break matches unless result.match
+
+                         matches.push result
+                         remainder = result.remainder
+                       end
+      Request.new(self, results)
     end
 
     protected
 
-    def inject_binding narrative
+    def inject_binding(narrative)
       @queries = map_queries(narrative.unproxy(@queries))
       @gamefic_binding = Binding.new(narrative, @block)
       self
