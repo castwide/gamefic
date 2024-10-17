@@ -69,7 +69,7 @@ module Gamefic
     # @param command [String]
     # @return [Action, nil]
     def perform(command)
-      dispatchers.push Dispatcher.dispatch(Request.new(self, command))
+      dispatchers.push Dispatcher.new(Request.new(self, command))
       dispatchers.last.execute
       dispatchers.pop
     end
@@ -99,7 +99,7 @@ module Gamefic
     # @param params [Array]
     # @return [Action, nil]
     def execute(verb, *params)
-      dispatchers.push Dispatcher.dispatch(Order.new(self, verb, params))
+      dispatchers.push Dispatcher.new(Order.new(self, verb, params))
       dispatchers.last.execute
       dispatchers.pop
     end

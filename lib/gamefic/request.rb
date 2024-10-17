@@ -1,16 +1,23 @@
 # frozen_string_literal: true
 
 module Gamefic
+  # Build actions from text.
+  #
+  # Active#perform uses Request to parse user input into actions for execution
+  # by the Dispatcher.
+  #
   class Request
+    # @param actor [Actor]
+    # @param input [String]
     def initialize(actor, input)
       @actor = actor
       @input = input
     end
 
+    # @return [Array<Action>]
     def to_actions
       Syntax.tokenize(input, actor.narratives.syntaxes)
             .flat_map { |expression| expression_to_actions(actor, expression) }
-            .sort_by.with_index { |action, idx| [-action.substantiality, -action.strictness, -action.precision, idx] }
     end
 
     private
@@ -26,9 +33,8 @@ module Gamefic
       actor.narratives
            .responses_for(expression.verb)
            .map { |response| match_expression response, expression }
-           #  .select(&:valid?) # @todo or .compact
            .compact
-           .map { |request| Action.new(actor, request[:response], request[:matches]) }
+           .map { |result| Action.new(actor, *result) }
     end
 
     def match_expression(response, expression)
@@ -48,7 +54,7 @@ module Gamefic
       end
       return nil unless remainder.empty?
 
-      { response: response, matches: matches }
+      [response, matches]
     end
   end
 end

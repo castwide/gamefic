@@ -1,18 +1,28 @@
+# frozen_string_literal: true
+
 module Gamefic
+  # Build actions from explicit verbs and arguments.
+  #
+  # The Active#execute method uses Order to bypass the parser while
+  # generating actions to be executed in the Dispatcher.
+  #
   class Order
+    # @param actor [Actor]
+    # @param verb [Symbol]
+    # @param arguments [Array<Object>]
     def initialize(actor, verb, arguments)
       @actor = actor
       @verb = verb
       @arguments = arguments
     end
 
+    # @return [Array<Action>]
     def to_actions
       actor.narratives
            .responses_for(verb)
            .map { |response| match_arguments actor, response, arguments }
-          #  .select(&:valid?) # @todo or .compact
            .compact
-           .map { |result| Action.new(actor, result[:response], result[:matches]) }
+           .map { |result| Action.new(actor, *result) }
     end
 
     private
@@ -35,7 +45,7 @@ module Gamefic
 
         matches.push Match.new(param, param, 1000)
       end
-      { response: response, matches: matches }
+      [response, matches]
     end
   end
 end

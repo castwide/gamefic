@@ -10,9 +10,12 @@ module Gamefic
     # @return [Command]
     attr_reader :command
 
-    # @param actions [Array<Action>]
-    def initialize(actions)
-      @actions = actions
+    # @param actionable [#to_actions]
+    def initialize(actionable)
+      @actions = actionable.to_actions
+                           .sort_by.with_index do |action, idx|
+                             [-action.substantiality, -action.strictness, -action.precision, idx]
+                           end
       @actor = actions.first&.actor
       @command = actions.first&.command
     end
@@ -53,11 +56,6 @@ module Gamefic
 
     def cancelled?
       command&.cancelled?
-    end
-
-    # @param actionable [#to_actions]
-    def self.dispatch(actionable)
-      new(actionable.to_actions)
     end
 
     private

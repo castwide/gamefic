@@ -17,7 +17,7 @@ describe Gamefic::Dispatcher do
     player.parent = plot.room
 
     request = Gamefic::Request.new(player, 'look books')
-    dispatcher = Gamefic::Dispatcher.dispatch(request)
+    dispatcher = Gamefic::Dispatcher.new(request)
     action = dispatcher.execute
     # Dispatcher should find an exact match for the @books response, even
     # though @bookshelf gets tested first
