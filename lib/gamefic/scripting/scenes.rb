@@ -1,11 +1,13 @@
 module Gamefic
   module Scripting
     module Scenes
-      def default_scene
+      extend Scriptable
+
+      bind def default_scene
         self.class.default_scene
       end
 
-      def default_conclusion
+      bind def default_conclusion
         self.class.default_conclusion
       end
 
