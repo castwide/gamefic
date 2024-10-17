@@ -68,7 +68,7 @@ module Gamefic
     end
 
     def bound?
-      !!@binding
+      !!@gamefic_binding
     end
 
     def bind(narrative)
@@ -107,11 +107,6 @@ module Gamefic
       @gamefic_binding || Binding.new(nil, @block).tap { Gamefic.logger.warn "Executing unbound response" }
     end
 
-    def log_and_discard
-      Gamefic.logger.debug "Discarded #{inspect}"
-      nil
-    end
-
     def generate_default_syntax
       args = queries.length.times.map { |num| num.zero? ? ':var' : ":var#{num + 1}" }
       tmpl = "#{verb} #{args.join(' ')}".strip
@@ -130,7 +125,7 @@ module Gamefic
 
     def select_query(arg)
       case arg
-      when Entity, Class, Module, Proc, Proxy, Proxy::Base
+      when Entity, Class, Module, Proc, Proxy::Base
         available(arg)
       when String, Regexp
         plaintext(arg)
