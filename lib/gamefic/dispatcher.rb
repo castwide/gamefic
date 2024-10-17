@@ -11,7 +11,7 @@ module Gamefic
     attr_reader :command
 
     # @param actions [Array<Action>]
-    def initialize actions
+    def initialize(actions)
       @actions = actions
       @actor = actions.first&.actor
       @command = actions.first&.command
@@ -55,24 +55,9 @@ module Gamefic
       command&.cancelled?
     end
 
-    # @param actor [Active]
-    # @param input [String]
-    # @return [Dispatcher]
-    def self.dispatch actor, input
-      new(Action.compose(actor, input))
-    end
-
-    # @param actor [Active]
-    # @param verb [Symbol]
-    # @param params [Array<Object>]
-    # @return [Dispatcher]
-    def self.dispatch_from_params actor, verb, params
-      actions = actor.narratives
-                     .responses_for(verb)
-                     .map { |response| Response::Request.from_params(actor, response, params) }
-                     .select(&:valid?)
-                     .map { |request| Action.new(actor, request) }
-      new(actions)
+    # @param actionable [#to_actions]
+    def self.dispatch(actionable)
+      new(actionable.to_actions)
     end
 
     private

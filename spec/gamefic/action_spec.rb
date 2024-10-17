@@ -6,16 +6,14 @@ describe Gamefic::Action do
   describe '#valid?' do
     it 'returns true for valid argument lengths' do
       response = Gamefic::Response.new(:verb) {}
-      request = Gamefic::Response::Request.new(response, [])
-      action = Gamefic::Action.new(actor, request)
+      action = Gamefic::Action.new(actor, response, [])
       expect(action).to be_valid
       expect(action).not_to be_invalid
     end
 
     it 'returns false for invalid argument lengths' do
       response = Gamefic::Response.new(:verb, 'text') {}
-      request = Gamefic::Response::Request.new(response, [])
-      action = Gamefic::Action.new(actor, request)
+      action = Gamefic::Action.new(actor, response, [])
       expect(action).to be_invalid
       expect(action).not_to be_valid
     end
@@ -23,8 +21,8 @@ describe Gamefic::Action do
     it 'returns true for valid argument queries' do
       thing = Gamefic::Entity.new name: 'thing', parent: actor
       response = Gamefic::Response.new(:verb, thing) {}
-      request = Gamefic::Response::Request.new(response, [Gamefic::Query::Result.new(thing, '')])
-      action = Gamefic::Action.new(actor, request)
+      match = Gamefic::Match.new(thing, thing, 1000)
+      action = Gamefic::Action.new(actor, response, [match])
       expect(action).to be_valid
       expect(action).not_to be_invalid
     end
@@ -36,8 +34,8 @@ describe Gamefic::Action do
       response = Gamefic::Response.new :verb, thing do |actor|
         actor[:executed] = true
       end
-      request = Gamefic::Response::Request.new(response, [Gamefic::Query::Result.new(thing, '')])
-      action = Gamefic::Action.new(actor, request)
+      match = Gamefic::Match.new(thing, thing, 1000)
+      action = Gamefic::Action.new(actor, response, [match])
       expect(action.execute).to be(action)
       expect(actor[:executed]).to be(true)
     end
