@@ -36,7 +36,7 @@ module Gamefic
     end
 
     def substantiality
-      command.substantiality
+      @substantiality ||= request.arguments.that_are(Entity).length + (request.verb ? 1 : 0)
     end
 
     def strictness
