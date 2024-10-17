@@ -123,6 +123,7 @@ module Gamefic
                          matches.push result
                          remainder = result.remainder
                        end
+      (expression.tokens.length - queries.length).times { results.push nil }
       Request.new(self, results)
     end
 
