@@ -26,6 +26,10 @@ module Gamefic
         results.sum(&:strictness)
       end
 
+      def substantiality
+        arguments.that_are(Entity).length + (verb ? 1 : 0)
+      end
+
       def valid?
         @valid ||= (response.queries.length == results.length) &&
                    results.none?(&:nil?) &&

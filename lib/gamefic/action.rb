@@ -24,8 +24,6 @@ module Gamefic
     end
 
     def execute
-      return if cancelled?
-
       if valid?
         Gamefic.logger.info "Executing #{request.response.inspect}"
         request.response.execute(actor, *command.arguments)
@@ -36,7 +34,7 @@ module Gamefic
     end
 
     def substantiality
-      @substantiality ||= request.arguments.that_are(Entity).length + (request.verb ? 1 : 0)
+      request.substantiality
     end
 
     def strictness
@@ -57,14 +55,6 @@ module Gamefic
 
     def meta?
       request.response.meta?
-    end
-
-    def cancel
-      @cancelled = true
-    end
-
-    def cancelled?
-      @cancelled
     end
 
     class << self
