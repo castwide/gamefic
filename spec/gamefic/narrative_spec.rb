@@ -13,13 +13,6 @@ describe Gamefic::Narrative do
 
   describe 'instance' do
     describe '#initialize' do
-      it 'runs scripts' do
-        executed = false
-        Gamefic::Narrative.script { executed = true }
-        Gamefic::Narrative.new
-        expect(executed).to be(true)
-      end
-
       it 'adds scenes from scripts' do
         klass = Class.new(Gamefic::Narrative) do
           pause(:scene) {}

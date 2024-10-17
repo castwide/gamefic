@@ -38,11 +38,6 @@ module Gamefic
     include Scenes
     include Seeds
 
-    def script &block
-      Gamefic::Logging.warn_deprecated 'The `script` method', 'class-level-scripts', caller
-      instance_exec(&block)
-    end
-
     def bind *methods
       bound_methods.concat(methods.flatten)
     end

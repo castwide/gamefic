@@ -12,12 +12,12 @@ RSpec.describe Gamefic::Plot do
   end
 
   it 'cues the introduction' do
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       introduction do |actor|
         actor.tell 'Hello, world!'
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
     player = plot.introduce
     expect(player.messages).to include('Hello, world!')
   end
@@ -54,23 +54,23 @@ RSpec.describe Gamefic::Plot do
 
   it 'runs on_ready blocks' do
     ran_on_ready = false
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       on_ready do
         ran_on_ready = true
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
     plot.ready
     expect(ran_on_ready).to be(true)
   end
 
   it 'runs on_player_ready blocks' do
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       on_player_ready do |player|
         player[:ran_on_player_ready] = true
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
     player = plot.introduce
     plot.ready
     expect(player[:ran_on_player_ready]).to be(true)
@@ -78,25 +78,25 @@ RSpec.describe Gamefic::Plot do
 
   it 'runs on_update blocks' do
     ran_on_update = false
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       on_update do
         ran_on_update = true
       end
     end
-    plot = Gamefic::Plot.new
-    player = plot.introduce
+    plot = klass.new
+    plot.introduce
     plot.ready
     plot.update
     expect(ran_on_update).to be(true)
   end
 
   it 'runs on_player_update blocks' do
-    Gamefic::Plot.script do
+    klass = Class.new(Gamefic::Plot) do
       on_player_update do |player|
         player[:ran_on_player_update] = true
       end
     end
-    plot = Gamefic::Plot.new
+    plot = klass.new
     player = plot.introduce
     plot.ready
     plot.update

@@ -4,7 +4,7 @@ describe Gamefic::Scriptable do
   let(:scriptable) { Module.new.extend(Gamefic::Scriptable) }
 
   it 'includes blocks' do
-    scriptable.script do
+    scriptable.instance_exec do
       pause :extended_pause
     end
     klass = Class.new(Gamefic::Narrative)
@@ -15,7 +15,7 @@ describe Gamefic::Scriptable do
 
   it 'includes scriptable modules once' do
     # This test is necessary because Opal can duplicate included modules
-    scriptable.script { @foo = Object.new }
+    scriptable.instance_exec { @foo = Object.new }
     other = Module.new.extend(Gamefic::Scriptable)
     other.include scriptable
     klass = Class.new(Gamefic::Narrative)

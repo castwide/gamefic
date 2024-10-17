@@ -63,14 +63,14 @@ describe Gamefic::Subplot do
 
   it 'runs update blocks' do
     updated = false
-    Gamefic::Subplot.script do
+    klass = Class.new(Gamefic::Subplot) do
       on_update do
         updated = true
       end
     end
     plot = Gamefic::Plot.new
     actor = plot.introduce
-    subplot = plot.branch(Gamefic::Subplot, introduce: actor)
+    subplot = plot.branch(klass, introduce: actor)
     subplot.ready
     subplot.update
     expect(updated).to be(true)
@@ -84,14 +84,14 @@ describe Gamefic::Subplot do
   end
 
   it 'runs player conclude blocks' do
-    Gamefic::Subplot.script do
+    klass = Class.new(Gamefic::Subplot) do
       on_player_conclude do |player|
         player[:concluded] = true
       end
     end
     plot = Gamefic::Plot.new
     player = plot.introduce
-    subplot = plot.branch Gamefic::Subplot, introduce: player
+    subplot = plot.branch klass, introduce: player
     subplot.conclude
     expect(player[:concluded]).to be(true)
   end
