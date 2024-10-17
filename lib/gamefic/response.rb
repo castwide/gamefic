@@ -20,16 +20,15 @@ module Gamefic
 
     # @param verb [Symbol]
     # @param narrative [Narrative]
-    # @param args [Array<Object>]
+    # @param queries [Array<Object>]
     # @param meta [Boolean]
     # @param block [Proc]
-    def initialize verb, *args, meta: false, &block
+    def initialize verb, *queries, meta: false, &block
       Gamefic.logger.warn "Underscores to hide verbs (`#{verb}`) are deprecated." if verb.to_s.start_with?('_')
       @verb = verb
       @meta = meta
-      @args = args
       @block = block
-      @queries = map_queries(args)
+      @queries = map_queries(queries)
     end
 
     # The `meta?` flag is just a way for authors to identify responses that
