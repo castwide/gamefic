@@ -82,9 +82,7 @@ module Gamefic
     # @return [Action, nil]
     def next_action
       while (action = actions.shift)
-        # @todo The thing to do here, maybe, is to compare actor and command, then validate
-        next if action.actor != actor
-        return action if action.valid?
+        return action if action.actor == actor && action.valid?
       end
     end
   end

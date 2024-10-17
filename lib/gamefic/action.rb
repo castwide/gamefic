@@ -49,8 +49,6 @@ module Gamefic
 
     def valid?
       request.valid?
-      # @todo Maybe we should still do this? Just to be safe?
-      # @valid ||= valid_verb? && valid_arity? && valid_arguments?
     end
 
     def invalid?
@@ -69,26 +67,9 @@ module Gamefic
       @cancelled
     end
 
-    private
-
-    def valid_verb?
-      command.verb == response.verb
-    end
-
-    def valid_arity?
-      command.arguments.length == response.queries.length
-    end
-
-    def valid_arguments?
-      @response.queries
-               .zip(@command.arguments)
-               .all? { |query, argument| query.accept?(actor, argument) }
-    end
-
     class << self
       def compose actor, input
         Syntax.tokenize(input, actor.narratives.syntaxes)
-              .flatten # @todo This seems redundant
               .flat_map { |expression| expression_to_actions(actor, input, expression) }
               .sort_by.with_index { |action, idx| [-action.substantiality, -action.strictness, -action.precision, idx] }
       end

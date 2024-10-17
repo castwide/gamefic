@@ -26,9 +26,9 @@ module Gamefic
         results.sum(&:strictness)
       end
 
-      # @todo Is this necessary? Probably!
       def valid?
-        @valid ||= (response.queries.length == results.compact.length) &&
+        @valid ||= (response.queries.length == results.length) &&
+                   results.none?(&:nil?) &&
                    (results.empty? || results.last.remainder.empty?)
       end
 
