@@ -43,9 +43,9 @@ module Gamefic
       def query(subject, token)
         first_pass = Scanner.scan(span(subject), token)
         if ambiguous?
-          ambiguous_result(first_pass.filter(*normalized_arguments))
+          ambiguous_result(first_pass.filter(*arguments))
         elsif first_pass.match.one?
-          unambiguous_result(first_pass.filter(*normalized_arguments))
+          unambiguous_result(first_pass.filter(*arguments))
         else
           unambiguous_result(first_pass)
         end
@@ -58,7 +58,7 @@ module Gamefic
       # @param subject [Entity]
       # @return [Array<Entity>]
       def select subject
-        span(subject).that_are(*normalized_arguments)
+        span(subject).that_are(*arguments)
       end
 
       # Get an array of entities that are candidates for selection from the
@@ -87,15 +87,6 @@ module Gamefic
         end
       end
 
-      def accept_v4? subject, model, object
-        available = span(subject).that_are(*normalized_arguments_v4(model))
-        if ambiguous?
-          object & available == object
-        else
-          available.include?(object)
-        end
-      end
-
       # @return [Integer]
       def precision
         @precision ||= calculate_precision
@@ -110,7 +101,7 @@ module Gamefic
       end
 
       def inspect
-        "#{ambiguous? ? '*' : ''}#{name}(#{normalized_arguments.map(&:inspect).join(', ')})"
+        "#{ambiguous? ? '*' : ''}#{name}(#{arguments.map(&:inspect).join(', ')})"
       end
 
       def bind model
@@ -132,7 +123,7 @@ module Gamefic
       private
 
       def calculate_precision
-        normalized_arguments.sum(@ambiguous ? -1000 : 0) do |arg|
+        arguments.sum(@ambiguous ? -1000 : 0) do |arg|
           case arg
           when Entity, Proxy, Proxy::Base
             1000
@@ -166,37 +157,6 @@ module Gamefic
 
         Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
-
-      def normalized_arguments
-        arguments
-        # @normalized_arguments ||= arguments.map do |arg|
-        #   case arg
-        #   when Proxy, Proxy::Base
-        #     arg.fetch(narrative)
-        #   when String
-        #     proc do |entity|
-        #       arg.keywords.all? { |word| entity.keywords.include?(word) }
-        #     end
-        #   else
-        #     arg
-        #   end
-        # end
-      end
-
-      # def normalized_arguments_v4 model
-      #   arguments.map do |arg|
-      #     case arg
-      #     when Proxy, Proxy::Base
-      #       arg.fetch(model)
-      #     when String
-      #       proc do |entity|
-      #         arg.keywords.all? { |word| entity.keywords.include?(word) }
-      #       end
-      #     else
-      #       arg
-      #     end
-      #   end
-      # end
     end
   end
 end
