@@ -5,23 +5,15 @@ module Gamefic
     class Base
       attr_reader :args
 
-      def initialize *args, raise: false
+      def initialize *args
         @args = args
-        @raise = raise
       end
 
-      def raise?
-        @raise
+      def fetch(narrative)
+        select(narrative)
       end
 
-      def fetch narrative
-        result = select(narrative)
-        return result if result
-        raise "#{self.class} failed for #{args.inspect}" if raise?
-      end
-
-      def select narrative
-      end
+      def select(narrative); end
     end
   end
 end
