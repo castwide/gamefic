@@ -26,21 +26,15 @@ module Gamefic
       end
 
       def scene_classes_map
-        scene_classes.select(&:name)
-                     .each_with_object(named_scenes.clone) { |klass, hash| hash[klass] = klass }
+        scene_classes.each_with_object(named_scenes.clone) { |klass, hash| hash[klass] = klass }
       end
 
-      def block name = nil, klass = Scene::Base, &blk
-        scene = Class.new(klass, &blk)
+      def block(scene, name = nil)
         named_scenes[name] = scene if name
         scene_classes.add scene
-        name
+        scene
       end
-
-      def scene name, klass
-        named_scenes[name] = klass if name
-        scene_classes.add klass
-      end
+      alias scene block
 
       def introductions
         @introductions ||= []
@@ -68,26 +62,23 @@ module Gamefic
       # will restart if the user input is not a valid choice.
       #
       # @example
-      #   multiple_choice :go_somewhere, ['Go to work', 'Go to school'] do |actor, props|
-      #     # Assuming the user selected the first choice:
-      #     props.selection #=> 'Go to work'
-      #     props.index     #=> 0
-      #     props.number    #=> 1
+      #   multiple_choice :go_somewhere, do
+      #     on_start do |actor, props|
+      #       props.options.push 'Go to work', 'Go to school'
+      #     end
+      #
+      #     on_finish do |actor, props|
+      #       # Assuming the user selected the first choice:
+      #       props.selection #=> 'Go to work'
+      #       props.index     #=> 0
+      #       props.number    #=> 1
+      #     end
       #   end
       #
-      # @param name [Symbol]
-      # @param choices [Array<String>]
-      # @param prompt [String, nil]
-      # @param proc [Proc]
-      # @yieldparam [Actor]
-      # @yieldparam [Props::MultipleChoice]
-      # @return [Symbol]
-      def multiple_choice name = nil, &blk
-        block name, Scene::MultipleChoice, &blk
-      end
-
-      def active_choice name = nil, &blk
-        block name, Scene::ActiveChoice, &blk
+      # @param name [Symbol, nil]
+      # @return [Class<Scene::MultipleChoice>]
+      def multiple_choice(name = nil, &block)
+        block Class.new(Scene::MultipleChoice, &block), name
       end
 
       # Create a yes-or-no scene.
@@ -95,25 +86,36 @@ module Gamefic
       # will restart if the user input is not a valid choice.
       #
       # @example
-      #   yes_or_no :answer_scene, 'What is your answer?' do |actor, props|
-      #     if props.yes?
-      #       actor.tell "You said yes."
-      #     else
-      #       actor.tell "You said no."
+      #   yes_or_no :answer_scene do
+      #     on_start do |actor, props|
+      #       actor.tell 'Yes or no?'
+      #     end
+      #
+      #     on_finish do |actor, props|
+      #       if props.yes?
+      #         actor.tell 'You said yes.'
+      #       else
+      #         actor.tell 'You said no.'
+      #       end
       #     end
       #   end
       #
-      # @param name [Symbol]
-      # @param prompt [String, nil]
-      # @yieldparam [Actor]
-      # @yieldparam [Props::YesOrNo]
-      # @return [Symbol]
-      def yes_or_no(name = nil, &blk)
-        block name, Scene::YesOrNo, &blk
+      # @param name [Symbol, nil]
+      # @return [Class<Scene::YesOrNo>]
+      def yes_or_no(name = nil, &block)
+        block Class.new(Scene::YesOrNo, &block), name
       end
 
-      def pause(name = nil, &blk)
-        block name, Scene::Pause, &blk
+      # @param name [Symbol, nil]
+      # @return [Class<Scene::ActiveChoice>]
+      def active_choice(name = nil, &block)
+        block Class.new(Scene::ActiveChoice, &block), name
+      end
+
+      # @param name [Symbol, nil]
+      # @return [Class<Scene::Pause>]
+      def pause(name = nil, &block)
+        block Class.new(Scene::Pause, &block), name
       end
 
       # Create a conclusion.
@@ -125,13 +127,12 @@ module Gamefic
       #     actor.tell 'GAME OVER'
       #   end
       #
-      # @param name [Symbol]
-      # @yieldparam [Actor]
-      # @return [Symbol]
-      def conclusion(name = nil, &blk)
-        block name, Scene::Conclusion do |scene|
-          scene.on_start(&blk)
-        end
+      # @param name [Symbol, nil]
+      # @return [Class<Scene::Conclusion>]
+      def conclusion(name = nil, &block)
+        block(Class.new(Scene::Conclusion) do
+          on_start(&block)
+        end, name)
       end
     end
   end

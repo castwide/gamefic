@@ -66,7 +66,7 @@ describe Gamefic::Active do
   it 'cues a scene by class' do
     scene_klass = Class.new(Gamefic::Scene::Base)
     plot_klass = Class.new(Gamefic::Plot)
-    plot_klass.instance_exec { scene :scene, scene_klass }
+    plot_klass.instance_exec { scene scene_klass, :scene }
     plot = plot_klass.new
     plot.cast object
     expect { object.cue scene_klass }.not_to raise_error

@@ -4,7 +4,6 @@ describe Gamefic::Scriptable::Scenes do
   let(:object) do
     klass = Class.new do
       extend Gamefic::Scriptable
-      # include Gamefic::Scriptable::Scenes
     end
   end
 
@@ -66,8 +65,8 @@ describe Gamefic::Scriptable::Scenes do
 
   describe '#scene' do
     it 'accesses scenes' do
-      object.block(:scene)
-      expect(object.named_scenes[:scene] < Gamefic::Scene::Base).to be
+      object.block(Gamefic::Scene::Base, :scene)
+      expect(object.named_scenes[:scene] <= Gamefic::Scene::Base).to be
     end
   end
 end
