@@ -45,17 +45,6 @@ module Gamefic
       @syntax ||= generate_default_syntax
     end
 
-    # Return an Action if the Response can accept the actor's command.
-    #
-    # @param actor [Entity]
-    # @param command [Command]
-    # @return [Action, nil]
-    def attempt(actor, command)
-      return nil unless accept?(actor, command)
-
-      Action.new(actor, command.arguments, self)
-    end
-
     # True if the Response can be executed for the given actor and command.
     #
     # @param actor [Active]
@@ -72,29 +61,6 @@ module Gamefic
 
     def precision
       @precision ||= calculate_precision
-    end
-
-    # Turn an actor and an expression into a command by matching the
-    # expression's tokens to queries. Return nil if the expression
-    # could not be matched.
-    #
-    # @param actor [Actor]
-    # @param expression [Expression]
-    # @return [Command, nil]
-    def to_command(actor, expression)
-      return log_and_discard unless expression.verb == verb && expression.tokens.length == queries.length
-
-      results = filter(actor, expression)
-      return log_and_discard unless results
-
-      Gamefic.logger.debug "Accepted #{inspect}"
-      Command.new(
-        verb,
-        results.map(&:match),
-        expression.tokens,
-        results.sum(&:strictness),
-        precision
-      )
     end
 
     def inspect
@@ -144,20 +110,6 @@ module Gamefic
     def log_and_discard
       Gamefic.logger.debug "Discarded #{inspect}"
       nil
-    end
-
-    def filter(actor, expression)
-      remainder = ''
-      result = queries.zip(expression.tokens)
-                      .map do |query, token|
-                        token = "#{remainder} #{token}".strip
-                        result = query.filter(actor, token)
-                        return nil unless result.match
-
-                        remainder = result.remainder
-                        result
-                      end
-      result if remainder.empty?
     end
 
     def generate_default_syntax
