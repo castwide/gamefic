@@ -11,8 +11,8 @@ module Gamefic
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Global]
-      def global *args, ambiguous: false
-        Query::Global.new *args, ambiguous: ambiguous, name: 'global'
+      def global *args
+        Query::Global.new(*args, name: 'global')
       end
       alias anywhere global
 
@@ -25,8 +25,8 @@ module Gamefic
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Abstract]
-      def abstract *args, ambiguous: false
-        Query::Abstract.new *args, ambiguous: ambiguous
+      def abstract *args
+        Query::Abstract.new(*args)
       end
 
       # Define a query that searches an actor's family of entities. The
@@ -35,8 +35,8 @@ module Gamefic
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
-      def available *args, ambiguous: false
-        Query::Family.new *args, ambiguous: ambiguous, name: 'available'
+      def available *args
+        Query::Family.new(*args, name: 'available')
       end
       alias family available
       alias avail available
@@ -45,40 +45,40 @@ module Gamefic
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
-      def parent *args, ambiguous: false
-        Query::Parent.new *args, ambiguous: ambiguous, name: 'parent'
+      def parent *args
+        Query::Parent.new(*args, name: 'parent')
       end
 
       # Define a query that searches an actor's children.
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
-      def children *args, ambiguous: false
-        Query::Children.new *args, ambiguous: ambiguous, name: 'children'
+      def children *args
+        Query::Children.new(*args, name: 'children')
       end
 
       # Define a query that searches an actor's descendants.
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
-      def descendants *args, ambiguous: false
-        Query::Descendants.new *args, ambiguous: ambiguous
+      def descendants *args
+        Query::Descendants.new(*args)
       end
 
       # Define a query that searches an actor's siblings.
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
-      def siblings *args, ambiguous: false
-        Query::Siblings.new *args, ambiguous: ambiguous, name: 'siblings'
+      def siblings *args
+        Query::Siblings.new(*args, name: 'siblings')
       end
 
       # Define a query that returns the actor itself.
       #
       # @param args [Array<Object>] Query arguments
       # @return [Query::Scoped]
-      def myself *args, ambiguous: false
-        Query::Myself.new *args, ambiguous: ambiguous, name: 'myself'
+      def myself *args
+        Query::Myself.new(*args, name: 'myself')
       end
 
       # Define a query that performs a plaintext search. It can take a String

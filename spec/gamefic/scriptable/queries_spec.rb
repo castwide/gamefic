@@ -48,13 +48,6 @@ describe Gamefic::Scriptable::Queries do
       result = query.query(parent, 'one')
       expect(result.match).to be(object.entities[1])
     end
-
-    it 'finds ambiguous children' do
-      query = object.children(ambiguous: true)
-      parent = object.entities.first
-      result = query.query(parent, 'entity')
-      expect(result.match).to eq(object.entities[1..])
-    end
   end
 
   describe '#siblings' do

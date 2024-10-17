@@ -10,47 +10,32 @@ module Gamefic
       # @return [Array<Object>]
       attr_reader :arguments
 
-      # @return [Boolean]
-      attr_reader :ambiguous
-
       # @todo Maybe deprecate
       attr_accessor :narrative
 
       # @raise [ArgumentError] if any of the arguments are nil
       #
       # @param arguments [Array<Object>]
-      # @param ambiguous [Boolean]
       # @param name [String]
-      def initialize *arguments, ambiguous: false, name: self.class.to_s
+      def initialize *arguments, name: self.class.to_s
         raise ArgumentError, "nil argument in query" if arguments.any?(&:nil?)
 
         @arguments = arguments
-        @ambiguous = ambiguous
         @name = name
       end
 
       # Get a query result for a given subject and token.
       #
-      # @example
-      #   respond :reds do |actor|
-      #     reds = available(ambiguous: true).query(actor, 'red').match
-      #     actor.tell "The red things you can see here are #{reds.join_and}."
-      #   end
-      #
       # @param subject [Gamefic::Entity]
       # @param token [String]
       # @return [Result]
-      def query(subject, token)
-        first_pass = Scanner.scan(span(subject), token)
-        if ambiguous?
-          ambiguous_result(first_pass.filter(*arguments))
-        elsif first_pass.match.one?
-          unambiguous_result(first_pass.filter(*arguments))
-        else
-          unambiguous_result(first_pass)
-        end
+      def filter(subject, token)
+        scan = Scanner.scan(select(subject), token)
+        return Result.new(nil, scan.token) unless scan.matched.one?
+
+        Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
-      alias filter query
+      alias query filter
 
       # Get an array of entities that match the arguments from the context of
       # the subject.
@@ -76,15 +61,10 @@ module Gamefic
       # True if the object is selectable by the subject.
       #
       # @param subject [Entity]
-      # @param object [Array<Entity>, Entity]
+      # @param object [Entity]
       # @return [Boolean]
       def accept?(subject, object)
-        available = select(subject)
-        if ambiguous?
-          object & available == object
-        else
-          available.include?(object)
-        end
+        select(subject).include?(object)
       end
 
       # @return [Integer]
@@ -92,16 +72,12 @@ module Gamefic
         @precision ||= calculate_precision
       end
 
-      def ambiguous?
-        @ambiguous
-      end
-
       def name
         @name || self.class.to_s
       end
 
       def inspect
-        "#{ambiguous? ? '*' : ''}#{name}(#{arguments.map(&:inspect).join(', ')})"
+        "#{name}(#{arguments.map(&:inspect).join(', ')})"
       end
 
       def bind model
@@ -123,7 +99,7 @@ module Gamefic
       private
 
       def calculate_precision
-        arguments.sum(@ambiguous ? -1000 : 0) do |arg|
+        arguments.sum(0) do |arg|
           case arg
           when Entity, Proxy, Proxy::Base
             1000
@@ -142,20 +118,6 @@ module Gamefic
         sup = klass
         depth += 1 while (sup = sup.superclass)
         depth
-      end
-
-      # @param scan [Scanner::Result]
-      def ambiguous_result scan
-        return Result.new(nil, scan.token) if scan.matched.empty?
-
-        Result.new(scan.matched, scan.remainder)
-      end
-
-      # @param scan [Scanner::Result]
-      def unambiguous_result scan
-        return Result.new(nil, scan.token) unless scan.matched.one?
-
-        Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
     end
   end

@@ -25,9 +25,4 @@ describe Gamefic::Query::Base do
     base = Gamefic::Query::Base.new(:one?, :two?)
     expect(base.precision).to eq(2)
   end
-
-  it 'calculates ambiguous precision' do
-    base = Gamefic::Query::Base.new(ambiguous: true)
-    expect(base.precision).to eq(-1000)
-  end
 end
