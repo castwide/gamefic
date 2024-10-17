@@ -10,9 +10,6 @@ module Gamefic
       # @return [Array<Object>]
       attr_reader :arguments
 
-      # @todo Maybe deprecate
-      attr_accessor :narrative
-
       # @raise [ArgumentError] if any of the arguments are nil
       #
       # @param arguments [Array<Object>]
