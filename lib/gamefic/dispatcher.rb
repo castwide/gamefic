@@ -27,7 +27,7 @@ module Gamefic
       return if @action
 
       Gamefic.logger.info "Dispatching #{actor.inspect} #{command.inspect}"
-      @action = next_action
+      @action = actions.shift
       return unless @action
 
       actor.narratives.before_commands.each { |blk| blk[actor, command] }
@@ -47,7 +47,7 @@ module Gamefic
       return unless @action
       return if command.cancelled?
 
-      next_action&.execute
+      actions.shift&.execute
     end
 
     def cancel
@@ -61,12 +61,5 @@ module Gamefic
     private
 
     attr_reader :actions
-
-    # @return [Action, nil]
-    def next_action
-      while (action = actions.shift)
-        return action if action.actor == actor && action.valid?
-      end
-    end
   end
 end
