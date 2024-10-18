@@ -12,10 +12,11 @@ module Gamefic
 
     # @param verb [Symbol]
     # @param arguments [Array<Array<Entity>, Entity, String>]
-    #
-    def initialize(verb, arguments)
+    # @param meta [Boolean]
+    def initialize(verb, arguments, meta = false)
       @verb = verb
       @arguments = arguments
+      @meta = meta
     end
 
     def cancel
@@ -27,6 +28,10 @@ module Gamefic
       @cancelled
     end
     alias stopped? cancelled?
+
+    def meta?
+      @meta
+    end
 
     def inspect
       "#<#{self.class} #{([verb] + arguments).map(&:inspect).join(', ')}>"

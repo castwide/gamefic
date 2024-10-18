@@ -22,7 +22,7 @@ module Gamefic
     end
 
     def command
-      @command ||= Command.new(response.verb, matches.map(&:argument))
+      @command ||= Command.new(response.verb, matches.map(&:argument), response.meta?)
     end
 
     def queries
