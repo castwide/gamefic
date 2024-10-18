@@ -132,13 +132,6 @@ module Gamefic
       dispatchers.last&.proceed
     end
 
-    # Run a clip.
-    #
-    # @param clip_class [Class<Clip>]
-    def run clip_class, **opts
-      clip_class.run self, **opts
-    end
-
     # Cue a scene to start in the next turn.
     #
     # @raise [ArgumentError] if the scene is not valid
