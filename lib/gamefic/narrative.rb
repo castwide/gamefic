@@ -123,15 +123,28 @@ module Gamefic
     end
 
     def ready
-      find_and_bind(:ready_blocks).each(&:call)
+      Gamefic.logger.warn "#{caller ? caller.first : '(code)'}: Narrative#ready is deprecated. Use a Narrator instead."
+      narrator.start
     end
 
     def update
-      find_and_bind(:update_blocks).each(&:call)
+      Gamefic.logger.warn "#{caller ? caller.first : '(code)'}: Narrative#update is deprecated. Use a Narrator instead."
+      narrator.finish
     end
 
     def verbs
       self.class.responses.map(&:verb).uniq
+    end
+
+    def turn
+      players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
+    end
+
+    private
+
+    # @todo Temporary internal narrator pending removal of #ready and #update
+    def narrator
+      @narrator ||= Narrator.new(self)
     end
 
     def self.inherited(klass)
