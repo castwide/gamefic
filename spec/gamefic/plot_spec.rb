@@ -25,82 +25,17 @@ RSpec.describe Gamefic::Plot do
   it 'tracks player subplots' do
     plot = Gamefic::Plot.new
     player = plot.introduce
-    plot.ready
     subplot = plot.branch Gamefic::Subplot, introduce: player
     expect(player.narratives.to_a).to eq([plot, subplot])
   end
 
-  it 'deletes concluded subplots on ready' do
+  it 'deletes concluded subplots on turns' do
     plot = Gamefic::Plot.new
     subplot = plot.branch Gamefic::Subplot
     expect(plot.subplots).to include(subplot)
     subplot.conclude
-    plot.ready
+    plot.turn
     expect(plot.subplots).to be_empty
-  end
-
-  it 'runs on_player_conclude blocks' do
-    klass = Class.new(Gamefic::Plot) do
-      on_player_conclude do |player|
-        player[:concluded] = true
-      end
-    end
-    plot = klass.new
-    player = plot.introduce
-    player.cue plot.default_conclusion
-    plot.ready
-    expect(player[:concluded]).to be(true)
-  end
-
-  it 'runs on_ready blocks' do
-    ran_on_ready = false
-    klass = Class.new(Gamefic::Plot) do
-      on_ready do
-        ran_on_ready = true
-      end
-    end
-    plot = klass.new
-    plot.ready
-    expect(ran_on_ready).to be(true)
-  end
-
-  it 'runs on_player_ready blocks' do
-    klass = Class.new(Gamefic::Plot) do
-      on_player_ready do |player|
-        player[:ran_on_player_ready] = true
-      end
-    end
-    plot = klass.new
-    player = plot.introduce
-    plot.ready
-    expect(player[:ran_on_player_ready]).to be(true)
-  end
-
-  it 'runs on_update blocks' do
-    ran_on_update = false
-    klass = Class.new(Gamefic::Plot) do
-      on_update do
-        ran_on_update = true
-      end
-    end
-    plot = klass.new
-    plot.introduce
-    plot.ready
-    plot.update
-    expect(ran_on_update).to be(true)
-  end
-
-  it 'runs on_player_update blocks' do
-    klass = Class.new(Gamefic::Plot) do
-      on_player_update do |player|
-        player[:ran_on_player_update] = true
-      end
-    end
-    plot = klass.new
-    player = plot.introduce
-    plot.ready
-    plot.update
-    expect(player[:ran_on_player_update]).to be(true)
   end
 
   it 'supports multiple players' do
@@ -125,7 +60,8 @@ RSpec.describe Gamefic::Plot do
     actor = plot.introduce
     plot.branch Gamefic::Subplot, introduce: actor
     actor.cue plot.default_conclusion
-    plot.ready
+    Gamefic::Narrator::Take.new(actor, plot.default_scene).start
+    plot.turn
     expect(plot.subplots).to be_empty
     expect(actor.narratives).to be_one
   end

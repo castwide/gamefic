@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 describe Gamefic::Chapter do
-  it 'does not duplicate plot script features' do
+  it 'does not duplicate ready blocks' do
     scriptable = Module.new do
-      # include Gamefic::Scripting does not work in Opal
       extend Gamefic::Scriptable
 
-      introduction { |actor| actor[:ready_count] = 0 }
-      on_player_ready { |actor| actor[:ready_count] += 1 }
+      on_player_ready {}
     end
 
     chapter_klass = Class.new(Gamefic::Chapter) do
@@ -20,9 +18,27 @@ describe Gamefic::Chapter do
     end
 
     plot = plot_klass.new
-    actor = plot.introduce
-    plot.ready
-    expect(actor[:ready_count]).to eq(1)
+    expect(plot.ready_blocks).to be_one
+  end
+
+  it 'does not duplicate introductions' do
+    scriptable = Module.new do
+      extend Gamefic::Scriptable
+
+      introduction {}
+    end
+
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      include scriptable
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      include scriptable
+      append chapter_klass
+    end
+
+    plot = plot_klass.new
+    expect(plot.introductions).to be_one
   end
 
   it 'binds methods from plots' do

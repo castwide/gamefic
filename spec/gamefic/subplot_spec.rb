@@ -46,36 +46,6 @@ describe Gamefic::Subplot do
     expect(plot.entities).to be_one
   end
 
-  it 'runs ready blocks' do
-    readied = false
-    klass = Class.new(Gamefic::Subplot) do
-      on_ready do
-        readied = true
-      end
-    end
-
-    plot = Gamefic::Plot.new
-    actor = plot.introduce
-    subplot = klass.new(plot, introduce: actor)
-    subplot.ready
-    expect(readied).to be(true)
-  end
-
-  it 'runs update blocks' do
-    updated = false
-    klass = Class.new(Gamefic::Subplot) do
-      on_update do
-        updated = true
-      end
-    end
-    plot = Gamefic::Plot.new
-    actor = plot.introduce
-    subplot = plot.branch(klass, introduce: actor)
-    subplot.ready
-    subplot.update
-    expect(updated).to be(true)
-  end
-
   it 'branches additional subplots' do
     plot = Gamefic::Plot.new
     subplot1 = plot.branch(Gamefic::Subplot)

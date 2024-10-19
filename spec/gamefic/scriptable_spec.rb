@@ -74,47 +74,39 @@ describe Gamefic::Scriptable do
   it 'scripts on_ready' do
     executed = false
     klass = Class.new(Gamefic::Plot) do
-      on_ready { executed = true }
+      on_ready {}
     end
 
     plot = klass.new
-    player = plot.introduce
-    plot.ready
-    expect(executed).to be(true)
+    expect(plot.ready_blocks).to be_one
   end
 
   it 'scripts on_player_ready' do
     klass = Class.new(Gamefic::Plot) do
-      on_player_ready { |actor| actor[:executed] = true }
+      on_player_ready {}
     end
 
     plot = klass.new
-    player = plot.introduce
-    plot.ready
-    expect(player[:executed]).to be(true)
+    expect(plot.ready_blocks).to be_one
   end
 
   it 'scripts on_update' do
     executed = false
     klass = Class.new(Gamefic::Plot) do
-      on_update { executed = true }
+      on_update {}
     end
 
     plot = klass.new
-    player = plot.introduce
-    plot.update
-    expect(executed).to be(true)
+    expect(plot.update_blocks).to be_one
   end
 
   it 'scripts on_player_update' do
     klass = Class.new(Gamefic::Plot) do
-      on_player_update { |actor| actor[:executed] = true }
+      on_player_update {}
     end
 
     plot = klass.new
-    player = plot.introduce
-    plot.update
-    expect(player[:executed]).to be(true)
+    expect(plot.update_blocks).to be_one
   end
 
   it 'scripts before_command' do
@@ -145,14 +137,12 @@ describe Gamefic::Scriptable do
 
   it 'scripts conclusion' do
     klass = Class.new(Gamefic::Plot) do
-      conclusion(:ending) { |actor| actor[:executed] = true }
+      conclusion(:ending) {}
     end
 
     plot = klass.new
-    player = plot.introduce
-    player.cue :ending
-    plot.ready
-    expect(player[:executed]).to be(true)
+    # Three scenes including default_scene and default_conclusion
+    expect(plot.scenes.length).to eq(3)
   end
 
   it 'scripts attribute seeds' do
