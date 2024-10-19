@@ -7,8 +7,9 @@ module Gamefic
         @seeds ||= []
       end
 
-      def seed &block
-        seeds.push block
+      def seed *methods, &block
+        seeds.push(proc { methods.flatten.each { |method| send(method) } }) unless methods.empty?
+        seeds.push block if block
       end
     end
   end
