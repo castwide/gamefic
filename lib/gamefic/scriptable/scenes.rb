@@ -29,6 +29,10 @@ module Gamefic
         scene_classes.each_with_object(named_scenes.clone) { |klass, hash| hash[klass] = klass }
       end
 
+      def scenes
+        scene_classes_map.values.uniq
+      end
+
       def block(scene, name = nil)
         named_scenes[name] = scene if name
         scene_classes.add scene

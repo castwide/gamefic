@@ -25,6 +25,10 @@ module Gamefic
         end
       end
 
+      def scenes
+        self.class.scenes
+      end
+
       private
 
       def scene_definitions

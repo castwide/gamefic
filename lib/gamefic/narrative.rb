@@ -77,11 +77,6 @@ module Gamefic
       entity_vault.lock
     end
 
-    # @return [Array<Symbol>]
-    def scenes
-      rulebook.scenes.names
-    end
-
     # Introduce an actor to the story.
     #
     # @param player [Gamefic::Actor]
