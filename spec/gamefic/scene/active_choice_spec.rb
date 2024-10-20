@@ -19,19 +19,21 @@ describe Gamefic::Scene::ActiveChoice do
 
   let(:actor) { plot.introduce }
 
+  let(:narrator) { Gamefic::Narrator.new(plot) }
+
   it 'selects valid input' do
     actor.cue :active_choice
-    plot.ready
+    narrator.start
     actor.queue.push 'one'
-    plot.update
+    narrator.finish
     expect(actor[:executed]).to eq('selection one')
   end
 
   it 'cancels on invalid input' do
     actor.cue :active_choice
-    plot.ready
+    narrator.start
     actor.queue.push 'command'
-    plot.update
+    narrator.finish
     expect(actor[:executed]).to eq('command')
   end
 end

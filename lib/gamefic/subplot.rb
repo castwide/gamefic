@@ -42,11 +42,6 @@ module Gamefic
       self.class.persistent?
     end
 
-    def ready
-      super
-      conclude if concluding?
-    end
-
     def conclude
       players.each do |plyr|
         player_conclude_blocks.each { |blk| blk[plyr] }

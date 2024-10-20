@@ -31,11 +31,13 @@ class SnapshotTestPlot < Gamefic::Plot
 end
 
 describe Gamefic::Snapshot do
-  let(:plot) do
-    SnapshotTestPlot.new.tap do |plot|
-      plot.introduce
-      plot.ready
-    end
+  let(:plot) { SnapshotTestPlot.new }
+  let(:player) { plot.introduce }
+  let(:narrator) { Gamefic::Narrator.new(plot) }
+
+  before :each do
+    player # hitit
+    narrator.start
   end
 
   context 'after the introduction' do
@@ -44,10 +46,6 @@ describe Gamefic::Snapshot do
     it 'restores players' do
       player = restored.players.first
       expect(player.narratives.to_set).to eq([restored, restored.subplots.first].to_set)
-    end
-
-    it 'handles restored introduction cues' do
-      restored.ready
     end
 
     it 'restores subplots' do
@@ -64,7 +62,6 @@ describe Gamefic::Snapshot do
     it 'restores references in actions' do
       player = restored.players.first
       player.cue restored.default_scene
-      restored.ready
       player.perform 'look thing'
       expect(player.messages).to include('thing')
     end
@@ -81,10 +78,9 @@ describe Gamefic::Snapshot do
 
   context 'after a game turn' do
     it 'restores output' do
-      player = plot.players.first
       player.queue.push 'look thing'
-      plot.update
-      plot.ready
+      narrator.finish
+      narrator.start
 
       snapshot = plot.save
       restored_plot = Gamefic::Snapshot.restore snapshot
@@ -94,10 +90,9 @@ describe Gamefic::Snapshot do
     end
 
     it 'restores entity changes' do
-      player = plot.players.first
       player.queue.push 'take thing'
-      plot.update
-      plot.ready
+      narrator.finish
+      narrator.start
 
       snapshot = plot.save
       restored_plot = Gamefic::Snapshot.restore snapshot

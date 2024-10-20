@@ -89,18 +89,6 @@ describe Gamefic::Active do
     expect(object).to be_concluding
   end
 
-  it 'adds last_prompt and last_input to output' do
-    klass = Class.new(Gamefic::Plot)
-    plot = klass.new
-    plot.cast object
-    plot.ready
-    object.queue.push 'my input'
-    plot.update
-    plot.ready
-    expect(object.last_cue.props.output.last_prompt).to eq('>')
-    expect(object.last_cue.props.output.last_input).to eq('my input')
-  end
-
   describe '#proceed' do
     it 'does nothing without an available action in dispatchers' do
       expect { object.proceed }.not_to raise_error

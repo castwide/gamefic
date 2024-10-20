@@ -77,11 +77,6 @@ module Gamefic
       entity_vault.lock
     end
 
-    # @return [Array<Symbol>]
-    def scenes
-      rulebook.scenes.names
-    end
-
     # Introduce an actor to the story.
     #
     # @param player [Gamefic::Actor]
@@ -122,17 +117,15 @@ module Gamefic
       active
     end
 
-    def ready
-      find_and_bind(:ready_blocks).each(&:call)
-    end
-
-    def update
-      find_and_bind(:update_blocks).each(&:call)
-    end
-
     def verbs
       self.class.responses.map(&:verb).uniq
     end
+
+    def turn
+      players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
+    end
+
+    private
 
     def self.inherited(klass)
       super

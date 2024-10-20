@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gamefic
-  class Plot
+  class Narrator
     class Take
       attr_reader :actor, :default_scene, :cue
 
