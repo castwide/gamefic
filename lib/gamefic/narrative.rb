@@ -117,16 +117,6 @@ module Gamefic
       active
     end
 
-    def ready
-      Gamefic.logger.warn "#{caller ? caller.first : '(code)'}: Narrative#ready is deprecated. Use a Narrator instead."
-      narrator.start
-    end
-
-    def update
-      Gamefic.logger.warn "#{caller ? caller.first : '(code)'}: Narrative#update is deprecated. Use a Narrator instead."
-      narrator.finish
-    end
-
     def verbs
       self.class.responses.map(&:verb).uniq
     end
@@ -136,11 +126,6 @@ module Gamefic
     end
 
     private
-
-    # @todo Temporary internal narrator pending removal of #ready and #update
-    def narrator
-      @narrator ||= Narrator.new(self)
-    end
 
     def self.inherited(klass)
       super

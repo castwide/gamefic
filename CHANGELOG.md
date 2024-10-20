@@ -7,6 +7,7 @@
 - Allow named scenes
 - Narrative method binding
 - ActiveChoice scenes
+- Narrator class runs narratives
 
 ## 3.7.0
 - Nuanced scans
