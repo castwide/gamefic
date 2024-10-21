@@ -18,10 +18,8 @@ module Gamefic
     attr_reader :block
 
     # @param verb [Symbol]
-    # @param narrative [Narrative]
     # @param queries [Array<Object>]
     # @param meta [Boolean]
-    # @param block [Proc]
     def initialize verb, *queries, meta: false, &block
       Gamefic.logger.warn "Underscores to hide verbs (`#{verb}`) are deprecated." if verb.to_s.start_with?('_')
       @verb = verb
