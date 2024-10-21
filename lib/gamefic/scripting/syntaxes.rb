@@ -2,10 +2,8 @@ module Gamefic
   module Scripting
     module Syntaxes
       def syntaxes
-        @syntaxes ||= self.class
-                          .included_scripts
-                          .flat_map(&:syntaxes)
-                          .concat(self.class.syntaxes)
+        included_scripts.flat_map(&:syntaxes)
+                        .concat(self.class.syntaxes)
       end
 
       def syntaxes_for *synonyms

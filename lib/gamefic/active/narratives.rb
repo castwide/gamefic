@@ -5,11 +5,11 @@ module Gamefic
     class Narratives
       include Enumerable
 
-      def add narrative
+      def add(narrative)
         narrative_set.add(narrative)
       end
 
-      def delete narrative
+      def delete(narrative)
         narrative_set.delete(narrative)
       end
 

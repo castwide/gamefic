@@ -12,13 +12,11 @@ module Gamefic
       super
     end
 
-    def cast actor
-      chapters.each { |chap| chap.cast actor }
-      super
+    def included_scripts
+      (super + chapters.flat_map(&:included_scripts)).uniq
     end
 
-    def uncast actor
-      chapters.each { |chap| chap.uncast actor }
+    def uncast(actor)
       subplots.each { |sp| sp.uncast actor }
       super
     end
@@ -49,7 +47,7 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def self.append chapter
+    def self.append(chapter)
       appended_chapters.add chapter
     end
 
@@ -57,7 +55,7 @@ module Gamefic
       @appended_chapters ||= Set.new
     end
 
-    def self.restore data
+    def self.restore(data)
       Snapshot.restore data
     end
 
