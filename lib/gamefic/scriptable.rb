@@ -38,14 +38,6 @@ module Gamefic
     include Scenes
     include Seeds
 
-    def bind *methods
-      bound_methods.concat(methods.flatten)
-    end
-
-    def bound_methods
-      @bound_methods ||= []
-    end
-
     def included_scripts
       ancestors.that_are(Scriptable).uniq
     end

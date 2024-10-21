@@ -77,10 +77,10 @@ module Gamefic
         "#{name}(#{arguments.map(&:inspect).join(', ')})"
       end
 
-      def bind model
+      def bind narrative
         clone.tap do |query|
           query.instance_exec do
-            @arguments = model.unproxy(@arguments)
+            @arguments = narrative.unproxy(@arguments)
           end
         end
       end

@@ -23,13 +23,6 @@ module Gamefic
     include Scenes
     include Syntaxes
 
-    bind(*Scriptable::Queries.public_instance_methods)
-
-    def bound_methods
-      included_scripts.flat_map(&:bound_methods)
-                      .uniq
-    end
-
     def included_scripts
       self.class.included_scripts
     end

@@ -25,7 +25,6 @@ module Gamefic
 
         instance_variable_set(ivname, make(klass, **unproxy(opts)))
       end
-      bind name
       seed { send(name) }
       define_singleton_method(name) { Proxy::Attr.new(name) }
     end
@@ -132,7 +131,6 @@ module Gamefic
       klass.seeds.concat seeds
       klass.select_default_scene default_scene
       klass.select_default_conclusion default_conclusion
-      klass.bind(*bound_methods)
     end
   end
 end

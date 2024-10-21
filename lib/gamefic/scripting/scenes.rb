@@ -3,11 +3,11 @@ module Gamefic
     module Scenes
       extend Scriptable
 
-      bind def default_scene
+      def default_scene
         self.class.default_scene
       end
 
-      bind def default_conclusion
+      def default_conclusion
         self.class.default_conclusion
       end
 

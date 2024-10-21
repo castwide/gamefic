@@ -11,7 +11,7 @@ module Gamefic
     attr_reader :config
 
     # @return [Plot]
-    bind attr_reader :plot
+    attr_reader :plot
 
     # @param plot [Gamefic::Plot]
     # @param introduce [Gamefic::Actor, Array<Gamefic::Actor>, nil]
