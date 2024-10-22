@@ -1,22 +1,16 @@
 ## 4.0.0
-- Move rules to Scriptable
-- JIT Scriptable binding
-- Sunset Chapter
-- Sunset Rulebook
-- Separate Scriptable and Narrative modules
-- Allow named scenes
-- Narrative method binding
-- ActiveChoice scenes
-- Narrator class runs narratives
-
-## 3.7.0
 - Nuanced scans
-- Active#command
 - Command hooks
 - Refactored queries
-- Clips
-- Cue scenes by class
+- Cue scenes by class or name
 - Deprecate underscore verbs
+- Move rules to Scriptable
+- JIT Scriptable binding
+- Sunset Rulebook
+- Separate Scriptable and Scripting modules
+- ActiveChoice scenes
+- Narrator class runs narratives
+- Use construct for static entities
 
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings
