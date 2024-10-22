@@ -20,7 +20,7 @@ module Gamefic
       end
 
       def on_player_ready(&block)
-        ready_blocks.push(proc { players.each { |player| block[player] } })
+        ready_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
       end
 
       def on_update(&block)
@@ -28,15 +28,15 @@ module Gamefic
       end
 
       def on_player_update(&block)
-        update_blocks.push(proc { players.each { |player| block[player] } })
+        update_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
       end
 
       def on_player_output(&block)
-        player_output_blocks.push(proc { players.each { |player| block[player] } })
+        player_output_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
       end
 
       def on_player_conclude(&block)
-        player_conclude_blocks.push(proc { players.each { |player| block[player] } })
+        player_conclude_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
       end
 
       def before_commands
