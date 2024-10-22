@@ -37,6 +37,7 @@ module Gamefic
     include Responses
     include Scenes
     include Seeds
+    include Syntaxes
 
     def included_scripts
       ancestors.that_are(Scriptable).uniq

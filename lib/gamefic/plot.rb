@@ -8,8 +8,8 @@ module Gamefic
     attr_reader :chapters
 
     def initialize
-      @chapters = self.class.appended_chapters.map { |chap| chap.new(self) }
       super
+      @chapters = self.class.appended_chapters.map { |chap| chap.new(self) }
     end
 
     def included_scripts

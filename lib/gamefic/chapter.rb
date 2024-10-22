@@ -8,7 +8,21 @@ module Gamefic
     # @param [plot] Plot
     def initialize(plot)
       @plot = plot
+      @concluding = false
       super()
+    end
+
+    def players
+      plot.players
+    end
+
+    def conclude
+      # @todo Void entities?
+      @concluding = true
+    end
+
+    def concluding?
+      @concluding
     end
 
     def self.bind_from_plot *methods

@@ -65,4 +65,47 @@ RSpec.describe Gamefic::Plot do
     expect(plot.subplots).to be_empty
     expect(actor.narratives).to be_one
   end
+
+  it 'appends responses from chapters' do
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      respond(:chapter) {}
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chapter_klass
+    end
+
+    plot = plot_klass.new
+    expect(plot.responses_for(:chapter)).to be_one
+  end
+
+  it 'appends default syntaxes from chapters' do
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      respond(:chapter) {}
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chapter_klass
+
+      respond(:other) {}
+    end
+
+    plot = plot_klass.new
+    expect(plot.syntaxes.map(&:synonym)).to include(:chapter)
+  end
+
+  it 'executes responses from chapters' do
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      respond(:chapter) { |actor| actor[:executed] = true }
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chapter_klass
+    end
+
+    plot = plot_klass.new
+    actor = plot.introduce
+    actor.perform 'chapter'
+    expect(actor[:executed]).to be(true)
+  end
 end
