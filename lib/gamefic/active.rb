@@ -177,10 +177,7 @@ module Gamefic
     end
 
     def last_interaction
-      {
-        last_prompt: @last_cue&.scene&.props&.prompt,
-        last_input: @last_cue&.scene&.props&.input
-      }
+      @last_interaction ||= { last_input: nil, last_prompt: nil }
     end
 
     # Move next_cue into last_cue. This method is typically called by the plot
@@ -188,13 +185,15 @@ module Gamefic
     #
     def cue_started
       @last_cue = @next_cue
-      @this_cue = @last_cue
       @next_cue = nil
     end
 
     def cue_finished
-      @last_input = @this_cue&.props&.input
-      @this_cue = nil
+      @last_input = @last_cue&.props&.input
+      @last_interaction = {
+        last_input: @last_cue&.props&.input,
+        last_prompt: @last_cue&.props&.prompt
+      }
     end
 
     private
