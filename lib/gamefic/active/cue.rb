@@ -39,7 +39,7 @@ module Gamefic
       end
 
       def finish
-        scene.prepare_and_finish
+        scene.play_and_finish
       end
 
       def output

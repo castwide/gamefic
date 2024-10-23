@@ -37,12 +37,12 @@ module Gamefic
         run_start_blocks
       end
 
-      def prepare_and_finish
-        prepare
+      def play_and_finish
+        play
         finish
       end
 
-      def prepare
+      def play
         actor.flush
         props.input = actor.queue.shift&.strip
       end
