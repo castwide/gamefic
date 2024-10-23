@@ -65,6 +65,10 @@ module Gamefic
         narrative_set.flat_map(&:entities)
       end
 
+      def player_output_blocks
+        narrative_set.flat_map(&:player_output_blocks).uniq(&:code)
+      end
+
       private
 
       def narrative_set

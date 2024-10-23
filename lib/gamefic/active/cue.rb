@@ -52,14 +52,14 @@ module Gamefic
         scene.to_s
       end
 
-      def prepare(blocks)
+      def prepare
         props.output[:scene] = scene.to_hash
         props.output[:prompt] = props.prompt
         props.output.merge!({
                               messages: actor.messages,
                               queue: actor.queue
                             })
-        blocks.each { |block| block.call actor, props.output }
+        actor.narratives.player_output_blocks.each { |block| block.call actor, props.output }
       end
 
       private

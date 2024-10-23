@@ -22,6 +22,10 @@ module Gamefic
       end
     end
 
+    attr_reader :narrative
+
+    attr_reader :code
+
     # @param narrative [Narrative]
     # @param code [Proc]
     def initialize(narrative, code)
