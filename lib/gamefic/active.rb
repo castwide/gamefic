@@ -24,11 +24,6 @@ module Gamefic
     # @return [Cue, nil]
     attr_reader :next_cue
 
-    # The input from the last finished cue.
-    #
-    # @return [String, nil]
-    attr_reader :last_input
-
     def current
       Binding.for(self) || narratives.first
     end
@@ -158,7 +153,7 @@ module Gamefic
     # True if the actor is ready to leave the game.
     #
     def concluding?
-      narratives.empty? || @last_cue&.scene&.type == 'Conclusion'
+      narratives.empty? || last_cue&.type == 'Conclusion'
     end
 
     def accessible?
@@ -176,24 +171,19 @@ module Gamefic
       narratives.flat_map(&:synonyms).include?(verb.to_sym)
     end
 
-    def last_interaction
-      @last_interaction ||= { last_input: nil, last_prompt: nil }
-    end
-
-    # Move next_cue into last_cue. This method is typically called by the plot
-    # at the start of a turn.
+    # Move next_cue into last_cue. This method is typically called by the
+    # narrator at the start of a turn.
     #
-    def cue_started
+    def rotate_cue
       @last_cue = @next_cue
       @next_cue = nil
     end
 
-    def cue_finished
-      @last_input = @last_cue&.props&.input
-      @last_interaction = {
-        last_input: @last_cue&.props&.input,
-        last_prompt: @last_cue&.props&.prompt
-      }
+    # The input from the last finished cue.
+    #
+    # @return [String, nil]
+    def last_input
+      last_cue&.props&.input
     end
 
     private

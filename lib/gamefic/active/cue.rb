@@ -5,7 +5,7 @@ module Gamefic
     # The data that actors use to configure a Take.
     #
     class Cue
-      attr_reader :actor, :key, :narrative, :props
+      attr_reader :actor, :key, :narrative
 
       # @return [Hash]
       attr_reader :context
@@ -19,11 +19,15 @@ module Gamefic
       end
 
       def start
+        @scene ||= narrative.prepare(key, actor, nil, **context) ||
+                   try_unbound_class ||
+                   raise("Failed to cue #{key.inspect} in #{narrative}")
         scene.start
       end
 
-      def scene
-        prepare_scene.tap { |scene| @props = scene.props }
+      def props
+        # @todo Add default when scene is not set?
+        scene&.props
       end
 
       def finish
@@ -38,17 +42,30 @@ module Gamefic
         Cue.new(actor, key, narrative, **context)
       end
 
+      def type
+        scene&.type
+      end
+
       def to_s
         scene.to_s
       end
 
+      def prepare
+        props.output[:scene] = scene.to_hash
+        props.output[:prompt] = props.prompt
+        props.output.merge!({
+                              messages: actor.messages,
+                              queue: actor.queue
+                            })
+        return unless actor.last_cue
+
+        props.output.last_input = actor&.last_cue&.props&.input
+        props.output.last_prompt = actor&.last_cue&.props&.prompt
+      end
+
       private
 
-      def prepare_scene
-        narrative.prepare(key, actor, props, **context) ||
-        try_unbound_class ||
-        raise("Failed to cue #{key.inspect} in #{narrative}")
-      end
+      attr_reader :scene
 
       def try_unbound_class
         return unless @key.is_a?(Class) && @key <= Scene::Base

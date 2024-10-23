@@ -35,13 +35,6 @@ module Gamefic
       # @return [void]
       def start
         run_start_blocks
-        props.output[:scene] = to_hash
-        props.output[:prompt] = props.prompt
-        props.output.merge!({
-                              messages: actor.messages,
-                              queue: actor.queue
-                            })
-        props.output.merge! actor.last_interaction
       end
 
       def prepare_and_finish

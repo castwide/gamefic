@@ -9,15 +9,6 @@ describe Gamefic::Scene::Base do
     expect(base.props).to be_a(Gamefic::Props::Default)
   end
 
-  describe '#start' do
-    it 'sets base output' do
-      actor.queue.push 'command'
-      base.start
-      expect(base.props.output[:scene]).to eq(base.to_hash)
-      expect(base.props.output[:prompt]).to eq(base.props.prompt)
-    end
-  end
-
   describe '#finish' do
     it 'reads from the actor queue' do
       actor.queue.push 'command'

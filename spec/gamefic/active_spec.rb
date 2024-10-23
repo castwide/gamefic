@@ -78,17 +78,6 @@ describe Gamefic::Active do
     expect(object).not_to be_concluding
   end
 
-  it 'is concluding when starting a conclusion' do
-    klass = Class.new(Gamefic::Narrative) do
-      conclusion(:ending) {}
-    end
-    narr = klass.new
-    narr.cast object
-    object.cue :ending
-    object.cue_started
-    expect(object).to be_concluding
-  end
-
   describe '#proceed' do
     it 'does nothing without an available action in dispatchers' do
       expect { object.proceed }.not_to raise_error

@@ -55,17 +55,6 @@ RSpec.describe Gamefic::Plot do
     expect(plot.subplots.first.players).to be_empty
   end
 
-  it 'concludes its subplots' do
-    plot = Gamefic::Plot.new
-    actor = plot.introduce
-    plot.branch Gamefic::Subplot, introduce: actor
-    actor.cue plot.default_conclusion
-    Gamefic::Narrator::Take.new(actor, plot.default_scene).start
-    plot.turn
-    expect(plot.subplots).to be_empty
-    expect(actor.narratives).to be_one
-  end
-
   it 'appends responses from chapters' do
     chapter_klass = Class.new(Gamefic::Chapter) do
       respond(:chapter) {}

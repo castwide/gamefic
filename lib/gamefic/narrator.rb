@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-require 'gamefic/narrator/take'
-
 module Gamefic
   # A narrative controller.
   #
@@ -25,7 +22,7 @@ module Gamefic
     # Start a turn.
     #
     def start
-      start_takes
+      start_scenes
       plot.ready_blocks.each(&:call)
       plot.player_output_blocks.each(&:call)
       plot.turn
@@ -34,7 +31,7 @@ module Gamefic
     # Finish a turn.
     #
     def finish
-      finish_takes
+      finish_scenes
       plot.update_blocks.each(&:call)
     end
 
@@ -44,19 +41,23 @@ module Gamefic
 
     private
 
-    def start_takes
-      takes.concat(plot.players.map do |player|
-        Take.new(player, plot.default_scene)
-      end).each(&:start)
+    def start_scenes
+      scenes.concat(plot.players.map do |player|
+        cue = player.next_cue || player.cue(plot.default_scene)
+        cue.start
+        cue.prepare
+        player.rotate_cue
+        cue
+      end)
     end
 
-    def finish_takes
-      takes.each(&:finish)
-      takes.clear
+    def finish_scenes
+      scenes.each(&:finish)
+      scenes.clear
     end
 
-    def takes
-      @takes ||= []
+    def scenes
+      @scenes ||= []
     end
   end
 end

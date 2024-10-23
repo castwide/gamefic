@@ -65,5 +65,17 @@ module Gamefic
       chapters.delete_if(&:concluding?)
       subplots.delete_if(&:concluding?)
     end
+
+    def ready_blocks
+      (super + subplots.flat_map(&:ready_blocks))
+    end
+
+    def update_blocks
+      (super + subplots.flat_map(&:update_blocks))
+    end
+
+    def player_output_blocks
+      (super + subplots.flat_map(&:player_output_blocks))
+    end
   end
 end
