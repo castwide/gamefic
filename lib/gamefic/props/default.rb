@@ -18,23 +18,6 @@ module Gamefic
       # @return [String]
       attr_accessor :input
 
-      # A freeform dictionary of objects related to the scene. Plots can pass
-      # opts to be included in the context when they cue scenes.
-      #
-      # @return [Hash]
-      attr_reader :context
-      alias data context
-
-      # @return [Hash]
-      attr_reader :scene
-
-      # @param scene [Scene]
-      # @param context [Hash]
-      def initialize scene
-        @scene = { name: scene.name, type: scene.type }
-        @context = context
-      end
-
       def prompt
         @prompt ||= '>'
       end

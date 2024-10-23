@@ -13,7 +13,7 @@ module Gamefic
 
       def initialize actor, props = nil, **context
         @actor = actor
-        @props = props || self.class.props_class.new(self)
+        @props = props || self.class.props_class.new
         @context = context
       end
 
