@@ -5,7 +5,14 @@ module Gamefic
     # The data that actors use to configure a Take.
     #
     class Cue
-      attr_reader :actor, :key, :narrative
+      # @return [Actor]
+      attr_reader :actor
+
+      # @return [Class<Scene::Base>, Symbol]
+      attr_reader :key
+
+      # @return [Narrative]
+      attr_reader :narrative
 
       # @return [Hash]
       attr_reader :context
@@ -19,12 +26,11 @@ module Gamefic
       end
 
       def start
-        @scene ||= narrative.prepare(key, actor, nil, **context) ||
-                   try_unbound_class ||
-                   raise("Failed to cue #{key.inspect} in #{narrative}")
+        @scene ||= new_scene
         props.output.last_input = actor.last_cue&.props&.input
         props.output.last_prompt = actor.last_cue&.props&.prompt
         scene.start
+        actor.rotate_cue
       end
 
       def props
@@ -53,9 +59,9 @@ module Gamefic
       end
 
       def prepare
-        props.output[:scene] = scene.to_hash
-        props.output[:prompt] = props.prompt
         props.output.merge!({
+                              scene: scene.to_hash,
+                              prompt: props.prompt,
                               messages: actor.messages,
                               queue: actor.queue
                             })
@@ -65,6 +71,12 @@ module Gamefic
       private
 
       attr_reader :scene
+
+      def new_scene
+        narrative.prepare(key, actor, nil, **context) ||
+          try_unbound_class ||
+          raise("Failed to cue #{key.inspect} in #{narrative}")
+      end
 
       def try_unbound_class
         return unless @key.is_a?(Class) && @key <= Scene::Base

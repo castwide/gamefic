@@ -11,10 +11,18 @@ module Gamefic
       @plot = plot
     end
 
+    # Cast a player character in the plot.
+    #
+    # @param character [Actor]
+    # @return [Actor]
     def cast(character = plot.introduce)
       plot.cast character
     end
 
+    # Uncast a player character from the plot.
+    #
+    # @param character [Actor]
+    # @return [Actor]
     def uncast(character)
       plot.uncast character
     end
@@ -25,13 +33,11 @@ module Gamefic
       cues.concat(plot.players.map do |player|
         cue = player.next_cue || player.cue(plot.default_scene)
         cue.start
-        player.rotate_cue
         cue
       end)
       plot.ready_blocks.each(&:call)
       plot.turn
       cues.each(&:prepare)
-      # scenes.each { |scene| scene.prepare(plot.player_output_blocks) }
     end
 
     # Finish a turn.
