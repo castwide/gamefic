@@ -17,12 +17,13 @@ module Gamefic
     #
     # @param selection [Array<Entity>]
     # @param token [String]
+    # @param use [Array<Scanner::Base>]
     # @return [Result]
-    def self.scan selection, token
+    def self.scan(selection, token, use = processors)
       result = nil
-      processors.each do |processor|
+      use.each do |processor|
         result = processor.scan(selection, token)
-        break unless result.matched.empty?
+        break result unless result.matched.empty?
       end
       result
     end
@@ -34,8 +35,8 @@ module Gamefic
     # Processor classes should be in order from most to least strict rules
     # for matching tokens to entities.
     #
-    # @param klasses [Array<Class<Base>>]
-    # @return [Array<Class<Base>>]
+    # @param klasses [Array<Class<Scanner::Base>>]
+    # @return [Array<Class<Scanner::Base>>]
     def self.use *klasses
       processors.replace klasses.flatten
     end
@@ -45,7 +46,7 @@ module Gamefic
       @processors ||= []
     end
 
-    def self.strictness processor
+    def self.strictness(processor)
       (processors.length - (processors.find_index(processor) || processors.length)) * 100
     end
 
