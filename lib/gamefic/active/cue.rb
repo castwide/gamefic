@@ -22,6 +22,8 @@ module Gamefic
         @scene ||= narrative.prepare(key, actor, nil, **context) ||
                    try_unbound_class ||
                    raise("Failed to cue #{key.inspect} in #{narrative}")
+        props.output.last_input = actor.last_cue&.props&.input
+        props.output.last_prompt = actor.last_cue&.props&.prompt
         scene.start
       end
 
@@ -50,17 +52,14 @@ module Gamefic
         scene.to_s
       end
 
-      def prepare
+      def prepare(blocks)
         props.output[:scene] = scene.to_hash
         props.output[:prompt] = props.prompt
         props.output.merge!({
                               messages: actor.messages,
                               queue: actor.queue
                             })
-        return unless actor.last_cue
-
-        props.output.last_input = actor&.last_cue&.props&.input
-        props.output.last_prompt = actor&.last_cue&.props&.prompt
+        blocks.each { |block| block.call actor, props.output }
       end
 
       private

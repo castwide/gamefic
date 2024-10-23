@@ -32,7 +32,7 @@ module Gamefic
       end
 
       def on_player_output(&block)
-        player_output_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
+        player_output_blocks.push(block)
       end
 
       def on_player_conclude(&block)

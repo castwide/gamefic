@@ -24,8 +24,8 @@ module Gamefic
     def start
       start_scenes
       plot.ready_blocks.each(&:call)
-      plot.player_output_blocks.each(&:call)
       plot.turn
+      scenes.each { |scene| scene.prepare(plot.player_output_blocks) }
     end
 
     # Finish a turn.
@@ -45,7 +45,6 @@ module Gamefic
       scenes.concat(plot.players.map do |player|
         cue = player.next_cue || player.cue(plot.default_scene)
         cue.start
-        cue.prepare
         player.rotate_cue
         cue
       end)
