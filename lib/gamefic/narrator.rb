@@ -22,7 +22,7 @@ module Gamefic
     # Start a turn.
     #
     def start
-      scenes.concat(plot.players.map do |player|
+      cues.concat(plot.players.map do |player|
         cue = player.next_cue || player.cue(plot.default_scene)
         cue.start
         player.rotate_cue
@@ -30,15 +30,15 @@ module Gamefic
       end)
       plot.ready_blocks.each(&:call)
       plot.turn
-      scenes.each(&:prepare)
+      cues.each(&:prepare)
       # scenes.each { |scene| scene.prepare(plot.player_output_blocks) }
     end
 
     # Finish a turn.
     #
     def finish
-      scenes.each(&:finish)
-      scenes.clear
+      cues.each(&:finish)
+      cues.clear
       plot.update_blocks.each(&:call)
     end
 
@@ -48,8 +48,9 @@ module Gamefic
 
     private
 
-    def scenes
-      @scenes ||= []
+    # @return [Array<Active::Cue>]
+    def cues
+      @cues ||= []
     end
   end
 end
