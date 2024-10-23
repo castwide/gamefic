@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-describe Gamefic::Narrative::Entities do
-  let(:object) { Object.new.extend(Gamefic::Narrative::Entities) }
+describe Gamefic::Scripting::Entities do
+  let(:object) { Object.new.extend(Gamefic::Scripting::Entities) }
 
   describe '#pick!' do
     it 'finds a match' do
