@@ -6,12 +6,19 @@ module Gamefic
   class Action
     include Scriptable::Queries
 
-    attr_reader :actor, :response, :matches
+    # @return [Actor]
+    attr_reader :actor
+
+    # @return [Response]
+    attr_reader :response
+
+    # @return [Array<Match>]
+    attr_reader :matches
 
     # @param actor [Actor]
     # @param response [Response]
     # @param matches [Array<Match>]
-    def initialize actor, response, matches
+    def initialize(actor, response, matches)
       @actor = actor
       @response = response
       @matches = matches
@@ -51,11 +58,7 @@ module Gamefic
     end
 
     def valid?
-      return false if response.queries.length != matches.length
-
-      response.queries
-              .zip(matches)
-              .all? { |query, match| query.accept? actor, match.argument }
+      response.accept?(actor, command)
     end
 
     def invalid?
