@@ -18,10 +18,10 @@ describe Gamefic::Dispatcher do
 
     request = Gamefic::Request.new(player, 'look books')
     dispatcher = Gamefic::Dispatcher.new(request)
-    action = dispatcher.execute
+    command = dispatcher.execute
     # Dispatcher should find an exact match for the @books response, even
     # though @bookshelf gets tested first
-    expect(action.command.arguments.first.name).to eq('books')
+    expect(command.arguments.first.name).to eq('books')
   end
 
   it 'cancels commands' do

@@ -16,7 +16,7 @@ module Gamefic
 
     # Start executing actions in the dispatcher.
     #
-    # @return [Action, nil]
+    # @return [Command, nil]
     def execute
       return if @action
 
@@ -29,7 +29,7 @@ module Gamefic
 
       @action.execute
       actor.narratives.after_commands.each { |blk| blk[actor, command] }
-      @action
+      command.freeze
     end
 
     # Execute the next available action.
