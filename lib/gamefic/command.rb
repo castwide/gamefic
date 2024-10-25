@@ -10,13 +10,18 @@ module Gamefic
     # @return [Array<Array<Entity>, Entity, String>]
     attr_reader :arguments
 
+    # @return [String, nil]
+    attr_reader :input
+
     # @param verb [Symbol]
     # @param arguments [Array<Array<Entity>, Entity, String>]
     # @param meta [Boolean]
-    def initialize(verb, arguments, meta = false)
+    # @param input [String, nil]
+    def initialize(verb, arguments, meta = false, input = nil)
       @verb = verb
       @arguments = arguments
       @meta = meta
+      @input = input
     end
 
     def cancel

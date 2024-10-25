@@ -183,7 +183,7 @@ module Gamefic
     #
     # @return [String, nil]
     def last_input
-      last_cue&.props&.input
+      output.last_input
     end
 
     private

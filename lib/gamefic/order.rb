@@ -22,7 +22,7 @@ module Gamefic
            .responses_for(verb)
            .map { |response| match_arguments actor, response, arguments }
            .compact
-           .map { |result| Action.new(actor, *result) }
+           .map { |result| Action.new(actor, result[0], result[1], nil) }
     end
 
     private

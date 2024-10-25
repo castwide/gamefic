@@ -15,13 +15,18 @@ module Gamefic
     # @return [Array<Match>]
     attr_reader :matches
 
+    # @return [String, nil]
+    attr_reader :input
+
     # @param actor [Actor]
     # @param response [Response]
     # @param matches [Array<Match>]
-    def initialize(actor, response, matches)
+    # @param input [String, nil]
+    def initialize(actor, response, matches, input = nil)
       @actor = actor
       @response = response
       @matches = matches
+      @input = input
     end
 
     def verb
@@ -29,7 +34,7 @@ module Gamefic
     end
 
     def command
-      @command ||= Command.new(response.verb, matches.map(&:argument), response.meta?)
+      @command ||= Command.new(response.verb, matches.map(&:argument), response.meta?, input)
     end
 
     def queries
