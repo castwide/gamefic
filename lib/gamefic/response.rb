@@ -52,6 +52,7 @@ module Gamefic
     end
 
     def execute *args
+      Gamefic.logger.warn "Executing unbound response #{inspect}" unless bound?
       gamefic_binding.call(*args)
     end
 
@@ -64,7 +65,7 @@ module Gamefic
     end
 
     def bound?
-      !!@gamefic_binding
+      !!gamefic_binding.narrative
     end
 
     def bind(narrative)
@@ -82,7 +83,7 @@ module Gamefic
     private
 
     def gamefic_binding
-      @gamefic_binding || Binding.new(nil, @block).tap { Gamefic.logger.warn "Executing unbound response" }
+      @gamefic_binding ||= Binding.new(nil, @block)
     end
 
     def generate_default_syntax

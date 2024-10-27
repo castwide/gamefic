@@ -10,8 +10,6 @@ module Gamefic
   class Narrative
     include Scripting
 
-    include Logging
-
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion
 
@@ -123,8 +121,6 @@ module Gamefic
     def turn
       players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
     end
-
-    private
 
     def self.inherited(klass)
       super

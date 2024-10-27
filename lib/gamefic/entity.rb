@@ -52,7 +52,7 @@ module Gamefic
     end
 
     def inspect
-      "#<#{self.class} #{name}>"
+      "#<#{self.class} '#{name}'>"
     end
 
     # Move this entity to its parent entity.
