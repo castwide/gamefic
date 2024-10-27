@@ -62,11 +62,10 @@ module Gamefic
     #   character.perform "take the key"
     #
     # @param command [String]
-    # @return [Action, nil]
+    # @return [Command, nil]
     def perform(command)
       dispatchers.push Dispatcher.new(Request.new(self, command))
-      dispatchers.last.execute
-      dispatchers.pop
+      dispatchers.last.execute.tap { dispatchers.pop }
     end
 
     # Quietly perform a command.
@@ -92,11 +91,10 @@ module Gamefic
     #
     # @param verb [Symbol]
     # @param params [Array]
-    # @return [Action, nil]
+    # @return [Command, nil]
     def execute(verb, *params)
       dispatchers.push Dispatcher.new(Order.new(self, verb, params))
-      dispatchers.last.execute
-      dispatchers.pop
+      dispatchers.last.execute.tap { dispatchers.pop }
     end
 
     # Proceed to the next Action in the current stack.

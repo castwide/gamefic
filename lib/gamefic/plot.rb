@@ -12,10 +12,6 @@ module Gamefic
       @chapters = self.class.appended_chapters.map { |chap| chap.new(self) }
     end
 
-    def included_scripts
-      (super + chapters.flat_map(&:included_scripts)).uniq
-    end
-
     def uncast(actor)
       subplots.each { |sp| sp.uncast actor }
       super
@@ -67,15 +63,31 @@ module Gamefic
     end
 
     def ready_blocks
-      (super + subplots.flat_map(&:ready_blocks))
+      super + subplots.flat_map(&:ready_blocks)
     end
 
     def update_blocks
-      (super + subplots.flat_map(&:update_blocks))
+      super + subplots.flat_map(&:update_blocks)
     end
 
     def player_output_blocks
-      (super + subplots.flat_map(&:player_output_blocks))
+      super + subplots.flat_map(&:player_output_blocks)
+    end
+
+    def responses
+      super + chapters.flat_map(&:responses)
+    end
+
+    def responses_for(*verbs)
+      super + chapters.flat_map { |chap| chap.responses_for(*verbs) }
+    end
+
+    def syntaxes
+      super + chapters.flat_map(&:syntaxes)
+    end
+
+    def find_and_bind(symbol)
+      super + chapters.flat_map { |chap| chap.find_and_bind(symbol) }
     end
   end
 end

@@ -97,4 +97,39 @@ RSpec.describe Gamefic::Plot do
     actor.perform 'chapter'
     expect(actor[:executed]).to be(true)
   end
+
+  it 'binds ready blocks from chapters' do
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      on_player_ready do |player|
+        player[:executed] = true
+      end
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chapter_klass
+    end
+
+    plot = plot_klass.new
+    player = plot.introduce
+    ready_blocks = plot.ready_blocks
+    expect(ready_blocks).to be_one
+    ready_blocks.each { |blk| blk[player] }
+    expect(player[:executed]).to be(true)
+  end
+
+  it 'deletes concluded chapters on turns' do
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      respond(:conclude, 'me') { conclude }
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      append chapter_klass
+    end
+
+    plot = plot_klass.new
+    player = plot.introduce
+    player.perform 'conclude me'
+    plot.turn
+    expect(plot.chapters).to be_empty
+  end
 end

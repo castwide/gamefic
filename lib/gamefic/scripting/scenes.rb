@@ -38,11 +38,6 @@ module Gamefic
       def scene_classes_map
         {}.merge(*included_scripts.flat_map(&:scene_classes_map))
       end
-
-      def find_and_bind(symbol)
-        included_scripts.reverse.flat_map { |script| script.send(symbol) }
-                        .map { |blk| Binding.new(self, blk) }
-      end
     end
   end
 end

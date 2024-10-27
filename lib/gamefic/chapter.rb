@@ -31,5 +31,9 @@ module Gamefic
         define_singleton_method(method) { Proxy::Attr.new(method) }
       end
     end
+
+    def included_scripts
+      super - plot.included_scripts
+    end
   end
 end
