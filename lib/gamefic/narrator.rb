@@ -9,6 +9,7 @@ module Gamefic
 
     def initialize(plot)
       @plot = plot
+      last_cues
     end
 
     # Cast a player character in the plot.
@@ -30,11 +31,8 @@ module Gamefic
     # Start a turn.
     #
     def start
-      cues.concat(plot.players.map do |player|
-        cue = player.next_cue || player.cue(plot.default_scene)
-        cue.start
-        cue
-      end)
+      cues.replace(plot.players.map { |player| player.next_cue || player.cue(plot.default_scene) })
+          .each(&:start)
       plot.ready_blocks.each(&:call)
       plot.turn
       cues.each(&:prepare)
@@ -57,6 +55,11 @@ module Gamefic
     # @return [Array<Active::Cue>]
     def cues
       @cues ||= []
+    end
+
+    def last_cues
+      cues.replace(plot.players.map(&:last_cue))
+          .compact
     end
   end
 end
