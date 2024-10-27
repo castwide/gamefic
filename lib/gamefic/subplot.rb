@@ -51,14 +51,6 @@ module Gamefic
       @concluded = true
     end
 
-    # Make an entity that persists in the subplot's parent plot.
-    #
-    # @see Plot#make
-    #
-    def persist klass, **args
-      plot.make klass, *args
-    end
-
     # Start a new subplot based on the provided class.
     #
     # @note A subplot's host is always the base plot, regardless of whether
@@ -83,7 +75,7 @@ module Gamefic
       @concluded
     end
 
-    def introduce player
+    def introduce(player)
       @concluded ? player : super
     end
 

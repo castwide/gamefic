@@ -5,10 +5,16 @@ module Gamefic
     # @return [Plot]
     attr_reader :plot
 
+    # @return [Hash]
+    attr_reader :config
+
     # @param [plot] Plot
-    def initialize(plot)
+    def initialize(plot, **config)
       @plot = plot
       @concluding = false
+      @config = config
+      configure
+      @config.freeze
       super()
     end
 
@@ -35,5 +41,10 @@ module Gamefic
     def included_scripts
       super - plot.included_scripts
     end
+
+    # Subclasses can override this method to handle additional configuration
+    # options.
+    #
+    def configure; end
   end
 end

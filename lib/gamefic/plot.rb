@@ -9,7 +9,7 @@ module Gamefic
 
     def initialize
       super
-      @chapters = self.class.appended_chapters.map { |chap| chap.new(self) }
+      @chapters = self.class.appended_chapter_map.map { |chap, config| chap.new(self, **unproxy(config)) }
     end
 
     def uncast(actor)
@@ -43,12 +43,12 @@ module Gamefic
       "#<#{self.class}>"
     end
 
-    def self.append(chapter)
-      appended_chapters.add chapter
+    def self.append(chapter, **config)
+      appended_chapter_map[chapter] = config
     end
 
-    def self.appended_chapters
-      @appended_chapters ||= Set.new
+    def self.appended_chapter_map
+      @appended_chapter_map ||= {}
     end
 
     def self.restore(data)
