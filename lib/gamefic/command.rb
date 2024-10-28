@@ -22,6 +22,7 @@ module Gamefic
       @arguments = arguments
       @meta = meta
       @input = input
+      @cancelled = false
     end
 
     def cancel

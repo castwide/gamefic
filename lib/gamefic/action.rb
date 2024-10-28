@@ -73,5 +73,13 @@ module Gamefic
     def meta?
       response.meta?
     end
+
+    # @param actions [Array<Action>]
+    # @return [Array<Action>]
+    def self.sort(actions)
+      actions.sort_by.with_index do |action, idx|
+        [-action.substantiality, -action.strictness, -action.precision, idx]
+      end
+    end
   end
 end

@@ -2,13 +2,17 @@
 
 module Gamefic
   module Active
+    # A narrative container for active entities.
+    #
     class Narratives
       include Enumerable
 
+      # @param narrative [Narrative]
       def add(narrative)
         narrative_set.add(narrative)
       end
 
+      # @param narrative [Narrative]
       def delete(narrative)
         narrative_set.delete(narrative)
       end
@@ -17,6 +21,7 @@ module Gamefic
         narrative_set.empty?
       end
 
+      # @return [Integer]
       def length
         narrative_set.length
       end
@@ -25,14 +30,17 @@ module Gamefic
         narrative_set.one?
       end
 
+      # @return [Array<Response>]
       def responses
         narrative_set.flat_map(&:responses)
       end
 
+      # @return [Array<Response>]
       def responses_for(*verbs)
         narrative_set.flat_map { |narr| narr.responses_for(*verbs) }
       end
 
+      # @return [Array<Syntax>]
       def syntaxes
         narrative_set.flat_map(&:syntaxes)
       end
@@ -41,10 +49,12 @@ module Gamefic
         narrative_set.flat_map { |narr| narr.synonyms_for(*synonyms) }
       end
 
+      # @return [Array<Binding>]
       def before_commands
         narrative_set.flat_map(&:before_commands)
       end
 
+      # @return [Array<Binding>]
       def after_commands
         narrative_set.flat_map(&:after_commands)
       end
@@ -53,24 +63,29 @@ module Gamefic
         narrative_set.each(&block)
       end
 
+      # @return [Array<Narrative>]
       def that_are(*args)
         narrative_set.to_a.that_are(*args)
       end
 
+      # @return [Array<Narrative>]
       def that_are_not(*args)
         narrative_set.to_a.that_are_not(*args)
       end
 
+      # @return [Array<Entity>]
       def entities
         narrative_set.flat_map(&:entities)
       end
 
+      # @return [Array<Binding>]
       def player_output_blocks
         narrative_set.flat_map(&:player_output_blocks).uniq(&:code)
       end
 
       private
 
+      # @return [Set<Narrative>]
       def narrative_set
         @narrative_set ||= Set.new
       end

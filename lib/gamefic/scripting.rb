@@ -23,13 +23,15 @@ module Gamefic
     include Scenes
     include Syntaxes
 
+    # @return [Array<Module<Scriptable>>]
     def included_scripts
       self.class.included_scripts
     end
 
+    # @param symbol [Symbol]
+    # @return [Array<Binding>]
     def find_and_bind(symbol)
       included_scripts.flat_map { |script| script.send(symbol) }
-                      # .concat(self.class.send(symbol))
                       .map { |blk| Binding.new(self, blk) }
     end
 

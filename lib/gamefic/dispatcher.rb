@@ -6,30 +6,19 @@ module Gamefic
   class Dispatcher
     # @param actionable [#to_actions]
     def initialize(actionable)
-      @actions = actionable.to_actions
-                           .sort_by.with_index do |action, idx|
-                             [-action.substantiality, -action.strictness, -action.precision, idx]
-                           end
-      @actor = actions.first&.actor
-      @command = actions.first&.command
+      @actions = Action.sort(actionable.to_actions)
     end
 
     # Start executing actions in the dispatcher.
     #
     # @return [Command, nil]
     def execute
-      return if @action
+      return if action || actions.empty?
 
-      Gamefic.logger.info "Dispatching #{actor.inspect} #{command.inspect}"
       @action = actions.shift
-      return unless @action
-
-      actor.narratives.before_commands.each { |blk| blk[actor, command] }
-      return if command.cancelled?
-
-      @action.execute
-      actor.narratives.after_commands.each { |blk| blk[actor, command] }
-      command.freeze
+      Gamefic.logger.info "Dispatching #{actor.inspect} #{command.inspect}"
+      run_hooks_and_response
+      command
     end
 
     # Execute the next available action.
@@ -38,8 +27,7 @@ module Gamefic
     #
     # @return [Action, nil]
     def proceed
-      return unless @action
-      return if command.cancelled?
+      return if !action || command.cancelled?
 
       actions.shift&.execute
     end
@@ -50,13 +38,36 @@ module Gamefic
 
     private
 
-    # @return [Actor]
-    attr_reader :actor
-
-    # @return [Command]
-    attr_reader :command
-
     # @return [Array<Action>]
     attr_reader :actions
+
+    # @return [Action, nil]
+    attr_reader :action
+
+    # @return [Actor, nil]
+    def actor
+      action.actor
+    end
+
+    # @return [Command]
+    def command
+      action.command
+    end
+
+    def run_hooks(list)
+      list.each do |blk|
+        blk[actor, command]
+        break if command.cancelled?
+      end
+    end
+
+    def run_hooks_and_response
+      run_hooks actor.narratives.before_commands
+      command.freeze
+      return if command.cancelled?
+
+      action.execute
+      run_hooks actor.narratives.after_commands
+    end
   end
 end

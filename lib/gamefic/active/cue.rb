@@ -2,7 +2,7 @@
 
 module Gamefic
   module Active
-    # The data that actors use to configure a Take.
+    # The object that actors use to perform a scene.
     #
     class Cue
       # @return [Actor]
