@@ -25,7 +25,7 @@ module Gamefic
 
       # @return [Scene::Base]
       def prepare name_or_class, actor, props, **context
-        scene_classes_map[name_or_class]&.new(actor, props, **context).tap do |scene|
+        scene_classes_map[name_or_class]&.new(actor, self, props, **context).tap do |scene|
           scene&.rename(name_or_class.to_s) if name_or_class.is_a?(Symbol)
         end
       end

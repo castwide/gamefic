@@ -9,10 +9,11 @@ module Gamefic
       # @todo Code smell
       attr_writer :name
 
-      attr_reader :actor, :props, :context
+      attr_reader :actor, :narrative, :props, :context
 
-      def initialize actor, props = nil, **context
+      def initialize(actor, narrative = nil, props = nil, **context)
         @actor = actor
+        @narrative = narrative
         @props = props || self.class.props_class.new
         @context = context
       end
@@ -21,7 +22,7 @@ module Gamefic
         @name ||= self.class.nickname
       end
 
-      def rename name
+      def rename(name)
         @name = name
       end
 
@@ -73,12 +74,7 @@ module Gamefic
       private
 
       def execute(block)
-        bound = actor.current || actor.narratives.first
-        if bound
-          Binding.new(bound, block).call(actor, props, context)
-        else
-          block[actor, props]
-        end
+        Binding.new(narrative, block).call(actor, props, context)
       end
 
       class << self

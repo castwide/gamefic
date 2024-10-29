@@ -26,7 +26,7 @@ module Gamefic
       end
 
       def start
-        @scene ||= new_scene
+        @scene = new_scene
         props.output.last_input = actor.last_cue&.props&.input
         props.output.last_prompt = actor.last_cue&.props&.prompt
         scene.start
@@ -70,19 +70,20 @@ module Gamefic
 
       private
 
+      # @return [Scene::Base, nil]
       attr_reader :scene
 
       def new_scene
-        narrative.prepare(key, actor, nil, **context) ||
-          try_unbound_class ||
-          raise("Failed to cue #{key.inspect} in #{narrative}")
+        narrative&.prepare(key, actor, nil, **context) ||
+          try_unblocked_class ||
+          raise("Failed to cue #{key.inspect} in #{narrative.inspect}")
       end
 
-      def try_unbound_class
-        return unless @key.is_a?(Class) && @key <= Scene::Base
+      def try_unblocked_class
+        return unless key.is_a?(Class) && @key <= Scene::Base
 
-        Gamefic.logger.info "Cueing unbound scene #{@key}"
-        @key.new(@actor, props, **@context)
+        Gamefic.logger.warn "Cueing scene #{key} scene without narrative" unless narrative
+        key.new(actor, narrative, props, **context)
       end
     end
   end
