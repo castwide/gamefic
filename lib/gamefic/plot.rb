@@ -5,6 +5,7 @@ module Gamefic
   # methods for creating entities, actions, scenes, and hooks.
   #
   class Plot < Narrative
+    # @return [Array<Chapter>]
     attr_reader :chapters
 
     def initialize
