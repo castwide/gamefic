@@ -30,7 +30,7 @@ module Gamefic
 
     # The narratives in which the entity is participating.
     #
-    # @return [Set<Narrative>]
+    # @return [Narratives]
     def narratives
       @narratives ||= Narratives.new
     end
@@ -162,11 +162,12 @@ module Gamefic
       !narratives.empty?
     end
 
-    # True if the actor can perform the verb in the current narrastives.
+    # True if the actor can perform the verb (i.e., an active narrative
+    # understands it).
     #
     # @param verb [String, Symbol]
     def can?(verb)
-      narratives.flat_map(&:synonyms).include?(verb.to_sym)
+      narratives.understand?(verb)
     end
 
     # Move next_cue into last_cue. This method is typically called by the

@@ -49,6 +49,13 @@ module Gamefic
         narrative_set.flat_map { |narr| narr.synonyms_for(*synonyms) }
       end
 
+      # True if the specified verb is understood by any of the narratives.
+      #
+      # @param verb [String, Symbol]
+      def understand?(verb)
+        narrative_set.flat_map(&:synonyms).include?(verb.to_sym)
+      end
+
       # @return [Array<Binding>]
       def before_commands
         narrative_set.flat_map(&:before_commands)
