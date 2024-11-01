@@ -2,8 +2,19 @@
 
 module Gamefic
   module Scene
-    # A scene that presents a list of choices. If the input does not match any
-    # of the choices, it gets executed as a command.
+    # A scene that presents a list of optional choices. The scene can still
+    # attempt to process input that does not match any of the options.
+    #
+    # Authors can use the `without_selection` class method to select one of
+    # three actions to take when the user does not enter one of the options:
+    # `:perform`, `:recue`, or `:continue`.
+    #
+    # * `:perform` - Try to perform the input as a command. This is the default
+    #   behavior.
+    # * `:recue` - Restart the scene until the user makes a valid selection.
+    #   This is the same behavior as a `MultipleChoice` scene.
+    # * `:continue` - Execute the `on_finish` blocks regardless of whether the
+    #   input matches an option.
     #
     class ActiveChoice < MultipleChoice
       WITHOUT_SELECTION_ACTIONS = %i[perform recue continue].freeze
