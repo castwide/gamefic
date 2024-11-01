@@ -48,13 +48,16 @@ module Gamefic
       alias lazy_pick pick
     end
 
-    # Lazy pick an entity or raise an error
+    # Lazy pick an entity or raise an error.
+    #
+    # @note The class method version of `pick!` returns a proxy, so the error
+    #   won't get raised until it gets unproxied in an instance.
     #
     def self.pick! *args
-      Proxy::Pick.new(*args)
+      Proxy::PickEx.new(*args)
     end
     class << self
-      alias lazy_pick! pick
+      alias lazy_pick! pick!
     end
 
     def self.seeds
