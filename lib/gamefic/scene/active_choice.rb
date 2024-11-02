@@ -9,8 +9,8 @@ module Gamefic
     # three actions to take when the user does not enter one of the options:
     # `:perform`, `:recue`, or `:continue`.
     #
-    # * `:perform` - Try to perform the input as a command. This is the default
-    #   behavior.
+    # * `:perform` - Skip the `on_finish` blocks and try to perform the input
+    #   as a command. This is the default behavior.
     # * `:recue` - Restart the scene until the user makes a valid selection.
     #   This is the same behavior as a `MultipleChoice` scene.
     # * `:continue` - Execute the `on_finish` blocks regardless of whether the

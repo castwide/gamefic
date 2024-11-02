@@ -115,6 +115,8 @@ module Gamefic
         def inherited(klass)
           super
           klass.use_props_class props_class
+          klass.start_blocks.concat start_blocks
+          klass.finish_blocks.concat finish_blocks
         end
 
         protected
