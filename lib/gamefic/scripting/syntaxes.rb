@@ -5,10 +5,6 @@ module Gamefic
         included_scripts.flat_map(&:syntaxes)
       end
 
-      def syntaxes_for *synonyms
-        synonyms.flat_map { |syn| syntax_map.fetch(syn, []) }
-      end
-
       def synonyms
         syntaxes.map(&:synonym).uniq
       end
