@@ -24,26 +24,28 @@ module Gamefic
       #     actor.tell "#{The character} returns your salute."
       #   end
       #
-      # @param verb [Symbol] An imperative verb for the command
+      # @param verb [Symbol, String, nil] An imperative verb for the command
       # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      # @return [Symbol]
+      # @return [Response]
       def respond verb, *args, &proc
-        response = Response.new(verb, *args, &proc)
+        response = Response.new(verb&.to_sym, *args, &proc)
         responses.push response
-        # @todo Syntaxes need to be sorted. Maybe just do it in a memoized instance method
-        # @todo Also, underscored verbs are deprecated
-        syntaxes.push response.syntax unless response.verb.to_s.start_with?('_')
-        verb
+        syntaxes.push response.syntax
+        response
       end
 
+      # Create a meta response to a command.
+      #
+      # @param verb [Symbol, String, nil] An imperative verb for the command
+      # @param args [Array<Object>] Filters for the command's tokens
+      # @yieldparam [Gamefic::Actor]
+      # @return [Response]
       def meta verb, *args, &proc
-        response = Response.new(verb, *args, meta: true, &proc)
+        response = Response.new(verb&.to_sym, *args, meta: true, &proc)
         responses.push response
-        # @todo Syntaxes need to be sorted. Maybe just do it in a memoized instance method
-        # @todo Also, underscored verbs are deprecated
-        syntaxes.push response.syntax unless response.verb.to_s.start_with?('_')
-        verb
+        syntaxes.push response.syntax
+        response
       end
 
       def responses
