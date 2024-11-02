@@ -46,7 +46,7 @@ module Gamefic
       end
 
       def syntaxes_for(*synonyms)
-        narrative_set.flat_map { |narr| narr.synonyms_for(*synonyms) }
+        narrative_set.flat_map { |narr| narr.syntaxes_for(*synonyms) }
       end
 
       # True if the specified verb is understood by any of the narratives.
