@@ -30,14 +30,22 @@ module Gamefic
         messenger.stream message
       end
 
+      # @return [String]
       def messages
         messenger.messages
       end
 
+      # Create a temporary buffer while yielding the given block and return the
+      # buffered text.
+      #
+      # @return [String]
       def buffer &block
         messenger.buffer(&block)
       end
 
+      # Clear the current buffer.
+      #
+      # @return [String] The buffer's messages
       def flush
         messenger.flush
       end

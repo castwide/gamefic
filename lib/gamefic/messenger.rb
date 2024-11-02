@@ -48,7 +48,7 @@ module Gamefic
       @buffers.last
     end
 
-    # Clear the buffered messages.
+    # Clear the current buffer.
     #
     # @return [String] The flushed message
     def flush
