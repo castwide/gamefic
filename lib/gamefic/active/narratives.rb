@@ -8,13 +8,17 @@ module Gamefic
       include Enumerable
 
       # @param narrative [Narrative]
+      # @return [self]
       def add(narrative)
         narrative_set.add(narrative)
+        self
       end
 
       # @param narrative [Narrative]
+      # @return [self]
       def delete(narrative)
         narrative_set.delete(narrative)
+        self
       end
 
       def empty?
@@ -49,7 +53,7 @@ module Gamefic
       #
       # @param verb [String, Symbol]
       def understand?(verb)
-        narrative_set.flat_map(&:synonyms).include?(verb.to_sym)
+        verb ? narrative_set.flat_map(&:synonyms).include?(verb.to_sym) : false
       end
 
       # @return [Array<Binding>]
