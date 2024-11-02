@@ -24,6 +24,9 @@ module Gamefic
     # @return [Cue, nil]
     attr_reader :next_cue
 
+    # Get the currently bound or primary narrative.
+    #
+    # @return [Narrative, nil]
     def current
       Binding.for(self) || narratives.first
     end
@@ -145,7 +148,7 @@ module Gamefic
     #
     # @return [Cue, nil]
     def recue
-      (@next_cue = @last_cue&.restart) || logger.warn("No scene to recue")
+      (@next_cue = @last_cue&.restart) || warn_nil('No scene to recue')
     end
 
     # True if the actor is ready to leave the game.
@@ -158,6 +161,8 @@ module Gamefic
       false
     end
 
+    # True if the actor is participating in any narratives.
+    #
     def acting?
       !narratives.empty?
     end
@@ -190,6 +195,11 @@ module Gamefic
     # @return [Array<Dispatcher>]
     def dispatchers
       @dispatchers ||= []
+    end
+
+    def warn_nil(message)
+      logger.warn message
+      nil
     end
   end
 end
