@@ -91,6 +91,10 @@ module Gamefic
       def plaintext arg = /.*/
         Query::Text.new arg, name: 'plaintext'
       end
+
+      def integer
+        Query::Integer.new name: 'integer'
+      end
     end
   end
 end
