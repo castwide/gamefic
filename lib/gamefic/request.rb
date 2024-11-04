@@ -20,6 +20,10 @@ module Gamefic
             .flat_map { |expression| expression_to_actions(actor, expression) }
     end
 
+    def to_command
+      Action.sort(to_actions).first&.command
+    end
+
     private
 
     # @return [Actor]
