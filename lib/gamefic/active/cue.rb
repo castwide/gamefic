@@ -17,6 +17,9 @@ module Gamefic
       # @return [Hash]
       attr_reader :context
 
+      # @return [Scene::Base, nil]
+      attr_reader :scene
+
       # @param scene [Class<Scene::Base>, Symbol]
       def initialize actor, key, narrative, **context
         @actor = actor
@@ -69,9 +72,6 @@ module Gamefic
       end
 
       private
-
-      # @return [Scene::Base, nil]
-      attr_reader :scene
 
       def new_scene
         narrative&.prepare(key, actor, nil, **context) ||

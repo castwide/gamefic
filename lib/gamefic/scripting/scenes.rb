@@ -35,11 +35,11 @@ module Gamefic
         self.class.scenes
       end
 
-      private
-
-      def scene_definitions
-        included_scripts.flat_map(&:scene_definitions)
+      def scene_class(name_or_class)
+        scene_classes_map[name_or_class]
       end
+
+      private
 
       def scene_classes_map
         {}.merge(*included_scripts.flat_map(&:scene_classes_map))
