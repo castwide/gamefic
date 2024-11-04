@@ -8,9 +8,7 @@ module Gamefic
       include Subqueries
 
       def span subject
-        subject.children.flat_map do |c|
-          [c] + subquery_accessible(c)
-        end
+        subject.children
       end
     end
   end
