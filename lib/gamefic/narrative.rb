@@ -15,6 +15,9 @@ module Gamefic
 
     # Construct an entity.
     #
+    # This method adds an instance method for the entity and a class method to
+    # reference it with a proxy.
+    #
     # @return [void]
     def self.construct name, klass, **opts
       ivname = "@#{name}"
@@ -26,12 +29,19 @@ module Gamefic
       seed { send(name) }
       define_singleton_method(name) { Proxy::Attr.new(name) }
     end
-
     class << self
-      # @todo These aliases might be removed before the 4.0 release
-      alias bind_make construct
       alias attr_make construct
       alias attr_seed construct
+    end
+
+    # Add an entity to be seeded when the narrative gets instantiated.
+    #
+    def self.make klass, **opts
+      seed { make(klass, **unproxy(opts)) }
+    end
+    class << self
+      alias make_seed make
+      alias seed_make make
     end
 
     # Lazy pick an entity.
