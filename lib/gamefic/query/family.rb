@@ -11,13 +11,13 @@ module Gamefic
     class Family < Base
       include Subqueries
 
-      def span subject
+      def span(subject)
         Ascendants.span(subject) + Descendants.span(subject) + match_sibling_branches(subject)
       end
 
       private
 
-      def match_sibling_branches subject
+      def match_sibling_branches(subject)
         Siblings.span(subject).flat_map do |child|
           [child] + subquery_accessible(child)
         end

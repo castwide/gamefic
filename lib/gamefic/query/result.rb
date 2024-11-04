@@ -13,7 +13,7 @@ module Gamefic
 
       attr_reader :strictness
 
-      def initialize match, remainder, strictness = 0
+      def initialize(match, remainder, strictness = 0)
         @match = match
         @remainder = remainder
         @strictness = strictness

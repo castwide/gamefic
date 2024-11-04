@@ -7,7 +7,7 @@ module Gamefic
     class Children < Base
       include Subqueries
 
-      def span subject
+      def span(subject)
         subject.children
       end
     end

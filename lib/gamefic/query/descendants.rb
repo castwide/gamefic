@@ -7,7 +7,7 @@ module Gamefic
     class Descendants < Base
       include Subqueries
 
-      def span subject
+      def span(subject)
         subject.children.flat_map do |child|
           [child] + subquery_accessible(child)
         end

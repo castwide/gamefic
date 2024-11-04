@@ -39,7 +39,7 @@ module Gamefic
       #
       # @param subject [Entity]
       # @return [Array<Entity>]
-      def select subject
+      def select(subject)
         span(subject).that_are(*arguments)
       end
 
@@ -51,7 +51,7 @@ module Gamefic
       #
       # @param subject [Entity]
       # @return [Array<Entity>]
-      def span _subject
+      def span(_subject)
         []
       end
 
@@ -77,7 +77,7 @@ module Gamefic
         "#{name}(#{arguments.map(&:inspect).join(', ')})"
       end
 
-      def bind narrative
+      def bind(narrative)
         clone.tap do |query|
           query.instance_exec do
             @arguments = narrative.unproxy(@arguments)
@@ -89,7 +89,7 @@ module Gamefic
         @plain ||= new
       end
 
-      def self.span subject
+      def self.span(subject)
         plain.span(subject)
       end
 
@@ -108,7 +108,7 @@ module Gamefic
         end
       end
 
-      def class_depth klass
+      def class_depth(klass)
         return 1 unless klass.is_a?(Class)
 
         depth = 1

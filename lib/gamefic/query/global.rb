@@ -8,7 +8,7 @@ module Gamefic
     # result.
     #
     class Global < Base
-      def span subject
+      def span(subject)
         return [] unless subject.is_a?(Active)
 
         subject.narratives.entities

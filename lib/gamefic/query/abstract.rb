@@ -5,7 +5,7 @@ module Gamefic
     # Query pseudo-entities that include `Describable` but not `Node`.
     #
     class Abstract < Global
-      def span subject
+      def span(subject)
         super.that_are_not(Node)
              .that_are(Describable)
       end

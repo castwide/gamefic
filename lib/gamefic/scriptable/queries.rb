@@ -73,6 +73,14 @@ module Gamefic
         Query::Siblings.new(*args, name: 'siblings')
       end
 
+      # Define a query that searches an actor's siblings and their descendants.
+      #
+      # @param args [Array<Object>] Query arguments
+      # @return [Query::Scoped]
+      def extended *args
+        Query::Extended.new(*args, name: 'extended')
+      end
+
       # Define a query that returns the actor itself.
       #
       # @param args [Array<Object>] Query arguments
@@ -88,7 +96,7 @@ module Gamefic
       #
       # @param arg [String, Regexp] The string or regular expression to match
       # @return [Query::Text]
-      def plaintext arg = /.*/
+      def plaintext(arg = /.*/)
         Query::Text.new arg, name: 'plaintext'
       end
 

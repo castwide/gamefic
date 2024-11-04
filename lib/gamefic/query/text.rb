@@ -7,7 +7,7 @@ module Gamefic
     class Text < Base
       # @param argument [String, Regexp]
       # @param name [String, nil]
-      def initialize argument = /.*/, name: self.class.name
+      def initialize(argument = /.*/, name: self.class.name)
         super(argument, name: name)
         validate_argument
       end
@@ -21,7 +21,7 @@ module Gamefic
         argument
       end
 
-      def query _subject, token
+      def query(_subject, token)
         if match? token
           Result.new(token, '')
         else
@@ -34,13 +34,13 @@ module Gamefic
         -10_000
       end
 
-      def accept? _subject, token
+      def accept?(_subject, token)
         match?(token)
       end
 
       private
 
-      def match? token
+      def match?(token)
         return false unless token.is_a?(String) && !token.empty?
 
         case argument

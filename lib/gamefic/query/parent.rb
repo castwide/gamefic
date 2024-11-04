@@ -5,7 +5,7 @@ module Gamefic
     # Query the subject's parent.
     #
     class Parent < Base
-      def span subject
+      def span(subject)
         [subject.parent].compact
       end
     end

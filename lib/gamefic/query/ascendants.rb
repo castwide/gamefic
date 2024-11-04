@@ -7,7 +7,7 @@ module Gamefic
     class Ascendants < Base
       include Subqueries
 
-      def span subject
+      def span(subject)
         [subject.parent].tap { |result| result.push result.last.parent while result.last&.accessible? }
                         .compact
       end
