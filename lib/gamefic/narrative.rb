@@ -18,6 +18,8 @@ module Gamefic
     # This method adds an instance method for the entity and a class method to
     # reference it with a proxy.
     #
+    # @param name [Symbol, String] The method name for the entity
+    # @param klass [Class<Gamefic::Entity>]
     # @return [void]
     def self.construct name, klass, **opts
       ivname = "@#{name}"
@@ -36,6 +38,8 @@ module Gamefic
 
     # Add an entity to be seeded when the narrative gets instantiated.
     #
+    # @param klass [Class<Gamefic::Entity>]
+    # @return [void]
     def self.make klass, **opts
       seed { make(klass, **unproxy(opts)) }
     end
@@ -70,6 +74,7 @@ module Gamefic
       alias lazy_pick! pick!
     end
 
+    # @return [Array<Proc>]
     def self.seeds
       @seeds ||= []
     end
@@ -125,10 +130,6 @@ module Gamefic
       player_vault.delete active
       entity_vault.delete active
       active
-    end
-
-    def verbs
-      self.class.responses.map(&:verb).uniq
     end
 
     def turn
