@@ -29,11 +29,33 @@ describe Gamefic::Scene::ActiveChoice do
     expect(actor[:executed]).to eq('selection one')
   end
 
-  it 'cancels on invalid input' do
+  it 'performs on invalid input' do
     actor.cue :active_choice
     narrator.start
     actor.queue.push 'command'
     narrator.finish
     expect(actor[:executed]).to eq('command')
+  end
+
+  it 'recues on invalid input' do
+    scene = plot.named_scenes[:active_choice]
+    scene.without_selection :recue
+    actor.cue :active_choice
+    narrator.start
+    actor.queue.push 'command'
+    narrator.finish
+    narrator.start
+    expect(actor.last_cue.key).to be(:active_choice)
+  end
+
+  it 'continues on invalid input' do
+    scene = plot.named_scenes[:active_choice]
+    scene.without_selection :continue
+    actor.cue :active_choice
+    narrator.start
+    actor.queue.push 'command'
+    narrator.finish
+    narrator.start
+    expect(actor.last_cue.key).to be(plot.default_scene)
   end
 end
