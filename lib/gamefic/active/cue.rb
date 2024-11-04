@@ -82,7 +82,7 @@ module Gamefic
       def try_unblocked_class
         return unless key.is_a?(Class) && @key <= Scene::Base
 
-        Gamefic.logger.warn "Cueing scene #{key} scene without narrative" unless narrative
+        Gamefic.logger.warn "Cueing scene #{key} without narrative" unless narrative
         key.new(actor, narrative, props, **context)
       end
     end
