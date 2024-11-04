@@ -1,22 +1,31 @@
 # frozen_string_literal: true
 
 describe Gamefic::Query::Integer do
-  it 'matches numeric strings' do
-    querydef = Gamefic::Query::Integer.new
-    result = querydef.query(nil, '100')
-    expect(result.match).to eq(100)
+  describe '#query' do
+    it 'matches numeric strings' do
+      querydef = Gamefic::Query::Integer.new
+      result = querydef.query(nil, '100')
+      expect(result.match).to eq(100)
+    end
+
+    it 'matches integers' do
+      querydef = Gamefic::Query::Integer.new
+      result = querydef.query(nil, 100)
+      expect(result.match).to eq(100)
+    end
+
+    it 'rejects unmatched strings' do
+      querydef = Gamefic::Query::Integer.new
+      result = querydef.query(nil, 'some')
+      expect(result.match).to be_nil
+    end
   end
 
-  it 'matches integers' do
-    querydef = Gamefic::Query::Integer.new
-    result = querydef.query(nil, 100)
-    expect(result.match).to eq(100)
-  end
-
-  it 'rejects unmatched strings' do
-    querydef = Gamefic::Query::Integer.new
-    result = querydef.query(nil, 'some')
-    expect(result.match).to be_nil
+  describe '#accept?' do
+    it 'accepts numeric strings' do
+      querydef = Gamefic::Query::Integer.new
+      expect(querydef.accept?(nil, '100')).to be(true)
+    end
   end
 
   it 'passes integers to responses' do

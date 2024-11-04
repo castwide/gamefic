@@ -40,7 +40,7 @@ module Gamefic
       def match?(token)
         return true if token.is_a?(::Integer)
 
-        token.keywords.first =~ /\d+/
+        token.keywords.first.match?(/\d+/)
       end
     end
   end
