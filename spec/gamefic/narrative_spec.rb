@@ -7,7 +7,41 @@ describe Gamefic::Narrative do
       klass = Class.new(Gamefic::Narrative) do
         seed &blk
       end
-      expect(klass.seeds).to be_one
+      expect(klass.seeds).to eq([blk])
+    end
+
+    it 'makes an entity' do
+      klass = Class.new(Gamefic::Narrative) do
+        make Gamefic::Entity, name: 'thing'
+      end
+      plot = klass.new
+      expect(plot.entities).to be_one
+    end
+
+    it 'constructs an entity' do
+      klass = Class.new(Gamefic::Narrative) do
+        construct :thing, Gamefic::Entity, name: 'thing'
+      end
+      plot = klass.new
+      expect(plot.thing).to be_a(Gamefic::Entity)
+    end
+
+    it 'picks an entity' do
+      klass = Class.new(Gamefic::Narrative) do
+        make Gamefic::Entity, name: 'room'
+        make Gamefic::Entity, name: 'thing', parent: pick('room')
+      end
+      plot = klass.new
+      thing = plot.pick('thing')
+      room = plot.pick('room')
+      expect(thing.parent).to be(room)
+    end
+
+    it 'raises pick! errors' do
+      klass = Class.new(Gamefic::Narrative) do
+        make Gamefic::Entity, name: 'thing', parent: pick!('not_a_thing')
+      end
+      expect { klass.new }.to raise_error(RuntimeError)
     end
   end
 
