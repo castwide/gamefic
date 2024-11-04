@@ -18,4 +18,14 @@ describe Gamefic::Query::Integer do
     result = querydef.query(nil, 'some')
     expect(result.match).to be_nil
   end
+
+  it 'passes integers to responses' do
+    klass = Class.new(Gamefic::Plot) do
+      respond(:set, integer) { |actor, number| actor[:hit_points] = number }
+    end
+    plot = klass.new
+    player = plot.introduce
+    player.perform 'set 100'
+    expect(player[:hit_points]).to eq(100)
+  end
 end
