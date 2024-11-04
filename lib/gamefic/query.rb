@@ -2,6 +2,7 @@
 
 require 'gamefic/query/base'
 require 'gamefic/query/text'
+require 'gamefic/query/integer'
 require 'gamefic/query/result'
 require 'gamefic/query/subqueries'
 require 'gamefic/query/global'
