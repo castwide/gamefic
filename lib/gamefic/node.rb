@@ -39,7 +39,12 @@ module Gamefic
 
       parent&.rem_child self
       @parent = node
+      @relation = nil
       parent&.add_child self
+    end
+
+    def relation
+      @relation ||= 'in'
     end
 
     # Add children to the node. Return all the node's children.
@@ -49,6 +54,11 @@ module Gamefic
     def take *children
       children.flatten.each { |child| child.parent = self }
       children
+    end
+
+    def place(parent, relation = nil)
+      self.parent = parent
+      @relation = relation
     end
 
     # Determine if external objects can interact with this object's children.
