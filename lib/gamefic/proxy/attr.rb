@@ -10,7 +10,7 @@ module Gamefic
         @name = name
       end
 
-      def select(narrative)
+      def fetch(narrative)
         narrative.send(name)
       end
     end

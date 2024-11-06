@@ -9,11 +9,7 @@ module Gamefic
         @args = args
       end
 
-      def fetch(narrative)
-        select(narrative)
-      end
-
-      def select(narrative); end
+      def fetch(narrative); end
     end
   end
 end
