@@ -3,15 +3,8 @@
 module Gamefic
   module Proxy
     class Attr < Base
-      attr_reader :name
-
-      def initialize(name)
-        super
-        @name = name
-      end
-
       def fetch(narrative)
-        narrative.send(name)
+        args.inject(narrative) { |object, key| object.send(key) }
       end
     end
   end
