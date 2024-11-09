@@ -92,4 +92,32 @@ describe Gamefic::Node do
     y.parent = top
     expect(x).to be_adjacent(y)
   end
+
+  it 'has a default :in relation' do
+    x = klass.new
+    y = klass.new
+    x.parent = y
+    expect(x.relation).to eq(:in)
+  end
+
+  it 'sets a relation' do
+    x = klass.new
+    y = klass.new
+    x.place y, :on
+    expect(x.relation).to eq(:on)
+  end
+
+  it 'resets new relations' do
+    x = klass.new
+    y = klass.new
+    z = klass.new
+    x.place y, :on
+    x.parent = z
+    expect(x.relation).to eq(:in)
+  end
+
+  it 'has nil relation with nil parent' do
+    x = klass.new
+    expect(x.relation).to be_nil
+  end
 end

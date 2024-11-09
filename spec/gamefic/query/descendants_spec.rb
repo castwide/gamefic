@@ -16,7 +16,7 @@ describe Gamefic::Query::Descendants do
     parent = Gamefic::Entity.new
     context = Gamefic::Entity.new parent: parent, name: 'context'
     child = Gamefic::Entity.new parent: context, name: 'child'
-    child.instance_eval { define_singleton_method(:accessible?) { false} }
+    child.instance_eval { define_singleton_method(:accessible) { [] } }
     _grandchild = Gamefic::Entity.new parent: child, name: 'grandchild'
     descendants = Gamefic::Query::Descendants.new.span(context)
     expect(descendants).to eq([child])

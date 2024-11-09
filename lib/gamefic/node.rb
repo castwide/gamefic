@@ -44,7 +44,7 @@ module Gamefic
     end
 
     def relation
-      @relation ||= 'in'
+      @relation ||= (parent ? :in : nil)
     end
 
     # Add children to the node. Return all the node's children.
@@ -61,13 +61,17 @@ module Gamefic
       @relation = relation
     end
 
-    # Determine if external objects can interact with this object's children.
-    # For example, a game can designate that the contents of a bowl are
-    # accessible, while the contents of a locked safe are not.
+    # Get an array of children that are accessible to external entities.
     #
-    # @return [Boolean]
-    def accessible?
-      true
+    # A child is considered accessible if external entities can interact with
+    # it. For Example, an author can designate that the contents of a bowl are
+    # accessible, while the contents of a locked safe are not. All of an
+    # entity's children are accessible by default. Authors should override the
+    # `accessible` method to change it.
+    #
+    # @return [Array<Entity>]
+    def accessible
+      children
     end
 
     # True if this node is the other's parent.

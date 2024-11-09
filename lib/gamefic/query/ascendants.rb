@@ -8,7 +8,7 @@ module Gamefic
       include Subqueries
 
       def span(subject)
-        [subject.parent].tap { |result| result.push result.last.parent while result.last&.accessible? }
+        [subject.parent].tap { |result| result.push result.last.parent while result.last&.parent&.accessible&.include?(result.last) }
                         .compact
       end
     end

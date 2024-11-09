@@ -15,7 +15,7 @@ describe Gamefic::Query::Family do
     parent = Gamefic::Entity.new
     context = Gamefic::Entity.new parent: parent
     sibling = Gamefic::Entity.new parent: parent
-    sibling.instance_eval { define_singleton_method(:accessible?) { false} }
+    sibling.instance_eval { define_singleton_method(:accessible) { [] } }
     _nephew = Gamefic::Entity.new parent: sibling
     family = Gamefic::Query::Family.new.span(context)
     expect(family).to eq([parent, sibling])

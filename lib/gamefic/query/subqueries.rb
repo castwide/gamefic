@@ -8,10 +8,8 @@ module Gamefic
       # @param [Entity]
       # @return [Array<Entity>]
       def subquery_accessible(entity)
-        return [] unless entity&.accessible?
-
-        entity.children.flat_map do |c|
-          [c] + subquery_accessible(c)
+        entity.accessible.flat_map do |child|
+          [child] + subquery_accessible(child)
         end
       end
     end

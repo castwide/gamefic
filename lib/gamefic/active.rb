@@ -157,8 +157,8 @@ module Gamefic
       narratives.empty? || last_cue&.type == 'Conclusion'
     end
 
-    def accessible?
-      false
+    def accessible
+      []
     end
 
     # True if the actor is participating in any narratives.
