@@ -3,7 +3,7 @@
 module Gamefic
   module Proxy
     class PickEx < Base
-      def select(narrative)
+      def fetch(narrative)
         narrative.pick!(*args)
       end
     end

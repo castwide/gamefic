@@ -46,5 +46,11 @@ module Gamefic
     # options.
     #
     def configure; end
+
+    class << self
+      def config
+        Proxy::Config.new
+      end
+    end
   end
 end

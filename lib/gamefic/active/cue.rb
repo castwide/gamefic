@@ -17,6 +17,9 @@ module Gamefic
       # @return [Hash]
       attr_reader :context
 
+      # @return [Scene::Base, nil]
+      attr_reader :scene
+
       # @param scene [Class<Scene::Base>, Symbol]
       def initialize actor, key, narrative, **context
         @actor = actor
@@ -70,9 +73,6 @@ module Gamefic
 
       private
 
-      # @return [Scene::Base, nil]
-      attr_reader :scene
-
       def new_scene
         narrative&.prepare(key, actor, nil, **context) ||
           try_unblocked_class ||
@@ -82,7 +82,7 @@ module Gamefic
       def try_unblocked_class
         return unless key.is_a?(Class) && @key <= Scene::Base
 
-        Gamefic.logger.warn "Cueing scene #{key} scene without narrative" unless narrative
+        Gamefic.logger.warn "Cueing scene #{key} without narrative" unless narrative
         key.new(actor, narrative, props, **context)
       end
     end

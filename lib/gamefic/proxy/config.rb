@@ -3,7 +3,7 @@
 module Gamefic
   module Proxy
     class Config < Base
-      def select(narrative)
+      def fetch(narrative)
         args.inject(narrative.config) { |hash, key| hash[key] }
       end
 
