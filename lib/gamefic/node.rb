@@ -43,6 +43,7 @@ module Gamefic
       parent&.add_child self
     end
 
+    # @return [Symbol, nil]
     def relation
       @relation ||= (parent ? :in : nil)
     end
@@ -50,16 +51,18 @@ module Gamefic
     # Add children to the node. Return all the node's children.
     #
     # @param children [Array<Node, Array<Node>>]
+    # @param relation [Symbol, nil]
     # @return [Array<Node>]
-    def take *children
-      children.flatten.each { |child| child.parent = self }
+    def take *children, relation: nil
+      children.flatten.each { |child| child.put self, relation }
       children
     end
 
-    def place(parent, relation = nil)
+    def put(parent, relation = nil)
       self.parent = parent
       @relation = relation
     end
+    alias place put
 
     # Get an array of children that are accessible to external entities.
     #
@@ -81,6 +84,9 @@ module Gamefic
       other.parent == self
     end
 
+    # True if this node and the other node have the same parent.
+    #
+    # @param other [Node]
     def adjacent?(other)
       other.parent == parent
     end
