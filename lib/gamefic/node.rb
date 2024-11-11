@@ -43,6 +43,11 @@ module Gamefic
       parent&.add_child self
     end
 
+    # The node's relation to its parent.
+    #
+    # The inherently supported relations are `:in` and `:on`, but authors are
+    # free to define their own.
+    #
     # @return [Symbol, nil]
     def relation
       @relation ||= (parent ? :in : nil)
@@ -69,8 +74,8 @@ module Gamefic
     # A child is considered accessible if external entities can interact with
     # it. For Example, an author can designate that the contents of a bowl are
     # accessible, while the contents of a locked safe are not. All of an
-    # entity's children are accessible by default. Authors should override the
-    # `accessible` method to change it.
+    # entity's children are accessible by default. Authors should override this
+    # method if they need custom behavior.
     #
     # @return [Array<Entity>]
     def accessible

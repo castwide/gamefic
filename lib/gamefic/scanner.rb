@@ -46,6 +46,10 @@ module Gamefic
       @processors ||= []
     end
 
+    # A measure of a scan processor's strictness based on its order of use.
+    # Higher values indicate higher strictness.
+    #
+    # @return [Integer]
     def self.strictness(processor)
       (processors.length - (processors.find_index(processor) || processors.length)) * 100
     end
