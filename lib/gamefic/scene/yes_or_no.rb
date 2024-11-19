@@ -7,6 +7,11 @@ module Gamefic
     class YesOrNo < MultipleChoice
       use_props_class Props::YesOrNo
 
+      def initialize(...)
+        super
+        props.options.freeze
+      end
+
       def self.type
         'YesOrNo'
       end
