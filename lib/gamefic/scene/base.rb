@@ -71,6 +71,11 @@ module Gamefic
         { name: name, type: type }
       end
 
+      def self.inherited klass
+        klass.start_blocks.concat start_blocks
+        klass.finish_blocks.concat finish_blocks
+      end
+
       private
 
       def execute(block)
