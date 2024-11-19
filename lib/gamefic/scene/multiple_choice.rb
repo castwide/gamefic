@@ -8,6 +8,11 @@ module Gamefic
     class MultipleChoice < Base
       use_props_class Props::MultipleChoice
 
+      def initialize(...)
+        super
+        props.options.concat(context[:options] || [])
+      end
+
       def start
         super
         props.output[:options] = props.options

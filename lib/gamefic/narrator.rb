@@ -31,8 +31,7 @@ module Gamefic
     # Start a turn.
     #
     def start
-      cues.replace(plot.players.map { |player| player.next_cue || player.cue(plot.default_scene) })
-          .each(&:start)
+      next_cues
       plot.ready_blocks.each(&:call)
       plot.turn
       cues.each(&:prepare)
@@ -60,6 +59,11 @@ module Gamefic
     def last_cues
       cues.replace(plot.players.map(&:last_cue))
           .compact
+    end
+
+    def next_cues
+      cues.replace(plot.players.map { |player| player.next_cue || player.cue(plot.default_scene) })
+          .each(&:start)
     end
   end
 end
