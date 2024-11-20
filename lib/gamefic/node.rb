@@ -53,6 +53,13 @@ module Gamefic
       @relation ||= (parent ? :in : nil)
     end
 
+    # @param symbol [Symbol, nil]
+    def relation=(symbol)
+      raise "Invalid relation #{symbol.inspect} on #{inspect} without parent" unless parent
+
+      @relation = symbol
+    end
+
     # Add children to the node. Return all the node's children.
     #
     # @param children [Array<Node, Array<Node>>]
