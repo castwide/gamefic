@@ -14,6 +14,7 @@ describe Gamefic::Scriptable::Queries do
       obj.entities.push Gamefic::Entity.new(name: 'parent entity')
       obj.entities.push Gamefic::Entity.new(name: 'entity one', parent: obj.entities.first)
       obj.entities.push Gamefic::Entity.new(name: 'entity two', parent: obj.entities.first)
+      obj.entities.push Gamefic::Entity.new(name: 'grandchild', parent: obj.entities.first.children.first)
     end
   }
 
@@ -47,6 +48,14 @@ describe Gamefic::Scriptable::Queries do
       parent = object.entities.first
       result = query.query(parent, 'one')
       expect(result.match).to be(object.entities[1])
+    end
+  end
+
+  describe '#descendants' do
+    it 'finds matching descendants' do
+      query = object.descendants
+      parent = object.entities.first
+      expect(query.span(parent).sort_by(&:name)).to eq(object.entities[1..].sort_by(&:name))
     end
   end
 

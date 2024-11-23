@@ -42,8 +42,7 @@ module Gamefic
       super - plot.included_scripts
     end
 
-    # Subclasses can override this method to handle additional configuration
-    # options.
+    # Subclasses can override this method to handle additional configuration.
     #
     def configure; end
 

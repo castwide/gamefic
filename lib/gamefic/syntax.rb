@@ -100,13 +100,7 @@ module Gamefic
         .map { |syn| syn.tokenize(text) }
         .compact
         .uniq { |exp| [exp.verb, exp.tokens] }
-        .sort { |syn, other_syn| syn.compare other_syn }
-    end
-
-    # Compare two syntaxes for the purpose of ordering them in rulebooks.
-    #
-    def compare(other)
-      template.compare other.template
+        .sort_by { |exp| [-exp.tokens.compact.length] }
     end
 
     # @param string [String]

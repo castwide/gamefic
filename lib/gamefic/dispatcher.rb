@@ -32,10 +32,6 @@ module Gamefic
       actions.shift&.execute
     end
 
-    def cancel
-      command&.cancel
-    end
-
     private
 
     # @return [Array<Action>]

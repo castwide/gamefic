@@ -13,6 +13,12 @@ describe Gamefic::Scene::MultipleChoice do
     expect(multiple_choice.props).to be_a(Gamefic::Props::MultipleChoice)
   end
 
+  it 'outputs options on start' do
+    multiple_choice.props.options.concat ['one', 'two', 'three']
+    multiple_choice.start
+    expect(multiple_choice.props.output[:options]).to eq(['one', 'two', 'three'])
+  end
+
   it 'sets props on valid input' do
     multiple_choice.props.options.concat ['one', 'two', 'three']
     actor.queue.push 'one'
