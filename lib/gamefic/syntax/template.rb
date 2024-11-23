@@ -34,14 +34,6 @@ module Gamefic
         @verb ||= Syntax.literal_or_nil(keywords.first)
       end
 
-      def compare other
-        if keywords.length == other.keywords.length
-          other.verb <=> verb
-        else
-          other.keywords.length <=> keywords.length
-        end
-      end
-
       # @param tmpl_or_str [Template, String]
       # @return [Template]
       def self.to_template tmpl_or_str

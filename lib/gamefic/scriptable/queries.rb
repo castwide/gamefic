@@ -16,19 +16,6 @@ module Gamefic
       end
       alias anywhere global
 
-      # Define a query that searches for abstract entities.
-      #
-      # An abstract entity is a pseudo-entity that is describable but does
-      # not have a parent or children.
-      #
-      # If the subject is not an actor, the result will always be empty.
-      #
-      # @param args [Array<Object>] Query arguments
-      # @return [Query::Abstract]
-      def abstract *args
-        Query::Abstract.new(*args)
-      end
-
       # Define a query that searches an actor's family of entities. The
       # results include the parent, siblings, children, and accessible
       # descendants of siblings and children.

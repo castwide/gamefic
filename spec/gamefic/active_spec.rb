@@ -79,8 +79,19 @@ describe Gamefic::Active do
   end
 
   describe '#proceed' do
+    it 'performs the next action in the current dispatcher' do
+      klass = Class.new(Gamefic::Plot) do
+        respond(:command) { |actor| actor[:command] = 'first' }
+        respond(:command) { |actor| actor.proceed }  
+      end
+      plot = klass.new
+      plot.cast object
+      object.perform 'command'
+      expect(object[:command]).to eq('first')
+    end
+
     it 'does nothing without an available action in dispatchers' do
-      expect { object.proceed }.not_to raise_error
+      expect(object.proceed).to be_nil
     end
   end
 
