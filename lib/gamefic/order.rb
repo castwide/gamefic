@@ -20,7 +20,7 @@ module Gamefic
     def to_actions
       actor.narratives
            .responses_for(verb)
-           .map { |response| match_arguments actor, response, arguments }
+           .map { |response| match_arguments(response) }
            .compact
            .map { |result| Action.new(actor, result[0], result[1], nil) }
     end
@@ -36,14 +36,14 @@ module Gamefic
     # @return [Array<Object>]
     attr_reader :arguments
 
-    def match_arguments(actor, response, params)
-      return nil if response.queries.length != params.length
+    def match_arguments(response)
+      return nil if response.queries.length != arguments.length
 
-      matches = response.queries.zip(params).each_with_object([]) do |zipped, matches|
+      matches = response.queries.zip(arguments).each_with_object([]) do |zipped, result|
         query, param = zipped
         return nil unless query.accept?(actor, param)
 
-        matches.push Match.new(param, param, 1000)
+        result.push Match.new(param, param, 1000)
       end
       [response, matches]
     end
