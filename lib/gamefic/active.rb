@@ -24,13 +24,6 @@ module Gamefic
     # @return [Cue, nil]
     attr_reader :next_cue
 
-    # Get the currently bound or primary narrative.
-    #
-    # @return [Narrative, nil]
-    def current
-      Binding.for(self) || narratives.first
-    end
-
     # The narratives in which the entity is participating.
     #
     # @return [Narratives]
@@ -191,6 +184,13 @@ module Gamefic
     end
 
     private
+
+    # Get the currently bound or primary narrative.
+    #
+    # @return [Narrative, nil]
+    def current
+      Binding.for(self) || narratives.first
+    end
 
     # @return [Array<Dispatcher>]
     def dispatchers
