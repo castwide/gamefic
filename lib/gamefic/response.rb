@@ -21,7 +21,7 @@ module Gamefic
     # @param queries [Array<Object>]
     # @param meta [Boolean]
     def initialize verb, *queries, meta: false, &block
-      @verb = verb
+      @verb = verb&.to_sym
       @meta = meta
       @block = block
       @queries = map_queries(queries)

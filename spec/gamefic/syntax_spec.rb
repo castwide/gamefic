@@ -99,4 +99,9 @@ describe Gamefic::Syntax do
       Gamefic::Syntax.new('make', 'make :thing')
     }.to raise_error(ArgumentError)
   end
+
+  it 'accepts unicode characters' do
+    syntax = Gamefic::Syntax.new('ꩺ', 'do')
+    expect(syntax.accept?('ꩺ')).to be(true)
+  end
 end

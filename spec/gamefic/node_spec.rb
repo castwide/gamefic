@@ -123,7 +123,7 @@ describe Gamefic::Node do
 
   it 'raises on relation without parent' do
     x = klass.new
-    expect { x.relation = :in }.to raise_error
+    expect { x.relation = :in }.to raise_error(Gamefic::NodeError)
   end
 
   it 'allows nil relation without parent' do

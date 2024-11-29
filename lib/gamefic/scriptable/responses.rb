@@ -53,7 +53,8 @@ module Gamefic
       end
 
       def responses_for(*verbs)
-        responses.select { |response| verbs.include? response.verb }
+        symbols = verbs.map { |verb| verb&.to_sym }
+        responses.select { |response| symbols.include? response.verb }
       end
 
       def verbs

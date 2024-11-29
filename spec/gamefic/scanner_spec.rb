@@ -63,4 +63,14 @@ RSpec.describe Gamefic::Scanner do
     expect(result.matched).to eq([three])
     expect(result.remainder).to eq('')
   end
+
+  it 'handles unicode characters' do
+    one = Gamefic::Entity.new name: 'ꩺ'
+    two = Gamefic::Entity.new name: 'two'
+    objects = [one, two]
+    token = 'ꩺ'
+    result = Gamefic::Scanner.scan(objects, token)
+    expect(result.matched).to eq([one])
+    expect(result.remainder).to eq('')
+  end
 end

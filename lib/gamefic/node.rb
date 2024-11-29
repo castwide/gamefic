@@ -55,7 +55,7 @@ module Gamefic
 
     # @param symbol [Symbol, nil]
     def relation=(symbol)
-      raise "Invalid relation #{symbol.inspect} on #{inspect} without parent" unless parent || !symbol
+      raise NodeError, "Invalid relation #{symbol.inspect} on #{inspect} without parent" unless parent || !symbol
 
       @relation = symbol
     end
