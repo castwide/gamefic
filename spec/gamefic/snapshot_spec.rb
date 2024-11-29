@@ -10,6 +10,9 @@ class SnapshotTestPlot < Gamefic::Plot
             name: 'thing',
             parent: room
 
+  construct :unicode, Gamefic::Entity,
+            name: 'ぇワ'
+
   seed do
     # Make sure various other objects can get serialized
     @object = Object.new

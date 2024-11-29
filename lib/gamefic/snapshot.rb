@@ -7,22 +7,20 @@ module Gamefic
   # Save and restore plots.
   #
   module Snapshot
-    # Save a base64-encoded snapshot of a plot.
+    # Save a binary snapshot of a plot.
     #
     # @param plot [Plot]
     # @return [String]
-    def self.save plot
-      binary = Marshal.dump(plot)
-      Base64.encode64(binary)
+    def self.save(plot)
+      Marshal.dump(plot)
     end
 
-    # Restore a plot from a base64-encoded string.
+    # Restore a plot from a binary string.
     #
     # @param snapshot [String]
     # @return [Plot]
-    def self.restore snapshot
-      binary = Base64.decode64(snapshot)
-      Marshal.load(binary)
+    def self.restore(snapshot)
+      Marshal.load(snapshot)
     end
   end
 end
