@@ -28,29 +28,4 @@ RSpec.describe Gamefic::Request do
       expect(actions.first.verb).to be('ぇワ'.to_sym)
     end
   end
-
-  describe '#to_command' do
-    it 'returns a matching command' do
-      klass = Class.new(Gamefic::Plot) do
-        respond(:verb1) {}
-        respond(:verb2) {}
-      end
-      plot = klass.new
-      player = plot.introduce
-      request = Gamefic::Request.new(player, 'verb1')
-      command = request.to_command
-      expect(command.verb).to be(:verb1)
-    end
-
-    it 'matches unicode characters' do
-      klass = Class.new(Gamefic::Plot) do
-        respond('ぇワ') {}
-      end
-      plot = klass.new
-      player = plot.introduce
-      request = Gamefic::Request.new(player, 'ぇワ')
-      command = request.to_command
-      expect(command.verb).to be('ぇワ'.to_sym)
-    end
-  end
 end

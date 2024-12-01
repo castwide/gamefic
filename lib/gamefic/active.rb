@@ -169,11 +169,13 @@ module Gamefic
     end
 
     # Move next_cue into last_cue. This method is typically called by the
-    # narrator at the start of a turn.
+    # narrator at the start of a turn. It returns the last cue.
     #
+    # @return [Cue, nil]
     def rotate_cue
       @last_cue = @next_cue
       @next_cue = nil
+      @last_cue
     end
 
     # The input from the last finished cue.

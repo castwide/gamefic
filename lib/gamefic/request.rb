@@ -16,13 +16,10 @@ module Gamefic
 
     # @return [Array<Action>]
     def to_actions
-      Syntax.tokenize(input, actor.narratives.syntaxes)
-            .flat_map { |expression| expression_to_actions(actor, expression) }
-    end
-
-    # @return [Command, nil]
-    def to_command
-      Action.sort(to_actions).first&.command
+      Action.sort(
+        Syntax.tokenize(input, actor.narratives.syntaxes)
+              .flat_map { |expression| expression_to_actions(actor, expression) }
+      )
     end
 
     private

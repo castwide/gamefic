@@ -6,7 +6,7 @@ module Gamefic
   class Dispatcher
     # @param actionable [#to_actions]
     def initialize(actionable)
-      @actions = Action.sort(actionable.to_actions)
+      @actions = actionable.to_actions
     end
 
     # Start executing actions in the dispatcher.
