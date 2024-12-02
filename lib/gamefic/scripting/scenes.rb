@@ -1,8 +1,6 @@
 module Gamefic
   module Scripting
     module Scenes
-      extend Scriptable
-
       # @return [Scene::Base]
       def default_scene
         self.class.default_scene

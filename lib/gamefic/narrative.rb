@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module Gamefic
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional
@@ -15,11 +13,6 @@ module Gamefic
 
     def initialize
       seeds.each { |blk| instance_exec(&blk) }
-      post_script
-    end
-
-    def post_script
-      entity_vault.lock
     end
 
     # Introduce an actor to the story.
@@ -46,8 +39,8 @@ module Gamefic
     # @return [Gamefic::Active]
     def cast(active)
       active.narratives.add self
-      player_vault.add active
-      entity_vault.add active
+      player_set.add active
+      entity_set.add active
       active
     end
 
@@ -57,8 +50,8 @@ module Gamefic
     # @return [Gamefic::Active]
     def uncast(active)
       active.narratives.delete self
-      player_vault.delete active
-      entity_vault.delete active
+      player_set.delete active
+      entity_set.delete active
       active
     end
 

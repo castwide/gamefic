@@ -59,13 +59,13 @@ module Gamefic
       #   @return [String, nil]
 
       # @param key [Symbol]
-      def [] key
+      def [](key)
         raw_data[key]
       end
 
       # @param key [Symbol]
       # @param value [Object]
-      def []= key, value
+      def []=(key, value)
         raw_data[key] = value
       end
 
@@ -74,15 +74,15 @@ module Gamefic
         raw_data.dup
       end
 
-      def to_json _ = nil
+      def to_json(_ = nil)
         raw_data.to_json
       end
 
-      def merge! data
+      def merge!(data)
         data.each { |key, val| self[key] = val }
       end
 
-      def replace data
+      def replace(data)
         raw_data.replace data
       end
 

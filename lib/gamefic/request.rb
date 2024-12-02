@@ -16,13 +16,10 @@ module Gamefic
 
     # @return [Array<Action>]
     def to_actions
-      Syntax.tokenize(input, actor.narratives.syntaxes)
-            .flat_map { |expression| expression_to_actions(actor, expression) }
-    end
-
-    # @return [Command, nil]
-    def to_command
-      Action.sort(to_actions).first&.command
+      Action.sort(
+        Syntax.tokenize(input, actor.narratives.syntaxes)
+              .flat_map { |expression| expression_to_actions(actor, expression) }
+      )
     end
 
     private
@@ -53,8 +50,7 @@ module Gamefic
         result = query.filter(actor, "#{remainder} #{token}".strip)
         return nil unless result.match
 
-        # @todo Get the remainder out of the token, maybe
-        results.push Match.new(result.match, token, result.strictness)
+        results.push Match.new(result.match, token[0..-result.remainder.length-1], result.strictness)
         remainder = result.remainder
       end
       return nil unless remainder.empty?

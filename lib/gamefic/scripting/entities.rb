@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module Gamefic
   module Scripting
     # Methods related to managing entities.
     #
     module Entities
-      extend Scriptable
+      # extend Scriptable
       include Proxies
 
       # @return [Array<Gamefic::Entity>]
       def entities
-        entity_vault.array
+        entity_set.to_a
       end
 
       # @return [Array<Gamefic::Actor, Gamefic::Active>]
       def players
-        player_vault.array
+        player_set.to_a
       end
 
       # Create an entity.
@@ -29,13 +31,14 @@ module Gamefic
       # @param args [Hash]
       # @return [Gamefic::Entity]
       def make klass, **opts
-        entity_vault.add klass.new(**unproxy(opts))
+        klass.new(**unproxy(opts)).tap { |entity| entity_set.add entity }
       end
 
-      def destroy entity
+      def destroy(entity)
         entity.children.each { |child| destroy child }
         entity.parent = nil
-        entity_vault.delete entity
+        entity_set.delete entity
+        entity
       end
 
       def find *args
@@ -81,12 +84,12 @@ module Gamefic
 
       private
 
-      def entity_vault
-        @entity_vault ||= Vault.new
+      def entity_set
+        @entity_set ||= Set.new
       end
 
-      def player_vault
-        @player_vault ||= Vault.new
+      def player_set
+        @player_set ||= Set.new
       end
     end
   end

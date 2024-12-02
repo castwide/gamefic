@@ -5,7 +5,11 @@ require 'set'
 module Gamefic
   module Scriptable
     module Scenes
-      attr_reader :default_scene, :default_conclusion
+      # @return [Scene::Base]
+      attr_reader :default_scene
+
+      # @return [Scene::Conclusion]
+      attr_reader :default_conclusion
 
       def select_default_scene(klass)
         scene_classes.add klass

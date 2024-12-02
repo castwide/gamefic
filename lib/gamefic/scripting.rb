@@ -3,7 +3,7 @@
 module Gamefic
   # An instance module that enables scripting.
   #
-  # Including `Gamefic::Scripting` also extend `Gamefic::Scriptable`.
+  # Including `Gamefic::Scripting` also extends `Gamefic::Scriptable`.
   #
   module Scripting
     require 'gamefic/scripting/proxies'

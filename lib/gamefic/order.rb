@@ -18,11 +18,13 @@ module Gamefic
 
     # @return [Array<Action>]
     def to_actions
-      actor.narratives
-           .responses_for(verb)
-           .map { |response| match_arguments(response) }
-           .compact
-           .map { |result| Action.new(actor, result[0], result[1], nil) }
+      Action.sort(
+        actor.narratives
+            .responses_for(verb)
+            .map { |response| match_arguments(response) }
+            .compact
+            .map { |result| Action.new(actor, result[0], result[1], nil) }
+      )
     end
 
     private
