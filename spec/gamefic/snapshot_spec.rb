@@ -19,6 +19,12 @@ class SnapshotTestPlot < Gamefic::Plot
     @date_time = DateTime.new
   end
 
+  multiple_choice :anon_scene do
+    on_start do |_actor, props|
+      props.options.push 'one', 'two'
+    end
+  end
+
   introduction do |actor|
     actor.parent = room
     branch Gamefic::Subplot, introduce: actor, configured: thing
@@ -101,6 +107,15 @@ describe Gamefic::Snapshot do
       restored_plot = Gamefic::Snapshot.restore snapshot
       restored_player = restored_plot.players.first
       expect(restored_plot.pick('thing').parent).to be(restored_player)
+    end
+
+    it 'restores with anonymous scenes' do
+      player.cue :anon_scene
+      narrator.start
+
+      snapshot = plot.save
+      restored_plot = Gamefic::Snapshot.restore snapshot
+      expect(restored_plot.players.first.last_cue.key).to be(:anon_scene)
     end
   end
 end

@@ -17,8 +17,8 @@ module Gamefic
       # @return [Hash]
       attr_reader :context
 
-      # @return [Scene::Base, nil]
-      attr_reader :scene
+      # @return [Props::Default, nil]
+      attr_reader :props
 
       # @param scene [Class<Scene::Base>, Symbol]
       def initialize actor, key, narrative, **context
@@ -29,20 +29,18 @@ module Gamefic
       end
 
       def start
-        @scene = new_scene
-        props.output.last_input = actor.last_cue&.props&.input
-        props.output.last_prompt = actor.last_cue&.props&.prompt
+        prepare_output
         scene.start
         actor.rotate_cue
       end
 
-      def props
-        # @todo Add default when scene is not set?
-        scene&.props
-      end
-
       def finish
         scene.play_and_finish
+      end
+
+      # @return [Scene::Base]
+      def scene
+        new_scene.tap { |scene| @props = scene.props }
       end
 
       def output
@@ -74,7 +72,7 @@ module Gamefic
       private
 
       def new_scene
-        narrative&.prepare(key, actor, nil, **context) ||
+        narrative&.prepare(key, actor, props, **context) ||
           try_unblocked_class ||
           raise("Failed to cue #{key.inspect} in #{narrative.inspect}")
       end
@@ -84,6 +82,12 @@ module Gamefic
 
         Gamefic.logger.warn "Cueing scene #{key} without narrative" unless narrative
         key.new(actor, narrative, props, **context)
+      end
+
+      def prepare_output
+        scene
+        props.output.last_input = actor.last_cue&.props&.input
+        props.output.last_prompt = actor.last_cue&.props&.prompt
       end
     end
   end
