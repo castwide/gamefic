@@ -50,8 +50,7 @@ module Gamefic
         result = query.filter(actor, "#{remainder} #{token}".strip)
         return nil unless result.match
 
-        # @todo Get the remainder out of the token, maybe
-        results.push Match.new(result.match, token, result.strictness)
+        results.push Match.new(result.match, token[0..-result.remainder.length-1], result.strictness)
         remainder = result.remainder
       end
       return nil unless remainder.empty?
