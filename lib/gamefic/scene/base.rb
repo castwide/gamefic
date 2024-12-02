@@ -71,7 +71,9 @@ module Gamefic
         { name: name, type: type }
       end
 
-      def self.inherited klass
+      def self.inherited(klass)
+        super
+        klass.use_props_class props_class
         klass.start_blocks.concat start_blocks
         klass.finish_blocks.concat finish_blocks
       end
@@ -115,13 +117,6 @@ module Gamefic
 
         def conclusion?
           false
-        end
-
-        def inherited(klass)
-          super
-          klass.use_props_class props_class
-          klass.start_blocks.concat start_blocks
-          klass.finish_blocks.concat finish_blocks
         end
 
         protected
