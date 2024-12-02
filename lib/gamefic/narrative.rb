@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module Gamefic
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional

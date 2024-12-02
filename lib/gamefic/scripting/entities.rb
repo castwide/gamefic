@@ -7,7 +7,7 @@ module Gamefic
     # Methods related to managing entities.
     #
     module Entities
-      extend Scriptable
+      # extend Scriptable
       include Proxies
 
       # @return [Array<Gamefic::Entity>]
