@@ -36,10 +36,6 @@ module Gamefic
                    .tap { |sub| subplots.push sub }
     end
 
-    def save
-      Snapshot.save self
-    end
-
     def inspect
       "#<#{self.class}>"
     end
@@ -50,10 +46,6 @@ module Gamefic
 
     def self.appended_chapter_map
       @appended_chapter_map ||= {}
-    end
-
-    def self.restore(data)
-      Snapshot.restore data
     end
 
     def turn

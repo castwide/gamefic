@@ -39,13 +39,13 @@ class SnapshotTestPlot < Gamefic::Plot
   end
 end
 
-describe Gamefic::Snapshot do
+describe 'snapshots' do
   let(:plot) { SnapshotTestPlot.new }
   let(:player) { plot.introduce }
   let(:narrator) { Gamefic::Narrator.new(plot) }
 
   before :each do
-    player # hitit
+    narrator.cast player
     narrator.start
   end
 
@@ -92,7 +92,7 @@ describe Gamefic::Snapshot do
       narrator.start
 
       snapshot = plot.save
-      restored_plot = Gamefic::Snapshot.restore snapshot
+      restored_plot = Gamefic::Narrative.restore snapshot
       restored_player = restored_plot.players.first
       expect(restored_player.output.to_hash).to eq(player.output.to_hash)
       expect(restored_player.output.to_hash).to eq(player.output.to_hash)
@@ -104,7 +104,7 @@ describe Gamefic::Snapshot do
       narrator.start
 
       snapshot = plot.save
-      restored_plot = Gamefic::Snapshot.restore snapshot
+      restored_plot = Gamefic::Narrative.restore snapshot
       restored_player = restored_plot.players.first
       expect(restored_plot.pick('thing').parent).to be(restored_player)
     end
@@ -114,7 +114,7 @@ describe Gamefic::Snapshot do
       narrator.start
 
       snapshot = plot.save
-      restored_plot = Gamefic::Snapshot.restore snapshot
+      restored_plot = Gamefic::Narrative.restore(snapshot)
       expect(restored_plot.players.first.last_cue.key).to be(:anon_scene)
     end
   end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'corelib/marshal' if RUBY_ENGINE == 'opal' # Required in browser
+
 module Gamefic
   # A base class for building and managing the resources that compose a story.
   # The Plot and Subplot classes inherit from Narrative and provide additional
@@ -58,6 +60,16 @@ module Gamefic
     def turn
       players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
       conclude_blocks.each(&:call) if concluding?
+    end
+
+    def save
+      Marshal.dump(self)
+    end
+
+    # @param snapshot [String]
+    # @return [self]
+    def self.restore(snapshot)
+      Marshal.load(snapshot)
     end
 
     def self.inherited(klass)
