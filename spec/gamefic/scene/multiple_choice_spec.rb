@@ -21,8 +21,8 @@ describe Gamefic::Scene::MultipleChoice do
 
   it 'sets props on valid input' do
     multiple_choice.props.options.concat ['one', 'two', 'three']
-    actor.queue.push 'one'
-    expect { multiple_choice.play_and_finish }.not_to raise_error
+    multiple_choice.props.enter 'one'
+    expect { multiple_choice.finish }.not_to raise_error
     expect(actor.queue).to be_empty
     expect(multiple_choice.props.input).to eq('one')
     expect(multiple_choice.props.selection).to eq('one')
@@ -32,8 +32,8 @@ describe Gamefic::Scene::MultipleChoice do
 
   it 'cancels on invalid input' do
     multiple_choice.props.options.concat ['one', 'two', 'three']
-    actor.queue.push 'four'
-    expect { multiple_choice.play_and_finish }.not_to raise_error
+    multiple_choice.props.enter 'four'
+    expect { multiple_choice.finish }.not_to raise_error
     expect(actor.queue).to be_empty
     expect(actor.messages).to include('"four" is not a valid choice.')
   end

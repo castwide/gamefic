@@ -12,8 +12,8 @@ describe Gamefic::Scene::Activity do
   it 'performs a command' do
     actor = plot.introduce
     activity = Gamefic::Scene::Activity.new(actor)
-    actor.queue.push 'command'
-    activity.play_and_finish
+    activity.start.enter 'command'
+    activity.finish
     expect(actor.queue).to be_empty
     expect(activity.props.input).to eq('command')
     expect(actor[:executed]).to be(true)

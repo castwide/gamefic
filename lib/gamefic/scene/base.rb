@@ -31,27 +31,15 @@ module Gamefic
         self.class.type
       end
 
-      # @param actor [Gamefic::Actor]
-      # @param props [Props::Default]
-      # @return [void]
+      # @return [Props::Default]
       def start
         run_start_blocks
+        props
       end
 
-      def play_and_finish
-        play
-        finish
-      end
-
-      def play
-        actor.flush
-        props.input = actor.queue.shift&.strip
-      end
-
-      # @param actor [Gamefic::Actor]
-      # @param props [Props::Default]
       # @return [void]
       def finish
+        # play
         run_finish_blocks
       end
 

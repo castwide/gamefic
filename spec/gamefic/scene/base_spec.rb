@@ -9,12 +9,9 @@ describe Gamefic::Scene::Base do
     expect(base.props).to be_a(Gamefic::Props::Default)
   end
 
-  describe '#finish' do
-    it 'reads from the actor queue' do
-      actor.queue.push 'command'
-      base.play_and_finish
-      expect(actor.queue).to be_empty
-      expect(base.props.input).to eq('command')
+  describe '#start' do
+    it 'returns props' do
+      expect(base.start).to be(base.props)
     end
   end
 end

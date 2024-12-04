@@ -25,6 +25,11 @@ module Gamefic
       def output
         @output ||= Props::Output.new
       end
+
+      # @param text [String]
+      def enter(text)
+        @input = text
+      end
     end
   end
 end

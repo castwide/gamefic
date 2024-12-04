@@ -16,6 +16,7 @@ module Gamefic
       def start
         super
         props.output[:options] = props.options
+        props
       end
 
       def finish

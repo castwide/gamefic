@@ -29,18 +29,14 @@ module Gamefic
       end
 
       def start
+        @props = scene.start
         prepare_output
-        scene.start
         actor.rotate_cue
       end
 
       def finish
-        scene.play_and_finish
-      end
-
-      # @return [Scene::Base]
-      def scene
-        new_scene.tap { |scene| @props = scene.props }
+        props&.enter(actor.queue.shift&.strip)
+        scene.finish
       end
 
       def output
@@ -69,13 +65,14 @@ module Gamefic
         actor.narratives.player_output_blocks.each { |block| block.call actor, props.output }
       end
 
-      private
-
-      def new_scene
+      # @return [Scene::Base]
+      def scene
         narrative&.prepare(key, actor, props, **context) ||
           try_unblocked_class ||
           raise("Failed to cue #{key.inspect} in #{narrative.inspect}")
       end
+
+      private
 
       def try_unblocked_class
         return unless key.is_a?(Class) && @key <= Scene::Base
