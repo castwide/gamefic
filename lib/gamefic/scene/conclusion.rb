@@ -5,10 +5,6 @@ module Gamefic
     # A scene that ends an actor's participation in a narrative.
     #
     class Conclusion < Base
-      def self.conclusion?
-        true
-      end
-
       def self.type
         'Conclusion'
       end

@@ -51,10 +51,6 @@ module Gamefic
         self.class.finish_blocks.each { |blk| execute(blk) }
       end
 
-      def conclusion?
-        is_a?(Conclusion)
-      end
-
       def to_hash
         { name: name, type: type }
       end
@@ -101,10 +97,6 @@ module Gamefic
 
         def on_finish(&block)
           finish_blocks.push block
-        end
-
-        def conclusion?
-          false
         end
 
         protected
