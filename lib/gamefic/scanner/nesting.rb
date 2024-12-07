@@ -14,14 +14,14 @@ module Gamefic
       def scan
         return unmatched_result unless token =~ NEST_REGEXP
 
-        denest selection, token
+        denest
       end
 
       private
 
-      def denest objects, token
-        near = objects
-        far = objects
+      def denest
+        near = selection
+        far = selection
         parts = token.split(NEST_REGEXP)
         until parts.empty?
           current = parts.pop
@@ -29,8 +29,8 @@ module Gamefic
           last_result = subprocessor.scan(far, current) if last_result.matched.empty? && near != far
           return unmatched_result if last_result.matched.empty? || last_result.matched.length > 1
 
-          near = last_result.matched.first.children & objects
-          far = last_result.matched.first.flatten & objects
+          near = last_result.matched.first.children & selection
+          far = last_result.matched.first.flatten & selection
         end
         last_result
       end
