@@ -3,8 +3,11 @@
 module Gamefic
   module Query
     # A base class for entity-based queries that can be applied to responses.
-    # Each query represents an attempt to match an argument in a command to a
-    # game entity.
+    # Each query matches a command token to an object that can be passed into
+    # a response callback.
+    #
+    # Most queries return entities, but there are also queries for plain text
+    # and integers.
     #
     class Base
       # @return [Array<Object>]
