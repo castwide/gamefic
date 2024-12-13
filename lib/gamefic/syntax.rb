@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'gamefic/syntax/template'
+# require 'gamefic/syntax/template'
 
 module Gamefic
   # Syntaxes provide rules for matching input patterns to existing responses.
@@ -18,10 +18,13 @@ module Gamefic
   #     Syntax.new('search :container for :thing', 'look :thing :container')
   #
   class Syntax
-    # The pattern that matching input is expected to follow.
-    #
-    # @return [Template]
+    PARAM_REGEXP = /^:[a-z0-9_]+$/i.freeze
+
+    # @return [String]
     attr_reader :template
+
+    # @return [Array<String>]
+    attr_reader :params
 
     # The pattern that will be used to tokenize the input into a command.
     #
@@ -37,10 +40,11 @@ module Gamefic
     # @return [Symbol]
     attr_reader :verb
 
-    # @param template [Template, String]
+    # @param template [String]
     # @param command [String]
     def initialize(template, command)
-      @template = Template.to_template(template)
+      @template = template.normalize
+      @params = @template.keywords.select { |word| word.start_with?(':') }
       @command = command.normalize
       @verb = Syntax.literal_or_nil(@command.keywords[0])
       @replace = parse_replace
@@ -55,7 +59,12 @@ module Gamefic
     #
     # @return [Symbol]
     def synonym
-      template.verb
+      @synonym ||= Syntax.literal_or_nil(template.keywords.first)
+    end
+
+    # @return [Regexp]
+    def regexp
+      @regexp ||= Regexp.new("^#{make_tokens.join(' ')}$", Regexp::IGNORECASE)
     end
 
     # Convert a String into a Command.
@@ -63,7 +72,7 @@ module Gamefic
     # @param text [String]
     # @return [Expression, nil]
     def tokenize(text)
-      match = text&.match(template.regexp)
+      match = text&.match(regexp)
       return nil unless match
 
       Expression.new(verb, match_to_args(match))
@@ -74,14 +83,14 @@ module Gamefic
     # @param text [String]
     # @return [Boolean]
     def accept?(text)
-      !!text.match(template.regexp)
+      !!text.match(regexp)
     end
 
     # Get a signature that identifies the form of the Syntax.
     # Signatures are used to compare Syntaxes to each other.
     #
     def signature
-      [template.regexp, replace]
+      [regexp, replace]
     end
 
     def ==(other)
@@ -118,7 +127,7 @@ module Gamefic
       command.keywords.map do |word|
         next word unless word.start_with?(':')
 
-        index = template.params.index(word) ||
+        index = params.index(word) ||
                 raise(ArgumentError, "syntax command references undefined parameter `#{word}`")
         "{$#{index + 1}}"
       end.join(' ')
@@ -129,6 +138,17 @@ module Gamefic
       replace.keywords[start..].map do |str|
         str.match?(/^\{\$[0-9]+\}$/) ? match[str[2..-2].to_i] : str
       end
+    end
+
+    # @return [Array<String>]
+    def make_tokens
+      template.keywords.map.with_index do |word, idx|
+        next word unless word.match?(PARAM_REGEXP)
+
+        next nil if idx.positive? && template.keywords[idx - 1].match?(PARAM_REGEXP)
+
+        '([\w\W\s\S]*?)'
+      end.compact
     end
   end
 end
