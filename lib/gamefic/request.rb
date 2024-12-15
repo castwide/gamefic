@@ -18,7 +18,7 @@ module Gamefic
     def to_actions
       Action.sort(
         Syntax.tokenize(input, actor.narratives.syntaxes)
-              .flat_map { |expression| expression_to_actions(actor, expression) }
+              .flat_map { |expression| expression_to_actions(expression) }
       )
     end
 
@@ -30,7 +30,7 @@ module Gamefic
     # @return [String]
     attr_reader :input
 
-    def expression_to_actions(actor, expression)
+    def expression_to_actions(expression)
       Gamefic.logger.info "Evaluating #{expression.inspect}"
       actor.narratives
            .responses_for(expression.verb)
@@ -50,7 +50,7 @@ module Gamefic
         result = query.filter(actor, "#{remainder} #{token}".strip)
         return nil unless result.match
 
-        results.push Match.new(result.match, token[0..-result.remainder.length-1], result.strictness)
+        results.push Match.new(result.match, token.to_s[0..-result.remainder.length - 1], result.strictness)
         remainder = result.remainder
       end
       return nil unless remainder.empty?

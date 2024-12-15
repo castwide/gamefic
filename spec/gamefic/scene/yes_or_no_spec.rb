@@ -9,10 +9,6 @@ describe Gamefic::Scene::YesOrNo do
     expect(yes_or_no.props).to be_a(Gamefic::Props::YesOrNo)
   end
 
-  it 'freezes options' do
-    expect { yes_or_no.props.options.concat ['maybe'] }.to raise_error(FrozenError)
-  end
-
   it 'flags yes?' do
     yes_or_no.props.enter 'yes'
     yes_or_no.finish
@@ -36,7 +32,6 @@ describe Gamefic::Scene::YesOrNo do
   end
 
   it 'cancels on invalid input' do
-    # actor.queue.push 'maybe'
     yes_or_no.props.enter 'maybe'
     yes_or_no.finish
     expect(actor.queue).to be_empty

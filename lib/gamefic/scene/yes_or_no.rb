@@ -9,7 +9,7 @@ module Gamefic
 
       def initialize(...)
         super
-        props.options.freeze
+        props.options
       end
 
       def self.type
