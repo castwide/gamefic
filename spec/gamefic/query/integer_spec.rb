@@ -4,19 +4,19 @@ describe Gamefic::Query::Integer do
   describe '#query' do
     it 'matches numeric strings' do
       querydef = Gamefic::Query::Integer.new
-      result = querydef.query(nil, '100')
+      result = querydef.filter(nil, '100')
       expect(result.match).to eq(100)
     end
 
     it 'matches integers' do
       querydef = Gamefic::Query::Integer.new
-      result = querydef.query(nil, 100)
+      result = querydef.filter(nil, 100)
       expect(result.match).to eq(100)
     end
 
     it 'rejects unmatched strings' do
       querydef = Gamefic::Query::Integer.new
-      result = querydef.query(nil, 'some')
+      result = querydef.filter(nil, 'some')
       expect(result.match).to be_nil
     end
   end

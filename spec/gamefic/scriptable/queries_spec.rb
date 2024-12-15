@@ -29,14 +29,14 @@ describe Gamefic::Scriptable::Queries do
     it 'finds a matching parent' do
       query = object.parent
       one = object.entities[1]
-      result = query.query(one, 'parent')
+      result = query.filter(one, 'parent')
       expect(result.match).to be(object.entities.first)
     end
 
     it 'returns nil without a match' do
       query = object.parent
       one = object.entities[1]
-      result = query.query(one, 'wrong')
+      result = query.filter(one, 'wrong')
       expect(result.match).to be(nil)
       expect(result.remainder).to eq('wrong')
     end
@@ -46,7 +46,7 @@ describe Gamefic::Scriptable::Queries do
     it 'finds a matching child' do
       query = object.children
       parent = object.entities.first
-      result = query.query(parent, 'one')
+      result = query.filter(parent, 'one')
       expect(result.match).to be(object.entities[1])
     end
   end
@@ -63,14 +63,14 @@ describe Gamefic::Scriptable::Queries do
     it 'finds a matching sibling' do
       query = object.siblings
       one = object.entities[1]
-      result = query.query(one, 'two')
+      result = query.filter(one, 'two')
       expect(result.match).to be(object.entities[2])
     end
 
     it 'does not match the subject' do
       query = object.siblings
       one = object.entities[1]
-      result = query.query(one, 'one')
+      result = query.filter(one, 'one')
       expect(result.match).to be_nil
       expect(result.remainder).to eq('one')
     end
@@ -80,7 +80,7 @@ describe Gamefic::Scriptable::Queries do
     it 'matches itself' do
       query = object.myself
       one = object.entities[1]
-      result = query.query(one, 'one')
+      result = query.filter(one, 'one')
       expect(result.match).to be(one)
     end
   end

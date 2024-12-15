@@ -21,14 +21,13 @@ module Gamefic
         argument
       end
 
-      def query(_subject, token)
+      def filter(_subject, token)
         if match? token
           Result.new(token, '')
         else
           Result.new(nil, token)
         end
       end
-      alias filter query
 
       def precision
         -10_000

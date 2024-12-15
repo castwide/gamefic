@@ -5,18 +5,12 @@ module Gamefic
     # A special query that handles integers instead of entities.
     #
     class Integer < Base
-      # @param argument [String, Regexp]
       # @param name [String, nil]
       def initialize(name: self.class.name)
         super(name: name)
       end
 
-      # @return [Class<Integer>]
-      def select(_subject)
-        Integer
-      end
-
-      def query(_subject, token)
+      def filter(_subject, token)
         return Result.new(token, '') if token.is_a?(::Integer)
 
         words = token.keywords
@@ -25,7 +19,6 @@ module Gamefic
 
         Result.new(number.to_i, words.join(' '))
       end
-      alias filter query
 
       def precision
         -10_000

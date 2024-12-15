@@ -35,7 +35,6 @@ module Gamefic
 
         Result.new(scan.matched.first, scan.remainder, scan.strictness)
       end
-      alias query filter
 
       # Get an array of entities that match the arguments from the context of
       # the subject.
