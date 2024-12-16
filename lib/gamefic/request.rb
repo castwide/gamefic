@@ -36,7 +36,6 @@ module Gamefic
            .responses_for(expression.verb)
            .map { |response| match_expression response, expression }
            .compact
-           .map { |result| Action.new(actor, result[0], result[1], input) }
     end
 
     def match_expression(response, expression)
@@ -55,7 +54,7 @@ module Gamefic
       end
       return nil unless remainder.empty?
 
-      [response, matches]
+      Action.new(actor, response, matches, input)
     end
   end
 end

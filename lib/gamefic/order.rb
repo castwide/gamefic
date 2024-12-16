@@ -23,7 +23,6 @@ module Gamefic
             .responses_for(verb)
             .map { |response| match_arguments(response) }
             .compact
-            .map { |result| Action.new(actor, result[0], result[1], nil) }
       )
     end
 
@@ -47,7 +46,8 @@ module Gamefic
 
         result.push Match.new(param, param, 1000)
       end
-      [response, matches]
+
+      Action.new(actor, response, matches, nil)
     end
   end
 end
