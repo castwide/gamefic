@@ -35,8 +35,12 @@ module Gamefic
         player_output_blocks.push(block)
       end
 
+      def on_conclude(&block)
+        conclude_blocks.push(block)
+      end
+
       def on_player_conclude(&block)
-        player_conclude_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
+        player_conclude_blocks.push(block)
       end
 
       def before_commands
@@ -57,6 +61,10 @@ module Gamefic
 
       def player_output_blocks
         @player_output_blocks ||= []
+      end
+
+      def conclude_blocks
+        @conclude_blocks ||= []
       end
 
       def player_conclude_blocks

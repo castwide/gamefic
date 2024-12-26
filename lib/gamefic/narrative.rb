@@ -57,6 +57,7 @@ module Gamefic
 
     def turn
       players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
+      conclude_blocks.each(&:call) if concluding?
     end
 
     def self.inherited(klass)

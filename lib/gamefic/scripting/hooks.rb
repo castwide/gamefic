@@ -27,6 +27,11 @@ module Gamefic
       end
 
       # @return [Array<Binding>]
+      def conclude_blocks
+        find_and_bind(:conclude_blocks)
+      end
+
+      # @return [Array<Binding>]
       def player_conclude_blocks
         find_and_bind(:player_conclude_blocks)
       end

@@ -43,6 +43,7 @@ module Gamefic
     end
 
     def conclude
+      conclude_blocks.each(&:call)
       players.each do |plyr|
         player_conclude_blocks.each { |blk| blk[plyr] }
         uncast plyr
