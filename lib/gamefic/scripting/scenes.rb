@@ -13,7 +13,9 @@ module Gamefic
 
       # @return [Array<Binding>]
       def introductions
-        find_and_bind(:introductions)
+        included_scripts.reverse
+                        .flat_map(&:introductions)
+                        .map { |blk| Binding.new(self, blk) }
       end
 
       # @return [Hash]
