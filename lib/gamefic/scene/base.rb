@@ -91,10 +91,16 @@ module Gamefic
           @finish_blocks ||= []
         end
 
+        # @yieldparam [Actor] The scene's actor
+        # @yieldparam [Props::Base] The scene's props
+        # @yieldparam [Hash] Additional context
         def on_start(&block)
           start_blocks.push block
         end
 
+        # @yieldparam [Actor] The scene's actor
+        # @yieldparam [Props::Base] The scene's props
+        # @yieldparam [Hash] Additional context
         def on_finish(&block)
           finish_blocks.push block
         end
