@@ -10,7 +10,7 @@ describe Gamefic::Scene do
     end
     actor = Gamefic::Actor.new
     scene = klass.new(actor)
-    scene.run_start_blocks
+    scene.start
     expect(executed).to be(true)
   end
 
@@ -21,7 +21,7 @@ describe Gamefic::Scene do
     end
     actor = Gamefic::Actor.new
     scene = klass.new(actor)
-    scene.run_finish_blocks
+    scene.finish
     expect(executed).to be(true)
   end
 end

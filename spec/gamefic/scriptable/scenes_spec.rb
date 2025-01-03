@@ -18,7 +18,7 @@ describe Gamefic::Scriptable::Scenes do
       object.multiple_choice(:scene) { |scene| scene.on_start { |_, props| props.options.push('one', 'two') } }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
-      scene.run_start_blocks
+      scene.start
       expect(scene.props.options).to eq(%w[one two])
     end
   end
@@ -34,7 +34,7 @@ describe Gamefic::Scriptable::Scenes do
       object.yes_or_no(:scene) { |scene| scene.on_start { |_, props| props.prompt = 'What?' } }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
-      scene.run_start_blocks
+      scene.start
       expect(scene.props.prompt).to eq('What?')
     end
   end
@@ -50,7 +50,7 @@ describe Gamefic::Scriptable::Scenes do
       object.pause(:scene) { |scene| scene.on_start { |_, props| props.prompt = 'Pause!' } }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
-      scene.run_start_blocks
+      scene.start
       expect(scene.props.prompt).to eq('Pause!')
     end
   end

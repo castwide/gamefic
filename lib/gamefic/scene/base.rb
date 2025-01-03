@@ -11,6 +11,9 @@ module Gamefic
 
       attr_reader :actor, :narrative, :props, :context
 
+      # @param actor [Actor]
+      # @param narrative [Narrative]
+      # @param props [Props::Base]
       def initialize(actor, narrative = nil, props = nil, **context)
         @actor = actor
         @narrative = narrative
@@ -39,16 +42,7 @@ module Gamefic
 
       # @return [void]
       def finish
-        # play
         run_finish_blocks
-      end
-
-      def run_start_blocks
-        self.class.start_blocks.each { |blk| execute(blk) }
-      end
-
-      def run_finish_blocks
-        self.class.finish_blocks.each { |blk| execute(blk) }
       end
 
       def to_hash
@@ -68,6 +62,14 @@ module Gamefic
         Binding.new(narrative, block).call(actor, props, context)
       end
 
+      def run_start_blocks
+        self.class.start_blocks.each { |blk| execute(blk) }
+      end
+
+      def run_finish_blocks
+        self.class.finish_blocks.each { |blk| execute(blk) }
+      end
+
       class << self
         attr_reader :context, :nickname
 
@@ -83,10 +85,12 @@ module Gamefic
           @nickname = nickname
         end
 
+        # @return [Array<Proc>]
         def start_blocks
           @start_blocks ||= []
         end
 
+        # @return [Array<Proc>]
         def finish_blocks
           @finish_blocks ||= []
         end
@@ -109,6 +113,7 @@ module Gamefic
 
         attr_writer :context
 
+        # @param klass [Class<Props::Base>]
         def use_props_class(klass)
           @props_class = klass
         end
