@@ -20,7 +20,9 @@ module Gamefic
       # @return [Props::Default, nil]
       attr_reader :props
 
-      # @param scene [Class<Scene::Base>, Symbol]
+      # @param actor [Actor]
+      # @param key [Class<Scene::Base>, Symbol]
+      # @param narrative [Narrative]
       def initialize actor, key, narrative, **context
         @actor = actor
         @key = key

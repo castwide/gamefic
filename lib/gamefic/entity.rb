@@ -75,10 +75,10 @@ module Gamefic
     #
     # @param message [String]
     # @return [void]
-    def broadcast message
+    def broadcast(message)
       Query::Descendants.new
                         .select(self)
-                        .that_are(Active, proc(&:acting?))
+                        .that_are(Active, proc(&:participating?))
                         .each { |actor| actor.tell message }
     end
 

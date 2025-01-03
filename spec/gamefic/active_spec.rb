@@ -100,4 +100,37 @@ describe Gamefic::Active do
       expect(object.output).to be_frozen
     end
   end
+
+  describe '#acting?' do
+    let(:klass) do
+      Class.new(Gamefic::Narrative) do
+        respond(:command) { |actor| actor[:executed] = 'command' }
+        meta(:meta) { |actor| actor[:executed] = 'meta' }
+      end
+    end
+
+    let(:narrative) { klass.new }
+
+    before(:each) { narrative.cast object }
+
+    it 'starts false' do
+      expect(object).not_to be_acting
+    end
+
+    it 'turns true after performing a command' do
+      object.perform 'command'
+      expect(object).to be_acting
+    end
+
+    it 'stays false after performing a meta command' do
+      object.perform 'meta'
+      expect(object).not_to be_acting
+    end
+
+    it 'turns false after rotating the cue' do
+      object.perform 'command'
+      object.rotate_cue
+      expect(object).not_to be_acting
+    end
+  end
 end

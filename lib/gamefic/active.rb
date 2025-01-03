@@ -57,21 +57,24 @@ module Gamefic
     # @example Send a command as a string
     #   character.perform "take the key"
     #
-    # @param command [String]
+    # @param input [String]
     # @return [Command, nil]
-    def perform(command)
-      dispatchers.push Dispatcher.new(Request.new(self, command))
-      dispatchers.last.execute.tap { dispatchers.pop }
+    def perform(input)
+      dispatchers.push Dispatcher.new(Request.new(self, input))
+      dispatchers.last.execute.tap do |command|
+        dispatchers.pop
+        @acting = true if command&.active?
+      end
     end
 
     # Quietly perform a command.
     # This method executes the command exactly as #perform does, except it
     # buffers the resulting output instead of sending it to messages.
     #
-    # @param command [String]
+    # @param input [String]
     # @return [String] The output that resulted from performing the command.
-    def quietly(command)
-      messenger.buffer { perform command }
+    def quietly(input)
+      messenger.buffer { perform input }
     end
 
     # Perform an action.
@@ -90,7 +93,10 @@ module Gamefic
     # @return [Command, nil]
     def execute(verb, *params)
       dispatchers.push Dispatcher.new(Order.new(self, verb, params))
-      dispatchers.last.execute.tap { dispatchers.pop }
+      dispatchers.last.execute.tap do |command|
+        dispatchers.pop
+        @acting = true if command&.active?
+      end
     end
 
     # Proceed to the next Action in the current stack.
@@ -156,7 +162,7 @@ module Gamefic
 
     # True if the actor is participating in any narratives.
     #
-    def acting?
+    def participating?
       !narratives.empty?
     end
 
@@ -173,9 +179,17 @@ module Gamefic
     #
     # @return [Cue, nil]
     def rotate_cue
+      @acting = false
       @last_cue = @next_cue
       @next_cue = nil
       @last_cue
+    end
+
+    # True if the actor performed a command this turn. False if the actor has
+    # not performed a command yet or has only performed meta commands.
+    #
+    def acting?
+      @acting ||= false
     end
 
     # The input from the last finished cue.

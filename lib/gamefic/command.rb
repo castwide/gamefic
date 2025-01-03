@@ -39,6 +39,10 @@ module Gamefic
       @meta
     end
 
+    def active?
+      !meta?
+    end
+
     def inspect
       "#<#{self.class} #{([verb] + arguments).map(&:inspect).join(', ')}>"
     end

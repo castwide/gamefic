@@ -9,13 +9,6 @@ module Gamefic
     # three actions to take when the user does not enter one of the options:
     # `:perform`, `:recue`, or `:continue`.
     #
-    # * `:perform` - Skip the `on_finish` blocks and try to perform the input
-    #   as a command. This is the default behavior.
-    # * `:recue` - Restart the scene until the user makes a valid selection.
-    #   This is the same behavior as a `MultipleChoice` scene.
-    # * `:continue` - Execute the `on_finish` blocks regardless of whether the
-    #   input matches an option.
-    #
     class ActiveChoice < MultipleChoice
       WITHOUT_SELECTION_ACTIONS = %i[perform recue continue].freeze
 
@@ -35,6 +28,17 @@ module Gamefic
         'ActiveChoice'
       end
 
+      # Select the behavior for input that does not match a selectable option.
+      # The available settings are `:perform`, `:recue`, and `:continue`.
+      #
+      # * `:perform` - Skip the `on_finish` blocks and try to perform the input
+      #   as a command. This is the default behavior.
+      # * `:recue` - Restart the scene until the user makes a valid selection.
+      #   This is the same behavior as a `MultipleChoice` scene.
+      # * `:continue` - Execute the `on_finish` blocks regardless of whether the
+      #   input matches an option.
+      #
+      # @param action [Symbol]
       def self.without_selection(action)
         WITHOUT_SELECTION_ACTIONS.include?(action) ||
           raise(ArgumentError, "without_selection_action must be one of #{WITHOUT_SELECTION_ACTIONS.map(&:inspect).join_or}")
@@ -42,6 +46,7 @@ module Gamefic
         @without_selection_action = action
       end
 
+      # @return [Symbol]
       def self.without_selection_action
         @without_selection_action ||= :perform
       end
