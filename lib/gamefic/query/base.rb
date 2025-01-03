@@ -100,7 +100,7 @@ module Gamefic
       def calculate_precision
         arguments.sum(0) do |arg|
           case arg
-          when Entity, Proxy, Proxy::Base
+          when Entity, Proxy::Base
             1000
           when Class, Module
             class_depth(arg) * 100
