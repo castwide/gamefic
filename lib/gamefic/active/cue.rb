@@ -69,6 +69,9 @@ module Gamefic
 
       # @return [Scene::Base]
       def scene
+        # @note This method always returns a new instance. Scenes identified
+        #   by symbolic keys can be instances of anonymous classes that cannot
+        #   be serialized, so memoizing them breaks snapshots.
         narrative&.prepare(key, actor, props, **context) ||
           try_unblocked_class ||
           raise("Failed to cue #{key.inspect} in #{narrative.inspect}")
@@ -77,7 +80,7 @@ module Gamefic
       private
 
       def try_unblocked_class
-        return unless key.is_a?(Class) && @key <= Scene::Base
+        return unless key.is_a?(Class) && key <= Scene::Base
 
         Gamefic.logger.warn "Cueing scene #{key} without narrative" unless narrative
         key.new(actor, narrative, props, **context)
