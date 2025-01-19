@@ -43,7 +43,7 @@ describe Array do
     it "joins with a conjunction" do
       array = ["one", "two", "three"]
       expect(array.join_and).to eq("one, two, and three")
-      expect(array.join_and(', ', ' or ')).to eq("one, two, or three")
+      expect(array.join_and(separator: ', ', and_separator: ' or ')).to eq("one, two, or three")
     end
 
     it "joins two elements with the \"and\" separator" do
@@ -53,7 +53,7 @@ describe Array do
 
     it "joins three elements without a serial comma" do
       array = ["one", "two", "three"]
-      expect(array.join_and(', ', ' and ', false)).to eq("one, two and three")
+      expect(array.join_and(serial: false)).to eq("one, two and three")
     end
 
     it "keeps duplicate elements" do

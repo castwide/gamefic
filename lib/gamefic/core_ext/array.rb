@@ -46,24 +46,24 @@ class Array
   #   animals = ['a dog', 'a cat', 'a mouse']
   #   animals.join_and #=> 'a dog, a cat, and a mouse'
   #
-  # @param sep [String] The separator for all but the last element
-  # @param andSep [String] The separator for the last element
+  # @param separator [String] The separator for all but the last element
+  # @param and_separator [String] The separator for the last element
   # @param serial [Boolean] Use serial separators (e.g., serial commas)
   # @return [String]
-  def join_and(sep = ', ', and_sep = ' and ', serial = true)
+  def join_and(separator: ', ', and_separator: ' and ', serial: true)
     if length < 3
-      join(and_sep)
+      join(and_separator)
     else
       start = self[0..-2]
-      start.join(sep) + "#{serial ? sep.strip : ''}#{and_sep}#{last}"
+      start.join(separator) + "#{serial ? separator.strip : ''}#{and_separator}#{last}"
     end
   end
 
   # @see Array#join_and
   #
   # @return [String]
-  def join_or(sep = ', ', or_sep = ' or ', serial = true)
-    join_and(sep, or_sep, serial)
+  def join_or(separator: ', ', or_separator: ' or ', serial: true)
+    join_and(separator: separator, and_separator: or_separator, serial: serial)
   end
 
   private
