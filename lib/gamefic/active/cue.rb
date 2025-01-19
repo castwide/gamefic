@@ -30,21 +30,25 @@ module Gamefic
         @context = context
       end
 
+      # @return [void]
       def start
         @props = scene.start
         prepare_output
         actor.rotate_cue
       end
 
+      # @return [void]
       def finish
         props&.enter(actor.queue.shift&.strip)
         scene.finish
       end
 
+      # @return [Props::Output]
       def output
         props&.output.clone.freeze || Props::Output::EMPTY
       end
 
+      # @return [Cue]
       def restart
         Cue.new(actor, key, narrative, **context)
       end
@@ -57,6 +61,7 @@ module Gamefic
         scene.to_s
       end
 
+      # @return [void]
       def prepare
         props.output.merge!({
                               scene: scene.to_hash,
@@ -79,6 +84,7 @@ module Gamefic
 
       private
 
+      # @return [Scene::Base]
       def try_unblocked_class
         return unless key.is_a?(Class) && key <= Scene::Base
 
@@ -86,6 +92,7 @@ module Gamefic
         key.new(actor, narrative, props, **context)
       end
 
+      # @return [void]
       def prepare_output
         scene
         props.output.last_input = actor.last_cue&.props&.input

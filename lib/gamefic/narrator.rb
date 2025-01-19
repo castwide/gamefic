@@ -30,6 +30,7 @@ module Gamefic
 
     # Start a turn.
     #
+    # @return [void]
     def start
       next_cues
       plot.ready_blocks.each(&:call)
@@ -39,6 +40,7 @@ module Gamefic
 
     # Finish a turn.
     #
+    # @return [void]
     def finish
       cues.each(&:finish)
       cues.clear
@@ -56,11 +58,13 @@ module Gamefic
       @cues ||= []
     end
 
+    # @return [void]
     def last_cues
       cues.replace(plot.players.map(&:last_cue))
           .compact
     end
 
+    # @return [void]
     def next_cues
       cues.replace(plot.players.map { |player| player.next_cue || player.cue(plot.default_scene) })
           .each(&:start)

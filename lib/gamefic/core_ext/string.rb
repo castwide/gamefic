@@ -12,7 +12,7 @@ class String
 
   # Get an array of words split by any whitespace.
   #
-  # @return [Array]
+  # @return [Array<String>]
   def keywords
     gsub(/[\s-]+/, ' ').strip.downcase.split
   end
