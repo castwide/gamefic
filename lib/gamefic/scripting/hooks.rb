@@ -1,5 +1,10 @@
 module Gamefic
   module Scripting
+    # Scripting hook methods are instance methods that return callbacks for
+    # execution in the context of a scriptable module or narrative. They
+    # collect the procs defined in Scriptable hook methods and bind them to the
+    # instance for execution.
+    #
     module Hooks
       # @return [Array<Binding>]
       def before_commands

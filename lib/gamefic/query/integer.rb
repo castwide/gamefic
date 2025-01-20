@@ -25,15 +25,7 @@ module Gamefic
       end
 
       def accept?(_subject, token)
-        match?(token)
-      end
-
-      private
-
-      def match?(token)
-        return true if token.is_a?(::Integer)
-
-        token.keywords.first.match?(/\d+/)
+        token.is_a?(::Integer)
       end
     end
   end

@@ -50,14 +50,27 @@ module Gamefic
       self
     end
 
+    # The total substantiality of the action, based on how many of the
+    # arguments are concrete entities and whether the action has a verb.
+    #
     def substantiality
-      matches.map(&:argument).that_are(Entity).length + (verb ? 1 : 0)
+      arguments.that_are(Entity).length + (verb ? 1 : 0)
     end
 
+    # The total strictness of all the matches.
+    #
+    # The higher the strictness, the more precisely the tokens from the user
+    # input match the arguments. For example, if the user is interacting with a
+    # pencil, the command TAKE PENCIL is stricter than TAKE PEN.
+    #
+    # @return [Integer]
     def strictness
       matches.sum(0, &:strictness)
     end
 
+    # The precision of the response.
+    #
+    # @return [Integer]
     def precision
       response.precision
     end
@@ -74,6 +87,13 @@ module Gamefic
       response.meta?
     end
 
+    # Sort an array of actions in the order in which a Dispatcher should
+    # attempt to execute them.
+    #
+    # Order is determined by the actions' substantiality, strictness, and
+    # precision. In the event of a tie, the most recently defined action has
+    # higher priority.
+    #
     # @param actions [Array<Action>]
     # @return [Array<Action>]
     def self.sort(actions)

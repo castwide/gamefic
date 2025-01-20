@@ -66,6 +66,17 @@ module Gamefic
         select(subject).include?(object)
       end
 
+      # The query's precision. The higher the number, the more specific the
+      # query is.
+      #
+      # In general terms, a query's precision is highest if its arguments
+      # select for a specific instance of an entity instead of a class of
+      # entity.
+      #
+      # When a command gets parsed, the resulting list of available actions
+      # gets sorted in descending order of their responses' overall precision,
+      # so the action with the highest precision gets attempted first.
+      #
       # @return [Integer]
       def precision
         @precision ||= calculate_precision

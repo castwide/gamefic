@@ -48,6 +48,12 @@ module Gamefic
       @appended_chapter_map ||= {}
     end
 
+    # Complete a game turn.
+    #
+    # In addition to running its own applicable conclude blocks, the Plot class
+    # will also handle conclude blocks for its chapters and subplots.
+    #
+    # @return [void]
     def turn
       super
       subplots.each(&:conclude) if concluding?

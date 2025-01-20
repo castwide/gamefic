@@ -9,6 +9,7 @@ module Gamefic
   #
   class Narrative
     include Scripting
+    # @!parse extend Gamefic::Scriptable
 
     select_default_scene Scene::Activity
     select_default_conclusion Scene::Conclusion
@@ -57,11 +58,18 @@ module Gamefic
       active
     end
 
+    # Complete a game turn.
+    #
+    # In the base Narrative class, this method runs all applicable player
+    # conclude blocks and the narrative's own conclude blocks.
+    # 
+    # @return [void]
     def turn
       players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
       conclude_blocks.each(&:call) if concluding?
     end
 
+    # @return [String]
     def save
       Marshal.dump(self)
     end

@@ -28,6 +28,10 @@ module Gamefic
       plot.uncast character
     end
 
+    def players
+      plot.players
+    end
+
     # Start a turn.
     #
     # @return [void]

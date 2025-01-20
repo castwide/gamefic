@@ -87,6 +87,12 @@ module Gamefic
         Query::Text.new arg, name: 'plaintext'
       end
 
+      # Define a query that matches integers. Unlike other queries, #integer
+      # does not take arguments. It will match and return an integer if the
+      # corresponding command token is an integer or the corresponding input is
+      # a string representation of an integer. A successful query returns the
+      # integer instead of an entity.
+      #
       def integer
         Query::Integer.new name: 'integer'
       end

@@ -42,6 +42,9 @@ module Gamefic
         @passed ||= (token.keywords - remainder.keywords).join(' ')
       end
 
+      # The strictness of the scanner that produced this result.
+      #
+      # @return [Integer]
       def strictness
         @strictness ||= Scanner.strictness(processor)
       end

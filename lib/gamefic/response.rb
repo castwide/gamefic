@@ -15,6 +15,7 @@ module Gamefic
     # @return [Array<Query::Base, Query::Text>]
     attr_reader :queries
 
+    # @return [Proc]
     attr_reader :block
 
     # @param verb [Symbol]
@@ -55,6 +56,11 @@ module Gamefic
       gamefic_binding.call(*args)
     end
 
+    # The total precision of all the response's queries.
+    #
+    # @note Precision is decreased if the response has a nil verb.
+    #
+    # @return [Integer]
     def precision
       @precision ||= calculate_precision
     end
@@ -91,6 +97,7 @@ module Gamefic
       Syntax.new(tmpl, tmpl)
     end
 
+    # @return [Integer]
     def calculate_precision
       total = queries.sum(&:precision)
       total -= 1000 unless verb
