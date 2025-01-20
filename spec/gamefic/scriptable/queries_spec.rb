@@ -76,6 +76,16 @@ describe Gamefic::Scriptable::Queries do
     end
   end
 
+  describe '#extended' do
+    it "finds matching siblings and siblings' descendants" do
+      parent = object.entities.first
+      subject, sibling = parent.children
+      sibling_child = Gamefic::Entity.new(name: 'sibling child', parent: sibling)
+      result = object.extended.span(subject)
+      expect(result).to eq([sibling, sibling_child])
+    end
+  end
+
   describe '#myself' do
     it 'matches itself' do
       query = object.myself

@@ -82,4 +82,22 @@ describe Gamefic::Narrator do
     expect(player.output.last_prompt).to eq('>')
     expect(player.output.last_input).to eq('my input')
   end
+
+  it 'casts players' do
+    narrator = Gamefic::Narrator.new(Gamefic::Plot.new)
+    player = narrator.cast
+    expect(narrator.players).to eq([player])
+  end
+
+  it 'uncasts players' do
+    narrator = Gamefic::Narrator.new(Gamefic::Plot.new)
+    player = narrator.cast
+    narrator.uncast player
+    expect(narrator.players).to be_empty
+  end
+
+  it 'reports concluding plots' do
+    narrator = Gamefic::Narrator.new(Gamefic::Plot.new)
+    expect(narrator.concluding?).to be(true)
+  end
 end

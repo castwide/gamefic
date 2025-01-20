@@ -22,9 +22,9 @@ describe Gamefic::Query::Integer do
   end
 
   describe '#accept?' do
-    it 'accepts numeric strings' do
+    it 'accepts integers' do
       querydef = Gamefic::Query::Integer.new
-      expect(querydef.accept?(nil, '100')).to be(true)
+      expect(querydef.accept?(nil, 100)).to be(true)
     end
   end
 

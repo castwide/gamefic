@@ -30,4 +30,10 @@ describe Gamefic::Messenger do
     expect(buffered).to eq('buffered')
     expect(messenger.messages).to be_empty
   end
+
+  it 'flushes messages' do
+    messenger.stream 'text'
+    flushed = messenger.flush
+    expect(flushed).to eq('text')
+  end
 end
