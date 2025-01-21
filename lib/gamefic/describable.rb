@@ -19,10 +19,6 @@ module Gamefic
     # @return [String]
     attr_reader :synonyms
 
-    # Optional words that shouldn't match an object on their own but might
-    # be used in a larger phrase. For example, in the phrase "big red dog,"
-    # "big red" could be considered nuance.
-    #
     # @return [String]
     attr_writer :nuance
 
@@ -40,6 +36,11 @@ module Gamefic
       "#{name} #{synonyms}".keywords
     end
 
+    # Optional words that shouldn't match an object on their own but might be
+    # used in a larger phrase. For example, if you have an entity named "dog"
+    # and its description calls it "sleepy," you might add "sleepy" to nuance
+    # so the phrase "sleepy dog" matches but the word "sleepy" alone does not.
+    #
     # @return [String]
     def nuance
       @nuance ||= ''
