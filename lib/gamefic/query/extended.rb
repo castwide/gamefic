@@ -2,7 +2,8 @@
 
 module Gamefic
   module Query
-    # Query the subject's siblings and their descendants.
+    # Query the subject's siblings and their descendants. Unlike `Family`, the
+    # subject's descendants are excluded from results.
     #
     # Descendants need to be `accessible` to be included in the query.
     #
