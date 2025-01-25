@@ -11,6 +11,11 @@
 - ActiveChoice scenes
 - Narrator class runs narratives
 - Use construct for static entities
+- Parent relations
+- Consolidate Syntax and Template
+- Remove Snapshot module
+- Track command activity
+- MultiplePartial props
 
 ## 3.6.0 - October 6, 2024
 - Normalized arguments accept strings
