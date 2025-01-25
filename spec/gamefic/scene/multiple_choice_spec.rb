@@ -37,4 +37,14 @@ describe Gamefic::Scene::MultipleChoice do
     expect(actor.queue).to be_empty
     expect(actor.messages).to include('"four" is not a valid choice.')
   end
+
+  it 'allows partial matches' do
+    klass = Class.new(Gamefic::Scene::MultipleChoice) do
+      use_props_class Gamefic::Props::MultiplePartial
+    end
+    scene = klass.new(actor)
+    scene.props.options.push 'one', 'two'
+    scene.props.enter 'tw'
+    expect(scene.props.index).to eq(1)
+  end
 end

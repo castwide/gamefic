@@ -4,7 +4,7 @@ module Gamefic
   module Props
     # A MultipleChoice variant that only allows Yes or No.
     #
-    class YesOrNo < MultipleChoice
+    class YesOrNo < MultiplePartial
       def yes?
         selection == 'Yes'
       end

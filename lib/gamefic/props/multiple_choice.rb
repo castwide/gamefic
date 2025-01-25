@@ -62,8 +62,7 @@ module Gamefic
       end
 
       def index_by_text
-        matches = options.map.with_index { |text, idx| next idx if text.downcase.start_with?(input.downcase) }.compact
-        matches.first if matches.one?
+        options.find_index { |opt| opt.casecmp?(input) }
       end
     end
   end
