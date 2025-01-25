@@ -1,4 +1,4 @@
-## 4.0.0
+## 4.0.0 - January 25, 2025
 - Nuanced scans
 - Command hooks
 - Refactored queries
