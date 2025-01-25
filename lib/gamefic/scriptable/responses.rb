@@ -27,6 +27,7 @@ module Gamefic
       # @param verb [Symbol, String, nil] An imperative verb for the command
       # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
+      # @yieldself [Object<self>]
       # @return [Response]
       def respond verb, *args, &proc
         response = Response.new(verb&.to_sym, *args, &proc)
@@ -40,6 +41,7 @@ module Gamefic
       # @param verb [Symbol, String, nil] An imperative verb for the command
       # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
+      # @yieldself [Object<self>]
       # @return [Response]
       def meta verb, *args, &proc
         response = Response.new(verb&.to_sym, *args, meta: true, &proc)
@@ -48,15 +50,18 @@ module Gamefic
         response
       end
 
+      # @return [Array<Response>]
       def responses
         @responses ||= []
       end
 
+      # @return [Array<Response>]
       def responses_for(*verbs)
         symbols = verbs.map { |verb| verb&.to_sym }
         responses.select { |response| symbols.include? response.verb }
       end
 
+      # @return [Array<Symbol>]
       def verbs
         responses.select(&:verb).uniq(&:verb)
       end

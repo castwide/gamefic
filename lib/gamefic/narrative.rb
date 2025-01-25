@@ -38,7 +38,7 @@ module Gamefic
 
     # Add an active entity to the narrative.
     #
-    # @param [Gamefic::Active]
+    # @param active [Gamefic::Active]
     # @return [Gamefic::Active]
     def cast(active)
       active.narratives.add self
@@ -49,7 +49,7 @@ module Gamefic
 
     # Remove an active entity from the narrative.
     #
-    # @param [Gamefic::Active]
+    # @param active [Gamefic::Active]
     # @return [Gamefic::Active]
     def uncast(active)
       active.narratives.delete self

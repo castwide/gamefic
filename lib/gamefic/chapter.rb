@@ -8,7 +8,7 @@ module Gamefic
     # @return [Hash]
     attr_reader :config
 
-    # @param [plot] Plot
+    # @param plot [Plot]
     def initialize(plot, **config)
       @plot = plot
       @concluding = false

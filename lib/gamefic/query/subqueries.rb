@@ -5,7 +5,7 @@ module Gamefic
 
       # Return an array of the entity's accessible descendants.
       #
-      # @param [Entity]
+      # @param entity [Entity]
       # @return [Array<Entity>]
       def subquery_accessible(entity)
         entity.accessible.flat_map do |child|

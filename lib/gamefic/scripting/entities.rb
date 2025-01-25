@@ -27,8 +27,7 @@ module Gamefic
       #     seed { make Gamefic::Entity, name: 'thing' }
       #   end
       #
-      # @param [Class<Gamefic::Entity>]
-      # @param args [Hash]
+      # @param klass [Class<Gamefic::Entity>]
       # @return [Gamefic::Entity]
       def make klass, **opts
         klass.new(**unproxy(opts)).tap { |entity| entity_set.add entity }
@@ -58,7 +57,6 @@ module Gamefic
       # if an entity could not be found or there is more than one possible
       # match.
       #
-      # @param description [Array]
       # @return [Gamefic::Entity, nil]
       def pick *args
         matches = find(*args)
