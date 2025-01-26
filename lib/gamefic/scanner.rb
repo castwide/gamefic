@@ -17,7 +17,7 @@ module Gamefic
     #
     # @param selection [Array<Entity>]
     # @param token [String]
-    # @param use [Array<Scanner::Base>]
+    # @param use [Array<Class<Scanner::Base>>]
     # @return [Result]
     def self.scan(selection, token, use = processors)
       result = nil

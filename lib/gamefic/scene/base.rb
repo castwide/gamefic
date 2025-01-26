@@ -13,7 +13,7 @@ module Gamefic
 
       # @param actor [Actor]
       # @param narrative [Narrative]
-      # @param props [Props::Base]
+      # @param props [Props::Default]
       def initialize(actor, narrative = nil, props = nil, **context)
         @actor = actor
         @narrative = narrative
@@ -96,14 +96,14 @@ module Gamefic
         end
 
         # @yieldparam [Actor] The scene's actor
-        # @yieldparam [Props::Base] The scene's props
+        # @yieldparam [Props::Default] The scene's props
         # @yieldparam [Hash] Additional context
         def on_start(&block)
           start_blocks.push block
         end
 
         # @yieldparam [Actor] The scene's actor
-        # @yieldparam [Props::Base] The scene's props
+        # @yieldparam [Props::Default] The scene's props
         # @yieldparam [Hash] Additional context
         def on_finish(&block)
           finish_blocks.push block
@@ -113,7 +113,7 @@ module Gamefic
 
         attr_writer :context
 
-        # @param klass [Class<Props::Base>]
+        # @param klass [Class<Props::Default>]
         def use_props_class(klass)
           @props_class = klass
         end

@@ -21,7 +21,7 @@ module Gamefic
       # descendants of siblings and children.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Family]
       def available *args
         Query::Family.new(*args, name: 'available')
       end
@@ -31,7 +31,7 @@ module Gamefic
       # Define a query that returns the actor's parent.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Parent]
       def parent *args
         Query::Parent.new(*args, name: 'parent')
       end
@@ -39,7 +39,7 @@ module Gamefic
       # Define a query that searches an actor's children.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Children]
       def children *args
         Query::Children.new(*args, name: 'children')
       end
@@ -47,7 +47,7 @@ module Gamefic
       # Define a query that searches an actor's descendants.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Descendants]
       def descendants *args
         Query::Descendants.new(*args)
       end
@@ -55,7 +55,7 @@ module Gamefic
       # Define a query that searches an actor's siblings.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Siblings]
       def siblings *args
         Query::Siblings.new(*args, name: 'siblings')
       end
@@ -63,7 +63,7 @@ module Gamefic
       # Define a query that searches an actor's siblings and their descendants.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Extended]
       def extended *args
         Query::Extended.new(*args, name: 'extended')
       end
@@ -71,7 +71,7 @@ module Gamefic
       # Define a query that returns the actor itself.
       #
       # @param args [Array<Object>] Query arguments
-      # @return [Query::Scoped]
+      # @return [Query::Myself]
       def myself *args
         Query::Myself.new(*args, name: 'myself')
       end
@@ -93,6 +93,7 @@ module Gamefic
       # a string representation of an integer. A successful query returns the
       # integer instead of an entity.
       #
+      # @return [Query::Integer]
       def integer
         Query::Integer.new name: 'integer'
       end
