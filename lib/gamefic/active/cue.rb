@@ -66,7 +66,7 @@ module Gamefic
         props.output.merge!({
                               scene: scene.to_hash,
                               prompt: props.prompt,
-                              messages: actor.messages,
+                              messages: actor.flush,
                               queue: actor.queue
                             })
         actor.narratives.player_output_blocks.each { |block| block.call actor, props.output }
@@ -94,7 +94,6 @@ module Gamefic
 
       # @return [void]
       def prepare_output
-        scene
         props.output.last_input = actor.last_cue&.props&.input
         props.output.last_prompt = actor.last_cue&.props&.prompt
       end

@@ -20,4 +20,17 @@ RSpec.describe Gamefic::Active::Cue do
     cue = Gamefic::Active::Cue.new(player, scene_class, nil)
     expect(cue.scene.name).to eq('my_scene')
   end
+
+  describe '#prepare' do
+    it 'clears active messages' do
+      plot = Gamefic::Plot.new
+      player = plot.introduce
+      player.tell 'message'
+      cue = Gamefic::Active::Cue.new(player, plot.default_scene, plot)
+      cue.start
+      cue.prepare
+      expect(player.messages).to be_empty
+      expect(cue.props.output.messages).to include('message')
+    end
+  end
 end

@@ -1,3 +1,6 @@
+## 4.0.1 - January 26, 2025
+- Cue#prepare flushes messages
+
 ## 4.0.0 - January 25, 2025
 - Nuanced scans
 - Command hooks
