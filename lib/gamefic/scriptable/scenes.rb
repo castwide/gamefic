@@ -114,16 +114,26 @@ module Gamefic
         block Class.new(Scene::YesOrNo, &block), name
       end
 
+      # Create an active choice scene.
+      #
       # @param name [Symbol, nil]
       # @return [Class<Scene::ActiveChoice>]
       def active_choice(name = nil, &block)
         block Class.new(Scene::ActiveChoice, &block), name
       end
 
+      # Create a pause.
+      # The block will be executed at the start of the scene and the player
+      # will be prompted to press enter to continue.
+      #
       # @param name [Symbol, nil]
+      # @yieldparam [Actor]
+      # @yieldparam [Props::Default]
       # @return [Class<Scene::Pause>]
       def pause(name = nil, &block)
-        block Class.new(Scene::Pause, &block), name
+        block(Class.new(Scene::Pause) do
+          on_start(&block)
+        end, name)
       end
 
       # Create a conclusion.
@@ -136,6 +146,8 @@ module Gamefic
       #   end
       #
       # @param name [Symbol, nil]
+      # @yieldparam [Actor]
+      # @yieldparam [Props::Default]
       # @return [Class<Scene::Conclusion>]
       def conclusion(name = nil, &block)
         block(Class.new(Scene::Conclusion) do

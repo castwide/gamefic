@@ -47,7 +47,7 @@ describe Gamefic::Scriptable::Scenes do
     end
 
     it 'sets a prompt' do
-      object.pause(:scene) { |scene| scene.on_start { |_, props| props.prompt = 'Pause!' } }
+      object.pause(:scene) { |_actor, props| props.prompt = 'Pause!' }
       actor = Gamefic::Actor.new
       scene = object.named_scenes[:scene].new(actor)
       scene.start

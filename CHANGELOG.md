@@ -1,3 +1,6 @@
+## 4.1.0 - February 1, 2025
+- Correct Scenes#pause block
+
 ## 4.0.1 - January 26, 2025
 - Cue#prepare flushes messages
 
