@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Scriptable::Queries do
-  let(:object) {
+  let(:object) do
     klass = Class.new do
       include Gamefic::Scriptable::Queries
 
@@ -16,7 +16,7 @@ describe Gamefic::Scriptable::Queries do
       obj.entities.push Gamefic::Entity.new(name: 'entity two', parent: obj.entities.first)
       obj.entities.push Gamefic::Entity.new(name: 'grandchild', parent: obj.entities.first.children.first)
     end
-  }
+  end
 
   describe '#anywhere' do
     it 'returns a general query' do

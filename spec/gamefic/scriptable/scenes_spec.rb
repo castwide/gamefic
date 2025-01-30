@@ -2,7 +2,7 @@
 
 describe Gamefic::Scriptable::Scenes do
   let(:object) do
-    klass = Class.new do
+    Class.new do
       extend Gamefic::Scriptable
     end
   end
