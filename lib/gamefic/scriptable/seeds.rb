@@ -3,10 +3,22 @@
 module Gamefic
   module Scriptable
     module Seeds
+      # @return [Array<Proc>]
       def seeds
         @seeds ||= []
       end
 
+      # Set methods and procs that get executed when a narrative gets initialized.
+      #
+      # @example
+      #   class Example < Gamefic::Plot
+      #     attr_reader :thing
+      #
+      #     seed do
+      #       @thing = make Entity, name: 'thing'
+      #     end
+      #   end
+      #
       def seed *methods, &block
         seeds.push(proc { methods.flatten.each { |method| send(method) } }) unless methods.empty?
         seeds.push block if block
