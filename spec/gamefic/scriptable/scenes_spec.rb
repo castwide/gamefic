@@ -42,6 +42,7 @@ describe Gamefic::Scriptable::Scenes do
   describe '#pause' do
     it 'creates a pause scene' do
       object.pause(:scene) { |_actor, _props| nil }
+      expect(object.named_scenes[:scene].start_blocks).to be_one
       scene = object.named_scenes[:scene].new(nil)
       expect(scene).to be_a(Gamefic::Scene::Pause)
     end
