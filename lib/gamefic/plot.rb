@@ -41,6 +41,8 @@ module Gamefic
     end
 
     def self.append(chapter, **config)
+      Gamefic.logger.warn "Overwriting existing chapter #{chapter}" if appended_chapter_map.key?(chapter)
+
       appended_chapter_map[chapter] = config
     end
 
