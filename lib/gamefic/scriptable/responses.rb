@@ -27,7 +27,7 @@ module Gamefic
       # @param verb [Symbol, String, nil] An imperative verb for the command
       # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       # @return [Response]
       def respond verb, *args, &proc
         response = Response.new(verb&.to_sym, *args, &proc)
@@ -41,7 +41,7 @@ module Gamefic
       # @param verb [Symbol, String, nil] An imperative verb for the command
       # @param args [Array<Object>] Filters for the command's tokens
       # @yieldparam [Gamefic::Actor]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       # @return [Response]
       def meta verb, *args, &proc
         response = Response.new(verb&.to_sym, *args, meta: true, &proc)

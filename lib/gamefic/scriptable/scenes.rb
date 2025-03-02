@@ -44,6 +44,7 @@ module Gamefic
       end
       alias scene block
 
+      # @return [Array<Proc>]
       def introductions
         @introductions ||= []
       end
@@ -84,6 +85,7 @@ module Gamefic
       #   end
       #
       # @param name [Symbol, nil]
+      # @yieldreceiver [Class<Scene::MultipleChoice>]
       # @return [Class<Scene::MultipleChoice>]
       def multiple_choice(name = nil, &block)
         block Class.new(Scene::MultipleChoice, &block), name

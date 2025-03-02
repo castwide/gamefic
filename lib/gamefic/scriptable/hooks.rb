@@ -26,7 +26,7 @@ module Gamefic
       # @param verbs [Array<Symbol>]
       # @yieldparam [Actor]
       # @yieldparam [Command]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def before_command(*verbs, &block)
         before_commands.push(proc do |actor, command|
           instance_exec(actor, command, &block) if verbs.empty? || verbs.include?(command.verb)
@@ -43,7 +43,7 @@ module Gamefic
       # @param verbs [Array<Symbol>]
       # @yieldparam [Actor]
       # @yieldparam [Command]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def after_command(*verbs, &block)
         after_commands.push(proc do |actor, command|
           instance_exec(actor, command, &block) if verbs.empty? || verbs.include?(command.verb)
@@ -52,7 +52,7 @@ module Gamefic
 
       # Define a callback to be executed after a scene starts.
       #
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_ready(&block)
         ready_blocks.push block
       end
@@ -61,14 +61,14 @@ module Gamefic
       # a scene starts.
       #
       # @yieldparam [Actor]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_player_ready(&block)
         ready_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
       end
 
       # Define a callback to be executed after a scene finishes.
       #
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_update(&block)
         update_blocks.push block
       end
@@ -77,7 +77,7 @@ module Gamefic
       # a scene finishes.
       #
       # @yieldparam [Actor]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_player_update(&block)
         update_blocks.push(proc { players.each { |player| instance_exec(player, &block) } })
       end
@@ -97,7 +97,7 @@ module Gamefic
       #
       # @yieldparam [Actor]
       # @yieldparam [Props::Output]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_player_output(&block)
         player_output_blocks.push(block)
       end
@@ -105,7 +105,7 @@ module Gamefic
       # Define a callback that gets executed when a narrative reaches a
       # conclusion.
       #
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_conclude(&block)
         conclude_blocks.push(block)
       end
@@ -117,7 +117,7 @@ module Gamefic
       #   narrative itself concluding.
       #
       # @yieldparam [Actor]
-      # @yieldself [Object<self>]
+      # @yieldreceiver [Object<self>]
       def on_player_conclude(&block)
         player_conclude_blocks.push(block)
       end
