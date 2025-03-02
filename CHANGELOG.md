@@ -1,3 +1,7 @@
+## 4.1.1 - March 2, 2025
+- Warn for duplicate chapters
+- YARD documentation
+
 ## 4.1.0 - February 1, 2025
 - Correct Scenes#pause block
 
