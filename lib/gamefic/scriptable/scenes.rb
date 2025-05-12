@@ -11,11 +11,13 @@ module Gamefic
       # @return [Scene::Conclusion]
       attr_reader :default_conclusion
 
+      # @param [Scene::Base]
       def select_default_scene(klass)
         scene_classes.add klass
         @default_scene = klass
       end
 
+      # @param [Scene::Conclusion]
       def select_default_conclusion(klass)
         scene_classes.add klass
         @default_conclusion = klass
@@ -61,6 +63,7 @@ module Gamefic
       #
       # @yieldparam [Gamefic::Actor]
       # @yieldparam [Props::Default]
+      # @yieldreceiver [Object<self>]
       # @return [Symbol]
       def introduction(&start)
         introductions.push start
@@ -131,6 +134,7 @@ module Gamefic
       # @param name [Symbol, nil]
       # @yieldparam [Actor]
       # @yieldparam [Props::Default]
+      # @yieldreceiver [Object<self>]
       # @return [Class<Scene::Pause>]
       def pause(name = nil, &block)
         block(Class.new(Scene::Pause) do
@@ -150,6 +154,7 @@ module Gamefic
       # @param name [Symbol, nil]
       # @yieldparam [Actor]
       # @yieldparam [Props::Default]
+      # @yieldreceiver [Object<self>]
       # @return [Class<Scene::Conclusion>]
       def conclusion(name = nil, &block)
         block(Class.new(Scene::Conclusion) do
