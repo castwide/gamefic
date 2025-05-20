@@ -44,6 +44,7 @@ module Gamefic
 
     # Subclasses can override this method to handle additional configuration.
     #
+    # @return [void]
     def configure; end
 
     class << self

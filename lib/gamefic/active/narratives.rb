@@ -66,6 +66,8 @@ module Gamefic
         narrative_set.flat_map(&:after_commands)
       end
 
+      # @sg-ignore Type checker has trouble reconciling return type of `Set#each`
+      #   with unresolved `generic<R>` of `Enumerable#each`
       def each(&block)
         narrative_set.each(&block)
       end

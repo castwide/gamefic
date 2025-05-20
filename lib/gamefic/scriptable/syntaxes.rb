@@ -18,7 +18,7 @@ module Gamefic
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
       def interpret command, translation
-        syntaxes.push Syntax.new(command, translation)
+        syntaxes.push(Syntax.new(command, translation)).last
       end
 
       def syntaxes

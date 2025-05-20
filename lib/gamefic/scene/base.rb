@@ -12,8 +12,8 @@ module Gamefic
       attr_reader :actor, :narrative, :props, :context
 
       # @param actor [Actor]
-      # @param narrative [Narrative]
-      # @param props [Props::Default]
+      # @param narrative [Narrative, nil]
+      # @param props [Props::Default, nil]
       def initialize(actor, narrative = nil, props = nil, **context)
         @actor = actor
         @narrative = narrative

@@ -77,7 +77,7 @@ module Gamefic
       # gets sorted in descending order of their responses' overall precision,
       # so the action with the highest precision gets attempted first.
       #
-      # @return [Integer]
+      # @return [::Integer]
       def precision
         @precision ||= calculate_precision
       end

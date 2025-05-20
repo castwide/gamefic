@@ -14,16 +14,16 @@ module Gamefic
 
     # Cast a player character in the plot.
     #
-    # @param character [Actor]
-    # @return [Actor]
+    # @param character [Actor, Active]
+    # @return [Actor, Active]
     def cast(character = plot.introduce)
       plot.cast character
     end
 
     # Uncast a player character from the plot.
     #
-    # @param character [Actor]
-    # @return [Actor]
+    # @param character [Actor, Active]
+    # @return [Actor, Active]
     def uncast(character)
       plot.uncast character
     end

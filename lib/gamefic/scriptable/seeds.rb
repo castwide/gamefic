@@ -62,7 +62,7 @@ module Gamefic
     #   pick('the red box')
     #
     # @param args [Array]
-    # @return [Proxy]
+    # @return [Proxy::Pick]
     def pick *args
       Proxy::Pick.new(*args)
     end

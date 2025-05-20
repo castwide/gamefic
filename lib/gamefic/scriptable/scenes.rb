@@ -64,7 +64,7 @@ module Gamefic
       # @yieldparam [Gamefic::Actor]
       # @yieldparam [Props::Default]
       # @yieldreceiver [Object<self>]
-      # @return [Symbol]
+      # @return [void]
       def introduction(&start)
         introductions.push start
       end
@@ -91,7 +91,7 @@ module Gamefic
       # @yieldreceiver [Class<Scene::MultipleChoice>]
       # @return [Class<Scene::MultipleChoice>]
       def multiple_choice(name = nil, &block)
-        block Class.new(Scene::MultipleChoice, &block), name
+        self.block Class.new(Scene::MultipleChoice, &block), name
       end
 
       # Create a yes-or-no scene.
@@ -116,7 +116,7 @@ module Gamefic
       # @param name [Symbol, nil]
       # @return [Class<Scene::YesOrNo>]
       def yes_or_no(name = nil, &block)
-        block Class.new(Scene::YesOrNo, &block), name
+        self.block Class.new(Scene::YesOrNo, &block), name
       end
 
       # Create an active choice scene.
@@ -124,7 +124,7 @@ module Gamefic
       # @param name [Symbol, nil]
       # @return [Class<Scene::ActiveChoice>]
       def active_choice(name = nil, &block)
-        block Class.new(Scene::ActiveChoice, &block), name
+        self.block Class.new(Scene::ActiveChoice, &block), name
       end
 
       # Create a pause.
@@ -137,7 +137,7 @@ module Gamefic
       # @yieldreceiver [Object<self>]
       # @return [Class<Scene::Pause>]
       def pause(name = nil, &block)
-        block(Class.new(Scene::Pause) do
+        self.block(Class.new(Scene::Pause) do
           on_start(&block)
         end, name)
       end
@@ -157,7 +157,7 @@ module Gamefic
       # @yieldreceiver [Object<self>]
       # @return [Class<Scene::Conclusion>]
       def conclusion(name = nil, &block)
-        block(Class.new(Scene::Conclusion) do
+        self.block(Class.new(Scene::Conclusion) do
           on_start(&block)
         end, name)
       end
