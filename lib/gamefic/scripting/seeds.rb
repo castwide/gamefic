@@ -3,7 +3,7 @@ module Gamefic
     module Seeds
       # @return [Array<Proc>]
       def seeds
-        self.class.seeds
+        included_scripts.flat_map(&:seeds) + self.class.seeds
       end
     end
   end

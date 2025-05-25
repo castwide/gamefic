@@ -132,4 +132,30 @@ RSpec.describe Gamefic::Plot do
     plot.turn
     expect(plot.chapters).to be_empty
   end
+
+  context 'with a scriptable module' do
+    require_relative '../fixtures/modular/modular_test_plot'
+
+    let(:plot) { ModularTestPlot.new }
+    let(:player) { plot.introduce }
+
+    it 'creates entities from the module' do
+      expect(plot.place).to be_a(Gamefic::Entity)
+      expect(plot.thing).to be_a(Gamefic::Entity)
+    end
+
+    it 'sets parents of module entities correctly' do
+      expect(plot.thing.parent).to be(plot.place)
+      expect(player.parent).to be(plot.place)
+    end
+
+    it 'responds to commands with module entity arguments' do
+      player.perform 'use thing'
+      expect(player[:used]).to be(plot.thing)
+    end
+
+    it 'seeds unreferenced entities' do
+      expect(plot.instance_variable_get(:@unreferenced)).to be_a(Gamefic::Entity)
+    end
+  end
 end
