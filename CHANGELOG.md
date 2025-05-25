@@ -1,6 +1,7 @@
 ## 4.1.2 - May 25, 2025
 - Seed unreferenced entities
 - Ensure seed uniqueness
+- Add base64 dependency
 
 ## 4.1.1 - March 2, 2025
 - Warn for duplicate chapters

@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.7.0'
 
+  s.add_runtime_dependency 'base64', '~> 0.1'
   s.add_runtime_dependency 'yard-solargraph', '~> 0.1'
 
   s.add_development_dependency 'opal', '~> 1.7'
