@@ -41,6 +41,27 @@ describe Gamefic::Chapter do
     expect(plot.introductions).to be_one
   end
 
+  it 'does not duplicate seeds' do
+    scriptable = Module.new do
+      extend Gamefic::Scriptable
+
+      make Gamefic::Entity, name: 'thing'
+    end
+
+    chapter_klass = Class.new(Gamefic::Chapter) do
+      include scriptable
+    end
+
+    plot_klass = Class.new(Gamefic::Plot) do
+      include scriptable
+      append chapter_klass
+    end
+
+    plot = plot_klass.new
+    expect(plot.entities).to be_one
+    expect(plot.chapters.first.entities).to be_empty
+  end
+
   it 'binds methods from plots' do
     chapter_klass = Class.new(Gamefic::Chapter) do
       bind_from_plot :thing
