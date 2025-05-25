@@ -14,6 +14,7 @@ describe Gamefic::Narrative do
       klass = Class.new(Gamefic::Narrative) do
         make Gamefic::Entity, name: 'thing'
       end
+      expect(klass.seeds).to be_one
       plot = klass.new
       expect(plot.entities).to be_one
     end
@@ -65,8 +66,10 @@ describe Gamefic::Narrative do
 
       it 'adds entities from seeds' do
         blk = proc { make Gamefic::Entity, name: 'entity' }
-        Gamefic::Narrative.seed &blk
-        narr = Gamefic::Narrative.new
+        klass = Class.new(Gamefic::Narrative) do
+          seed &blk
+        end
+        narr = klass.new
         expect(narr.entities).to be_one
       end
 
