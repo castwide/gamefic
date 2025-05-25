@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+unless RUBY_ENGINE == 'opal'
+  require_relative '../fixtures/modular/modular_test_script'
+  require_relative '../fixtures/modular/modular_test_plot'
+end
+
 RSpec.describe Gamefic::Plot do
   it 'creates responses' do
     klass = Class.new(Gamefic::Plot) do
@@ -134,8 +139,6 @@ RSpec.describe Gamefic::Plot do
   end
 
   context 'with a scriptable module' do
-    require_relative '../fixtures/modular/modular_test_plot'
-
     let(:plot) { ModularTestPlot.new }
     let(:player) { plot.introduce }
 

@@ -15,7 +15,8 @@ task :default => :spec
 
 Opal::RSpec::RakeTask.new(:opal) do |_, config|
   Opal.append_path File.join(__dir__, 'lib')
+  Opal.append_path File.join(__dir__, 'spec', 'fixtures', 'modular')
   config.default_path = 'spec'
   config.pattern = 'spec/**/*_spec.rb'
-  config.requires = ['opal_helper']
+  config.requires = ['opal_helper', 'modular_test_script', 'modular_test_plot']
 end
