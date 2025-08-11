@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe Gamefic::Response do
+  describe '#initialize' do
+    it 'raises errors for invalid queries' do
+      expect { Gamefic::Response.new(:example, nil) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '#meta?' do
     it 'is false by default' do
       response = Gamefic::Response.new(:verb) {}

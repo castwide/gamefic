@@ -125,4 +125,12 @@ describe Gamefic::Subplot do
     player.perform 'execute thing'
     expect(executed).to be(true)
   end
+
+  it 'prepares scenes' do
+    plot = Gamefic::Plot.new
+    player = plot.introduce
+    subplot = plot.branch(Gamefic::Subplot, introduce: player)
+    scene = subplot.prepare(Gamefic::Scene::Activity, player, Gamefic::Props::Default.new)
+    expect(scene).to be_a(Gamefic::Scene::Activity)
+  end
 end

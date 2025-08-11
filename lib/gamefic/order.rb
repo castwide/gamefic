@@ -20,9 +20,9 @@ module Gamefic
     def to_actions
       Action.sort(
         actor.narratives
-            .responses_for(verb)
-            .map { |response| match_arguments(response) }
-            .compact
+             .responses_for(verb)
+             .map { |response| match_arguments(response) }
+             .compact
       )
     end
 
