@@ -22,8 +22,10 @@ module Gamefic
       end
     end
 
+    # @return [Narrative]
     attr_reader :narrative
 
+    # @return [Proc]
     attr_reader :code
 
     # @param narrative [Narrative]

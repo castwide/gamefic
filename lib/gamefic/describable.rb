@@ -142,10 +142,10 @@ module Gamefic
     #
     # @param text [String]
     def description=(text)
-      @description = (text if text != (format(Describable.default_description, name: definitely, Name: definitely.capitalize_first)))
+      @description = (text if text != format(Describable.default_description, name: definitely, Name: definitely.capitalize_first))
     end
 
-    def synonyms= text
+    def synonyms=(text)
       @synonyms = text
     end
 

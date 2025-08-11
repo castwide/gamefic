@@ -35,7 +35,7 @@ module Gamefic
                       .map { |blk| Binding.new(self, blk) }
     end
 
-    def self.included other
+    def self.included(other)
       super
       other.extend Scriptable
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gamefic
   module Scripting
     # Scripting hook methods are instance methods that return callbacks for

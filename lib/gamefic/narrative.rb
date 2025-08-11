@@ -62,7 +62,7 @@ module Gamefic
     #
     # In the base Narrative class, this method runs all applicable player
     # conclude blocks and the narrative's own conclude blocks.
-    # 
+    #
     # @return [void]
     def turn
       players.select(&:concluding?).each { |plyr| player_conclude_blocks.each { |blk| blk[plyr] } }
