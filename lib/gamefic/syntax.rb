@@ -143,8 +143,8 @@ module Gamefic
     # @return [Array<String>]
     def make_tokens
       template.keywords.map.with_index do |word, idx|
+        next "(\\b#{word.gsub('|', "|\\b")})" if word.include?('|')
         next word unless word.match?(PARAM_REGEXP)
-
         next nil if idx.positive? && template.keywords[idx - 1].match?(PARAM_REGEXP)
 
         '([\w\W\s\S]*?)'

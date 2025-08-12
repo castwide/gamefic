@@ -104,4 +104,12 @@ describe Gamefic::Syntax do
     syntax = Gamefic::Syntax.new('ꩺ', 'do')
     expect(syntax.accept?('ꩺ')).to be(true)
   end
+
+  it 'accepts regular expressions' do
+    syntax = Gamefic::Syntax.new('go to|in :place', 'go :place')
+    expect(syntax.accept?('go to the store')).to be(true)
+    expect(syntax.accept?('go in the store')).to be(true)
+    expect(syntax.accept?('go toin the store')).to be(false)
+    expect(syntax.accept?('go from the store')).to be(false)
+  end
 end
