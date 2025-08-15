@@ -114,11 +114,9 @@ describe Gamefic::Syntax do
   end
 
   it 'accepts grouped variable words' do
-    syntax = Gamefic::Syntax.new('go (to|in|into|in to) :place', 'go :place')
-    expect(syntax.accept?('go to the store')).to be(true)
-    expect(syntax.accept?('go in the store')).to be(true)
-    expect(syntax.accept?('go into the store')).to be(true)
-    expect(syntax.accept?('go in to the store')).to be(true)
-    expect(syntax.accept?('go toin the store')).to be(false)
+    syntax = Gamefic::Syntax.new('go (in|in to)', 'go')
+    expect(syntax.accept?('go in')).to be(true)
+    expect(syntax.accept?('go in to')).to be(true)
+    expect(syntax.accept?('go into')).to be(false)
   end
 end

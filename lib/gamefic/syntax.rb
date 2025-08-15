@@ -82,9 +82,10 @@ module Gamefic
     #
     # @param text [String]
     # @return [Boolean]
-    def accept?(text)
+    def match?(text)
       !!text.match(regexp)
     end
+    alias accept? match?
 
     # Get a signature that identifies the form of the Syntax.
     # Signatures are used to compare Syntaxes to each other.
@@ -153,37 +154,31 @@ module Gamefic
 
     def split_tokens
       parens = 0
-      buffer = ''
-      result = template.normalize.chars.each.with_object([]) do |char, result|
-        parens, buffer = parse_token(char, parens, buffer, result)
+      result = template.normalize.chars.each.with_object(['']) do |char, result|
+        parens = parse_token(char, parens, result)
       end
-      result.push buffer unless buffer.empty?
+      raise "Unbalanced parentheses in syntax '#{template}'" unless parens.zero?
+
       result
     end
 
-    def parse_token(char, parens, buffer, result)
-      if char == '('
-        parens += 1
-        return [parens, buffer]
-      end
-      if char == ')'
-        parens -= 1
-        return [parens, buffer] if buffer.empty?
+    def parse_token(char, parens, result)
+      case char
+      when /[()]/
+        parens += (char == '(' ? 1 : -1)
+      when /\s/
+        return parens if result.last.empty?
 
-        result.push buffer
-        buffer = ''
-        return [parens, buffer]
-      end
-      if char == ' ' && parens.zero?
-        return [parens, buffer] if buffer.empty?
-
-        result.push buffer
-        buffer = ''
-        return [parens, buffer]
+        if parens > 0
+          result.push(result.pop + char)
+        else
+          result.push ''
+        end
+      else
+        result.push(result.pop + char)
       end
 
-      buffer = buffer + char
-      [parens, buffer]
+      parens
     end
   end
 end
