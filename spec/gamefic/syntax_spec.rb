@@ -119,4 +119,11 @@ describe Gamefic::Syntax do
     expect(syntax.accept?('go in to')).to be(true)
     expect(syntax.accept?('go into')).to be(false)
   end
+
+  it 'tokenizes variable words' do
+    syntax = Gamefic::Syntax.new('go to|in :place', 'go :place')
+    expression = syntax.tokenize('go to the store')
+    expect(expression.verb).to eq(:go)
+    expect(expression.tokens).to eq(['the store'])
+  end
 end

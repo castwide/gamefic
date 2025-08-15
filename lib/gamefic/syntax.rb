@@ -144,7 +144,7 @@ module Gamefic
     # @return [Array<String>]
     def make_tokens
       split_tokens.map.with_index do |word, idx|
-        next "(\\b#{word.gsub('|', "|\\b")})" if word.include?('|')
+        next "(?:\\b#{word.gsub('|', '|\\b')})" if word.include?('|')
         next word unless word.match?(PARAM_REGEXP)
         next nil if idx.positive? && template.keywords[idx - 1].match?(PARAM_REGEXP)
 
@@ -159,6 +159,8 @@ module Gamefic
       end
       raise "Unbalanced parentheses in syntax '#{template}'" unless parens.zero?
 
+      result.pop if result.last.empty?
+
       result
     end
 
@@ -169,7 +171,7 @@ module Gamefic
       when /\s/
         return parens if result.last.empty?
 
-        if parens > 0
+        if parens.positive?
           result.push(result.pop + char)
         else
           result.push ''
