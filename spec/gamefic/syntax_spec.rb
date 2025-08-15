@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Gamefic::Syntax do
-  it "acceps a valid syntax" do
+  it "accepts a valid syntax" do
     syn = Gamefic::Syntax.new "command", "command"
     expect(syn.accept? "command" ).to be true
   end
@@ -105,11 +105,20 @@ describe Gamefic::Syntax do
     expect(syntax.accept?('ꩺ')).to be(true)
   end
 
-  it 'accepts regular expressions' do
+  it 'accepts variable words' do
     syntax = Gamefic::Syntax.new('go to|in :place', 'go :place')
     expect(syntax.accept?('go to the store')).to be(true)
     expect(syntax.accept?('go in the store')).to be(true)
     expect(syntax.accept?('go toin the store')).to be(false)
     expect(syntax.accept?('go from the store')).to be(false)
+  end
+
+  it 'accepts grouped variable words' do
+    syntax = Gamefic::Syntax.new('go (to|in|into|in to) :place', 'go :place')
+    expect(syntax.accept?('go to the store')).to be(true)
+    expect(syntax.accept?('go in the store')).to be(true)
+    expect(syntax.accept?('go into the store')).to be(true)
+    expect(syntax.accept?('go in to the store')).to be(true)
+    expect(syntax.accept?('go toin the store')).to be(false)
   end
 end

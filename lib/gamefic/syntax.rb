@@ -142,13 +142,48 @@ module Gamefic
 
     # @return [Array<String>]
     def make_tokens
-      template.keywords.map.with_index do |word, idx|
+      split_tokens.map.with_index do |word, idx|
         next "(\\b#{word.gsub('|', "|\\b")})" if word.include?('|')
         next word unless word.match?(PARAM_REGEXP)
         next nil if idx.positive? && template.keywords[idx - 1].match?(PARAM_REGEXP)
 
         '([\w\W\s\S]*?)'
       end.compact
+    end
+
+    def split_tokens
+      parens = 0
+      buffer = ''
+      result = template.normalize.chars.each.with_object([]) do |char, result|
+        parens, buffer = parse_token(char, parens, buffer, result)
+      end
+      result.push buffer unless buffer.empty?
+      result
+    end
+
+    def parse_token(char, parens, buffer, result)
+      if char == '('
+        parens += 1
+        return [parens, buffer]
+      end
+      if char == ')'
+        parens -= 1
+        return [parens, buffer] if buffer.empty?
+
+        result.push buffer
+        buffer = ''
+        return [parens, buffer]
+      end
+      if char == ' ' && parens.zero?
+        return [parens, buffer] if buffer.empty?
+
+        result.push buffer
+        buffer = ''
+        return [parens, buffer]
+      end
+
+      buffer = buffer + char
+      [parens, buffer]
     end
   end
 end
