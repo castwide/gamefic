@@ -164,6 +164,9 @@ module Gamefic
       result
     end
 
+    # @param char [String]
+    # @param parens [Integer]
+    # @param result [Array<String>]
     def parse_token(char, parens, result)
       case char
       when /[()]/

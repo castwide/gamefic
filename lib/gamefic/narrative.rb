@@ -77,6 +77,7 @@ module Gamefic
     # @param snapshot [String]
     # @return [self]
     def self.restore(snapshot)
+      # @sg-ignore
       Marshal.load(snapshot)
     end
 
