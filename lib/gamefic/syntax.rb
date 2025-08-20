@@ -119,6 +119,48 @@ module Gamefic
       string.start_with?(':') ? nil : string.to_sym
     end
 
+    # Split a syntax template by words and expressions.
+    #
+    # @param template [String]
+    # @return [Array<String>]
+    def self.split(template)
+      parens = 0
+      result = template.normalize.chars.each.with_object(['']) do |char, result|
+        parens = parse_token(char, parens, result)
+      end
+      raise "Unbalanced parentheses in syntax '#{template}'" unless parens.zero?
+
+      result.pop if result.last.empty?
+
+      result
+    end
+
+    class << self
+      private
+
+      # @param char [String]
+      # @param parens [Integer]
+      # @param result [Array<String>]
+      def parse_token(char, parens, result)
+        case char
+        when /[()]/
+          parens += (char == '(' ? 1 : -1)
+        when /\s/
+          return parens if result.last.empty?
+
+          if parens.positive?
+            result.push(result.pop + char)
+          else
+            result.push ''
+          end
+        else
+          result.push(result.pop + char)
+        end
+
+        parens
+      end
+    end
+
     private
 
     # @return [String]
@@ -143,47 +185,13 @@ module Gamefic
 
     # @return [Array<String>]
     def make_tokens
-      split_tokens.map.with_index do |word, idx|
+      Syntax.split(template).map.with_index do |word, idx|
         next "(?:\\b#{word.gsub('|', '|\\b')})" if word.include?('|')
         next word unless word.match?(PARAM_REGEXP)
         next nil if idx.positive? && template.keywords[idx - 1].match?(PARAM_REGEXP)
 
         '([\w\W\s\S]*?)'
       end.compact
-    end
-
-    def split_tokens
-      parens = 0
-      result = template.normalize.chars.each.with_object(['']) do |char, result|
-        parens = parse_token(char, parens, result)
-      end
-      raise "Unbalanced parentheses in syntax '#{template}'" unless parens.zero?
-
-      result.pop if result.last.empty?
-
-      result
-    end
-
-    # @param char [String]
-    # @param parens [Integer]
-    # @param result [Array<String>]
-    def parse_token(char, parens, result)
-      case char
-      when /[()]/
-        parens += (char == '(' ? 1 : -1)
-      when /\s/
-        return parens if result.last.empty?
-
-        if parens.positive?
-          result.push(result.pop + char)
-        else
-          result.push ''
-        end
-      else
-        result.push(result.pop + char)
-      end
-
-      parens
     end
   end
 end

@@ -17,8 +17,15 @@ module Gamefic
       # @param command [String] The format of the original command
       # @param translation [String] The format of the translated command
       # @return [Syntax] the Syntax object
-      def interpret command, translation
-        syntaxes.push(Syntax.new(command, translation)).last
+      def interpret(command, translation)
+        parts = Syntax.split(command)
+        additions = if parts.first.include?('|')
+                      parts.first.split('|').map { |verb| Syntax.new("#{verb} #{verb[1..].join(' ')}", translation) }
+                    else
+                      [Syntax.new(command, translation)]
+                    end
+        syntaxes.concat additions
+        additions
       end
 
       def syntaxes
