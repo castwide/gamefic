@@ -1,3 +1,7 @@
+## 4.2.0 - November 27, 2025
+- Syntaxes support variable (piped) words
+- Props::MultipleChoice#index_of
+
 ## 4.1.2 - May 25, 2025
 - Seed unreferenced entities
 - Ensure seed uniqueness

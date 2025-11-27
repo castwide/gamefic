@@ -7,7 +7,7 @@ module Gamefic
     class MultiplePartial < MultipleChoice
       private
 
-      def index_by_text
+      def index_by_text(input)
         matches = options.map.with_index { |text, idx| next idx if text.downcase.start_with?(input.downcase) }.compact
         matches.first if matches.one?
       end

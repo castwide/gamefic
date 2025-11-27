@@ -5,9 +5,6 @@ module Gamefic
     # Props for MultipleChoice scenes.
     #
     class MultipleChoice < Default
-      # A message to send the player for an invalid choice. A formatting
-      # token named %<input>s can be used to inject the user input.
-      #
       # @return [String]
       attr_writer :invalid_message
 
@@ -18,6 +15,13 @@ module Gamefic
         @options ||= []
       end
 
+      # A message to send the player for an invalid choice. A formatting
+      # token named `%<input>s` can be used to inject the user input.
+      #
+      # @example
+      #   props.invalid_message = '"%<input>s" is not a valid choice.'
+      #
+      # @return [String]
       def invalid_message
         @invalid_message ||= '"%<input>s" is not a valid choice.'
       end
@@ -28,7 +32,7 @@ module Gamefic
       def index
         return nil unless input
 
-        @index ||= index_by_number || index_by_text
+        @index ||= index_of(input)
       end
 
       # The one-based index of the selected option.
@@ -53,15 +57,36 @@ module Gamefic
         !!index
       end
 
+      # Get the index of an option using input criteria, e.g., a one-based
+      # number or the text of the option. The return value is the option's
+      # zero-based index or nil.
+      #
+      # @example
+      #   props = Gamefic::Props::MultipleChoice.new
+      #   props.options.push 'First choice', 'Second choice'
+      #
+      #   props.index_of(1)               # => 0
+      #   props.index_of('Second choice') # => 1
+      #
+      # @param option [String, Integer]
+      # @return [Integer, nil]
+      def index_of(option)
+        index_by_number(option) || index_by_text(option)
+      end
+
       private
 
-      def index_by_number
-        return input.to_i - 1 if input.match(/^\d+$/) && options[input.to_i - 1]
+      # @param [String, Integer]
+      # @return [Integer, nil]
+      def index_by_number(input)
+        return input.to_i - 1 if input.to_s.match(/^\d+$/) && options[input.to_i - 1]
 
         nil
       end
 
-      def index_by_text
+      # @param [String]
+      # @return [Integer, nil]
+      def index_by_text(input)
         options.find_index { |opt| opt.casecmp?(input) }
       end
     end
