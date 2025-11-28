@@ -52,14 +52,11 @@ module Gamefic
       end
 
       # Add a block to be executed when a player is added to the game.
-      # Each Plot should only have one introduction.
       #
       # @example Welcome the player to the game
       #   introduction do |actor|
       #     actor.tell "Welcome to the game!"
       #   end
-      #
-      # @raise [ArgumentError] if an introduction already exists
       #
       # @yieldparam [Gamefic::Actor]
       # @yieldparam [Props::Default]
