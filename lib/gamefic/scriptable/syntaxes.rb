@@ -20,7 +20,7 @@ module Gamefic
       def interpret(command, translation)
         parts = Syntax.split(command)
         additions = if parts.first.include?('|')
-                      parts.first.split('|').map { |verb| Syntax.new("#{verb} #{verb[1..].join(' ')}", translation) }
+                      parts.first.split('|').map { |verb| Syntax.new("#{verb} #{parts[1..].join(' ')}", translation) }
                     else
                       [Syntax.new(command, translation)]
                     end
