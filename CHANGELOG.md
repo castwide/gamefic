@@ -1,3 +1,7 @@
+## 4.2.1 - Devember 6, 2025
+- Correct Scenes#introduction documentation
+- Fix parsing of piped verbs
+
 ## 4.2.0 - November 27, 2025
 - Syntaxes support variable (piped) words
 - Props::MultipleChoice#index_of
