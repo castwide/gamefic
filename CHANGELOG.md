@@ -1,6 +1,7 @@
-## 4.2.1 - Devember 6, 2025
+## 4.2.1 - February 1, 2026
 - Correct Scenes#introduction documentation
 - Fix parsing of piped verbs
+- Binding documentation
 
 ## 4.2.0 - November 27, 2025
 - Syntaxes support variable (piped) words
