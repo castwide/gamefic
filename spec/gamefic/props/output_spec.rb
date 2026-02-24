@@ -20,4 +20,10 @@ describe Gamefic::Props::Output do
     output = Gamefic::Props::Output.new
     expect { output.queue = 'my message' }.to raise_error(NoMethodError)
   end
+
+  it 'freezes raw data' do
+    output = Gamefic::Props::Output.new
+    output.freeze
+    expect { output[:foo] = 'bar' }.to raise_error(FrozenError)
+  end
 end

@@ -88,6 +88,7 @@ module Gamefic
 
       def freeze
         raw_data.freeze
+        raw_data.each_value(&:freeze)
         super
       end
 
