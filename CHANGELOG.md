@@ -1,3 +1,7 @@
+## 4.2.2 - May 18, 2026
+- Freeze output raw data
+- Seeds#construct macro
+
 ## 4.2.1 - February 1, 2026
 - Correct Scenes#introduction documentation
 - Fix parsing of piped verbs
