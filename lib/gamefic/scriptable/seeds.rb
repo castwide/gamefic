@@ -29,6 +29,11 @@ module Gamefic
       # This method adds an instance method for the entity and a class method to
       # reference it with a proxy.
       #
+      # @!macro gamefic.construct
+      #   @!method $1
+      #     @return [$2]
+      #   @!method self.$1
+      #     @return [Proxy]
       # @param name [Symbol, String] The method name for the entity
       # @param klass [Class<Gamefic::Entity>]
       # @return [void]
