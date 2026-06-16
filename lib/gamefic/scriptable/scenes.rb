@@ -59,7 +59,6 @@ module Gamefic
       #   end
       #
       # @yieldparam [Gamefic::Actor]
-      # @yieldparam [Props::Default]
       # @yieldreceiver [Object<self>]
       # @return [void]
       def introduction(&start)
