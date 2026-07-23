@@ -7,7 +7,7 @@ RSpec.describe Gamefic::Proxy::Config do
         name: 'thing name'
       }
     }
-    object = OpenStruct.new(config: hash)
+    object = double(Object, config: hash)
     proxy = Gamefic::Proxy::Config.new[:thing][:name]
     expect(proxy.fetch(object)).to eq(hash[:thing][:name])
   end

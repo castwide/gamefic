@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'ostruct'
 require 'gamefic'
 
 require_relative 'fixtures/narrative_with_features'
