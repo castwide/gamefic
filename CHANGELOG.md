@@ -1,3 +1,7 @@
+## 4.2.3 - July 23, 2026
+- Add logger dependency
+- Cue does not freeze actor queue
+
 ## 4.2.2 - May 18, 2026
 - Freeze output raw data
 - Seeds#construct macro
