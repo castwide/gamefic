@@ -67,7 +67,7 @@ module Gamefic
                               scene: scene.to_hash,
                               prompt: props.prompt,
                               messages: actor.flush,
-                              queue: actor.queue
+                              queue: actor.queue.clone
                             })
         actor.narratives.player_output_blocks.each { |block| block.call actor, props.output }
       end

@@ -33,4 +33,16 @@ RSpec.describe Gamefic::Active::Cue do
       expect(cue.props.output.messages).to include('message')
     end
   end
+
+  describe '#output' do
+    it 'does not freeze the player queue' do
+      plot = Gamefic::Plot.new
+      player = plot.introduce
+      cue = Gamefic::Active::Cue.new(player, plot.default_scene, plot)
+      cue.start
+      cue.prepare
+      cue.output
+      expect(player.queue).not_to be_frozen
+    end
+  end
 end
